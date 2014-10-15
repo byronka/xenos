@@ -11,7 +11,7 @@
 
     <target name="run">
       <java 
-        dir="build/classes" 
+        classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
         classname="com.renomad.qarma.Database_access" 
         fork="true"
         />
