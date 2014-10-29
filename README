@@ -1,0 +1,8 @@
+all the sources necessary to build the project are included here,
+including all the library projects such as mysql-connector.
+
+directories:
+lib - library files used by the project
+lib_src - source for the library files
+src - source files of the project
+
