@@ -11,7 +11,7 @@ import java.io.File;
 
 public class Database_access {
 
-  public static String getTextFromFile(String filepath) {
+  private static String getTextFromFile(String filepath) {
     FileReader fr = null;
     File file = new File(filepath);
     long length_of_array = file.length();
@@ -30,7 +30,7 @@ public class Database_access {
      return new String(buffer);
   }
 
-  public static void registerSqlDriver() {
+  private static void registerSqlDriver() {
     try {
       // The newInstance() call is a work around for some
       // broken Java implementations
@@ -41,7 +41,7 @@ public class Database_access {
     }
   }
 
-  public static void runSqlStatement(String sqlText, String connection_string) {
+  private static void runSqlStatement(String sqlText, String connection_string) {
     try {
       Connection conn = DriverManager.getConnection(connection_string);
       Statement stmt = conn.createStatement();
@@ -54,19 +54,19 @@ public class Database_access {
     }
   }
 
-  public static void run_script_before_db_exists(String filepath) {
+  private static void run_script_from_file_before_db_exists(String filepath) {
     String sqlText = getTextFromFile(filepath);
     runSqlStatement(sqlText,"jdbc:mysql://localhost/?user=qarmauser&password=hictstd!");
   }
 
-  public static void run_script(String filepath) {
+  public static void run_script_from_file(String filepath) {
     String sqlText = getTextFromFile(filepath);
     runSqlStatement(sqlText,"jdbc:mysql://localhost/test?user=qarmauser&password=hictstd!");
   }
 
   public static void main(String[] args) {
     registerSqlDriver();
-    run_script_before_db_exists("/home/byron/dev/byron_qarma/db_scripts/create_database.sql");
-    run_script("/home/byron/dev/byron_qarma/db_scripts/create_usertable.sql");
+    run_script_from_file_before_db_exists("/home/byron/dev/byron_qarma/db_scripts/create_database.sql");
+    run_script_from_file("/home/byron/dev/byron_qarma/db_scripts/create_usertable.sql");
   }
 }
