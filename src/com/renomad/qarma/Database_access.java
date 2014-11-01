@@ -1,5 +1,7 @@
 package com.renomad.qarma;
 
+import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.DriverManager;
@@ -50,7 +52,12 @@ public class Database_access {
   }
 
 
-  private static void run_script_from_file_before_db_exists(String filepath) {
+  /**
+    *This method gets used for a sole purpose - running 
+    * the create database script
+    */
+  private static void create_database() {
+    String filepath = get_db_script_full_path("create_database.sql");
     String sqlText = File_utilities.get_text_from_file(filepath);
     runSqlStatement(
         sqlText,
@@ -58,19 +65,32 @@ public class Database_access {
   }
 
 
-  public static void run_script_from_file(String filepath) {
+  /**
+    *This gets used for updating the schema of the database
+    */
+  public static void run_script_from_file(String script_name) {
+    String filepath = get_db_script_full_path(script_name);
     String sqlText = File_utilities.get_text_from_file(filepath);
     runSqlStatement(
         sqlText,
         "jdbc:mysql://localhost/test?user=qarmauser&password=hictstd!");
   }
 
+  /**
+    *Converts the script names to full path names
+    */
+  private static String get_db_script_full_path(String script_name) {
+    //the following works because we run the 
+    // program from the directory above db_scripts
+    Path db_scripts = Paths.get("db_scripts").toAbsolutePath();
+    String resolved_name = db_scripts.resolve(script_name).toString();
+    return resolved_name;
+  }
+
 
   public static void main(String[] args) {
-    registerSqlDriver();
-    run_script_from_file_before_db_exists(
-        "/home/byron/dev/byron_qarma/db_scripts/create_database.sql");
-    run_script_from_file(
-        "/home/byron/dev/byron_qarma/db_scripts/create_usertable.sql");
+    registerSqlDriver(); //necessary boilerplate
+    create_database();
+    run_script_from_file("create_usertable.sql");
   }
 }
