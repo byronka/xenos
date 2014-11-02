@@ -38,7 +38,7 @@
     <target name="build_schema">
       <java 
         classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
-        classname="com.renomad.qarma.Database_access" 
+        classname="com.renomad.qarma.Build_db_schema" 
         fork="true"
         />
     </target>

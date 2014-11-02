@@ -2,12 +2,13 @@
 <html>
 <head><title>First JSP</title></head>
 <body>
-  <%
-    String blah = Tester.cool();
-  %>
-<p>
-  We are sooo, <%=blah%> today!
-
-</p>
+  <% String[] values = Tester.cool(); %>
+  <% for (String blah : values) { %>
+    <div style="background-color: black;color: white;">
+      <p>
+        We are sooo, <%=blah%> today!
+      </p>
+    </div>
+  <% } %>
 </body>
 </html>
