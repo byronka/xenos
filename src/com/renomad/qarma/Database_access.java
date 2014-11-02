@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Arrays;
 import com.renomad.qarma.File_utilities;
 
 public class Database_access {
@@ -53,6 +56,26 @@ public class Database_access {
       Connection conn = DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
       PreparedStatement stmt = conn.prepareStatement(queryText);
       return stmt;
+    } catch (SQLException ex) {
+      System.out.println("SQLException: " + ex.getMessage());
+      System.out.println("SQLState: " + ex.getSQLState());
+      System.out.println("VendorError: " + ex.getErrorCode());
+    }
+    return null;
+  }
+
+
+  /**
+    *A wrapper for PreparedStatement.executeUpdate(PreparedStatement pstmt)
+    *
+    * Opens and closes a connection each time it's run.
+    * @param pstmt The prepared statement
+    * @return a ResultSet object that contains the data produced by the query; never null
+    */
+  public static ResultSet execute_query(PreparedStatement pstmt) {
+    try {
+      ResultSet result = pstmt.executeQuery();
+      return result;
     } catch (SQLException ex) {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
@@ -126,34 +149,45 @@ public class Database_access {
   }
 
   
-  /**
-    *A wrapper for PreparedStatement.setString(..) so I don't have to handle exceptions
-    *
-    *@param pstmt the PreparedStatement to work with.
-    *@param parameterIndex the indexed element in the query to replace text with.
-    *@param x the sql query
-    */
-  private static void set_string(PreparedStatement pstmt, int parameterIndex, String x) {
-    try {
-      pstmt.setString(parameterIndex, x);
-    } catch (SQLException ex) {
-      System.out.println("SQLException: " + ex.getMessage());
-      System.out.println("SQLState: " + ex.getSQLState());
-      System.out.println("VendorError: " + ex.getErrorCode());
-    }
-  }
-
-
   public static int add_user(String username) {
     if (username == null || username == "") {
       return 0;
     }
 
     String sqlText = "INSERT INTO user (user_name) values (?)";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-    set_string(pstmt, 1, username);
-    int result = execute_update(pstmt);
-    return result;
+    try (PreparedStatement pstmt = get_a_prepared_statement(sqlText)){
+      pstmt.setString(1, username);
+      int result = execute_update(pstmt);
+      return result;
+    } catch (SQLException ex) {
+      System.out.println("SQLException: " + ex.getMessage());
+      System.out.println("SQLState: " + ex.getSQLState());
+      System.out.println("VendorError: " + ex.getErrorCode());
+    }
+    return 0; //if complete failure, return that we got 0.
+  }
+
+  
+  public static ArrayList<String> get_all_users() {
+    String sqlText = "SELECT * FROM user";
+    ArrayList<String> results = new ArrayList<String>();
+    try (PreparedStatement pstmt = get_a_prepared_statement(sqlText)) {
+      ResultSet resultSet = execute_query(pstmt);
+
+      if (resultSet == null) {
+        return new ArrayList<String>(Arrays.asList("No users found"));
+      }
+
+      for(;resultSet.next() == true;) {
+        results.add(resultSet.getNString("user_name"));
+      }
+      return results;
+    } catch (SQLException ex) {
+      System.out.println("SQLException: " + ex.getMessage());
+      System.out.println("SQLState: " + ex.getSQLState());
+      System.out.println("VendorError: " + ex.getErrorCode());
+    }
+    return new ArrayList<String>(Arrays.asList("Errors during loading users."));
   }
 
 }

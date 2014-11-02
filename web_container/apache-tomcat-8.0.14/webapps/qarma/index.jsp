@@ -4,14 +4,12 @@
 <body>
 
   <% 
-    String[] values = Tester.cool(); 
-    String name = request.getParameter("nametext");
-    Tester.add_user(name);
+    String[] users = Tester.get_users(); 
   %>
-  <% for (String blah : values) { %>
+  <% for (String user : users) { %>
     <div style="background-color: black;color: white;">
       <p>
-        We are sooo, <%=blah%> today!
+        <%=user%>
       </p>
     </div>
   <% } %>
