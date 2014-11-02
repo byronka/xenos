@@ -6,9 +6,7 @@ public class Tester {
 
   public static String[] cool() {
     String[] mystrings = {
-      "apple", "banana", 
-      "carot", "danish", "elephant",
-      "father", "ghana", "harold"
+      "apple", "banana" 
     };
     return mystrings;
   }

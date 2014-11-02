@@ -1,6 +1,7 @@
 package com.renomad.qarma;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -31,6 +32,7 @@ public class Database_access {
     * Helper to get a Statement, using connection string without db.
     * This is used to get a statement before the database is created.
     * Opens a connection each time it's run.
+    * We don't have to worry about SQL injection here, it should only be called by our own code.
     * @return A new Statement object.
     */
   private static Statement get_a_statement_before_db_exists() throws SQLException {
@@ -40,31 +42,36 @@ public class Database_access {
   }
 
   /**
-    * Helper to get a Statement.
+    * Helper to get a PreparedStatement.
     *
     * Opens a connection each time it's run.
-    * @return A new Statement object.
+    * @return A new PreparedStatement object.
     */
-  private static Statement get_a_statement() throws SQLException {
-    Connection conn = DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
-    Statement stmt = conn.createStatement();
-    return stmt;
+  private static PreparedStatement get_a_prepared_statement(String queryText) {
+    try {
+      Connection conn = DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+      PreparedStatement stmt = conn.prepareStatement(queryText);
+      return stmt;
+    } catch (SQLException ex) {
+      System.out.println("SQLException: " + ex.getMessage());
+      System.out.println("SQLState: " + ex.getSQLState());
+      System.out.println("VendorError: " + ex.getErrorCode());
+    }
+    return null;
   }
 
 
   /**
-    *A wrapper for Statement.execute_update(String sql)
+    *A wrapper for PreparedStatement.executeUpdate(PreparedStatement pstmt)
     *
     * Opens and closes a connection each time it's run.
-    * @param sqlText the SQL text we will run - it must be a
-    *  single statement.  Multiple combined statements will fail.
+    * @param pstmt The prepared statement
     * @return either (1) the row count for SQL Data Manipulation 
     *  Language (DML) statements or (2) 0 for SQL statements that return nothing
-    * @throws SQLException
     */
-  public static int execute_update(String sqlText) {
-    try (Statement stmt = get_a_statement()){
-      int result = stmt.executeUpdate(sqlText);
+  public static int execute_update(PreparedStatement pstmt) {
+    try {
+      int result = pstmt.executeUpdate();
       return result;
     } catch (SQLException ex) {
       System.out.println("SQLException: " + ex.getMessage());
@@ -76,7 +83,7 @@ public class Database_access {
   
 
   /**
-    *A wrapper for Statement.execute() - used before database exists.
+    *A wrapper for PreparedStatement.execute() - used before database exists.
     *
     * Opens and closes a connection each time it's run.
     * @param sqlText the SQL text we will run - it must be a
@@ -97,7 +104,7 @@ public class Database_access {
   }
 
   /**
-    *A wrapper for Statement.execute()
+    *A wrapper for PreparedStatement.execute(), used for setting up db schemas.
     *
     * Opens and closes a connection each time it's run.
     * @param sqlText the SQL text we will run - it must be a
@@ -106,7 +113,7 @@ public class Database_access {
     *  if it is an update count or there are no results
     */
   public static boolean run_sql_statement(String sqlText) {
-    try (Statement stmt = get_a_statement()){
+    try (PreparedStatement stmt = get_a_prepared_statement(sqlText)){
       boolean result = stmt.execute(sqlText);
       return result;
     } catch (SQLException ex) {
@@ -117,9 +124,29 @@ public class Database_access {
     return false;
   }
 
+  
+  /**
+    *A wrapper for PreparedStatement.setString(..) so I don't have to handle exceptions
+    *
+    *@param pstmt the PreparedStatement to work with.
+    *@param parameterIndex the indexed element in the query to replace text with.
+    *@param x the sql query
+    */
+  public static void set_string(PreparedStatement pstmt, int parameterIndex, String x) {
+    try {
+      pstmt.setString(parameterIndex, x);
+    } catch (SQLException ex) {
+      System.out.println("SQLException: " + ex.getMessage());
+      System.out.println("SQLState: " + ex.getSQLState());
+      System.out.println("VendorError: " + ex.getErrorCode());
+    }
+  }
+
   public static int add_user(String username) {
-      String sqlText = "INSERT INTO user (user_name) values ('dan')";
-      int result = execute_update(sqlText);
+      String sqlText = "INSERT INTO user (user_name) values (?)";
+      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+      set_string(pstmt, 1, username);
+      int result = execute_update(pstmt);
       return result;
   }
 

@@ -10,5 +10,12 @@
       </p>
     </div>
   <% } %>
+  <form id="enter_name_form" method="post">
+    <p>
+      Enter your name:
+      <input name="nametext" type="text" id="nametext" />
+    </p>
+    <button form="enter_name_form" >Click me!</button>
+  </form>
 </body>
 </html>
