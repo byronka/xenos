@@ -5,4 +5,5 @@ directories:
 lib - library files used by the project
 lib_src - source for the library files
 src - source files of the project
+web_container - contains documents and binaries for the web container, Tomcat.
 
