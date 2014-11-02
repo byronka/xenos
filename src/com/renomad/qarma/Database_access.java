@@ -49,6 +49,7 @@ public class Database_access {
     */
   private static PreparedStatement get_a_prepared_statement(String queryText) {
     try {
+      register_sql_driver();
       Connection conn = DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
       PreparedStatement stmt = conn.prepareStatement(queryText);
       return stmt;
@@ -132,7 +133,7 @@ public class Database_access {
     *@param parameterIndex the indexed element in the query to replace text with.
     *@param x the sql query
     */
-  public static void set_string(PreparedStatement pstmt, int parameterIndex, String x) {
+  private static void set_string(PreparedStatement pstmt, int parameterIndex, String x) {
     try {
       pstmt.setString(parameterIndex, x);
     } catch (SQLException ex) {
@@ -142,12 +143,17 @@ public class Database_access {
     }
   }
 
+
   public static int add_user(String username) {
-      String sqlText = "INSERT INTO user (user_name) values (?)";
-      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-      set_string(pstmt, 1, username);
-      int result = execute_update(pstmt);
-      return result;
+    if (username == null || username == "") {
+      return 0;
+    }
+
+    String sqlText = "INSERT INTO user (user_name) values (?)";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    set_string(pstmt, 1, username);
+    int result = execute_update(pstmt);
+    return result;
   }
 
 }

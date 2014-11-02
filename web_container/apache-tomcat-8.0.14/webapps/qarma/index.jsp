@@ -2,7 +2,12 @@
 <html>
 <head><title>First JSP</title></head>
 <body>
-  <% String[] values = Tester.cool(); %>
+
+  <% 
+    String[] values = Tester.cool(); 
+    String name = request.getParameter("nametext");
+    Tester.add_user(name);
+  %>
   <% for (String blah : values) { %>
     <div style="background-color: black;color: white;">
       <p>
@@ -10,7 +15,7 @@
       </p>
     </div>
   <% } %>
-  <form id="enter_name_form" method="post">
+  <form id="enter_name_form" action="thanks.jsp" method="post">
     <p>
       Enter your name:
       <input name="nametext" type="text" id="nametext" />

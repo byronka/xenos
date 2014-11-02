@@ -11,4 +11,8 @@ public class Tester {
     return mystrings;
   }
 
+  public static void add_user(String username) {
+    Database_access.add_user(username);
+  }
+
 }
