@@ -43,6 +43,21 @@
         />
     </target>
 
+    <property name="tomcat.home.bin" value="web_container/apache-tomcat-8.0.14/bin/" />
+ 
+    <target name="tomcat-restart">
+        <antcall target="tomcat-stop" />
+        <antcall target="tomcat-start" />
+    </target>
+ 
+    <target name="tomcat-start">
+      <exec executable="${tomcat.home.bin}startup.sh" />
+    </target>
+ 
+    <target name="tomcat-stop">
+      <exec executable="${tomcat.home.bin}shutdown.sh" />
+    </target>
+
 </project>
 
 
