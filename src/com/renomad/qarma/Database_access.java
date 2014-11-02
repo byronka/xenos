@@ -80,8 +80,8 @@ public class Database_access {
     *Converts the script names to full path names
     */
   private static String get_db_script_full_path(String script_name) {
-    //the following works because we run the 
-    // program from the directory above db_scripts
+    //the following works because we are expected to run the 
+    // program from one directory above "db_scripts"
     Path db_scripts = Paths.get("db_scripts").toAbsolutePath();
     String resolved_name = db_scripts.resolve(script_name).toString();
     return resolved_name;
