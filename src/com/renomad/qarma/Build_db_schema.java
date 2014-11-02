@@ -6,7 +6,7 @@ import com.renomad.qarma.Database_access;
 
 public class Build_db_schema {
   public static void main(String[] args) {
-    Database_access.registerSqlDriver(); //necessary boilerplate
+    Database_access.register_sql_driver(); //necessary boilerplate
     create_database();
     run_script_from_file("create_usertable.sql");
   }
@@ -18,9 +18,7 @@ public class Build_db_schema {
   static void create_database() {
     String filepath = get_db_script_full_path("create_database.sql");
     String sqlText = File_utilities.get_text_from_file(filepath);
-    Database_access.runSqlStatement(  
-        sqlText,
-        "jdbc:mysql://localhost/?user=qarmauser&password=hictstd!");
+    Database_access.run_sql_statement_before_db_exists(sqlText);
   }
 
 
@@ -30,9 +28,7 @@ public class Build_db_schema {
   static void run_script_from_file(String script_name) {
     String filepath = get_db_script_full_path(script_name);
     String sqlText = File_utilities.get_text_from_file(filepath);
-    Database_access.runSqlStatement(
-        sqlText,
-        "jdbc:mysql://localhost/test?user=qarmauser&password=hictstd!");
+    Database_access.run_sql_statement(sqlText);
   }
 
   /**
