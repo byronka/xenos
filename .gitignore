@@ -1,1 +1,4 @@
 build
+web_container/apache-tomcat-8.0.14/logs/
+web_container/apache-tomcat-8.0.14/work/
+
