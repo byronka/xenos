@@ -3,20 +3,39 @@
     <target name="clean">
       <delete 
         dir="build"/>
+      <delete dir="web_container/apache-tomcat-8.0.14/webapps/qarma/WEB-INF/classes" />
     </target>
 
     <target name="compile">
-      <mkdir 
-        dir="build/classes"/>
+      <mkdir dir="build/classes"/>
       <javac 
         debug="true" 
         debuglevel="lines,vars,source" 
         includeantruntime="false" 
+        classpath="
+          lib/mysql-connector-java-5.1.33-bin.jar:
+          web_container/apache-tomcat-8.0.14/lib/servlet-api.jar"
         srcdir="src" 
         destdir="build/classes"/>
     </target>
 
-    <target name="run">
+    <!-- 
+      copies the compiled classes and other resources into
+      their proper locations in the web_container directory.
+    -->
+    <target name="install_into_web_container">
+      <copy
+        todir="web_container/apache-tomcat-8.0.14/webapps/qarma/WEB-INF/classes" >
+        <!-- **/* will include all sub-directories. -->
+        <fileset dir="build/classes" includes="**/*" />
+      </copy>
+    </target>
+
+    <!-- 
+      build_schema runs the SQL scripts necessary for the 
+      database to have the proper schema.
+    -->
+    <target name="build_schema">
       <java 
         classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
         classname="com.renomad.qarma.Database_access" 
@@ -25,4 +44,6 @@
     </target>
 
 </project>
+
+
 
