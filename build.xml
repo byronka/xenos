@@ -16,7 +16,9 @@
           lib/mysql-connector-java-5.1.33-bin.jar:
           web_container/apache-tomcat-8.0.14/lib/servlet-api.jar"
         srcdir="src" 
-        destdir="build/classes"/>
+        destdir="build/classes">
+        <compilerarg value="-Xlint:unchecked" />
+      </javac>
     </target>
 
     <!-- 
