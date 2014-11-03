@@ -11,4 +11,5 @@ QARMA_HOME=$(pwd)
 JAVA_HOME=$(readlink -f $(find / -name 'rt.jar' -type f -printf '%h\n' 2>/dev/null|grep 1.7.0)/../..)
 ANT_HOME=$(readlink -f ant/apache-ant-1.9.4)
 CATALINA_HOME=$(readlink -f web_container/apache-tomcat-8.0.14/)
-export JAVA_HOME ANT_HOME CATALINA_HOME
+PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$CATALINA_HOME/bin:$PATH
+export JAVA_HOME ANT_HOME CATALINA_HOME PATH
