@@ -1,9 +1,28 @@
-all the sources necessary to build the project are included here,
-including all the library projects such as mysql-connector.
+Helpful information getting started with this project:
 
-directories:
+Things you need for this project:
+=================================
+A copy of OpenJdk for Java 1.7
+An operating system.  This was tested on Linux, it may work on Windows.
+
+Getting started
+===============
+edit the set_env.sh script and set the proper value for JAVA_HOME.
+Instead of writing a script to 
+
+directories and files at the top:
+=================================
 lib - library files used by the project
 lib_src - source for the library files
 src - source files of the project
 web_container - contains documents and binaries for the web container, Tomcat.
+ant - holds the utility we use for many benefits on our project.  A Neat Tool.
+build - where the built work goes.  We copy from there to where it belongs.
+build.xml - the Ant script that provides all sorts of benefits, for example, building the project.
+db_scripts - holds scripts necessary to built the database schema.
 
+Environment variables you want:
+===============================
+ANT_HOME should point to the Ant project in this folder.
+JAVA_HOME should point to a Java 1.7 OpenJdk directory
+CATALINA_HOME should point to the Tomcat directory
