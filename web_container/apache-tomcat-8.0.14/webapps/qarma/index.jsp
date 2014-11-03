@@ -1,24 +1,27 @@
 <%@ page import="com.renomad.qarma.Tester" %>
 <html>
-<head><title>First JSP</title></head>
+<head><title>Account Creation</title></head>
 <body>
-
-  <% 
-    String[] users = Tester.get_users(); 
-  %>
-  <% for (String user : users) { %>
-    <div style="background-color: black;color: white;">
-      <p>
-        <%=user%>
-      </p>
-    </div>
-  <% } %>
-  <form id="enter_name_form" action="thanks.jsp" method="post">
+<h2>
+  Create a new account
+</h2>
+  <form id="enter_name_form" action="register.jsp" method="post">
     <p>
-      Enter your name:
-      <input name="nametext" type="text" id="nametext" />
+      First Name:
+      <input name="first_name" type="text" />
+      Last Name:
+      <input name="last_name" type="text" />
     </p>
-    <button form="enter_name_form" >Click me!</button>
+    <p>
+      Email:
+      <input name="email" type="text" />
+    </p>
+    <p>
+      Password:
+      <input name="password" type="text" />
+    </p>
+
+    <button form="enter_name_form" >Done</button>
   </form>
 </body>
 </html>

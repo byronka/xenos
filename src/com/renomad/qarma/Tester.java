@@ -11,8 +11,8 @@ public class Tester {
     return array_of_users;
   }
 
-  public static void add_user(String username) {
-    Database_access.add_user(username);
+  public static void add_user(String first_name, String last_name, String email, String password) {
+    Database_access.add_user(first_name, last_name, email, password);
   }
 
 }

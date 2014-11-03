@@ -149,14 +149,27 @@ public class Database_access {
   }
 
   
-  public static int add_user(String username) {
-    if (username == null || username == "") {
+  public static int add_user(String first_name, String last_name, String email, String password) {
+    //validation section
+    if (first_name == null || first_name == "") {
+      return 0;
+    }
+    if (last_name == null || last_name == "") {
+      return 0;
+    }
+    if (email == null || email == "") {
+      return 0;
+    }
+    if (password == null || password == "") {
       return 0;
     }
 
-    String sqlText = "INSERT INTO user (user_name) values (?)";
+    String sqlText = "INSERT INTO user (first_name, last_name, email, password) values (?, ?, ?, ?)";
     try (PreparedStatement pstmt = get_a_prepared_statement(sqlText)){
-      pstmt.setString(1, username);
+      pstmt.setString(1, first_name);
+      pstmt.setString(2, last_name);
+      pstmt.setString(3, email);
+      pstmt.setString(4, password);
       int result = execute_update(pstmt);
       return result;
     } catch (SQLException ex) {
