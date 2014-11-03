@@ -7,10 +7,16 @@ An operating system.  This was tested on Linux, it may work on Windows.
 
 Getting started
 ===============
-edit the set_env.sh script and set the proper value for JAVA_HOME.
-Instead of writing a script to 
+I created a script called set_env.sh which will try to get the
+proper values for JAVA_HOME, ANT_HOME, and CATALINA_HOME.  Of these,
+JAVA_HOME is the tricky one, since the other two are in this directory!
 
-directories and files at the top:
+To use set_env.sh to set values to your environment variables, simply
+make it executable if it's not already and run:
+
+source set_env.sh
+
+Directories and files at the top:
 =================================
 lib - library files used by the project
 lib_src - source for the library files
