@@ -181,26 +181,28 @@ public class Database_access {
   }
 
   
-  public static ArrayList<String> get_all_users() {
+  public static String[] get_all_users() {
     String sqlText = "SELECT * FROM user";
     ArrayList<String> results = new ArrayList<String>();
     try (PreparedStatement pstmt = get_a_prepared_statement(sqlText)) {
       ResultSet resultSet = execute_query(pstmt);
 
       if (resultSet == null) {
-        return new ArrayList<String>(Arrays.asList("No users found"));
+        return new String[]{"no users found"};
       }
 
       for(;resultSet.next() == true;) {
         results.add(resultSet.getNString("user_name"));
       }
-      return results;
+      String[] array_of_users = 
+        results.toArray(new String[results.size()]);
+      return array_of_users;
     } catch (SQLException ex) {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
     }
-    return new ArrayList<String>(Arrays.asList("Errors during loading users."));
+      return new String[]{"Errors during loading of users."};
   }
 
 }

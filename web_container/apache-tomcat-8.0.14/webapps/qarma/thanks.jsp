@@ -1,4 +1,3 @@
-<%@ page import="com.renomad.qarma.Tester" %>
 <html>
 <head><title>First JSP</title></head>
 <body>
