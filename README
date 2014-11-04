@@ -3,10 +3,28 @@ Helpful information getting started with this project:
 Things you need for this project:
 =================================
 A copy of OpenJdk for Java 1.7
+MySQL version 5.  We tested on mysql-5.1.73-3.el6_5.x86_64
 An operating system.  This was tested on Linux, it may work on Windows.
 
 Getting started
 ===============
+===============
+
+Installing OpenJdk
+------------------
+For CentOS:
+sudo yum install java-1.7.0-openjdk
+
+Installing MySQL
+----------------
+For CentOS:
+sudo yum install mysql-server              #install it
+sudo /sbin/service mysqld start            #start it
+sudo /usr/bin/mysql_secure_installation    #set password
+sudo chkconfig mysqld on                   #set to run on startup
+
+Environment variables
+---------------------
 I created a script called set_env.sh which will try to get the
 proper values for JAVA_HOME, ANT_HOME, and CATALINA_HOME.  Of these,
 JAVA_HOME is the tricky one, since the other two are in this directory!
