@@ -13,9 +13,9 @@ import com.renomad.qarma.File_utilities;
 public class Database_access {
 
   private static String CONNECTION_STRING_WITH_DB =
-        "jdbc:mysql://localhost/test?user=qarmauser&password=hictstd!";
+        "jdbc:mysql://localhost/test?user=root&password=hictstd!";
   private static String CONNECTION_STRING_WITHOUT_DB =
-        "jdbc:mysql://localhost/?user=qarmauser&password=hictstd!";
+        "jdbc:mysql://localhost/?user=root&password=hictstd!";
 
   /**
     *Boilerplate code necessary to run the java mysql connector.
