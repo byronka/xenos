@@ -27,7 +27,7 @@ public class Database_access {
       Class.forName("com.mysql.jdbc.Driver").newInstance();
       //new com.mysql.jdbc.Driver();
     } catch (Exception ex) {
-      // handle the error
+      System.out.println("General exception: " + ex.toString());
     }
   }
 
@@ -58,6 +58,8 @@ public class Database_access {
       return stmt;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+    } catch (Exception ex) {
+      System.out.println("General exception: " + ex.toString());
     }
     return null;
   }
@@ -76,6 +78,8 @@ public class Database_access {
       return result;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+    } catch (Exception ex) {
+      System.out.println("General exception: " + ex.toString());
     }
     return null;
   }
@@ -95,6 +99,8 @@ public class Database_access {
       return result;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+    } catch (Exception ex) {
+      System.out.println("General exception: " + ex.toString());
     }
     return 0;
   }
@@ -115,6 +121,8 @@ public class Database_access {
       return result;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+    } catch (Exception ex) {
+      System.out.println("General exception: " + ex.toString());
     }
     return false;
   }
@@ -134,6 +142,8 @@ public class Database_access {
       return result;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+    } catch (Exception ex) {
+      System.out.println("General exception: " + ex.toString());
     }
     return false;
   }
@@ -164,6 +174,8 @@ public class Database_access {
       return result;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+    } catch (Exception ex) {
+      System.out.println("General exception: " + ex.toString());
     }
     return 0; //if complete failure, return that we got 0.
   }
@@ -187,10 +199,15 @@ public class Database_access {
       return array_of_users;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+    } catch (Exception ex) {
+      System.out.println("General exception: " + ex.toString());
     }
-      return new String[]{"Errors during loading of users."};
+    return new String[]{"Errors during loading of users."};
   }
 
+  /**
+    * provides a few boilerplate println's for sql exceptions
+    */
   private static void handle_sql_exception(SQLException ex) {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
