@@ -227,13 +227,10 @@ public class Database_access {
       ResultSet resultSet = execute_query(pstmt);
 
       if (resultSet == null) {
-        return false; //no user found with that email.
+        throw new Exception("no user found with email " + email);
       }
 
       resultSet.next(); //move to the first set of results.
-      if (resultSet.next()) {
-        throw new Exception("somehow there is more than one email of " + email);
-      }
 
       if (resultSet.getNString("password").equals(password)) {
         return true; //success!
