@@ -128,7 +128,8 @@ public class Database_access {
   }
 
   /**
-    *A wrapper for PreparedStatement.execute(), used for setting up db schemas.
+    *A wrapper for PreparedStatement.execute(), 
+		* used for setting up db schemas.
     *
     * Opens and closes a connection each time it's run.
     * @param sqlText the SQL text we will run - it must be a
@@ -137,64 +138,120 @@ public class Database_access {
     *  if it is an update count or there are no results
     */
   public static boolean run_sql_statement(String sqlText) {
-    try (PreparedStatement stmt = get_a_prepared_statement(sqlText)){
-      boolean result = stmt.execute(sqlText);
-      return result;
-    } catch (SQLException ex) {
-      handle_sql_exception(ex);
-    } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
-    }
-    return false;
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		boolean result = execute_prepared_statement(pstmt, sqlText);
+		close_prepared_statement(pstmt);
+		return result;
   }
 
-  public static int add_user(String first_name, String last_name, String email, String password) {
+  public static int add_user(
+			String first_name, String last_name, String email, String password) {
     //validation section
     null_or_empty_validation(first_name);
     null_or_empty_validation(last_name);
     null_or_empty_validation(email);
     null_or_empty_validation(password);
 
-    String sqlText = "INSERT INTO user (first_name, last_name, email, password) values (?, ?, ?, ?)";
-    try (PreparedStatement pstmt = get_a_prepared_statement(sqlText)){
-      pstmt.setString(1, first_name);
-      pstmt.setString(2, last_name);
-      pstmt.setString(3, email);
-      pstmt.setString(4, password);
-      int result = execute_update(pstmt);
-      return result;
-    } catch (SQLException ex) {
-      handle_sql_exception(ex);
-    } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
-    }
-    return 0; //if complete failure, return that we got 0.
+    String sqlText = 
+			"INSERT INTO user (first_name, last_name, email, password) " +
+		 	"values (?, ?, ?, ?)";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		set_string(pstmt, 1, first_name);
+		set_string(pstmt, 2, last_name);
+		set_string(pstmt, 3, email);
+		set_string(pstmt, 4, password);
+		int result = execute_update(pstmt);
+		close_prepared_statement(pstmt);
+		return result;
   }
 
   
   public static String[] get_all_users() {
     String sqlText = "SELECT * FROM user";
     ArrayList<String> results = new ArrayList<String>();
-    try (PreparedStatement pstmt = get_a_prepared_statement(sqlText)) {
-      ResultSet resultSet = execute_query(pstmt);
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		ResultSet resultSet = execute_query(pstmt);
 
-      if (resultSet == null) {
-        return new String[]{"no users found"};
-      }
+		if (resultSet == null) {
+			return new String[]{"no users found"};
+		}
 
-      for(;resultSet.next() == true;) {
-        results.add(resultSet.getNString("user_name"));
-      }
-      String[] array_of_users = 
-        results.toArray(new String[results.size()]);
-      return array_of_users;
-    } catch (SQLException ex) {
-      handle_sql_exception(ex);
-    } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
-    }
-    return new String[]{"Errors during loading of users."};
+		for(;result_set_next(resultSet) == true;) {
+			results.add(get_NString(resultSet, "user_name"));
+		}
+		String[] array_of_users = 
+			results.toArray(new String[results.size()]);
+		close_prepared_statement(pstmt);
+		return array_of_users;
   }
+
+	
+	/**
+		* Wrapper around ResultSet.next() to avoid
+		* littering my code with try-next
+		*/
+  private static boolean result_set_next(ResultSet  rs) {
+		try {
+			return rs.next();
+		} catch(SQLException ex) {
+			handle_sql_exception(ex);
+		} 
+		return false;
+	}
+
+	/**
+		* Wrapper around PreparedStatement.execute(String text)
+		* to avoid littering my code with try-catch
+		*/
+	private static boolean execute_prepared_statement(
+			PreparedStatement ps, String sqlText) {
+		try {
+			return ps.execute(sqlText);
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		} 
+		return false;
+	}
+
+
+	/**
+		* Wrapper around PreparedStatement.setString(int, String)
+		* to avoid littering my code with try-catch
+		*/
+	private static void set_string(PreparedStatement ps, int i, String s) {
+		try {
+			ps.setString(i, s);
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		}
+	}
+
+
+	/**
+		* Wrapper around PreparedStatement.close() to avoid having to
+		* litter my code with try-catch
+		*/
+	private static void close_prepared_statement(PreparedStatement ps) {
+		try {
+			ps.close();
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		}
+	}
+
+	/**
+		* Wrapper around ResultSet.getNString(String columnName)
+		* We'll wrap these methods that throw SQLException
+		* so we don't have to worry about it any  more
+		*/
+	private static String get_NString(ResultSet rs, String columnName) {
+		try {
+			return rs.getNString(columnName);
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		}
+		return "";
+	}
   
 
   /**
@@ -203,8 +260,8 @@ public class Database_access {
     * @throws Exception if the string is null or empty
     */
   private static void null_or_empty_validation(String value) {
-    if (email == null || email == "") {
-      throw new Exception("value was null or empty when it shouldn't have");
+    if (value == null || value == "") {
+      System.out.println("value was null or empty when it shouldn't have");
     }
   }
 
@@ -219,26 +276,21 @@ public class Database_access {
 
     String sqlText = "SELECT password FROM user WHERE email = ?";
 
-    try (PreparedStatement pstmt = get_a_prepared_statement(sqlText)){
-      pstmt.setString(1, email);
-      ResultSet resultSet = execute_query(pstmt);
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		set_string(pstmt, 1, email);
+		ResultSet resultSet = execute_query(pstmt);
 
-      if (resultSet == null) {
-        throw new Exception("no user found with email " + email);
-      }
+		if (resultSet == null) {
+			System.out.println("no user found with email " + email);
+		}
 
-      resultSet.next(); //move to the first set of results.
+		result_set_next(resultSet); //move to the first set of results.
 
-      if (resultSet.getNString("password").equals(password)) {
-        return true; //success!
-      }
-
-    } catch (SQLException ex) {
-      handle_sql_exception(ex);
-    } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
-    }
-    return false; //if complete failure, return that we got 0.
+		if (get_NString(resultSet, "password").equals(password)) {
+			return true; //success!
+		}
+		close_prepared_statement(pstmt);
+    return false;
   }
 
 
