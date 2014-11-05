@@ -25,14 +25,14 @@ sudo chkconfig mysqld on                   #set to run on startup
 
 Environment variables
 ---------------------
-I created a script called set_env.sh which will try to get the
+There is a script called set_env.sh which will try to get the
 proper values for JAVA_HOME, ANT_HOME, and CATALINA_HOME.  Of these,
 JAVA_HOME is the tricky one, since the other two are in this directory!
 
 To use set_env.sh to set values to your environment variables, simply
 make it executable if it's not already and run:
 
-source set_env.sh
+./set_env.sh
 
 Directories and files at the top:
 =================================
