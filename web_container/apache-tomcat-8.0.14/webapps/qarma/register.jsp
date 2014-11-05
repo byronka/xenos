@@ -9,7 +9,7 @@
     String email = request.getParameter("email");
     String password = request.getParameter("password");
     Database_access.add_user(first_name, last_name, email, password);
-    response.sendRedirect("thanks.jsp");
+    response.sendRedirect("thanks.htm");
   %>
 </body>
 </html>
