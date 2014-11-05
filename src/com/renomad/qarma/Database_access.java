@@ -57,9 +57,7 @@ public class Database_access {
       PreparedStatement stmt = conn.prepareStatement(queryText);
       return stmt;
     } catch (SQLException ex) {
-      System.out.println("SQLException: " + ex.getMessage());
-      System.out.println("SQLState: " + ex.getSQLState());
-      System.out.println("VendorError: " + ex.getErrorCode());
+      handle_sql_exception(ex);
     }
     return null;
   }
@@ -77,9 +75,7 @@ public class Database_access {
       ResultSet result = pstmt.executeQuery();
       return result;
     } catch (SQLException ex) {
-      System.out.println("SQLException: " + ex.getMessage());
-      System.out.println("SQLState: " + ex.getSQLState());
-      System.out.println("VendorError: " + ex.getErrorCode());
+      handle_sql_exception(ex);
     }
     return null;
   }
@@ -98,9 +94,7 @@ public class Database_access {
       int result = pstmt.executeUpdate();
       return result;
     } catch (SQLException ex) {
-      System.out.println("SQLException: " + ex.getMessage());
-      System.out.println("SQLState: " + ex.getSQLState());
-      System.out.println("VendorError: " + ex.getErrorCode());
+      handle_sql_exception(ex);
     }
     return 0;
   }
@@ -120,9 +114,7 @@ public class Database_access {
       boolean result = stmt.execute(sqlText);
       return result;
     } catch (SQLException ex) {
-      System.out.println("SQLException: " + ex.getMessage());
-      System.out.println("SQLState: " + ex.getSQLState());
-      System.out.println("VendorError: " + ex.getErrorCode());
+      handle_sql_exception(ex);
     }
     return false;
   }
@@ -141,9 +133,7 @@ public class Database_access {
       boolean result = stmt.execute(sqlText);
       return result;
     } catch (SQLException ex) {
-      System.out.println("SQLException: " + ex.getMessage());
-      System.out.println("SQLState: " + ex.getSQLState());
-      System.out.println("VendorError: " + ex.getErrorCode());
+      handle_sql_exception(ex);
     }
     return false;
   }
@@ -173,9 +163,7 @@ public class Database_access {
       int result = execute_update(pstmt);
       return result;
     } catch (SQLException ex) {
-      System.out.println("SQLException: " + ex.getMessage());
-      System.out.println("SQLState: " + ex.getSQLState());
-      System.out.println("VendorError: " + ex.getErrorCode());
+      handle_sql_exception(ex);
     }
     return 0; //if complete failure, return that we got 0.
   }
@@ -198,11 +186,15 @@ public class Database_access {
         results.toArray(new String[results.size()]);
       return array_of_users;
     } catch (SQLException ex) {
+      handle_sql_exception(ex);
+    }
+      return new String[]{"Errors during loading of users."};
+  }
+
+  private static void handle_sql_exception(SQLException ex) {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
-    }
-      return new String[]{"Errors during loading of users."};
   }
 
 }
