@@ -148,21 +148,12 @@ public class Database_access {
     return false;
   }
 
-  
   public static int add_user(String first_name, String last_name, String email, String password) {
     //validation section
-    if (first_name == null || first_name == "") {
-      return 0;
-    }
-    if (last_name == null || last_name == "") {
-      return 0;
-    }
-    if (email == null || email == "") {
-      return 0;
-    }
-    if (password == null || password == "") {
-      return 0;
-    }
+    null_or_empty_validation(first_name);
+    null_or_empty_validation(last_name);
+    null_or_empty_validation(email);
+    null_or_empty_validation(password);
 
     String sqlText = "INSERT INTO user (first_name, last_name, email, password) values (?, ?, ?, ?)";
     try (PreparedStatement pstmt = get_a_prepared_statement(sqlText)){
@@ -207,18 +198,24 @@ public class Database_access {
   
 
   /**
+    * helps with boilerplate for validation of whether input
+    * is null or empty.
+    * @throws Exception if the string is null or empty
+    */
+  private static void null_or_empty_validation(String value) {
+    if (email == null || email == "") {
+      throw new Exception("value was null or empty when it shouldn't have");
+    }
+  }
+
+  /**
     * checks the password based on the email, the user's unique key
     *
     * @returns true if the password is correct for that email.
     */
   public static boolean check_login(String email, String password) {
-    //validation section
-    if (email == null || email == "") {
-      return false;
-    }
-    if (password == null || password == "") {
-      return false;
-    }
+    null_or_empty_validation(email);
+    null_or_empty_validation(password);
 
     String sqlText = "SELECT password FROM user WHERE email = ?";
 
