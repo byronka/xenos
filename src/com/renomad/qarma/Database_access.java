@@ -204,6 +204,49 @@ public class Database_access {
     }
     return new String[]{"Errors during loading of users."};
   }
+  
+
+  /**
+    * checks the password based on the email, the user's unique key
+    *
+    * @returns true if the password is correct for that email.
+    */
+  public static boolean check_login(String email, String password) {
+    //validation section
+    if (email == null || email == "") {
+      return false;
+    }
+    if (password == null || password == "") {
+      return false;
+    }
+
+    String sqlText = "SELECT password FROM user WHERE email = ?";
+
+    try (PreparedStatement pstmt = get_a_prepared_statement(sqlText)){
+      pstmt.setString(1, email);
+      ResultSet resultSet = execute_query(pstmt);
+
+      if (resultSet == null) {
+        return false; //no user found with that email.
+      }
+
+      resultSet.next(); //move to the first set of results.
+      if (resultSet.next()) {
+        throw new Exception("somehow there is more than one email of " + email);
+      }
+
+      if (resultSet.getNString("password").equals(password)) {
+        return true; //success!
+      }
+
+    } catch (SQLException ex) {
+      handle_sql_exception(ex);
+    } catch (Exception ex) {
+      System.out.println("General exception: " + ex.toString());
+    }
+    return false; //if complete failure, return that we got 0.
+  }
+
 
   /**
     * provides a few boilerplate println's for sql exceptions
