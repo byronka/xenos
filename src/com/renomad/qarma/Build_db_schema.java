@@ -9,6 +9,8 @@ public class Build_db_schema {
     Database_access.register_sql_driver(); //necessary boilerplate
     create_database();
     run_script_from_file("create_usertable.sql");
+    run_script_from_file("add_security_cols_to_usertable.sql"); //tracking info on the users for security's sake.
+    run_script_from_file("create_guidtable.sql"); //relates cookie guid's to users
   }
 
   /**

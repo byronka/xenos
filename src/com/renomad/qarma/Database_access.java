@@ -147,42 +147,48 @@ public class Database_access {
   public static int add_user(
 			String first_name, String last_name, String email, String password) {
     //validation section
-    null_or_empty_validation(first_name);
-    null_or_empty_validation(last_name);
-    null_or_empty_validation(email);
-    null_or_empty_validation(password);
+      null_or_empty_validation(first_name);
+      null_or_empty_validation(last_name);
+      null_or_empty_validation(email);
+      null_or_empty_validation(password);
 
-    String sqlText = 
-			"INSERT INTO user (first_name, last_name, email, password) " +
-		 	"values (?, ?, ?, ?)";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-		set_string(pstmt, 1, first_name);
-		set_string(pstmt, 2, last_name);
-		set_string(pstmt, 3, email);
-		set_string(pstmt, 4, password);
-		int result = execute_update(pstmt);
-		close_prepared_statement(pstmt);
-		return result;
+      String sqlText = 
+        "INSERT INTO user (first_name, last_name, email, password) " +
+        "values (?, ?, ?, ?)";
+      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      set_string(pstmt, 1, first_name);
+      set_string(pstmt, 2, last_name);
+      set_string(pstmt, 3, email);
+      set_string(pstmt, 4, password);
+      int result = execute_update(pstmt);
+      return result;
+    } finally {
+      close_prepared_statement(pstmt);
+    }
   }
 
   
   public static String[] get_all_users() {
-    String sqlText = "SELECT * FROM user";
-    ArrayList<String> results = new ArrayList<String>();
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-		ResultSet resultSet = execute_query(pstmt);
+      String sqlText = "SELECT * FROM user";
+      ArrayList<String> results = new ArrayList<String>();
+      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      ResultSet resultSet = execute_query(pstmt);
 
-		if (resultSet == null) {
-			return new String[]{"no users found"};
-		}
+      if (resultSet == null) {
+        return new String[]{"no users found"};
+      }
 
-		for(;result_set_next(resultSet) == true;) {
-			results.add(get_NString(resultSet, "user_name"));
-		}
-		String[] array_of_users = 
-			results.toArray(new String[results.size()]);
-		close_prepared_statement(pstmt);
-		return array_of_users;
+      for(;result_set_next(resultSet) == true;) {
+        results.add(get_NString(resultSet, "user_name"));
+      }
+      String[] array_of_users = 
+        results.toArray(new String[results.size()]);
+      return array_of_users;
+    } finally {
+      close_prepared_statement(pstmt);
+    }
   }
 
 	
@@ -271,28 +277,64 @@ public class Database_access {
     * @returns true if the password is correct for that email.
     */
   public static boolean check_login(String email, String password) {
-    null_or_empty_validation(email);
-    null_or_empty_validation(password);
+      null_or_empty_validation(email);
+      null_or_empty_validation(password);
 
-    String sqlText = "SELECT password FROM user WHERE email = ?";
+      String sqlText = "SELECT password FROM user WHERE email = ?";
 
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-		set_string(pstmt, 1, email);
-		ResultSet resultSet = execute_query(pstmt);
+      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      set_string(pstmt, 1, email);
+      ResultSet resultSet = execute_query(pstmt);
 
-		if (resultSet == null) {
-			System.out.println("no user found with email " + email);
-		}
+      if (resultSet == null) {
+        System.out.println("no user found with email " + email);
+      }
 
-		result_set_next(resultSet); //move to the first set of results.
+      result_set_next(resultSet); //move to the first set of results.
 
-		if (get_NString(resultSet, "password").equals(password)) {
-			return true; //success!
-		}
-		close_prepared_statement(pstmt);
-    return false;
+      if (get_NString(resultSet, "password").equals(password)) {
+        return true; //success!
+      }
+      return false;
+    } finally {
+      close_prepared_statement(pstmt);
+    }
   }
 
+  /**
+    * Takes a cookie string value and returns the user's name if valid and logged in.
+    * 
+    * @param cookie_value cookie we get from the user client
+    * @returns the user's name if valid and logged in.
+    */
+    public static String look_for_logged_in_user_by_cookie(String cookie_value) {
+        null_or_empty_validation(cookie_value);
+
+        String sqlText = "SELECT email FROM user JOIN guid_to_user AS gtu " +
+          "ON gtu.id = user.id WHERE gtu.guid = ? AND user.is_logged_in = 1";
+
+        PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+      try {
+        set_string(pstmt, 1, cookie_value);
+        ResultSet resultSet = execute_query(pstmt);
+
+        if (resultSet == null) {
+          System.out.println("no user found with cookie value " + cookie_value);
+          return "";
+        }
+
+        result_set_next(resultSet); //move to the first set of results.
+
+        String email = "";
+        if ((email = get_NString(resultSet, "email")).length() > 0) {
+          return email; //yay success!
+        }
+      } finally {
+        close_prepared_statement(pstmt);
+      }
+      return ""; 
+    }
 
   /**
     * provides a few boilerplate println's for sql exceptions

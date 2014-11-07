@@ -1,9 +1,7 @@
-<%@ page import="com.renomad.qarma.Database_access" %>
+<%@ page import="com.renomad.qarma.Security" %>
 
   <% 
-    Cookie user_security_cookie = request.getCookies();
-    String password = request.getParameter("password");
-    if (Database_access.check_login(username, password)) {
+    if (Security.user_is_allowed(request)) {
       response.sendRedirect("dashboard.htm");
     } else {
       response.sendRedirect("sorry.htm");

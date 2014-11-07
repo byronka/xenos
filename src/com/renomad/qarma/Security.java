@@ -1,36 +1,35 @@
 package com.renomad.qarma;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import com.renomad.qarma.Database_access;
 
 public class Security {
 
 
-  private static String find_the_cookie(Cookie[] all_cookies) {
+  private static Cookie find_our_cookie(Cookie[] all_cookies) {
     for (Cookie cookie : all_cookies) {
-      if (cookie.getName().equals("qarma_cookie") {
-        return cookie.getValue();
+      if (cookie.getName().equals("qarma_cookie")) {
+        return cookie;
       }
     }
-    return "";
+    return null;
   }
 
-
-  public static bool user_is_allowed(HttpServletRequest r) {
-    Cookie[] all_cookies = request.getCookies();
-    find_the_cookie(all_cookies);
-    String password = request.getParameter("password");
-    if (Database_access.check_login(username, password)) {
-      response.sendRedirect("dashboard.htm");
-    } else {
-      response.sendRedirect("sorry.htm");
+  public static boolean user_is_allowed(HttpServletRequest r) {
+    Cookie[] all_cookies = r.getCookies();
+    Cookie my_cookie = find_our_cookie(all_cookies);
+    if (my_cookie == null) {
+      return false;
     }
-
+    String cookie_value = my_cookie.getValue();
+    String user_email = Database_access.look_for_logged_in_user_by_cookie(cookie_value);
+    return (user_email.length() > 0);
   }
   
 
-  public set_security_for_user(HttpServletResponse r) {
+  public void set_security_for_user(HttpServletResponse r) {
 
 
   }
