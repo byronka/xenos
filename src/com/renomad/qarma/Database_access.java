@@ -180,6 +180,7 @@ public class Database_access {
         return new String[]{"no users found"};
       }
 
+			//keep adding rows of data while there is more data
       for(;result_set_next(resultSet) == true;) {
         results.add(get_NString(resultSet, "user_name"));
       }
