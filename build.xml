@@ -1,5 +1,13 @@
 <project>
 
+		<target name="full_redeploy" description="cleans, builds, installs into container, restarts tomcat">
+    	<antcall target="clean" />
+    	<antcall target="compile" />
+    	<antcall target="install_into_web_container" />
+    	<antcall target="tomcat-restart" />
+		</target>
+
+
     <target name="clean" description="deletes the build directory">
       <delete 
         dir="build"/>
