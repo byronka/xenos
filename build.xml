@@ -1,12 +1,12 @@
 <project>
 
-    <target name="clean">
+    <target name="clean" description="deletes the build directory">
       <delete 
         dir="build"/>
       <delete dir="web_container/apache-tomcat-8.0.14/webapps/qarma/WEB-INF/classes" />
     </target>
 
-    <target name="compile">
+    <target name="compile" description="builds the Java classes necessary for the functioning of the system.  All classes are built and put in the build directory, and other ant targets move these files to their intended destination">
       <mkdir dir="build/classes"/>
       <javac 
         debug="true" 
@@ -25,7 +25,7 @@
       copies the compiled classes and other resources into
       their proper locations in the web_container directory.
     -->
-    <target name="install_into_web_container">
+    <target name="install_into_web_container" description="copies the classes which are used by the servlet pages into their proper location in the web container directory">
       <copy
         todir="web_container/apache-tomcat-8.0.14/webapps/qarma/WEB-INF/classes" >
         <!-- **/* will include all sub-directories. -->
@@ -37,7 +37,7 @@
       build_schema runs the SQL scripts necessary for the 
       database to have the proper schema.
     -->
-    <target name="build_schema">
+    <target name="build_schema" depends="compile" description="Runs the java code which runs the set of scripts in the db_scripts directory, whose purpose is to set up the database - the tables, columns, and so on.">
       <java 
         classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
         classname="com.renomad.qarma.Build_db_schema" 
