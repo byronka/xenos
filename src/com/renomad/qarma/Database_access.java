@@ -209,9 +209,8 @@ public class Database_access {
 
   
   public static String[] get_all_users() {
-      String sqlText = "SELECT * FROM user";
-      ArrayList<String> results = new ArrayList<String>();
-      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    String sqlText = "SELECT * FROM user";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
       ResultSet resultSet = execute_query(pstmt);
 
@@ -220,6 +219,7 @@ public class Database_access {
       }
 
 			//keep adding rows of data while there is more data
+      ArrayList<String> results = new ArrayList<String>();
       for(;result_set_next(resultSet) == true;) {
         results.add(get_NString(resultSet, "user_name"));
       }
