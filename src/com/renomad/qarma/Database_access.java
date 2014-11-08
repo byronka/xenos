@@ -2,6 +2,7 @@ package com.renomad.qarma;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -63,6 +64,46 @@ public class Database_access {
     }
     return null;
   }
+  
+
+  /**
+    * This method sets you up to call stored procedures in the database.
+    * example: you might call this with a string of "register_user_cookie(?)"
+    * @param procedure_name the name of a procedure we've already added.  See the database
+    * @return A callable statement ready for setting parameters.
+    */
+  private static CallableStatement get_a_callable_statement(String proc) {
+    try {
+      register_sql_driver(); //*****TODO BK - is it really necessary to register every time??
+      Connection conn = DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+      CallableStatement cs = conn.prepareCall(proc);
+      return cs;
+    } catch (SQLException ex) {
+      handle_sql_exception(ex);
+    } catch (Exception ex) {
+      System.out.println("General exception: " + ex.toString());
+    }
+    return null;
+  }
+
+
+  /**
+    *A wrapper for CallableStatement.execute()
+    *
+    * Opens and closes a connection each time it's run.
+    * @return a boolean for success.
+    */
+  public static boolean execute(CallableStatement cs) {
+    try {
+      boolean result = cs.execute();
+      return result;
+    } catch (SQLException ex) {
+      handle_sql_exception(ex);
+    } catch (Exception ex) {
+      System.out.println("General exception: " + ex.toString());
+    }
+    return null;
+  }
 
 
   /**
@@ -70,7 +111,7 @@ public class Database_access {
     *
     * Opens and closes a connection each time it's run.
     * @param pstmt The prepared statement
-    * @return a ResultSet object that contains the data produced by the query; never null
+    * @return a ResultSet object that contains the data produced by the query
     */
   public static ResultSet execute_query(PreparedStatement pstmt) {
     try {
@@ -222,6 +263,30 @@ public class Database_access {
 
 
 	/**
+		* Wrapper around CallableStatement.setInt(int, Int)
+		* to avoid littering my code with try-catch
+		*/
+	private static void set_int(CallableStatement cs, int i, int x) {
+		try {
+			cs.setInt(i, x);
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		}
+	}
+
+	/**
+		* Wrapper around PreparedStatement.setInt(int, Int)
+		* to avoid littering my code with try-catch
+		*/
+	private static void set_int(PreparedStatement ps, int i, int x) {
+		try {
+			ps.setInt(i, x);
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		}
+	}
+
+	/**
 		* Wrapper around PreparedStatement.setString(int, String)
 		* to avoid littering my code with try-catch
 		*/
@@ -233,6 +298,18 @@ public class Database_access {
 		}
 	}
 
+
+	/**
+		* Wrapper around PreparedStatement.close() to avoid having to
+		* litter my code with try-catch
+		*/
+	private static void close_callable_statement(CallableStatement cs) {
+		try {
+			cs.close();
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		}
+	}
 
 	/**
 		* Wrapper around PreparedStatement.close() to avoid having to
@@ -336,6 +413,82 @@ public class Database_access {
       }
       return ""; 
     }
+
+  /**
+    * stores information on the user when they login, things like
+    * their ip, time they logged in, that they are in fact logged in,
+    * etc.
+    *
+    * @param username the username
+    * @param ip the user's ip.
+    */
+  public static void register_details_on_user_login(int user_id, 
+      String ip) {
+
+      if (ip == null || ip.length() == 0) {
+        ip = "no ip in request";
+      }
+
+      String sqlText = 
+        "UPDATE user" + 
+        "SET is_logged_in = 1, last_time_logged_in = NOW(), " + 
+        "last_ip_logged_in = ?" + 
+        "WHERE user_id = ?";
+
+      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+      try {
+        set_string(pstmt, 1, cookie_value);
+        set_int(pstmt, 2, user_id);
+        ResultSet resultSet = execute_query(pstmt);
+      } finally {
+        close_prepared_statement(pstmt);
+      }
+  }
+
+  /**
+    * This method creates a new entry in the guid_to_user table
+    * which is a lookup to see who is logged in.  The database
+    * creates the text of the guid, and then we send that on as
+    * the string for the cookie.
+    * @param user_id the user id of the user.
+    * @return a piping hot cookie.
+    */
+  public static String get_new_cookie_for_user(int user_id) {
+
+    if (user_id <= 0) {
+      return null;
+    }
+
+    string proc_name = "{call register_user_cookie(?)}";
+    CallableStatement cs = get_a_callable_statement(proc_name);
+
+    String sqlText = "SELECT guid FROM guid_to_user WHERE user_id = ?";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      set_int(cs, 1, user_id);
+      execute(cs);
+
+      set_string(pstmt, 1, user_id);
+      ResultSet resultSet = execute_query(pstmt);
+
+
+      if (resultSet == null) {
+        System.out.println("no user found with user_id " + user_id + " in guid_to_usr");
+        return "BAD_COOKIE";
+      }
+
+      result_set_next(resultSet); //move to the first set of results.
+
+      String guid = "";
+      if ((guid = get_NString(resultSet, "guid")).length() > 0) {
+        return guid; //yay success!
+      }
+    } finally {
+      close_prepared_statement(pstmt);
+      close_callable_statement(cs);
+    }
+    return ""; 
+  }
 
   /**
     * provides a few boilerplate println's for sql exceptions

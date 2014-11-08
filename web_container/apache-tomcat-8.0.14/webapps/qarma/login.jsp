@@ -3,7 +3,11 @@
   <% 
     String username = request.getParameter("username");
     String password = request.getParameter("password");
-    if (Database_access.check_login(username, password)) {
+    int user_id = 0;
+    if ((user_id = Database_access.check_login(username, password) > 0)) {
+      String ip_address = r.getRemoteAddr();
+      Security.register_user(user_id, ip_address);
+      response.addCookie(new Cookie("qarma_cookie"));
       response.sendRedirect("dashboard.htm");
     } else {
       response.sendRedirect("sorry.htm");
