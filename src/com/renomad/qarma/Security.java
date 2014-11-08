@@ -1,5 +1,6 @@
 package com.renomad.qarma;
 
+import java.io.IOException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,9 +12,23 @@ public class Security {
   public static String register_user(int user_id,
       String ip_address) {
     Database_access.register_details_on_user_login(user_id, ip_address);
-    Database_access.get_new_cookie_for_user(user_id);
+    String cookie_value = Database_access.get_new_cookie_for_user(user_id);
+    return cookie_value;
   }
 
+  public static void check_if_allowed(HttpServletRequest r,
+      HttpServletResponse response) {
+    Cookie[] cookies = r.getCookies();
+    Cookie c = find_our_cookie(cookies);
+    if (!user_is_allowed(c)) {
+      try {
+        response.sendRedirect("sorry.htm");
+      } catch (IOException ex) {
+        System.out.println("error in check_if_allowed");
+        System.out.println(ex);
+      }
+    }
+  }
 
   public static Cookie find_our_cookie(Cookie[] all_cookies) {
     if (all_cookies == null) {

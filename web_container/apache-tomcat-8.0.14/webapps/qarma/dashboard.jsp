@@ -1,14 +1,5 @@
 <%@ page import="com.renomad.qarma.Security" %>
-
-  <% 
-    Cookie[] cookies = request.getCookies();
-    Cookie c = Security.find_our_cookie(cookies);
-    if (Security.user_is_allowed(c)) {
-      response.sendRedirect("dashboard.htm");
-    } else {
-      response.sendRedirect("sorry.htm");
-    }
-  %>
+<% Security.check_if_allowed(request, response); %>
 
 <html>                                 
 <head><title>The dashboard</title></head>

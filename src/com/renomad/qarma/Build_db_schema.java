@@ -6,7 +6,6 @@ import com.renomad.qarma.Database_access;
 
 public class Build_db_schema {
   public static void main(String[] args) {
-    Database_access.register_sql_driver(); //necessary boilerplate
     create_database();
     run_script_from_file("create_usertable.sql");
     //tracking info on the users for security's sake.

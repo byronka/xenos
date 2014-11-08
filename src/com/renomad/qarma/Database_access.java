@@ -21,7 +21,7 @@ public class Database_access {
   /**
     *Boilerplate code necessary to run the java mysql connector.
     */
-  public static void register_sql_driver() {
+  static {
     try {
       // The newInstance() call is a work around for some
       // broken Java implementations
@@ -53,7 +53,6 @@ public class Database_access {
     */
   private static PreparedStatement get_a_prepared_statement(String queryText) {
     try {
-      register_sql_driver();
       Connection conn = DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
       PreparedStatement stmt = conn.prepareStatement(queryText);
       return stmt;
@@ -74,7 +73,6 @@ public class Database_access {
     */
   private static CallableStatement get_a_callable_statement(String proc) {
     try {
-      register_sql_driver(); //*****TODO BK - is it really necessary to register every time??
       Connection conn = DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
       CallableStatement cs = conn.prepareCall(proc);
       return cs;
@@ -102,7 +100,7 @@ public class Database_access {
     } catch (Exception ex) {
       System.out.println("General exception: " + ex.toString());
     }
-    return null;
+    return false;
   }
 
 
@@ -217,7 +215,7 @@ public class Database_access {
     try {
       ResultSet resultSet = execute_query(pstmt);
 
-      if (resultSet == null) {
+      if (result_is_null_or_empty(resultSet)) {
         return new String[]{"no users found"};
       }
 
@@ -324,6 +322,35 @@ public class Database_access {
 	}
 
 	/**
+		* Wrapper around ResultSet.getInt(String columnName)
+		* We'll wrap these methods that throw SQLException
+		* so we don't have to worry about it any  more
+		*/
+	private static int get_integer(ResultSet rs, String columnName) {
+		try {
+			return rs.getInt(columnName);
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		}
+		return 0; //default to returning 0 if this call fails.
+	}
+  
+
+	/**
+		* Wrapper around ResultSet.getString(String columnName)
+		* We'll wrap these methods that throw SQLException
+		* so we don't have to worry about it any  more
+		*/
+	private static String get_String(ResultSet rs, String columnName) {
+		try {
+			return rs.getString(columnName);
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		}
+		return "";
+	}
+  
+	/**
 		* Wrapper around ResultSet.getNString(String columnName)
 		* We'll wrap these methods that throw SQLException
 		* so we don't have to worry about it any  more
@@ -345,36 +372,36 @@ public class Database_access {
     */
   private static void null_or_empty_validation(String value) {
     if (value == null || value == "") {
-      System.out.println("value was null or empty when it shouldn't have");
+      System.out.println("error: value was null or empty when it shouldn't have");
     }
   }
 
   /**
     * checks the password based on the email, the user's unique key
     *
-    * @returns true if the password is correct for that email.
+    * @returns the user id if the password is correct for that email.
     */
-  public static boolean check_login(String email, String password) {
+  public static int check_login(String email, String password) {
       null_or_empty_validation(email);
       null_or_empty_validation(password);
 
-      String sqlText = "SELECT password FROM user WHERE email = ?";
+      String sqlText = "SELECT password,user_id FROM user WHERE email = ?";
 
       PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
       set_string(pstmt, 1, email);
       ResultSet resultSet = execute_query(pstmt);
 
-      if (resultSet == null) {
-        System.out.println("no user found with email " + email);
+      if (result_is_null_or_empty(resultSet)) {
+        System.out.println("error: no user found with email " + email);
       }
 
       result_set_next(resultSet); //move to the first set of results.
 
       if (get_NString(resultSet, "password").equals(password)) {
-        return true; //success!
+        return get_integer(resultSet, "user_id"); //success!
       }
-      return false;
+      return 0; //0 means no user found.
     } finally {
       close_prepared_statement(pstmt);
     }
@@ -390,15 +417,15 @@ public class Database_access {
         null_or_empty_validation(cookie_value);
 
         String sqlText = "SELECT email FROM user JOIN guid_to_user AS gtu " +
-          "ON gtu.id = user.id WHERE gtu.guid = ? AND user.is_logged_in = 1";
+          "ON gtu.user_id = user.user_id WHERE gtu.guid = ? AND user.is_logged_in = 1";
 
         PreparedStatement pstmt = get_a_prepared_statement(sqlText);
       try {
         set_string(pstmt, 1, cookie_value);
         ResultSet resultSet = execute_query(pstmt);
 
-        if (resultSet == null) {
-          System.out.println("no user found with cookie value " + cookie_value);
+        if (result_is_null_or_empty(resultSet)) {
+          System.out.println("error: no user found with cookie value " + cookie_value);
           return "";
         }
 
@@ -414,32 +441,55 @@ public class Database_access {
       return ""; 
     }
 
+    /**
+      * helper method to check whether a newly-returned result set is
+      * null or empty.  Note, this has to be run before any data is
+      * retrieved from the result set.  Also note that the method
+      * isBeforeFirst() returns false if there are no rows of data.
+      * @param rs the result set we are checking
+      * @returns true if the result set is null or has no data.
+      */
+    private static boolean result_is_null_or_empty(ResultSet rs) {
+      try {
+        return (rs == null || !rs.isBeforeFirst());
+      } catch (SQLException ex) {
+        handle_sql_exception(ex);
+      }
+      return true; //true, because if something crashed here, the
+                  //result set may as well be empty
+    }
+
   /**
     * stores information on the user when they login, things like
     * their ip, time they logged in, that they are in fact logged in,
     * etc.
     *
-    * @param username the username
+    * @param user_id the user's id, an int.
     * @param ip the user's ip.
     */
   public static void register_details_on_user_login(int user_id, 
       String ip) {
 
+      if (user_id < 0) {
+        System.out.println("error: user id was " + user_id);
+        return;
+      }
+
       if (ip == null || ip.length() == 0) {
-        ip = "no ip in request";
+        ip = "error: no ip in request";
       }
 
       String sqlText = 
-        "UPDATE user" + 
+        "UPDATE user " + 
         "SET is_logged_in = 1, last_time_logged_in = NOW(), " + 
-        "last_ip_logged_in = ?" + 
+        "last_ip_logged_in = ? " + 
         "WHERE user_id = ?";
 
       PreparedStatement pstmt = get_a_prepared_statement(sqlText);
       try {
-        set_string(pstmt, 1, cookie_value);
+        set_string(pstmt, 1, ip);
         set_int(pstmt, 2, user_id);
-        ResultSet resultSet = execute_query(pstmt);
+        execute_update(pstmt);
       } finally {
         close_prepared_statement(pstmt);
       }
@@ -459,28 +509,32 @@ public class Database_access {
       return null;
     }
 
-    string proc_name = "{call register_user_cookie(?)}";
+    //set up a call to the stored procedure
+    String proc_name = "{call register_user_cookie(?)}"; //using JDBC escape syntax
     CallableStatement cs = get_a_callable_statement(proc_name);
 
+    //set up a query for the new cookie value
     String sqlText = "SELECT guid FROM guid_to_user WHERE user_id = ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
+      //execute the stored proc
       set_int(cs, 1, user_id);
       execute(cs);
 
-      set_string(pstmt, 1, user_id);
+      //execute the query for the value
+      set_string(pstmt, 1, Integer.toString(user_id));
       ResultSet resultSet = execute_query(pstmt);
 
 
-      if (resultSet == null) {
-        System.out.println("no user found with user_id " + user_id + " in guid_to_usr");
+      if (result_is_null_or_empty(resultSet)) {
+        System.out.println("error: resultSet was null for cookie");
         return "BAD_COOKIE";
       }
 
       result_set_next(resultSet); //move to the first set of results.
 
       String guid = "";
-      if ((guid = get_NString(resultSet, "guid")).length() > 0) {
+      if ((guid = get_String(resultSet, "guid")).length() > 0) {
         return guid; //yay success!
       }
     } finally {
@@ -497,6 +551,8 @@ public class Database_access {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      System.out.println("Stacktrace: ");
+      Thread.currentThread().dumpStack();
   }
 
 }
