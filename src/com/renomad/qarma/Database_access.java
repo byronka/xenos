@@ -208,6 +208,13 @@ public class Database_access {
   }
 
   
+  /**
+    * gets an array of all the users names.
+    *
+    * @returns an array of users.  If it's an array, we don't have to
+    * import anything special into the jsp when we use it, that's why
+    * I don't use an arraylist.
+    */
   public static String[] get_all_users() {
     String sqlText = "SELECT * FROM user";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
