@@ -19,7 +19,7 @@ public class Security {
   public static boolean check_if_allowed(HttpServletRequest r) {
     Cookie[] cookies = r.getCookies();
     Cookie c = find_our_cookie(cookies);
-    boolean allowed = user_is_allowed(c);
+    boolean allowed = get_user_from_cookie(c);
     return allowed;
   }
 
@@ -41,14 +41,14 @@ public class Security {
     * @param c Our cookie, which we will look 
     *   at to determine if the user is valid.
     */
-  public static boolean user_is_allowed(Cookie c) {
+  public static int get_user_from_cookie(Cookie c) {
     if (c == null) {
       return false;
     }
     String cookie_value = c.getValue();
-    String user_email = 
+    int user_id = 
       Database_access.look_for_logged_in_user_by_cookie(cookie_value);
-    return (user_email.length() > 0);
+    return user_id;
   }
   
 

@@ -8,5 +8,11 @@
 <body>
 <h2>Welcome to the dashboard!</h2>
 <p>Here are your requests:</p>
+<%
+Request[] requests = get_all_requests(
+for (Request r : Requests) {
+%>
+<p>a request</p>
+<% } %>
 </body>
 </html>

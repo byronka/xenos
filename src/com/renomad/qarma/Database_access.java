@@ -186,10 +186,10 @@ public class Database_access {
   public static int add_user(
 			String first_name, String last_name, String email, String password) {
     //validation section
-      null_or_empty_validation(first_name);
-      null_or_empty_validation(last_name);
-      null_or_empty_validation(email);
-      null_or_empty_validation(password);
+      null_or_empty_string_validation(first_name);
+      null_or_empty_string_validation(last_name);
+      null_or_empty_string_validation(email);
+      null_or_empty_string_validation(password);
 
       String sqlText = 
         "INSERT INTO user (first_name, last_name, email, password) " +
@@ -221,7 +221,7 @@ public class Database_access {
     try {
       ResultSet resultSet = execute_query(pstmt);
 
-      if (result_is_null_or_empty(resultSet)) {
+      if (null_or_empty_resultset_validation(resultSet)) {
         return new String[]{"no users found"};
       }
 
@@ -373,11 +373,23 @@ public class Database_access {
   
 
   /**
+    * helps with boilerplate for validation of whether result set
+    * is null or empty.
+    */
+  private static boolean null_or_empty_resultset_validation(ResultSet rs) {
+    if (result_is_null_or_empty(resultSet)) {
+      System.out.println("error: ResultSet was empty");
+      return true;
+    }
+    return false;
+  }
+
+
+  /**
     * helps with boilerplate for validation of whether input
     * is null or empty.
-    * @throws Exception if the string is null or empty
     */
-  private static void null_or_empty_validation(String value) {
+  private static void null_or_empty_string_validation(String value) {
     if (value == null || value == "") {
       System.out.println("error: value was null or empty when it shouldn't have");
     }
@@ -389,8 +401,8 @@ public class Database_access {
     * @returns the user id if the password is correct for that email.
     */
   public static int check_login(String email, String password) {
-      null_or_empty_validation(email);
-      null_or_empty_validation(password);
+      null_or_empty_string_validation(email);
+      null_or_empty_string_validation(password);
 
       String sqlText = "SELECT password,user_id FROM user WHERE email = ?";
 
@@ -399,9 +411,7 @@ public class Database_access {
       set_string(pstmt, 1, email);
       ResultSet resultSet = execute_query(pstmt);
 
-      if (result_is_null_or_empty(resultSet)) {
-        System.out.println("error: no user found with email " + email);
-      }
+      null_or_empty_resultset_validation(resultSet);
 
       result_set_next(resultSet); //move to the first set of results.
 
@@ -418,21 +428,23 @@ public class Database_access {
     * Takes a cookie string value and returns the user's name if valid and logged in.
     * 
     * @param cookie_value cookie we get from the user client
-    * @returns the user's name if valid and logged in.
+    * @returns the user's user_id if valid and logged in.
     */
-    public static String look_for_logged_in_user_by_cookie(String cookie_value) {
-        null_or_empty_validation(cookie_value);
+    public static int look_for_logged_in_user_by_cookie(String cookie_value) {
+        null_or_empty_string_validation(cookie_value);
 
-        String sqlText = "SELECT email FROM user JOIN guid_to_user AS gtu " +
-          "ON gtu.user_id = user.user_id WHERE gtu.guid = ? AND user.is_logged_in = 1";
+        String sqlText = 
+          "SELECT user.user_id " +
+          "FROM user JOIN guid_to_user AS gtu " +
+          "ON gtu.user_id = user.user_id " +
+          "WHERE gtu.guid = ? AND user.is_logged_in = 1";
 
         PreparedStatement pstmt = get_a_prepared_statement(sqlText);
       try {
         set_string(pstmt, 1, cookie_value);
         ResultSet resultSet = execute_query(pstmt);
 
-        if (result_is_null_or_empty(resultSet)) {
-          System.out.println("error: no user found with cookie value " + cookie_value);
+        if (null_or_empty_resultset_validation(resultSet) {
           return "";
         }
 
@@ -533,8 +545,7 @@ public class Database_access {
       ResultSet resultSet = execute_query(pstmt);
 
 
-      if (result_is_null_or_empty(resultSet)) {
-        System.out.println("error: resultSet was null for cookie");
+      if (null_or_empty_resultset_validation(resultSet)) {
         return "BAD_COOKIE";
       }
 
