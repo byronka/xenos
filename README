@@ -61,8 +61,10 @@ lib - library files used by the project
 
 lib_src - source for the library files
 
-src - source files of the project, including web files (jsp,
-  css., etc.)
+src - source files of the project, including web files (jsp, css.,
+  etc.).  **This is where you do your work**.  Compiled work will be
+  placed in the build directory, and client files (css, jsp, htm) will
+  be copied from this location into the web container webapp directory.
 
 web_container - contains documents and binaries for the web
   container, Tomcat.
