@@ -37,16 +37,35 @@ make it executable if it's not already and run:
 Directories and files at the top:
 =================================
 lib - library files used by the project
+
 lib_src - source for the library files
-src - source files of the project
-web_container - contains documents and binaries for the web container, Tomcat.
-ant - holds the utility we use for many benefits on our project.  A Neat Tool.
-build - where the built work goes.  We copy from there to where it belongs.
-build.xml - the Ant script that provides all sorts of benefits, for example, building the project.
+
+src - source files of the project, including web files (jsp,
+  css., etc.)
+
+web_container - contains documents and binaries for the web
+  container, Tomcat.
+
+ant - holds the utility we use for many benefits on our project.
+  A Neat Tool.
+
+build - where the built work goes.  We copy from there to where
+  it belongs.
+
+build.xml - the Ant script that provides all sorts of benefits, for example,
+  building the project. Note: it is very important that this file remain where it
+  is, at the root of the project.  Otherwise, it may end up creating and deleting
+  directories in unexpected places.
+
 db_scripts - holds scripts necessary to built the database schema.
 
-Environment variables you want:
+Environment variables you need:
 ===============================
 ANT_HOME should point to the Ant project in this folder.
 JAVA_HOME should point to a Java 1.7 OpenJdk directory
 CATALINA_HOME should point to the Tomcat directory
+
+Environment variables you may want:
+==================================
+QARMA_HOME should point to the root of the directory, the directory with build.xml
+QARMA_APP should point to the qarma web application in the web container.
