@@ -28,14 +28,13 @@
   <!--====================================================-->
 
   <!-- cleans, builds, installs into container, restarts tomcat -->
-  <target name="full-redeploy" 
+  <target name="run" 
     description="cleans, builds, installs, restarts">
     <antcall target="full-clean" />
     <antcall target="compile" />
     <antcall target="install-into-web-container" />
     <antcall target="tomcat-restart" />
   </target>
-
 
 
   <!-- ################ -->

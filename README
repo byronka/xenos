@@ -1,10 +1,16 @@
 Helpful information getting started with this project:
 
+Once everything below is set up, to start the server just type
+
+  ant run
+
+
 Things you need for this project:
 =================================
 A copy of OpenJdk for Java 1.7
 MySQL version 5.  We tested on mysql-5.1.73-3.el6_5.x86_64
 An operating system.  This was tested on Linux, it may work on Windows.
+
 
 Getting started
 ===============
@@ -12,30 +18,45 @@ Getting started
 
 Installing OpenJdk
 ------------------
+
 For CentOS:
 sudo yum install java-1.7.0-openjdk
 
+For Ubuntu:
+sudo apt-get install openjdk-7-jre
+
 Installing MySQL
 ----------------
+
 For CentOS:
 sudo yum install mysql-server              #install it
 sudo /sbin/service mysqld start            #start it
 sudo /usr/bin/mysql_secure_installation    #set password
 sudo chkconfig mysqld on                   #set to run on startup
 
+For Ubuntu:
+sudo apt-get install mysql-server         #install it
+sudo netstat -tap | grep mysql            #check if running
+sudo service mysql restart                #start if necessary
+
+
 Environment variables
 ---------------------
+
 There is a script called set_env.sh which will try to get the
 proper values for JAVA_HOME, ANT_HOME, and CATALINA_HOME.  Of these,
 JAVA_HOME is the tricky one, since the other two are in this directory!
 
-To use set_env.sh to set values to your environment variables, simply
-make it executable if it's not already and run:
+If you already know the values for JAVA_HOME, ANT_HOME, and CATALINA_HOME,
+just set them; otherwise, to use set_env.sh to set values to your
+environment variables, simply make it executable if it's not already and
+run: 
 
 ./set_env.sh
 
 Directories and files at the top:
 =================================
+
 lib - library files used by the project
 
 lib_src - source for the library files
@@ -52,20 +73,29 @@ ant - holds the utility we use for many benefits on our project.
 build - where the built work goes.  We copy from there to where
   it belongs.
 
-build.xml - the Ant script that provides all sorts of benefits, for example,
-  building the project. Note: it is very important that this file remain where it
-  is, at the root of the project.  Otherwise, it may end up creating and deleting
-  directories in unexpected places.
+build.xml - the Ant script that provides all sorts of benefits, for
+  example, building the project. Note: it is very important that this
+  file remain where it is, at the root of the project.  Otherwise, it
+  may end up creating and deleting directories in unexpected places.
 
 db_scripts - holds scripts necessary to built the database schema.
 
 Environment variables you need:
 ===============================
-ANT_HOME should point to the Ant project in this folder.
-JAVA_HOME should point to a Java 1.7 OpenJdk directory
-CATALINA_HOME should point to the Tomcat directory
+
+ANT_HOME should point to the Ant project in this folder. You need it
+  to run the ant scripts that make development easy.
+
+JAVA_HOME should point to a Java 1.7 OpenJdk directory.  Ant needs it
+  to build the source.
+
+CATALINA_HOME should point to the Tomcat directory.  The Tomcat
+  scripts need this.
 
 Environment variables you may want:
 ==================================
-QARMA_HOME should point to the root of the directory, the directory with build.xml
+
+QARMA_HOME should point to the root of the directory, the directory
+  with build.xml
+
 QARMA_APP should point to the qarma web application in the web container.
