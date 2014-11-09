@@ -16,11 +16,11 @@ public class Security {
     return cookie_value;
   }
 
-  public static boolean check_if_allowed(HttpServletRequest r) {
+  public static int check_if_allowed(HttpServletRequest r) {
     Cookie[] cookies = r.getCookies();
     Cookie c = find_our_cookie(cookies);
-    boolean allowed = get_user_from_cookie(c);
-    return allowed;
+    int user_id = get_user_from_cookie(c);
+    return user_id;
   }
 
   public static Cookie find_our_cookie(Cookie[] all_cookies) {
@@ -43,7 +43,7 @@ public class Security {
     */
   public static int get_user_from_cookie(Cookie c) {
     if (c == null) {
-      return false;
+      return -1;
     }
     String cookie_value = c.getValue();
     int user_id = 
@@ -51,10 +51,5 @@ public class Security {
     return user_id;
   }
   
-
-  public void set_security_for_user(HttpServletResponse r) {
-
-
-  }
 
 }

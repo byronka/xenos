@@ -221,14 +221,14 @@ public class Database_access {
     try {
       ResultSet resultSet = execute_query(pstmt);
 
-      if (null_or_empty_resultset_validation(resultSet)) {
+      if (resultset_is_null_or_empty(resultSet)) {
         return new String[]{"no users found"};
       }
 
 			//keep adding rows of data while there is more data
       ArrayList<String> results = new ArrayList<String>();
       for(;result_set_next(resultSet) == true;) {
-        results.add(get_NString(resultSet, "user_name"));
+        results.add(get_nstring(resultSet, "user_name"));
       }
       String[] array_of_users = 
         results.toArray(new String[results.size()]);
@@ -333,13 +333,13 @@ public class Database_access {
 		* We'll wrap these methods that throw SQLException
 		* so we don't have to worry about it any  more
 		*/
-	private static int get_integer(ResultSet rs, String columnName) {
+	private static Integer get_integer(ResultSet rs, String columnName) {
 		try {
 			return rs.getInt(columnName);
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
 		}
-		return 0; //default to returning 0 if this call fails.
+		return null;
 	}
   
 
@@ -362,7 +362,7 @@ public class Database_access {
 		* We'll wrap these methods that throw SQLException
 		* so we don't have to worry about it any  more
 		*/
-	private static String get_NString(ResultSet rs, String columnName) {
+	private static String get_nstring(ResultSet rs, String columnName) {
 		try {
 			return rs.getNString(columnName);
 		} catch (SQLException ex) {
@@ -371,19 +371,6 @@ public class Database_access {
 		return "";
 	}
   
-
-  /**
-    * helps with boilerplate for validation of whether result set
-    * is null or empty.
-    */
-  private static boolean null_or_empty_resultset_validation(ResultSet rs) {
-    if (result_is_null_or_empty(resultSet)) {
-      System.out.println("error: ResultSet was empty");
-      return true;
-    }
-    return false;
-  }
-
 
   /**
     * helps with boilerplate for validation of whether input
@@ -411,11 +398,14 @@ public class Database_access {
       set_string(pstmt, 1, email);
       ResultSet resultSet = execute_query(pstmt);
 
-      null_or_empty_resultset_validation(resultSet);
+      resultset_is_null_or_empty(resultSet);
+      if(resultset_is_null_or_empty(resultSet)) {
+        return 0;
+      }
 
       result_set_next(resultSet); //move to the first set of results.
 
-      if (get_NString(resultSet, "password").equals(password)) {
+      if (get_nstring(resultSet, "password").equals(password)) {
         return get_integer(resultSet, "user_id"); //success!
       }
       return 0; //0 means no user found.
@@ -444,20 +434,20 @@ public class Database_access {
         set_string(pstmt, 1, cookie_value);
         ResultSet resultSet = execute_query(pstmt);
 
-        if (null_or_empty_resultset_validation(resultSet) {
-          return "";
+        if (resultset_is_null_or_empty(resultSet)) {
+          return -1; //-1 is us saying we didn't get a user. ouch!
         }
 
         result_set_next(resultSet); //move to the first set of results.
 
-        String email = "";
-        if ((email = get_NString(resultSet, "email")).length() > 0) {
-          return email; //yay success!
+        Integer user_id = null;
+        if ((user_id = get_integer(resultSet, "user_id")) != null) {
+          return user_id.intValue(); //yay success!
         }
       } finally {
         close_prepared_statement(pstmt);
       }
-      return ""; 
+      return -1; //-1 is our way of saying we didn't find a user.
     }
 
     /**
@@ -468,10 +458,11 @@ public class Database_access {
       * @param rs the result set we are checking
       * @returns true if the result set is null or has no data.
       */
-    private static boolean result_is_null_or_empty(ResultSet rs) {
+    private static boolean resultset_is_null_or_empty(ResultSet rs) {
       try {
         return (rs == null || !rs.isBeforeFirst());
       } catch (SQLException ex) {
+        System.out.println("ResultSet was null or empty");
         handle_sql_exception(ex);
       }
       return true; //true, because if something crashed here, the
@@ -545,7 +536,7 @@ public class Database_access {
       ResultSet resultSet = execute_query(pstmt);
 
 
-      if (null_or_empty_resultset_validation(resultSet)) {
+      if (resultset_is_null_or_empty(resultSet)) {
         return "BAD_COOKIE";
       }
 
