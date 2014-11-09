@@ -4,6 +4,10 @@ Once everything below is set up, to start the server just type
 
   ant run
 
+and to see the page, go to:
+
+  localhost:8080/qarma
+
 
 Things you need for this project:
 =================================
