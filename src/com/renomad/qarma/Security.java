@@ -16,18 +16,11 @@ public class Security {
     return cookie_value;
   }
 
-  public static void check_if_allowed(HttpServletRequest r,
-      HttpServletResponse response) {
+  public static boolean check_if_allowed(HttpServletRequest r) {
     Cookie[] cookies = r.getCookies();
     Cookie c = find_our_cookie(cookies);
-    if (!user_is_allowed(c)) {
-      try {
-        response.sendRedirect("sorry.htm");
-      } catch (IOException ex) {
-        System.out.println("error in check_if_allowed");
-        System.out.println(ex);
-      }
-    }
+    boolean allowed = user_is_allowed(c);
+    return allowed;
   }
 
   public static Cookie find_our_cookie(Cookie[] all_cookies) {
