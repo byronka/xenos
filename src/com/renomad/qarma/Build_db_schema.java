@@ -13,7 +13,8 @@ public class Build_db_schema {
     //relates cookie guid's to users
     run_script_from_file("create_guidtable.sql"); 
     //a script to clean out old cookies and add one for a user.
-    run_script_from_file("add_register_user_cookie.sql");
+    run_script_from_file("add_register_user_cookie_proc.sql");
+    run_script_from_file("create_request_table.sql");
 
   }
 

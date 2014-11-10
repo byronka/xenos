@@ -18,6 +18,72 @@ public class Database_access {
   // BUSINESS LOGIC CODE          *
   // ******************************
 
+  /**
+    * Request encapsulates a user's request.  It is an immutable object.
+    * note that the fields are public, but final.  Once this object
+    * gets constructed, there is no changing it.  You have to create a
+    * new one.
+    */
+  public static class Request {
+
+    Request ( int request_id, String datetime, String description, 
+        int points, String status, String title, int requesting_user) {
+      this.request_id       =  request_id;
+      this.datetime         =  datetime;
+      this.description      =  description;
+      this.points           =  points;
+      this.status           =  status;
+      this.title            =  title;
+      this.requesting_user  =  requesting_user;
+    }
+
+    public final int request_id;
+    public final String datetime;
+    public final String description;
+    public final int points;
+    public final String status;
+    public final String title;
+    public final int requesting_user;
+  }
+
+  /**
+    * Gets all the requests for the user.
+    * 
+    * @returns an array of Request
+    */
+  public static Request[] get_all_requests(int user_id) {
+    String sqlText = "SELECT * FROM request";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      ResultSet resultSet = execute_query(pstmt);
+
+      if (resultset_is_null_or_empty(resultSet)) {
+        return 
+          new Request[0];
+      }
+
+			//keep adding rows of data while there is more data
+      ArrayList<Request> requests = new ArrayList<Request>();
+      for(;result_set_next(resultSet) == true;) {
+        int rid = get_integer(resultSet,  "request_id");
+        String dt = get_string(resultSet,   "datetime");
+        String d = get_nstring(resultSet,  "description");
+        int p = get_integer(resultSet,  "points");
+        String s = get_string(resultSet,   "status");
+        String t = get_nstring(resultSet,  "title");
+        int ru = get_integer(resultSet,      "requesting_user");
+        Request request = new Request(rid,dt,d,p,s,t,ru);
+        requests.add(request);
+      }
+      Request[] array_of_requests = 
+        requests.toArray(new Request[requests.size()]);
+      return array_of_requests;
+    } finally {
+      close_statement(pstmt);
+    }
+  }
+
+
   public static int add_user(
 			String first_name, String last_name, String email, String password) {
     //validation section
@@ -38,7 +104,7 @@ public class Database_access {
       int result = execute_update(pstmt);
       return result;
     } finally {
-      close_prepared_statement(pstmt);
+      close_statement(pstmt);
     }
   }
 
@@ -69,7 +135,7 @@ public class Database_access {
         results.toArray(new String[results.size()]);
       return array_of_users;
     } finally {
-      close_prepared_statement(pstmt);
+      close_statement(pstmt);
     }
   }
 
@@ -103,7 +169,7 @@ public class Database_access {
       }
       return 0; //0 means no user found.
     } finally {
-      close_prepared_statement(pstmt);
+      close_statement(pstmt);
     }
   }
 
@@ -139,7 +205,7 @@ public class Database_access {
           return user_id.intValue(); //yay success!
         }
       } finally {
-        close_prepared_statement(pstmt);
+        close_statement(pstmt);
       }
       return -1; //-1 is our way of saying we didn't find a user.
     }
@@ -176,7 +242,7 @@ public class Database_access {
         set_int(pstmt, 2, user_id);
         execute_update(pstmt);
       } finally {
-        close_prepared_statement(pstmt);
+        close_statement(pstmt);
       }
   }
 
@@ -219,12 +285,12 @@ public class Database_access {
       result_set_next(resultSet); //move to the first set of results.
 
       String guid = "";
-      if ((guid = get_String(resultSet, "guid")).length() > 0) {
+      if ((guid = get_string(resultSet, "guid")).length() > 0) {
         return guid; //yay success!
       }
     } finally {
-      close_prepared_statement(pstmt);
-      close_callable_statement(cs);
+      close_statement(pstmt);
+      close_statement(cs);
     }
     return ""; 
   }
@@ -232,6 +298,11 @@ public class Database_access {
   // ******************************
   // HELPERS AND BOILERPLATE CODE *
   // ******************************
+
+  private static String CONNECTION_STRING_WITH_DB =
+        "jdbc:mysql://localhost/test?user=root&password=hictstd!";
+  private static String CONNECTION_STRING_WITHOUT_DB =
+        "jdbc:mysql://localhost/?user=root&password=hictstd!";
 
   /**
     * provides a few boilerplate println's for sql exceptions
@@ -244,11 +315,6 @@ public class Database_access {
       Thread.currentThread().dumpStack();
   }
 
-
-  private static String CONNECTION_STRING_WITH_DB =
-        "jdbc:mysql://localhost/test?user=root&password=hictstd!";
-  private static String CONNECTION_STRING_WITHOUT_DB =
-        "jdbc:mysql://localhost/?user=root&password=hictstd!";
 
   /**
     *Boilerplate code necessary to run the java mysql connector.
@@ -397,17 +463,41 @@ public class Database_access {
     * @return true if the first result is a ResultSet object; false 
     *  if it is an update count or there are no results
     */
-  public static boolean run_sql_statement_before_db_exists(String sqlText) {
-    try (Statement stmt = get_a_statement_before_db_exists()){
+  public static boolean 
+    run_sql_statement_before_db_exists(String sqlText) {
+    Statement stmt = null;
+    try {
+      stmt = get_a_statement_before_db_exists();
       boolean result = stmt.execute(sqlText);
       return result;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     } catch (Exception ex) {
       System.out.println("General exception: " + ex.toString());
+    } finally {
+      close_statement(stmt);
     }
     return false;
   }
+
+
+  /**
+    * A wrapper to close connections given a connection without
+    * having to include the necessary try-catch nonsense
+    * note this handles null statements just fine.
+    * we want to close the connection after every statement.
+    * @param c a connection object.
+    */
+  private static void close_connection_with_commit(Connection c) {
+    try {
+      if (c != null && !c.isClosed()) {
+        c.close();
+      }
+    } catch (SQLException ex) {
+      handle_sql_exception(ex);
+    } 
+  }
+
 
   /**
     *A wrapper for PreparedStatement.execute(), 
@@ -422,7 +512,6 @@ public class Database_access {
   public static boolean run_sql_statement(String sqlText) {
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
 		boolean result = execute_prepared_statement(pstmt, sqlText);
-		close_prepared_statement(pstmt);
 		return result;
   }
 
@@ -470,7 +559,9 @@ public class Database_access {
 			return ps.execute(sqlText);
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
-		} 
+		} finally {
+      close_statement(ps);
+    }
 		return false;
 	}
 
@@ -516,21 +607,14 @@ public class Database_access {
 		* Wrapper around PreparedStatement.close() to avoid having to
 		* litter my code with try-catch
 		*/
-	private static void close_callable_statement(CallableStatement cs) {
+	private static void close_statement(Statement s) {
 		try {
-			cs.close();
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-		}
-	}
-
-	/**
-		* Wrapper around PreparedStatement.close() to avoid having to
-		* litter my code with try-catch
-		*/
-	private static void close_prepared_statement(PreparedStatement ps) {
-		try {
-			ps.close();
+      Connection c = null;
+      if (s != null && !s.isClosed()) {
+        c = s.getConnection();
+        s.close();
+      }
+      close_connection_with_commit(c);
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
 		}
@@ -556,7 +640,7 @@ public class Database_access {
 		* We'll wrap these methods that throw SQLException
 		* so we don't have to worry about it any  more
 		*/
-	private static String get_String(ResultSet rs, String columnName) {
+	private static String get_string(ResultSet rs, String columnName) {
 		try {
 			return rs.getString(columnName);
 		} catch (SQLException ex) {
