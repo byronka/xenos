@@ -56,10 +56,8 @@ public class Database_access {
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
       ResultSet resultSet = execute_query(pstmt);
-
       if (resultset_is_null_or_empty(resultSet)) {
-        return 
-          new Request[0];
+        return new Request[0];
       }
 
 			//keep adding rows of data while there is more data
@@ -75,6 +73,8 @@ public class Database_access {
         Request request = new Request(rid,dt,d,p,s,t,ru);
         requests.add(request);
       }
+
+      //convert arraylist to array
       Request[] array_of_requests = 
         requests.toArray(new Request[requests.size()]);
       return array_of_requests;
@@ -94,7 +94,7 @@ public class Database_access {
 
       String sqlText = 
         "INSERT INTO user (first_name, last_name, email, password) " +
-        "values (?, ?, ?, ?)";
+        "VALUES (?, ?, ?, ?)";
       PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
       set_string(pstmt, 1, first_name);
@@ -123,7 +123,7 @@ public class Database_access {
       ResultSet resultSet = execute_query(pstmt);
 
       if (resultset_is_null_or_empty(resultSet)) {
-        return new String[]{"no users found"};
+        return new String[0];
       }
 
 			//keep adding rows of data while there is more data
@@ -131,6 +131,7 @@ public class Database_access {
       for(;result_set_next(resultSet) == true;) {
         results.add(get_nstring(resultSet, "user_name"));
       }
+      //convert arraylist to array
       String[] array_of_users = 
         results.toArray(new String[results.size()]);
       return array_of_users;
@@ -147,19 +148,18 @@ public class Database_access {
     * @returns the user id if the password is correct for that email.
     */
   public static int check_login(String email, String password) {
-      null_or_empty_string_validation(email);
-      null_or_empty_string_validation(password);
+    null_or_empty_string_validation(email);
+    null_or_empty_string_validation(password);
 
-      String sqlText = "SELECT password,user_id FROM user WHERE email = ?";
+    String sqlText = "SELECT password,user_id FROM user WHERE email = ?";
 
-      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
       set_string(pstmt, 1, email);
       ResultSet resultSet = execute_query(pstmt);
 
-      resultset_is_null_or_empty(resultSet);
       if(resultset_is_null_or_empty(resultSet)) {
-        return 0;
+        return 0; // no results on query - return user "0";
       }
 
       result_set_next(resultSet); //move to the first set of results.
@@ -167,7 +167,7 @@ public class Database_access {
       if (get_nstring(resultSet, "password").equals(password)) {
         return get_integer(resultSet, "user_id"); //success!
       }
-      return 0; //0 means no user found.
+      return 0; //password was bad - return user "0"
     } finally {
       close_statement(pstmt);
     }
@@ -181,15 +181,15 @@ public class Database_access {
     */
     public static int 
       look_for_logged_in_user_by_cookie(String cookie_value) {
-        null_or_empty_string_validation(cookie_value);
+      null_or_empty_string_validation(cookie_value);
 
-        String sqlText = 
-          "SELECT user.user_id " +
-          "FROM user JOIN guid_to_user AS gtu " +
-          "ON gtu.user_id = user.user_id " +
-          "WHERE gtu.guid = ? AND user.is_logged_in = 1";
+      String sqlText = 
+        "SELECT user.user_id " +
+        "FROM user JOIN guid_to_user AS gtu " +
+        "ON gtu.user_id = user.user_id " +
+        "WHERE gtu.guid = ? AND user.is_logged_in = 1";
 
-        PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
       try {
         set_string(pstmt, 1, cookie_value);
         ResultSet resultSet = execute_query(pstmt);
@@ -252,7 +252,7 @@ public class Database_access {
     * creates the text of the guid, and then we send that on as
     * the string for the cookie.
     * @param user_id the user id of the user.
-    * @return a piping hot cookie.
+    * @returns a piping hot cookie.
     */
   public static String get_new_cookie_for_user(int user_id) {
 
@@ -269,14 +269,15 @@ public class Database_access {
     String sqlText = "SELECT guid FROM guid_to_user WHERE user_id = ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
-      //execute the stored proc
+      //execute the stored proc, cleaning out 
+      //junk entries and creating a new cooie
       set_int(cs, 1, user_id);
       execute(cs);
 
-      //execute the query for the value
+      //execute the query for the value, getting the 
+      //value for the cookie we just made
       set_string(pstmt, 1, Integer.toString(user_id));
       ResultSet resultSet = execute_query(pstmt);
-
 
       if (resultset_is_null_or_empty(resultSet)) {
         return "BAD_COOKIE";
@@ -317,7 +318,7 @@ public class Database_access {
 
 
   /**
-    *Boilerplate code necessary to run the java mysql connector.
+    *Boilerplate code necessary to register the mysql db driver.
     */
   static {
     try {
@@ -336,7 +337,7 @@ public class Database_access {
     * Opens a connection each time it's run.
     * We don't have to worry about SQL injection here, 
     * it should only be called by our own code.
-    * @return A new Statement object.
+    * @returns A new Statement object.
     */
   private static Statement 
     get_a_statement_before_db_exists() throws SQLException {
@@ -350,7 +351,7 @@ public class Database_access {
     * Helper to get a PreparedStatement.
     *
     * Opens a connection each time it's run.
-    * @return A new PreparedStatement object.
+    * @returns A new PreparedStatement object.
     */
   private static PreparedStatement 
     get_a_prepared_statement(String queryText) {
@@ -374,7 +375,7 @@ public class Database_access {
     * of "register_user_cookie(?)"
     * @param procedure_name the name of a procedure we've 
     *  already added.  See the database
-    * @return A callable statement ready for setting parameters.
+    * @returns A callable statement ready for setting parameters.
     */
   private static CallableStatement get_a_callable_statement(String proc) {
     try {
@@ -395,9 +396,9 @@ public class Database_access {
     *A wrapper for CallableStatement.execute()
     *
     * Opens and closes a connection each time it's run.
-    * @return a boolean for success.
+    * @returns a boolean for success.
     */
-  public static boolean execute(CallableStatement cs) {
+  private static boolean execute(CallableStatement cs) {
     try {
       boolean result = cs.execute();
       return result;
@@ -415,10 +416,10 @@ public class Database_access {
     *
     * Opens and closes a connection each time it's run.
     * @param pstmt The prepared statement
-    * @return a ResultSet object that contains the data 
+    * @returns a ResultSet object that contains the data 
     * produced by the query
     */
-  public static ResultSet execute_query(PreparedStatement pstmt) {
+  private static ResultSet execute_query(PreparedStatement pstmt) {
     try {
       ResultSet result = pstmt.executeQuery();
       return result;
@@ -436,11 +437,11 @@ public class Database_access {
     *
     * Opens and closes a connection each time it's run.
     * @param pstmt The prepared statement
-    * @return either (1) the row count for SQL Data Manipulation 
+    * @returns either (1) the row count for SQL Data Manipulation 
     *  Language (DML) statements or (2) 0 for SQL statements 
     * that return nothing
     */
-  public static int execute_update(PreparedStatement pstmt) {
+  private static int execute_update(PreparedStatement pstmt) {
     try {
       int result = pstmt.executeUpdate();
       return result;
@@ -460,7 +461,7 @@ public class Database_access {
     * Opens and closes a connection each time it's run.
     * @param sqlText the SQL text we will run - it must be a
     *  single statement.  Multiple combined statements will fail.
-    * @return true if the first result is a ResultSet object; false 
+    * @returns true if the first result is a ResultSet object; false 
     *  if it is an update count or there are no results
     */
   public static boolean 
@@ -506,7 +507,7 @@ public class Database_access {
     * Opens and closes a connection each time it's run.
     * @param sqlText the SQL text we will run - it must be a
     *  single statement.  Multiple combined statements will fail.
-    * @return true if the first result is a ResultSet object; false 
+    * @returns true if the first result is a ResultSet object; false 
     *  if it is an update count or there are no results
     */
   public static boolean run_sql_statement(String sqlText) {
