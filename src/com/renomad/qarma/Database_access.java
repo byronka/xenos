@@ -46,6 +46,62 @@ public class Database_access {
     public final int requesting_user;
   }
 
+
+  public static int insert_version_config() {
+    String sqlText = "INSERT config (config_item, config_value) " +
+      "values ('db_version', '0')";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      int result = execute_update(pstmt);
+      return result;
+    } finally {
+      close_statement(pstmt);
+    }
+  }
+
+  public static int set_db_version(int version_id) {
+    String sqlText = "UPDATE config set config_value = ? " +
+                    "WHERE config_item = 'db_version'";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      set_int(pstmt, 1, version_id);
+      int result = execute_update(pstmt);
+      return result;
+    } finally {
+      close_statement(pstmt);
+    }
+  }
+
+
+  /**
+    * get_db_version is a bit special.  It can be called
+    * before the database actually exists.  This means we need
+    * to throw an exception that can be caught by calling methods
+    * so we can handle it appropriately.
+    */
+  public static int get_db_version() throws SQLException {
+    String sqlText = "Select config_value FROM config " +
+                    "WHERE config_item = 'db_version'";
+      Connection conn = 
+        DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+      PreparedStatement pstmt = conn.prepareStatement(sqlText);
+    try {
+      ResultSet resultSet = execute_query(pstmt);
+      if (resultset_is_null_or_empty(resultSet)) {
+        return 0;
+      }
+
+      result_set_next(resultSet);
+      int v = get_integer(resultSet,  "config_value");
+      return v;
+
+    } finally {
+      close_statement(pstmt);
+    }
+  }
+    
+
+
   /**
     * Gets all the requests for the user.
     * 
@@ -309,11 +365,11 @@ public class Database_access {
     * provides a few boilerplate println's for sql exceptions
     */
   private static void handle_sql_exception(SQLException ex) {
-      System.out.println("SQLException: " + ex.getMessage());
-      System.out.println("SQLState: " + ex.getSQLState());
-      System.out.println("VendorError: " + ex.getErrorCode());
-      System.out.println("Stacktrace: ");
-      Thread.currentThread().dumpStack();
+    System.out.println("SQLException: " + ex.getMessage());
+    System.out.println("SQLState: " + ex.getSQLState());
+    System.out.println("VendorError: " + ex.getErrorCode());
+    System.out.println("Stacktrace: ");
+    Thread.currentThread().dumpStack();
   }
 
 
