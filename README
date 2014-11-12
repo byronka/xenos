@@ -1,4 +1,4 @@
-To run the server, just type:
+If you have already set up everything, just type:
 
   ant initial-setup-and-run
 
@@ -43,6 +43,30 @@ For Ubuntu:
 sudo apt-get install mysql-server         #install it
 sudo netstat -tap | grep mysql            #check if running
 sudo service mysql restart                #start if necessary
+
+
+Now, set up a user, 
+  qarmauser
+
+and a password of 
+  password1
+
+STEP 1
+======
+First, use the mysql program to connect to the server as the MySQL root user:
+
+shell> mysql --user=root mysql
+
+If you have assigned a password to the root account, you will also need to supply a --password or -p option, 
+
+STEP 2
+======
+Second, use the mysql command to add our user:
+mysql> CREATE USER 'qarmauser'@'localhost' IDENTIFIED BY 'password1';
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'qarmauser'@'localhost'WITH GRANT OPTION;
+mysql> CREATE USER 'qarmauser'@'%' IDENTIFIED BY 'password1';
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'qarmauser'@'%' WITH GRANT OPTION;
+
 
 
 Environment variables

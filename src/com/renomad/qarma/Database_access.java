@@ -357,9 +357,9 @@ public class Database_access {
   // ******************************
 
   private static String CONNECTION_STRING_WITH_DB =
-        "jdbc:mysql://localhost/test?user=root&password=hictstd!";
+        "jdbc:mysql://localhost/test?user=qarmauser&password=password1";
   private static String CONNECTION_STRING_WITHOUT_DB =
-        "jdbc:mysql://localhost/?user=root&password=hictstd!";
+        "jdbc:mysql://localhost/?user=qarmauser&password=password1";
 
   /**
     * provides a few boilerplate println's for sql exceptions
