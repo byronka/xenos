@@ -69,6 +69,16 @@
   </target>
 
 
+  <!-- deletes the database schema, and all its data -->
+  <target name="delete-schema" 
+    description="deletes the db schema, and ALL DATA!">
+    <java 
+      classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
+      classname="com.renomad.qarma.Delete_db_schema" 
+      fork="true"
+      />
+  </target>
+
 
   <!-- ################ -->
   <!--   COMPILATION    -->
@@ -152,6 +162,16 @@
   <!-- Scripts for starting, stopping, restarting Tomcat -->
   <!--====================================================-->
 
+
+  <!-- This target acts as a dependency to tell if Tomcat is running 
+      "pidfile" is set in $CATALINA_HOME/bin/setenv.sh, and contains
+      the process id of Catalina.-->
+  <target name="check-if-tomcat-running">
+    <available 
+      file="web_container/apache-tomcat-8.0.14/temp/pidfile" 
+      property="tomcat.running"/>
+  </target>
+
   <target name="tomcat-restart" description="restart the tomcat server">
       <antcall target="tomcat-stop" />
       <antcall target="tomcat-start" />
@@ -161,7 +181,10 @@
     <exec executable="${tomcat.home.bin}startup.sh" />
   </target>
 
-  <target name="tomcat-stop" description="stop tomcat">
+  <target name="tomcat-stop" 
+    description="stop tomcat"
+    depends="check-if-tomcat-running" 
+    if="tomcat.running">
     <exec executable="${tomcat.home.bin}shutdown.sh" />
   </target>
 
