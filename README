@@ -1,36 +1,23 @@
-Helpful information getting started with this project:
+To run the server, just type:
 
-To build the database schema, type:
-
-  ant build-schema
+  ant initial-setup-and-run
 
 
-To add sample data (for easier testing), type:
-
-  ant add-sample-data
 
 
-To compile the files, move them into their proper places, and start the
-server, just type
-
-  ant run
-
-
-and to see the application, go to:
-
-  localhost:8080/qarma
+                          **===================**
+                          **===================**
+                          **  Getting started  **
+                          **===================**
+                          **===================**
 
 
-Things you need for this project:
-=================================
-A copy of OpenJdk for Java 1.7
-MySQL version 5.  We tested on mysql-5.1.73-3.el6_5.x86_64
-An operating system.  This was tested on Linux, it may work on Windows.
+Dependencies
+============
 
-
-Getting started
-===============
-===============
+OpenJdk 1.7
+MySQL 5
+Linux
 
 Installing OpenJdk
 ------------------

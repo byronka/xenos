@@ -27,6 +27,19 @@
   <!-- Targets that combine other targets for ease of use -->
   <!--====================================================-->
 
+  <!-- This target is expected to be run when a new dev first
+      gets started.  It sets up a new database, adds some sample
+      data to it, then cleans and builds the classes, puts everything
+      in its place, and kicks off the server.
+  -->
+  <target name="initial-setup-and-run" 
+    description="sets up a new database with data, compiles, starts server">
+    <antcall target="build-schema" />
+    <antcall target="add-sample-data" />
+    <antcall target="run" />
+  </target>
+
+
   <!-- cleans, builds, installs into container, restarts tomcat -->
   <target name="run" 
     description="cleans, builds, installs, restarts">
@@ -34,6 +47,7 @@
     <antcall target="compile" />
     <antcall target="install" />
     <antcall target="tomcat-restart" />
+    <echo message="Qarma is ready at http://localhost:8080/qarma"/>
   </target>
 
 
