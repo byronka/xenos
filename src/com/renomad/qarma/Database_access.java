@@ -8,8 +8,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Arrays;
 import com.renomad.qarma.File_utilities;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class Database_access {
 
@@ -387,6 +390,20 @@ public class Database_access {
     }
   }
 
+
+  /**
+    * Helper to get a Statement
+    * Opens a connection each time it's run.
+    * We don't have to worry about SQL injection here, 
+    * it should only be called by our own code.
+    * @returns A new Statement object.
+    */
+  private static Statement get_a_statement() throws SQLException {
+    Connection conn = 
+      DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+    Statement stmt = conn.createStatement();
+    return stmt;
+  }
   /**
     * Helper to get a Statement, using connection string without db.
     * This is used to get a statement before the database is created.
@@ -557,6 +574,29 @@ public class Database_access {
 
 
   /**
+    *A wrapper for Statement.execute, and running statements 
+		* that have not come
+		* from the user, so we don't have to worry about SQL Injection.
+    *
+		* Note: does not close connection.
+    * @param sqlText the SQL text we will run - it must be a
+    *  single statement.  Multiple combined statements will fail.
+		* @param stmt the statement
+    * @returns true if the first result is a ResultSet object; false 
+    *  if it is an update count or there are no results
+    */
+  public static boolean execute_statement(String sqlText, Statement stmt) {
+		boolean result = false;
+		try {
+			result = stmt.execute(sqlText);
+		}	catch (SQLException ex) {
+			handle_sql_exception(ex);
+		}
+		return result;
+  }
+
+
+  /**
     *A wrapper for PreparedStatement.execute(), 
 		* used for setting up db schemas.
     *
@@ -571,6 +611,25 @@ public class Database_access {
 		boolean result = execute_prepared_statement(pstmt, sqlText);
 		return result;
   }
+
+	public static void run_multiple_statements(String file) {
+		Statement stmt = null;
+		try (Scanner s = new Scanner(new File(file))) {
+			stmt = get_a_statement();
+			s.useDelimiter("---DELIMITER---");
+			while(s.hasNext()) {
+				String next_statement = s.next();
+				execute_statement(
+						next_statement, stmt);
+			}
+		} catch (FileNotFoundException ex) {
+			System.out.println(ex);
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		} finally {
+    	close_statement(stmt);
+		}
+	}
 
 
   /**
@@ -617,7 +676,7 @@ public class Database_access {
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
 		} finally {
-      close_statement(ps);
+			close_statement(ps);
     }
 		return false;
 	}
