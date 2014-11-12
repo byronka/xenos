@@ -71,6 +71,7 @@
 
   <!-- deletes the database schema, and all its data -->
   <target name="delete-schema" 
+    depends="compile"
     description="deletes the db schema, and ALL DATA!">
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
@@ -91,7 +92,6 @@
   other Ant targets move these files to their intended destination -->
   <target name="compile" description="compiles all java files">
     <mkdir dir="build/classes"/>
-             <!-- lots of debugging -->
     <javac 
       debug="true" 
       debuglevel="lines,vars,source" 
@@ -133,7 +133,7 @@
 
 
   <!-- ################ -->
-  <!--   BUILD SCHEMA   -->
+  <!--      SCHEMA      -->
   <!-- ################ -->
   <!-- This is a program that runs scripts stored in the db_scripts
       directory to put the database into the right form for use with
@@ -154,6 +154,20 @@
       />
   </target>
 
+
+  <!-- 
+    add-sample-data adds some sample data to the database to make
+    testing easier.
+  -->
+  <target name="add-sample-data" 
+    depends="compile" 
+    description="adds sample data to the database for testing">
+    <java 
+      classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
+      classname="com.renomad.qarma.Add_sample_data_to_db"
+      fork="true"
+      />
+  </target>
 
 
   <!-- ############## -->
