@@ -174,7 +174,7 @@
     testing easier.
   -->
   <target name="add-sample-data" 
-    depends="compile" 
+    depends="compile, delete-schema, build-schema" 
     description="adds sample data to the database for testing">
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"

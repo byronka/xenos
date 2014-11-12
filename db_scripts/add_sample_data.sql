@@ -1,3 +1,9 @@
+/*------------
+ 
+     users
+
+ ------------*/
+
 INSERT INTO user
 (first_name, last_name, email, password, is_logged_in, last_time_logged_in, last_ip_logged_in)
 VALUES
@@ -9,6 +15,16 @@ INSERT INTO user
 (first_name, last_name, email, password, is_logged_in, last_time_logged_in, last_ip_logged_in)
 VALUES
 ("dan","simone","ds@coolnet", "password",1,"2014-11-11","198.24.24.27")
+
+---DELIMITER---
+
+
+/*------------
+ 
+   requests
+
+ ------------*/
+
 
 ---DELIMITER---
 

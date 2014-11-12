@@ -12,6 +12,8 @@ To run the server, just type:
                           **===================**
 
 
+Check out the dev manual in docs/dev_manual
+
 Dependencies
 ============
 
@@ -84,6 +86,8 @@ build.xml - the Ant script that provides all sorts of benefits, for
   may end up creating and deleting directories in unexpected places.
 
 db_scripts - holds scripts necessary to built the database schema.
+
+docs - documentation for the project.
 
 Environment variables you need:
 ===============================
