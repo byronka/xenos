@@ -1,10 +1,22 @@
 Helpful information getting started with this project:
 
-Once everything below is set up, to start the server just type
+To build the database schema, type:
+
+  ant build-schema
+
+
+To add sample data (for easier testing), type:
+
+  ant add-sample-data
+
+
+To compile the files, move them into their proper places, and start the
+server, just type
 
   ant run
 
-and to see the page, go to:
+
+and to see the application, go to:
 
   localhost:8080/qarma
 
@@ -66,7 +78,7 @@ lib - library files used by the project
 lib_src - source for the library files
 
 src - source files of the project, including web files (jsp, css.,
-  etc.).  **This is where you do your work**.  Compiled work will be
+  etc.).  **THIS IS WHERE YOU DO YOUR WORK**.  Compiled work will be
   placed in the build directory, and client files (css, jsp, htm) will
   be copied from this location into the web container webapp directory.
 
@@ -74,7 +86,7 @@ web_container - contains documents and binaries for the web
   container, Tomcat.
 
 ant - holds the utility we use for many benefits on our project.
-  A Neat Tool.
+  A Neat Tool!
 
 build - where the built work goes.  We copy from there to where
   it belongs.
@@ -97,11 +109,3 @@ JAVA_HOME should point to a Java 1.7 OpenJdk directory.  Ant needs it
 
 CATALINA_HOME should point to the Tomcat directory.  The Tomcat
   scripts need this.
-
-Environment variables you may want:
-==================================
-
-QARMA_HOME should point to the root of the directory, the directory
-  with build.xml
-
-QARMA_APP should point to the qarma web application in the web container.
