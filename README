@@ -77,9 +77,18 @@ proper values for JAVA_HOME, ANT_HOME, and CATALINA_HOME.  Of these,
 JAVA_HOME is the tricky one, since the other two are in this directory!
 
 If you already know the values for JAVA_HOME, ANT_HOME, and CATALINA_HOME,
-just set them; otherwise, to use set_env.sh to set values to your
-environment variables, simply make it executable if it's not already and
-run: 
+just set them.  They may be as follows:
+
+ANT_HOME=$LOCATION_OF_QARMA_FOLDER/ant/apache-ant-1.9.4
+CATALINA_HOME=$LOCATION_OF_QARMA_FOLDER/web_container/apache-tomcat-8.0.14
+
+For Ubuntu:
+JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+
+For CentOS:
+JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.65.x86_64
+
+If you want to use a script to search for your JAVA_HOME, just run:
 
 ./set_env.sh
 
