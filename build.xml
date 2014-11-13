@@ -62,16 +62,7 @@
   <target 
     name="full-clean" 
     description="deletes the build directory">
-    <antcall target="clean-webapp-dir" />
     <antcall target="clean-build-dir" />
-  </target>
-
-
-  <!-- deletes the webapp directory --> 
-  <target 
-    name="clean-webapp-dir" 
-    description="deletes the webapp directory">
-    <delete dir="${tomcat.webapps.dir}qarma" />
   </target>
 
 
