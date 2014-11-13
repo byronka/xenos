@@ -14,7 +14,7 @@
     Database_access.get_all_requests(user_id);
   for (Database_access.Request r : requests) {
 %>
-<p><a><%=r.description%></a></p>
+<p><a href="request.jsp?request=<%=r.request_id %>"><%=r.description%></a></p>
 <% } %>
 </body>
 </html>
