@@ -53,7 +53,8 @@ and a password of
 
 STEP 1
 ======
-First, use the mysql program to connect to the server as the MySQL root user:
+First, use the mysql program to connect to the server as the 
+MySQL root user:
 
 shell> mysql --user=root mysql
 
@@ -90,10 +91,24 @@ JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.65.x86_64
 
 If you want to use a script to search for your JAVA_HOME, just run:
 
-./set_env.sh
+utils/set_env.sh
 
 Directories and files at the top:
 =================================
+
+ant - holds the utility we use for many benefits on our project.  A
+  Neat Tool!
+
+build - where the built work goes.  We copy from there to where it belongs.
+
+build.xml - the Ant script that provides all sorts of benefits, for
+  example, building the project. Note: it is very important that this
+  file remain where it is, at the root of the project.  Otherwise, it
+  may end up creating and deleting directories in unexpected places.
+
+db_scripts - holds scripts necessary to built the database schema.
+
+docs - documentation for the project.
 
 lib - library files used by the project
 
@@ -104,23 +119,10 @@ src - source files of the project, including web files (jsp, css.,
   placed in the build directory, and client files (css, jsp, htm) will
   be copied from this location into the web container webapp directory.
 
-web_container - contains documents and binaries for the web
-  container, Tomcat.
+utils - some utilities helpful for development.
 
-ant - holds the utility we use for many benefits on our project.
-  A Neat Tool!
-
-build - where the built work goes.  We copy from there to where
-  it belongs.
-
-build.xml - the Ant script that provides all sorts of benefits, for
-  example, building the project. Note: it is very important that this
-  file remain where it is, at the root of the project.  Otherwise, it
-  may end up creating and deleting directories in unexpected places.
-
-db_scripts - holds scripts necessary to built the database schema.
-
-docs - documentation for the project.
+web_container - contains documents and binaries for the web container,
+  Tomcat.
 
 Environment variables you need:
 ===============================
