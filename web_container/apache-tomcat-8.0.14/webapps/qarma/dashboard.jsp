@@ -14,7 +14,7 @@
     Database_access.get_all_requests(user_id);
   for (Database_access.Request r : requests) {
 %>
-<p><%=r.description%><%=r.points%><%=r.status%><%=r.title%><%=r.requesting_user%><%=r.datetime%></p>
+<p><a><%=r.description%></a></p>
 <% } %>
 </body>
 </html>
