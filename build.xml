@@ -32,10 +32,10 @@
       data to it, then cleans and builds the classes, puts everything
       in its place, and kicks off the server.
   -->
-  <target name="initial-setup-and-run" 
+  <target name="run-initial" 
     description="sets up a new database with data, compiles, starts server">
     <antcall target="build-schema" />
-    <antcall target="add-sample-data" />
+    <antcall target="build-sample-data" />
     <antcall target="run" />
   </target>
 
@@ -60,10 +60,10 @@
 	<!-- deletes the compiled java files in the work directory
 	and also the entire database.  use with caution! -->
   <target 
-    name="full-clean" 
+    name="clean-full" 
     description="deletes database (Bye-bye all data) and build directory">
-    <antcall target="delete-schema" />
-    <antcall target="clean-build-dir" />
+    <antcall target="clean-schema" />
+    <antcall target="clean" />
   </target>
 
 
@@ -76,7 +76,7 @@
 
 
   <!-- deletes the database schema, and all its data -->
-  <target name="delete-schema" 
+  <target name="clean-schema" 
     depends="compile"
     description="deletes the db schema, and ALL DATA!">
     <java 
@@ -150,11 +150,11 @@
 
 
   <!-- 
-    add-sample-data adds some sample data to the database to make
+    build-sample-data adds some sample data to the database to make
     testing easier.
   -->
-  <target name="add-sample-data" 
-    depends="compile, delete-schema, build-schema" 
+  <target name="build-sample-data" 
+    depends="compile, clean-schema, build-schema" 
     description="adds sample data to the database for testing">
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
