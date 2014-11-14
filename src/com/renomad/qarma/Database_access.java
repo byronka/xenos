@@ -70,6 +70,39 @@ public class Database_access {
   }
 
 
+  /**
+    * Gets a specific request for the user.
+    * 
+    * @returns a single Request
+    */
+  public static Request get_a_request(int user_id, int request_id) {
+		
+    String sqlText = "SELECT * FROM request WHERE requesting_user = ? and request_id = ?";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+
+    try {
+      set_int(pstmt, 1, user_id);
+      set_int(pstmt, 2, request_id);
+      ResultSet resultSet = execute_query(pstmt);
+      if (resultset_is_null_or_empty(resultSet)) {
+        return new Request(0,"","",0,"","",0);
+      }
+
+      result_set_next(resultSet);
+			int rid = get_integer(resultSet,  "request_id");
+			String dt = get_string(resultSet,   "datetime");
+			String d = get_nstring(resultSet,  "description");
+			int p = get_integer(resultSet,  "points");
+			String s = get_string(resultSet,   "status");
+			String t = get_nstring(resultSet,  "title");
+			int ru = get_integer(resultSet,      "requesting_user");
+			Request request = new Request(rid,dt,d,p,s,t,ru);
+
+      return request;
+    } finally {
+      close_statement(pstmt);
+    }
+  }
 
   /**
     * Gets all the requests for the user.
@@ -77,9 +110,10 @@ public class Database_access {
     * @returns an array of Request
     */
   public static Request[] get_all_requests(int user_id) {
-    String sqlText = "SELECT * FROM request";
+    String sqlText = "SELECT * FROM request WHERE requesting_user = ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
+      set_int(pstmt, 1, user_id);
       ResultSet resultSet = execute_query(pstmt);
       if (resultset_is_null_or_empty(resultSet)) {
         return new Request[0];

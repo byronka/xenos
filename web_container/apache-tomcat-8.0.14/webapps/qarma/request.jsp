@@ -17,9 +17,23 @@
   //if we have a query string and it has request= in it.
   if ((qs = request.getQueryString()) != null &&
       (value_index = qs.indexOf(request_string)) >= 0) {
-      value_index = Integer.parseInt(qs.substring(rsl));
+      request_id = Integer.parseInt(qs.substring(rsl));
   }
+	Database_access.Request r = Database_access.get_a_request(user_id, request_id);
 %>
-<p><%=value_index%></p>
+<form>
+<p>Description: <%=r.description%>
+<p>Status: <%=r.status%>
+<p>Date: <%=r.datetime%>
+<p>Points: <%=r.points%>
+<select >
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+</select>
+<p>Title: <%=r.title%>
+</form>
 </body>
 </html>
