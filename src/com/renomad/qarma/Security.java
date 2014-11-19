@@ -19,6 +19,11 @@ public class Security {
     return cookie_value;
   }
 
+  public static void unregister_user(int user_id) {
+    Database_access.set_user_not_logged_in(user_id);
+    Database_access.delete_cookie(user_id);
+  }
+
   public static int check_if_allowed(HttpServletRequest r) {
     Cookie[] cookies = r.getCookies();
     Cookie c = find_our_cookie(cookies);

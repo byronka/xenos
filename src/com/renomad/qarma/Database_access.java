@@ -175,6 +175,39 @@ public class Database_access {
   // SECURITY CODE                *
   // ******************************
 
+
+  public void set_user_not_logged_in(int user_id) {
+    if (user_id < 0) {
+      System.out.println("error: user id was " + user_id + " in set_user_not_logged_in()");
+      return;
+    }
+
+    String sqlText = "UPDATE user SET is_logged_in = false; ";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      execute_update(pstmt);
+    } finally {
+      close_statement(pstmt);
+    }
+  }
+
+  public void delete_cookie(user_id) {
+    if (user_id < 0) {
+      System.out.println("error: user id was " + user_id + " in delete_cookie()");
+      return;
+    }
+
+    String sqlText = "DELETE FROM guid_to_user WHERE user_id = ?";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      set_int(pstmt, 1, user_id);
+      execute_update(pstmt);
+    } finally {
+      close_statement(pstmt);
+    }
+  }
+
+
   /**
     * checks the password based on the email, the user's unique key
     *
@@ -255,7 +288,7 @@ public class Database_access {
     register_details_on_user_login(int user_id, String ip) {
 
       if (user_id < 0) {
-        System.out.println("error: user id was " + user_id);
+        System.out.println("error: user id was " + user_id + " in register_details_on_user_login");
         return;
       }
 
