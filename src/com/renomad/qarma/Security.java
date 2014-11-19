@@ -8,6 +8,9 @@ import com.renomad.qarma.Database_access;
 
 public class Security {
 
+  public static int check_login(String username, String password) {
+    return Database_access.check_login(username, password);
+  }
 
   public static String register_user(int user_id,
       String ip_address) {
