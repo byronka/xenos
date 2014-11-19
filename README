@@ -115,10 +115,8 @@ lib - library files used by the project
 
 lib_src - source for the library files
 
-src - source files of the project, including web files (jsp, css.,
-  etc.).  **THIS IS WHERE YOU DO YOUR WORK**.  Compiled work will be
-  placed in the build directory, and client files (css, jsp, htm) will
-  be copied from this location into the web container webapp directory.
+src - source files of the project Compiled code will be placed in the build
+  directory
 
 utils - some utilities helpful for development.
 
