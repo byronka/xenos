@@ -176,13 +176,13 @@ public class Database_access {
   // ******************************
 
 
-  public void set_user_not_logged_in(int user_id) {
+  public static void set_user_not_logged_in(int user_id) {
     if (user_id < 0) {
-      System.out.println("error: user id was " + user_id + " in set_user_not_logged_in()");
-      return;
+      System.out.println("error: user id was " + user_id + 
+          " in set_user_not_logged_in()");
     }
 
-    String sqlText = "UPDATE user SET is_logged_in = false; ";
+    String sqlText = "UPDATE user SET is_logged_in = false;";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
       execute_update(pstmt);
@@ -191,13 +191,13 @@ public class Database_access {
     }
   }
 
-  public void delete_cookie(user_id) {
+  public static void delete_cookie(int user_id) {
     if (user_id < 0) {
-      System.out.println("error: user id was " + user_id + " in delete_cookie()");
-      return;
+      System.out.println("error: user id was " + user_id + 
+          " in delete_cookie()");
     }
 
-    String sqlText = "DELETE FROM guid_to_user WHERE user_id = ?";
+    String sqlText = "DELETE FROM guid_to_user WHERE user_id = ?;";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
       set_int(pstmt, 1, user_id);

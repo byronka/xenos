@@ -8,6 +8,7 @@
 <head><title>The dashboard</title></head>
 <body>
 <h2>Welcome to the dashboard!</h2>
+<a href="logout.jsp" >Logout</a>
 <p>Here are your requests:</p>
 <%
   Business_logic.Request[] requests = 
