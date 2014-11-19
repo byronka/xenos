@@ -58,7 +58,8 @@ MySQL root user:
 
 shell> mysql --user=root mysql
 
-If you have assigned a password to the root account, you will also need to supply a --password or -p option, 
+If you have assigned a password to the root account, you will also
+need to supply a --password or -p option, 
 
 STEP 2
 ======
