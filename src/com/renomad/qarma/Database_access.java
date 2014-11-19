@@ -171,6 +171,9 @@ public class Database_access {
   }
 
 	
+  // ******************************
+  // SECURITY CODE                *
+  // ******************************
 
   /**
     * checks the password based on the email, the user's unique key
