@@ -1,5 +1,4 @@
 <%@ page import="com.renomad.qarma.Security" %>
-<%@ page import="com.renomad.qarma.Database_access" %>
 <% int user_id = Security.check_if_allowed(request);
   if (user_id <= 0) { response.sendRedirect("sorry.htm"); }
 %>
@@ -19,7 +18,7 @@
       (value_index = qs.indexOf(request_string)) >= 0) {
       request_id = Integer.parseInt(qs.substring(rsl));
   }
-	Database_access.Request r = Database_access.get_a_request(user_id, request_id);
+	Business_logic.Request r = Business_logic.get_a_request(user_id, request_id);
 %>
 <form>
 <p>Description: <%=r.description%>

@@ -12,6 +12,7 @@ import java.util.Scanner;
 import java.util.Arrays;
 import java.io.File;
 import java.io.FileNotFoundException;
+import com.renomad.qarma.Business_logic.Request;
 
 public class Database_access {
 
@@ -19,35 +20,6 @@ public class Database_access {
   // ******************************
   // BUSINESS LOGIC CODE          *
   // ******************************
-
-  /**
-    * Request encapsulates a user's request.  It is an immutable object.
-    * note that the fields are public, but final.  Once this object
-    * gets constructed, there is no changing it.  You have to create a
-    * new one.
-    */
-  public static class Request {
-
-    Request ( int request_id, String datetime, String description, 
-        int points, String status, String title, int requesting_user) {
-      this.request_id       =  request_id;
-      this.datetime         =  datetime;
-      this.description      =  description;
-      this.points           =  points;
-      this.status           =  status;
-      this.title            =  title;
-      this.requesting_user  =  requesting_user;
-    }
-
-    public final int request_id;
-    public final String datetime;
-    public final String description;
-    public final int points;
-    public final String status;
-    public final String title;
-    public final int requesting_user;
-  }
-
 
   public static int get_db_version() throws SQLException {
     String sqlText = "Select config_value FROM config " +
@@ -70,7 +42,7 @@ public class Database_access {
 
 
   /**
-    * Gets a specific request for the user.
+    * Gets a specific Request for the user.
     * 
     * @returns a single Request
     */
