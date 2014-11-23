@@ -1,7 +1,8 @@
 -- Note that these scripts will be run in the order written
 
--- add an item for version of the system
-
+-- as a necessary
+-- separator between SQL scripts, we use the delimiter keyword, having three
+-- dashes in front and back, that you see below. 
 
 ---DELIMITER---
 
