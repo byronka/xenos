@@ -1,8 +1,5 @@
-<%@ page import="com.renomad.qarma.Security" %>
 <%@ page import="com.renomad.qarma.Business_logic" %>
-<% int user_id = Security.check_if_allowed(request);
-  if (user_id <= 0) { response.sendRedirect("sorry.htm"); }
-%>
+<%@include file="includes/check_auth.jsp" %>
 
 <html>                                 
 <head><title>The dashboard</title></head>

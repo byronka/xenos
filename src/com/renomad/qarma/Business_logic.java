@@ -5,8 +5,32 @@ import com.renomad.qarma.Database_access;
 public class Business_logic {
 
 
+  /**
+    * gets a full Request object by request_id, verifying the
+    * user can access it.
+    */
   public static Request get_a_request(int user_id, int request_id) {
     return Database_access.get_a_request(user_id, request_id);
+  }
+
+
+  /**
+    * given the query string, we will find the proper string
+    * and convert that to a request, and return that.
+    */
+  public static Request parse_querystring_and_get_request(
+      int user_id, String query_string) {
+    String qs = null;
+    int request_id = 0;
+    int value_index = 0;
+    String request_string = "request=";
+    int rsl = request_string.length();
+    //if we have a query string and it has request= in it.
+    if ((qs = query_string) != null &&
+        (value_index = qs.indexOf(request_string)) >= 0) {
+        request_id = Integer.parseInt(qs.substring(rsl));
+    }
+    return get_a_request(user_id, request_id);
   }
 
 
