@@ -114,7 +114,7 @@ public class Database_access {
   }
 
 
-  public static int add_user(
+  public static boolean add_user(
 			String first_name, String last_name, String email, String password) {
     //validation section
       null_or_empty_string_validation(first_name);
@@ -131,8 +131,8 @@ public class Database_access {
       set_string(pstmt, 2, last_name);
       set_string(pstmt, 3, email);
       set_string(pstmt, 4, password);
-      int result = execute_update(pstmt);
-      return result;
+      boolean is_successful = execute_update(pstmt);
+      return is_successful;
     } finally {
       close_statement(pstmt);
     }
@@ -205,17 +205,23 @@ public class Database_access {
 
   }
 
-
-  public static void set_user_not_logged_in(int user_id) {
+  /**
+    * simply sets "is_logged_in" to false in the database for the given user.
+    * @param user_id the user in question to set logged_in to false.
+    * @returns a boolean on whether the operation succeeded.
+    */
+  public static boolean set_user_not_logged_in(int user_id) {
     if (user_id < 0) {
       System.out.println("error: user id was " + user_id + 
           " in set_user_not_logged_in()");
+      return false;
     }
 
     String sqlText = "UPDATE user SET is_logged_in = false;";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
-      execute_update(pstmt);
+      boolean is_successful = execute_update(pstmt);
+      return is_successful;
     } finally {
       close_statement(pstmt);
     }
@@ -446,20 +452,20 @@ public class Database_access {
     *
     * Opens and closes a connection each time it's run.
     * @param pstmt The prepared statement
-    * @returns either (1) the row count for SQL Data Manipulation 
-    *  Language (DML) statements or (2) 0 for SQL statements 
-    * that return nothing
+    * @returns a boolean indicating whether this succeeded.  If it
+    * hits an exception, that's when we return false.  if success, true.
     */
-  private static int execute_update(PreparedStatement pstmt) {
+  private static boolean execute_update(PreparedStatement pstmt) {
     try {
-      int result = pstmt.executeUpdate();
-      return result;
+      pstmt.executeUpdate();
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+      return false;
     } catch (Exception ex) {
       System.out.println("General exception: " + ex.toString());
+      return false;
     }
-    return 0;
+    return true;
   }
   
 

@@ -17,8 +17,13 @@ public class Security {
     Database_access.register_details_on_user_login(user_id, ip_address);
   }
 
-  public static void logout_user(int user_id) {
-    Database_access.set_user_not_logged_in(user_id);
+  /**
+    * tries logging out the user.  If successful, return true
+    * @param the user id in question
+    * @returns true if successful
+    */
+  public static boolean logout_user(int user_id) {
+    return Database_access.set_user_not_logged_in(user_id);
   }
 
   private static int get_int_from_cookie(Cookie c) {
@@ -27,7 +32,7 @@ public class Security {
     {
          val = Integer.parseInt(c.getValue());
     }
-    catch (NumberFormatException nfe)
+    catch (Exception ex)
     {
          // bad data - set to sentinel
          val = Integer.MIN_VALUE;

@@ -15,7 +15,10 @@ public class Business_logic {
   }
 
 
-  public static int add_user(
+  /**
+    * adds a user.  if successful, returns true
+    */
+  public static boolean add_user(
 			String first_name, String last_name, String email, String password) {
     return Database_access.add_user(first_name, last_name, email, password);
   }
