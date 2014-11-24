@@ -1,6 +1,7 @@
 package com.renomad.qarma;
 
 import com.renomad.qarma.Database_access;
+import com.renomad.qarma.Utilities;
 
 public class Business_logic {
 
@@ -11,6 +12,16 @@ public class Business_logic {
     */
   public static Request get_a_request(int user_id, int request_id) {
     return Database_access.get_a_request(user_id, request_id);
+  }
+
+  
+  public static boolean add_request(
+      int user_id,
+      String desc, String status, 
+      String points, String title) {
+    int p = Utilities.parse_int(points);
+    String date = java.util.Calendar.getInstance().toString();
+    return Database_access.add_request(user_id,desc,status, date, p, title);
   }
 
 

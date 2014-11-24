@@ -40,6 +40,40 @@ public class Database_access {
     }
   }
 
+  
+  /**
+    * adds a Request to the database
+    *
+    */
+  public static boolean add_request(
+      int user_id,
+      String desc, String status, 
+      String date, int points, String title ) {
+    
+      if (user_id < 0) {
+        System.out.println(
+            "error: user id was " + user_id + " in add_request");
+        return false;
+      }
+
+      String sqlText = 
+        "INSERT into request (description, datetime, points, " + 
+        "status, title, requesting_user) VALUES (?, ?, ?, ?, ?, ?)"; 
+
+      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+      try {
+        set_string(pstmt, 1, desc);
+        set_string(pstmt, 2, date);
+        set_int(pstmt, 3, points);
+        set_string(pstmt, 4, status);
+        set_string(pstmt, 5, title);
+        set_int(pstmt, 6, user_id);
+        return execute_update(pstmt);
+      } finally {
+        close_statement(pstmt);
+      }
+  }
+
 
   /**
     * Gets a specific Request for the user.
@@ -48,7 +82,8 @@ public class Database_access {
     */
   public static Request get_a_request(int user_id, int request_id) {
 		
-    String sqlText = "SELECT * FROM request WHERE requesting_user = ? and request_id = ?";
+    String sqlText = 
+      "SELECT * FROM request WHERE requesting_user = ? and request_id = ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
 
     try {

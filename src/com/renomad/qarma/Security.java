@@ -5,6 +5,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.renomad.qarma.Database_access;
+import com.renomad.qarma.Utilities;
 
 public class Security {
 
@@ -27,17 +28,7 @@ public class Security {
   }
 
   private static int get_int_from_cookie(Cookie c) {
-    int val;
-    try
-    {
-         val = Integer.parseInt(c.getValue());
-    }
-    catch (Exception ex)
-    {
-         // bad data - set to sentinel
-         val = Integer.MIN_VALUE;
-    }
-    return val;
+    return Utilities.parse_int(c.getValue());
   }
 
 
