@@ -176,6 +176,36 @@ public class Database_access {
   // ******************************
 
 
+  /**
+    * Checks the database, given the user id, whether that
+    * user is logged in
+    */
+  public static boolean user_is_logged_in(int user_id) {
+    if (user_id < 0) {
+      System.out.println("error: user id was " + user_id + 
+          " in user_is_logged_in()");
+    }
+
+    String sqlText = "SELECT is_logged_in FROM user WHERE user_id = ?";
+
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      set_int(pstmt, 1, user_id);
+      ResultSet resultSet = execute_query(pstmt);
+
+      if(resultset_is_null_or_empty(resultSet)) {
+        return false; // no results on query - return not logged in
+      }
+
+      result_set_next(resultSet); //move to the first set of results.
+      return get_boolean(resultSet, "is_logged_in");
+    } finally {
+      close_statement(pstmt);
+    }
+
+  }
+
+
   public static void set_user_not_logged_in(int user_id) {
     if (user_id < 0) {
       System.out.println("error: user id was " + user_id + 
@@ -185,22 +215,6 @@ public class Database_access {
     String sqlText = "UPDATE user SET is_logged_in = false;";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
-      execute_update(pstmt);
-    } finally {
-      close_statement(pstmt);
-    }
-  }
-
-  public static void delete_cookie(int user_id) {
-    if (user_id < 0) {
-      System.out.println("error: user id was " + user_id + 
-          " in delete_cookie()");
-    }
-
-    String sqlText = "DELETE FROM guid_to_user WHERE user_id = ?;";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-    try {
-      set_int(pstmt, 1, user_id);
       execute_update(pstmt);
     } finally {
       close_statement(pstmt);
@@ -239,42 +253,6 @@ public class Database_access {
     }
   }
 
-  /**
-    * Takes a cookie string value and returns the user's name if valid and logged in.
-    * 
-    * @param cookie_value cookie we get from the user client
-    * @returns the user's user_id if valid and logged in.
-    */
-    public static int 
-      look_for_logged_in_user_by_cookie(String cookie_value) {
-      null_or_empty_string_validation(cookie_value);
-
-      String sqlText = 
-        "SELECT user.user_id " +
-        "FROM user JOIN guid_to_user AS gtu " +
-        "ON gtu.user_id = user.user_id " +
-        "WHERE gtu.guid = ? AND user.is_logged_in = 1";
-
-      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-      try {
-        set_string(pstmt, 1, cookie_value);
-        ResultSet resultSet = execute_query(pstmt);
-
-        if (resultset_is_null_or_empty(resultSet)) {
-          return -1; //-1 is us saying we didn't get a user. ouch!
-        }
-
-        result_set_next(resultSet); //move to the first set of results.
-
-        Integer user_id = null;
-        if ((user_id = get_integer(resultSet, "user_id")) != null) {
-          return user_id.intValue(); //yay success!
-        }
-      } finally {
-        close_statement(pstmt);
-      }
-      return -1; //-1 is our way of saying we didn't find a user.
-    }
 
   /**
     * stores information on the user when they login, things like
@@ -312,55 +290,6 @@ public class Database_access {
       }
   }
 
-  /**
-    * This method creates a new entry in the guid_to_user table
-    * which is a lookup to see who is logged in.  The database
-    * creates the text of the guid, and then we send that on as
-    * the string for the cookie.
-    * @param user_id the user id of the user.
-    * @returns a piping hot cookie.
-    */
-  public static String get_new_cookie_for_user(int user_id) {
-
-    if (user_id <= 0) {
-      return null;
-    }
-
-    //set up a call to the stored procedure
-    String proc_name = 
-      "{call register_user_cookie(?)}"; //using JDBC escape syntax
-    CallableStatement cs = get_a_callable_statement(proc_name);
-
-    //set up a query for the new cookie value
-    String sqlText = "SELECT guid FROM guid_to_user WHERE user_id = ?";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-    try {
-      //execute the stored proc, cleaning out 
-      //junk entries and creating a new cooie
-      set_int(cs, 1, user_id);
-      execute(cs);
-
-      //execute the query for the value, getting the 
-      //value for the cookie we just made
-      set_string(pstmt, 1, Integer.toString(user_id));
-      ResultSet resultSet = execute_query(pstmt);
-
-      if (resultset_is_null_or_empty(resultSet)) {
-        return "BAD_COOKIE";
-      }
-
-      result_set_next(resultSet); //move to the first set of results.
-
-      String guid = "";
-      if ((guid = get_string(resultSet, "guid")).length() > 0) {
-        return guid; //yay success!
-      }
-    } finally {
-      close_statement(pstmt);
-      close_statement(cs);
-    }
-    return ""; 
-  }
 
   // ******************************
   // HELPERS AND BOILERPLATE CODE *
@@ -452,7 +381,7 @@ public class Database_access {
   /**
     * This method sets you up to call stored procedures in the database.
     * example: you might call this with a string 
-    * of "register_user_cookie(?)"
+    * of "{call blahdy_blahblah(?)}"; ,using JDBC escape syntax
     * @param procedure_name the name of a procedure we've 
     *  already added.  See the database
     * @returns A callable statement ready for setting parameters.
@@ -741,6 +670,21 @@ public class Database_access {
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
 		}
+	}
+
+
+	/**
+		* Wrapper around ResultSet.getBoolean(String columnName)
+		* We'll wrap these methods that throw SQLException
+		* so we don't have to worry about it any  more
+		*/
+	private static boolean get_boolean(ResultSet rs, String columnName) {
+		try {
+			return rs.getBoolean(columnName);
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		}
+		return false;
 	}
 
 	/**

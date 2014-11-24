@@ -41,27 +41,6 @@ ADD COLUMN (
   last_ip_logged_in VARCHAR(40)
 )
 
----DELIMITER---
--- create_guidtable.sql
-
-CREATE TABLE IF NOT EXISTS 
-guid_to_user ( -- provides a lookup table for logged-in users to the associated user id.
-  guid VARCHAR(36), -- mysql generates 36 letter guid's.
-  user_id INT NOT NULL,
-  FOREIGN KEY FK_user_id_user_id (user_id) 
-    REFERENCES user (user_id) 
-    ON DELETE CASCADE
-);
-
----DELIMITER---
--- add_register_user_cookie_proc
-
-CREATE PROCEDURE register_user_cookie
-(IN user_id_param INT) 
-BEGIN 
-DELETE FROM guid_to_user WHERE user_id = user_id_param; 
-INSERT guid_to_user (guid, user_id) VALUES (UUID(),user_id_param);  
-END
 
 ---DELIMITER---
 -- create_request_table

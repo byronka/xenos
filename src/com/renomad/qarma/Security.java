@@ -12,23 +12,46 @@ public class Security {
     return Database_access.check_login(username, password);
   }
 
-  public static String register_user(int user_id,
+  public static void register_user(int user_id,
       String ip_address) {
     Database_access.register_details_on_user_login(user_id, ip_address);
-    String cookie_value = Database_access.get_new_cookie_for_user(user_id);
-    return cookie_value;
   }
 
-  public static void unregister_user(int user_id) {
+  public static void logout_user(int user_id) {
     Database_access.set_user_not_logged_in(user_id);
-    Database_access.delete_cookie(user_id);
   }
 
+  private static int get_int_from_cookie(Cookie c) {
+    int val;
+    try
+    {
+         val = Integer.parseInt(c.getValue());
+    }
+    catch (NumberFormatException nfe)
+    {
+         // bad data - set to sentinel
+         val = Integer.MIN_VALUE;
+    }
+    return val;
+  }
+
+
+  /**
+    * we just look up the user.  If they are logged in, we
+    * return the user id.  if failed, return -1;
+    * @param the request object
+    * @returns a valid user id if allowd.  -1 otherwise.
+    */
   public static int check_if_allowed(HttpServletRequest r) {
     Cookie[] cookies = r.getCookies();
     Cookie c = find_our_cookie(cookies);
-    int user_id = get_user_from_cookie(c);
-    return user_id;
+    int user_id = get_int_from_cookie(c);
+    if (user_id == Integer.MIN_VALUE) { return -1; }
+    boolean is_logged_in = Database_access.user_is_logged_in(user_id);
+    if (is_logged_in) {
+      return user_id;
+    }
+    return -1; //-1 means not allowed or failure.
   }
 
   public static Cookie find_our_cookie(Cookie[] all_cookies) {
@@ -43,21 +66,8 @@ public class Security {
     return null;
   }
 
-  /**
-    * check if the user is allowed to access this page.
-    *
-    * @param c Our cookie, which we will look 
-    *   at to determine if the user is valid.
-    */
-  public static int get_user_from_cookie(Cookie c) {
-    if (c == null) {
-      return -1;
-    }
-    String cookie_value = c.getValue();
-    int user_id = 
-      Database_access.look_for_logged_in_user_by_cookie(cookie_value);
-    return user_id;
+  public boolean user_is_logged_in(int user_id) {
+    return Database_access.user_is_logged_in(user_id);
   }
-  
 
 }
