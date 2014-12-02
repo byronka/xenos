@@ -14,12 +14,14 @@ If you have already set up everything, just type:
 
 Check out the dev manual in docs/dev_manual
 
+
 Dependencies
 ============
 
 OpenJdk 1.7
 MySQL 5
 Linux
+
 
 Installing OpenJdk
 ------------------
@@ -94,39 +96,33 @@ If you want to use a script to search for your JAVA_HOME, just run:
 
 utils/set_env.sh
 
+
+
 Directories and files at the top:
 =================================
 
-ant - holds the utility we use for many benefits on our project.  A
-  Neat Tool!
-
-build - where the built work goes.  We copy from there to where it belongs.
+build/ - where the built work goes.  Won't exist until you build.
 
 build.xml - the Ant script that provides all sorts of benefits, for
   example, building the project. Note: it is very important that this
   file remain where it is, at the root of the project.  Otherwise, it
   may end up creating and deleting directories in unexpected places.
 
-db_scripts - holds scripts necessary to built the database schema.
+db_scripts/ - holds scripts necessary to built the database schema.
 
-docs - documentation for the project.
+docs/ - documentation for the project.
 
-lib - library files used by the project
+lib/ - library files used by the project
 
-lib_src - source for the library files
-
-src - source files of the project Compiled code will be placed in the build
+src/ - source files of the project Compiled code will be placed in the build
   directory
 
-utils - some utilities helpful for development.
+utils/ - some utilities helpful for development.
 
-web_container - contains documents and binaries for the web container,
-  Tomcat.
+web_container/ - contains documents and binaries for the web container,
+  Tomcat.  Also contains the qarma web application and its client files.
 
-web_container/apache-tomcat-8.0.14/webapps/qarma/ - the directory for
-  the web application.  Jsp files live here, and our Ant script will put
-  the classes in the WEB-INF directory here.  If you want to work on
-  client-side code, it will probably happen here.
+
 
 Environment variables you need:
 ===============================
