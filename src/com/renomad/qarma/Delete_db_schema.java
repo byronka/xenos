@@ -1,6 +1,6 @@
 package com.renomad.qarma;
 
-import com.renomad.qarma.Database_access;
+import com.renomad.qarma.Build_db_schema;
 
 public class Delete_db_schema {
 
@@ -13,7 +13,7 @@ public class Delete_db_schema {
     *
     */
   static void delete_database() {
-    Database_access
+    Build_db_schema
       .run_sql_statement_before_db_exists("DROP DATABASE test;");
   }
 

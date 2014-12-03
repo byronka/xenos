@@ -21,24 +21,6 @@ public class Database_access {
   // BUSINESS LOGIC CODE          *
   // ******************************
 
-  public static int get_db_version() throws SQLException {
-    String sqlText = "Select config_value FROM config " +
-                    "WHERE config_item = 'db_version'";
-		Statement stmt = null;
-    try {
-			stmt = get_a_statement();
-      ResultSet resultSet = stmt.executeQuery(sqlText);
-      if (resultset_is_null_or_empty(resultSet)) {
-        return -1; //an out-of-bounds value
-      }
-
-      result_set_next(resultSet);
-      int v = get_integer(resultSet,  "config_value");
-      return v;
-    } finally {
-      close_statement(stmt);
-    }
-  }
 
   
   /**
@@ -336,10 +318,6 @@ public class Database_access {
   // HELPERS AND BOILERPLATE CODE *
   // ******************************
 
-  private static String CONNECTION_STRING_WITH_DB =
-        "jdbc:mysql://localhost/test?user=qarmauser&password=password1";
-  private static String CONNECTION_STRING_WITHOUT_DB =
-        "jdbc:mysql://localhost/?user=qarmauser&password=password1";
 
   /**
     * provides a few boilerplate println's for sql exceptions
@@ -353,19 +331,6 @@ public class Database_access {
   }
 
 
-  /**
-    *Boilerplate code necessary to register the mysql db driver.
-    */
-  static {
-    try {
-      // The newInstance() call is a work around for some
-      // broken Java implementations
-      Class.forName("com.mysql.jdbc.Driver").newInstance();
-      //new com.mysql.jdbc.Driver();
-    } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
-    }
-  }
 
 
   /**
@@ -376,23 +341,16 @@ public class Database_access {
     * @returns A new Statement object.
     */
   private static Statement get_a_statement() throws SQLException {
-    Connection conn = 
-      DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
-    Statement stmt = conn.createStatement();
-    return stmt;
-  }
-  /**
-    * Helper to get a Statement, using connection string without db.
-    * This is used to get a statement before the database is created.
-    * Opens a connection each time it's run.
-    * We don't have to worry about SQL injection here, 
-    * it should only be called by our own code.
-    * @returns A new Statement object.
-    */
-  private static Statement 
-    get_a_statement_before_db_exists() throws SQLException {
-    Connection conn = 
-      DriverManager.getConnection(CONNECTION_STRING_WITHOUT_DB);
+    javax.sql.DataSource ds = null;
+    try {
+      javax.naming.Context initContext = new javax.naming.InitialContext();
+      javax.naming.Context envContext  = (javax.naming.Context)initContext.lookup("java:/comp/env");
+      ds = (javax.sql.DataSource)envContext.lookup("jdbc/qarma_db");
+    } catch (javax.naming.NamingException e) {
+      System.out.println("a naming exception occurred.  details: ");
+      System.out.println(e);
+    }
+    Connection conn = ds.getConnection();
     Statement stmt = conn.createStatement();
     return stmt;
   }
@@ -406,12 +364,17 @@ public class Database_access {
   private static PreparedStatement 
     get_a_prepared_statement(String queryText) {
     try {
-      Connection conn = 
-        DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+      javax.naming.Context initContext = new javax.naming.InitialContext();
+      javax.naming.Context envContext  = (javax.naming.Context)initContext.lookup("java:/comp/env");
+      javax.sql.DataSource ds = (javax.sql.DataSource)envContext.lookup("jdbc/qarma_db");
+      Connection conn = ds.getConnection();
       PreparedStatement stmt = conn.prepareStatement(queryText);
       return stmt;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+    } catch (javax.naming.NamingException e) {
+      System.out.println("a naming exception occurred.  details: ");
+      System.out.println(e);
     } catch (Exception ex) {
       System.out.println("General exception: " + ex.toString());
     }
@@ -429,12 +392,17 @@ public class Database_access {
     */
   private static CallableStatement get_a_callable_statement(String proc) {
     try {
-      Connection conn = 
-        DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+      javax.naming.Context initContext = new javax.naming.InitialContext();
+      javax.naming.Context envContext  = (javax.naming.Context)initContext.lookup("java:/comp/env");
+      javax.sql.DataSource ds = (javax.sql.DataSource)envContext.lookup("jdbc/qarma_db");
+      Connection conn = ds.getConnection();
       CallableStatement cs = conn.prepareCall(proc);
       return cs;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+    } catch (javax.naming.NamingException e) {
+      System.out.println("a naming exception occurred.  details: ");
+      System.out.println(e);
     } catch (Exception ex) {
       System.out.println("General exception: " + ex.toString());
     }
@@ -503,34 +471,6 @@ public class Database_access {
     return true;
   }
   
-
-  /**
-    *A wrapper for PreparedStatement.execute() - used 
-    * before database exists.
-    *
-    * Opens and closes a connection each time it's run.
-    * @param sqlText the SQL text we will run - it must be a
-    *  single statement.  Multiple combined statements will fail.
-    * @returns true if the first result is a ResultSet object; false 
-    *  if it is an update count or there are no results
-    */
-  public static boolean 
-    run_sql_statement_before_db_exists(String sqlText) {
-    Statement stmt = null;
-    try {
-      stmt = get_a_statement_before_db_exists();
-      boolean result = stmt.execute(sqlText);
-      return result;
-    } catch (SQLException ex) {
-      handle_sql_exception(ex);
-    } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
-    } finally {
-      close_statement(stmt);
-    }
-    return false;
-  }
-
 
   /**
     * A wrapper to close connections given a connection without
