@@ -12,11 +12,15 @@ If you have already set up everything, just type:
                           **===================**
 
 
-Check out the dev manual in docs/dev_manual
+*Note: Check out the dev manual in docs/dev_manual
 
 
-Dependencies
-============
+
+
+
+=================
+1) Dependencies
+=================
 
 OpenJdk 1.7
 MySQL 5
@@ -47,14 +51,8 @@ sudo netstat -tap | grep mysql            #check if running
 sudo service mysql restart                #start if necessary
 
 
-Now, set up a user, 
-  qarmauser
+Now, set up a user, qarmauser and a password of password1
 
-and a password of 
-  password1
-
-STEP 1
-======
 First, use the mysql program to connect to the server as the 
 MySQL root user:
 
@@ -63,8 +61,6 @@ shell> mysql --user=root mysql
 If you have assigned a password to the root account, you will also
 need to supply a --password or -p option, 
 
-STEP 2
-======
 Second, use the mysql command to add our user:
 mysql> CREATE USER 'qarmauser'@'localhost' IDENTIFIED BY 'password1';
 mysql> GRANT ALL PRIVILEGES ON *.* TO 'qarmauser'@'localhost'WITH GRANT OPTION;
@@ -73,8 +69,13 @@ mysql> GRANT ALL PRIVILEGES ON *.* TO 'qarmauser'@'%' WITH GRANT OPTION;
 
 
 
-Environment variables
----------------------
+
+
+
+
+========================
+2) Environment variables
+========================
 
 There is a script called set_env.sh which will try to get the
 proper values for JAVA_HOME, ANT_HOME, and CATALINA_HOME.  Of these,
@@ -96,10 +97,22 @@ If you want to use a script to search for your JAVA_HOME, just run:
 
 utils/set_env.sh
 
+ANT_HOME should point to the Ant project in this folder. You need it
+  to run the ant scripts that make development easy.
+
+JAVA_HOME should point to a Java 1.7 OpenJdk directory.  Ant needs it
+  to build the source.
+
+CATALINA_HOME should point to the Tomcat directory.  The Tomcat
+  scripts need this.
 
 
-Directories and files at the top:
-=================================
+
+
+
+====================================
+3) Directories and files at the top:
+====================================
 
 build/ - where the built work goes.  Won't exist until you build.
 
@@ -122,16 +135,3 @@ utils/ - some utilities helpful for development.
 web_container/ - contains documents and binaries for the web container,
   Tomcat.  Also contains the qarma web application and its client files.
 
-
-
-Environment variables you need:
-===============================
-
-ANT_HOME should point to the Ant project in this folder. You need it
-  to run the ant scripts that make development easy.
-
-JAVA_HOME should point to a Java 1.7 OpenJdk directory.  Ant needs it
-  to build the source.
-
-CATALINA_HOME should point to the Tomcat directory.  The Tomcat
-  scripts need this.
