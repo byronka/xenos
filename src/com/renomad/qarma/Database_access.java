@@ -338,6 +338,8 @@ public class Database_access {
 
   private static String CONNECTION_STRING_WITH_DB =
         "jdbc:mysql://localhost/test?user=qarmauser&password=password1";
+
+  //used by schema builder.
   private static String CONNECTION_STRING_WITHOUT_DB =
         "jdbc:mysql://localhost/?user=qarmauser&password=password1";
 
@@ -356,16 +358,16 @@ public class Database_access {
   /**
     *Boilerplate code necessary to register the mysql db driver.
     */
-  static {
-    try {
-      // The newInstance() call is a work around for some
-      // broken Java implementations
-      Class.forName("com.mysql.jdbc.Driver").newInstance();
-      //new com.mysql.jdbc.Driver();
-    } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
-    }
-  }
+//  static {
+//    try {
+//      // The newInstance() call is a work around for some
+//      // broken Java implementations
+//      Class.forName("com.mysql.jdbc.Driver").newInstance();
+//      //new com.mysql.jdbc.Driver();
+//    } catch (Exception ex) {
+//      System.out.println("General exception: " + ex.toString());
+//    }
+//  }
 
 
   /**
@@ -376,8 +378,16 @@ public class Database_access {
     * @returns A new Statement object.
     */
   private static Statement get_a_statement() throws SQLException {
-    Connection conn = 
-      DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+    javax.sql.DataSource ds = null;
+    try {
+      javax.naming.Context initContext = new javax.naming.InitialContext();
+      javax.naming.Context envContext  = (javax.naming.Context)initContext.lookup("java:/comp/env");
+      ds = (javax.sql.DataSource)envContext.lookup("jdbc/TestDB");
+    } catch (javax.naming.NamingException e) {
+      System.out.println("a naming exception occurred.  details: ");
+      System.out.println(e);
+    }
+    Connection conn = ds.getConnection();
     Statement stmt = conn.createStatement();
     return stmt;
   }
@@ -406,12 +416,17 @@ public class Database_access {
   private static PreparedStatement 
     get_a_prepared_statement(String queryText) {
     try {
-      Connection conn = 
-        DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+      javax.naming.Context initContext = new javax.naming.InitialContext();
+      javax.naming.Context envContext  = (javax.naming.Context)initContext.lookup("java:/comp/env");
+      javax.sql.DataSource ds = (javax.sql.DataSource)envContext.lookup("jdbc/TestDB");
+      Connection conn = ds.getConnection();
       PreparedStatement stmt = conn.prepareStatement(queryText);
       return stmt;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+    } catch (javax.naming.NamingException e) {
+      System.out.println("a naming exception occurred.  details: ");
+      System.out.println(e);
     } catch (Exception ex) {
       System.out.println("General exception: " + ex.toString());
     }
@@ -429,12 +444,17 @@ public class Database_access {
     */
   private static CallableStatement get_a_callable_statement(String proc) {
     try {
-      Connection conn = 
-        DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+      javax.naming.Context initContext = new javax.naming.InitialContext();
+      javax.naming.Context envContext  = (javax.naming.Context)initContext.lookup("java:/comp/env");
+      javax.sql.DataSource ds = (javax.sql.DataSource)envContext.lookup("jdbc/TestDB");
+      Connection conn = ds.getConnection();
       CallableStatement cs = conn.prepareCall(proc);
       return cs;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
+    } catch (javax.naming.NamingException e) {
+      System.out.println("a naming exception occurred.  details: ");
+      System.out.println(e);
     } catch (Exception ex) {
       System.out.println("General exception: " + ex.toString());
     }
