@@ -406,7 +406,7 @@ public class Build_db_schema {
     } 
   }
 
-  private static boolean run_sql_statement_before_db_exists(String sqlText) {
+  public static boolean run_sql_statement_before_db_exists(String sqlText) {
     Statement stmt = null;
     try {
         stmt = get_a_statement_before_db_exists();
