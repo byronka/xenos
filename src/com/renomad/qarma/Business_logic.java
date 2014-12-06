@@ -65,6 +65,11 @@ public class Business_logic {
   }
 
 
+  public static Request[] get_all_requests_except_for_user(int user_id) {
+    return Database_access.get_all_requests_except_for_user(user_id);
+  }
+
+
   /**
     * adds a user.  if successful, returns true
     */

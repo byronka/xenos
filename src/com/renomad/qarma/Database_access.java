@@ -92,6 +92,48 @@ public class Database_access {
     }
   }
 
+
+  /**
+    * Gets all the requests for the user.
+    * 
+    * @returns an array of Request
+    */
+  public static Request[] get_all_requests_except_for_user(int user_id) {
+    String sqlText = "SELECT * FROM request WHERE requesting_user <> ?";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      set_int(pstmt, 1, user_id);
+      ResultSet resultSet = execute_query(pstmt);
+      if (resultset_is_null_or_empty(resultSet)) {
+        return new Request[0];
+      }
+
+			//keep adding rows of data while there is more data
+      ArrayList<Request> requests = new ArrayList<Request>();
+      for(;result_set_next(resultSet) == true;) {
+        int rid = get_integer(resultSet,  "request_id");
+        String dt = get_string(resultSet,   "datetime");
+        String d = get_nstring(resultSet,  "description");
+        int p = get_integer(resultSet,  "points");
+        String s = get_string(resultSet,   "status");
+        String t = get_nstring(resultSet,  "title");
+        int ru = get_integer(resultSet,      "requesting_user");
+        Request request = new Request(rid,dt,d,p,s,t,ru);
+        requests.add(request);
+      }
+
+      //convert arraylist to array
+      Request[] array_of_requests = 
+        requests.toArray(new Request[requests.size()]);
+      return array_of_requests;
+    } finally {
+      close_statement(pstmt);
+    }
+  }
+
+		
+
+
   /**
     * Gets all the requests for the user.
     * 

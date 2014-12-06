@@ -1,7 +1,7 @@
 <%@ page import="com.renomad.qarma.Business_logic" %>
 <%@include file="includes/check_auth.jsp" %>
 
-<html>                                 
+<html>
 <head><title>The request page</title></head>
 <body>
 <%@include file="includes/header.jsp" %>
