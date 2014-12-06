@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.io.File;
 import java.io.FileNotFoundException;
 import com.renomad.qarma.Business_logic.Request;
+import com.renomad.qarma.Business_logic.Request_status;
 
 public class Database_access {
 
@@ -29,7 +30,7 @@ public class Database_access {
     */
   public static boolean add_request(
       int user_id,
-      String desc, String status, 
+      String desc, int status, 
       String date, int points, String title ) {
     
       if (user_id < 0) {
@@ -46,16 +47,45 @@ public class Database_access {
       try {
         set_string(pstmt, 1, desc);
         set_string(pstmt, 2, date);
-        set_int(pstmt, 3, points);
-        set_string(pstmt, 4, status);
+        set_integer(pstmt, 3, points);
+        set_integer(pstmt, 4, status);
         set_string(pstmt, 5, title);
-        set_int(pstmt, 6, user_id);
+        set_integer(pstmt, 6, user_id);
         return execute_update(pstmt);
       } finally {
         close_statement(pstmt);
       }
   }
 
+	public static Request_status[] get_request_statuses() {
+    String sqlText = 
+      "SELECT request_status_id, request_status_value FROM request_status;";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+
+    try {
+      ResultSet resultSet = execute_query(pstmt);
+      if (resultset_is_null_or_empty(resultSet)) {
+        return new Request_status[0];
+      }
+
+			//keep adding rows of data while there is more data
+      ArrayList<Request_status> statuses = 
+				new ArrayList<Request_status>();
+      for(;result_set_next(resultSet) == true;) {
+				int sid = get_integer(resultSet,  "request_status_id");
+				String sv = get_string(resultSet,   "request_status_value");
+				Request_status status = new Request_status(sid,sv);
+        statuses.add(status);
+			}
+
+      //convert arraylist to array
+      Request_status[] my_array = 
+        statuses.toArray(new Request_status[statuses.size()]);
+      return my_array;
+    } finally {
+      close_statement(pstmt);
+    }
+	}
 
   /**
     * Gets a specific Request for the user.
@@ -65,14 +95,14 @@ public class Database_access {
   public static Request get_a_request(int request_id) {
 		
     String sqlText = 
-      "SELECT * FROM request WHERE request_id = ?";
+      "SELECT request_id, datetime,description,points,status,title,requesting_user FROM request WHERE request_id = ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
 
     try {
-      set_int(pstmt, 1, request_id);
+      set_integer(pstmt, 1, request_id);
       ResultSet resultSet = execute_query(pstmt);
       if (resultset_is_null_or_empty(resultSet)) {
-        return new Request(0,"","",0,"","",0);
+        return new Request(0,"","",0,1,"",0);
       }
 
       result_set_next(resultSet);
@@ -80,7 +110,7 @@ public class Database_access {
 			String dt = get_string(resultSet,   "datetime");
 			String d = get_nstring(resultSet,  "description");
 			int p = get_integer(resultSet,  "points");
-			String s = get_string(resultSet,   "status");
+			int s = get_integer(resultSet,   "status");
 			String t = get_nstring(resultSet,  "title");
 			int ru = get_integer(resultSet,      "requesting_user");
 			Request request = new Request(rid,dt,d,p,s,t,ru);
@@ -101,7 +131,7 @@ public class Database_access {
     String sqlText = "SELECT * FROM request WHERE requesting_user <> ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
-      set_int(pstmt, 1, user_id);
+      set_integer(pstmt, 1, user_id);
       ResultSet resultSet = execute_query(pstmt);
       if (resultset_is_null_or_empty(resultSet)) {
         return new Request[0];
@@ -114,7 +144,7 @@ public class Database_access {
         String dt = get_string(resultSet,   "datetime");
         String d = get_nstring(resultSet,  "description");
         int p = get_integer(resultSet,  "points");
-        String s = get_string(resultSet,   "status");
+        int s = get_integer(resultSet,   "status");
         String t = get_nstring(resultSet,  "title");
         int ru = get_integer(resultSet,      "requesting_user");
         Request request = new Request(rid,dt,d,p,s,t,ru);
@@ -142,7 +172,7 @@ public class Database_access {
     String sqlText = "SELECT * FROM request WHERE requesting_user = ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
-      set_int(pstmt, 1, user_id);
+      set_integer(pstmt, 1, user_id);
       ResultSet resultSet = execute_query(pstmt);
       if (resultset_is_null_or_empty(resultSet)) {
         return new Request[0];
@@ -155,7 +185,7 @@ public class Database_access {
         String dt = get_string(resultSet,   "datetime");
         String d = get_nstring(resultSet,  "description");
         int p = get_integer(resultSet,  "points");
-        String s = get_string(resultSet,   "status");
+        int s = get_integer(resultSet,   "status");
         String t = get_nstring(resultSet,  "title");
         int ru = get_integer(resultSet,      "requesting_user");
         Request request = new Request(rid,dt,d,p,s,t,ru);
@@ -248,7 +278,7 @@ public class Database_access {
 
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
-      set_int(pstmt, 1, user_id);
+      set_integer(pstmt, 1, user_id);
       ResultSet resultSet = execute_query(pstmt);
 
       if(resultset_is_null_or_empty(resultSet)) {
@@ -347,7 +377,7 @@ public class Database_access {
       PreparedStatement pstmt = get_a_prepared_statement(sqlText);
       try {
         set_string(pstmt, 1, ip);
-        set_int(pstmt, 2, user_id);
+        set_integer(pstmt, 2, user_id);
         execute_update(pstmt);
       } finally {
         close_statement(pstmt);
@@ -644,7 +674,7 @@ public class Database_access {
 		* Wrapper around CallableStatement.setInt(int, Int)
 		* to avoid littering my code with try-catch
 		*/
-	private static void set_int(CallableStatement cs, int i, int x) {
+	private static void set_integer(CallableStatement cs, int i, int x) {
 		try {
 			cs.setInt(i, x);
 		} catch (SQLException ex) {
@@ -656,7 +686,7 @@ public class Database_access {
 		* Wrapper around PreparedStatement.setInt(int, Int)
 		* to avoid littering my code with try-catch
 		*/
-	private static void set_int(PreparedStatement ps, int i, int x) {
+	private static void set_integer(PreparedStatement ps, int i, int x) {
 		try {
 			ps.setInt(i, x);
 		} catch (SQLException ex) {

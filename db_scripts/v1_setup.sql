@@ -60,7 +60,7 @@ request_status (
 -- now we put our enums into the request_status table.
 -- these are intentionally in all-caps to emphasize they are not
 -- supposed to go straight to the client.  They must be localized first.
-INSERT INTO TABLE request_status (request_status_value)
+INSERT INTO request_status (request_status_value)
 VALUES('OPEN'),('CLOSED'),('TAKEN');
 
 ---DELIMITER---
@@ -79,6 +79,6 @@ request (
     REFERENCES user (user_id) 
     ON DELETE CASCADE,
   FOREIGN KEY FK_status_request_status_id (status)
-    RFERENCES request_status (request_status_id)
+    REFERENCES request_status (request_status_id)
     ON DELETE CASCADE
 );

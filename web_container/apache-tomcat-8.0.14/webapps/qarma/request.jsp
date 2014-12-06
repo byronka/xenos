@@ -11,7 +11,7 @@
 %>
 <form>
 <p>Description: <%=r.description%>
-<p>Status: <%=r.status%>
+<p>Status: <%=r.get_status()%>
 <p>Date: <%=r.datetime%>
 <p>Points: <%=r.points%>
 <p>Title: <%=r.title%>

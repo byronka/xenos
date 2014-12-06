@@ -24,7 +24,7 @@ public class Business_logic {
   
   public static boolean add_request(
       int user_id,
-      String desc, String status, 
+      String desc, int status, 
       String points, String title) {
     int p = Utilities.parse_int(points);
     String date = getCurrentDateSqlFormat();
@@ -36,7 +36,8 @@ public class Business_logic {
     * given the query string, we will find the proper string
     * and convert that to a request, and return that.
     */
-  public static Request parse_querystring_and_get_request(String query_string) {
+  public static 
+		Request parse_querystring_and_get_request(String query_string) {
     String qs = null;
     int request_id = 0;
     int value_index = 0;
@@ -74,6 +75,45 @@ public class Business_logic {
     return Database_access.get_all_users();
   }
 
+	public static Request_status[] get_request_statuses() {
+		return Database_access.get_request_statuses();
+	}
+
+
+  /**
+    * Request_status is the enumeration of request statuses.  
+		* It is an immutable object.
+    * note that the fields are public, but final.  Once this object
+    * gets constructed, there is no changing it.  You have to create a
+    * new one.
+    */
+  public static class Request_status {
+
+    Request_status ( int status_id, String status_value) {
+      this.status_id       =  status_id;
+      this.status_value    =  status_value;
+    }
+
+    public final int status_id;
+    private final String status_value;
+
+		public String get_status_value() {
+    	//for now, there is no localization file, so we'll just include
+			//the English here.
+			switch(status_id) {
+				case 1:
+					return "open";
+				case 2:
+					return "closed";
+				case 3:
+					return "taken";
+				case 4:
+					return "ERROR_STATUS_DEV_FIX_ME";
+			}
+			return "";
+		}
+
+  }
 
   /**
     * Request encapsulates a user's request.  It is an immutable object.
@@ -84,7 +124,7 @@ public class Business_logic {
   public static class Request {
 
     Request ( int request_id, String datetime, String description, 
-        int points, String status, String title, int requesting_user) {
+        int points, int status, String title, int requesting_user) {
       this.request_id       =  request_id;
       this.datetime         =  datetime;
       this.description      =  description;
@@ -94,13 +134,30 @@ public class Business_logic {
       this.requesting_user  =  requesting_user;
     }
 
+
     public final int request_id;
     public final String datetime;
     public final String description;
     public final int points;
-    public final String status;
+    private final int status;
     public final String title;
     public final int requesting_user;
+
+		public String get_status() {
+    	//for now, there is no localization file, so we'll just include
+			//the English here.
+			switch(status) {
+				case 1:
+					return "open";
+				case 2:
+					return "closed";
+				case 3:
+					return "taken";
+				case 4:
+					return "ERROR_STATUS_DEV_FIX_ME";
+			}
+			return "";
+		}
   }
 
 
