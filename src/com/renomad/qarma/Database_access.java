@@ -62,15 +62,14 @@ public class Database_access {
     * 
     * @returns a single Request
     */
-  public static Request get_a_request(int user_id, int request_id) {
+  public static Request get_a_request(int request_id) {
 		
     String sqlText = 
-      "SELECT * FROM request WHERE requesting_user = ? and request_id = ?";
+      "SELECT * FROM request WHERE request_id = ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
 
     try {
-      set_int(pstmt, 1, user_id);
-      set_int(pstmt, 2, request_id);
+      set_int(pstmt, 1, request_id);
       ResultSet resultSet = execute_query(pstmt);
       if (resultset_is_null_or_empty(resultSet)) {
         return new Request(0,"","",0,"","",0);

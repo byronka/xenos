@@ -6,14 +6,6 @@ import com.renomad.qarma.Utilities;
 public class Business_logic {
 
 
-  /**
-    * gets a full Request object by request_id, verifying the
-    * user can access it.
-    */
-  public static Request get_a_request(int user_id, int request_id) {
-    return Database_access.get_a_request(user_id, request_id);
-  }
-
   private static String getCurrentDateSqlFormat() {
     //all this just to get the date in a nice format for SQL!
     // like this: 2014-11-23 20:02:01
@@ -44,8 +36,7 @@ public class Business_logic {
     * given the query string, we will find the proper string
     * and convert that to a request, and return that.
     */
-  public static Request parse_querystring_and_get_request(
-      int user_id, String query_string) {
+  public static Request parse_querystring_and_get_request(String query_string) {
     String qs = null;
     int request_id = 0;
     int value_index = 0;
@@ -56,7 +47,7 @@ public class Business_logic {
         (value_index = qs.indexOf(request_string)) >= 0) {
         request_id = Integer.parseInt(qs.substring(rsl));
     }
-    return get_a_request(user_id, request_id);
+    return Database_access.get_a_request(request_id);
   }
 
 
