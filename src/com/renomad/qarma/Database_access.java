@@ -164,7 +164,7 @@ public class Database_access {
     * I don't use an arraylist.
     */
   public static String[] get_all_users() {
-    String sqlText = "SELECT * FROM user";
+    String sqlText = "SELECT user_id FROM user";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
       ResultSet resultSet = execute_query(pstmt);
