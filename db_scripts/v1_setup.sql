@@ -43,6 +43,27 @@ ADD COLUMN (
 
 
 ---DELIMITER---
+
+-- this guy is an enum only.  Don't expect to put this value
+-- directly into the output.  Rather, we use the number to determine
+-- which localized value to get.  That is, it will make it easier for
+-- use when we need to translate languages.
+
+CREATE TABLE IF NOT EXISTS
+request_status (
+  request_status_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  request_status_value VARCHAR(20)
+);
+
+
+---DELIMITER---
+-- now we put our enums into the request_status table.
+-- these are intentionally in all-caps to emphasize they are not
+-- supposed to go straight to the client.  They must be localized first.
+INSERT INTO TABLE request_status (request_status_value)
+VALUES('OPEN'),('CLOSED'),('TAKEN');
+
+---DELIMITER---
 -- create_request_table
 
 CREATE TABLE IF NOT EXISTS 
@@ -51,10 +72,13 @@ request (
   datetime DATETIME,
   description NVARCHAR(1000),
   points INT,
-  status VARCHAR(100),
+  status INT,
   title NVARCHAR(255),
   requesting_user INT NOT NULL,
   FOREIGN KEY FK_requesting_user_user_id (requesting_user) 
     REFERENCES user (user_id) 
+    ON DELETE CASCADE,
+  FOREIGN KEY FK_status_request_status_id (status)
+    RFERENCES request_status (request_status_id)
     ON DELETE CASCADE
 );
