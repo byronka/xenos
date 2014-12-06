@@ -41,6 +41,9 @@ public class Security {
   public static int check_if_allowed(HttpServletRequest r) {
     Cookie[] cookies = r.getCookies();
     Cookie c = find_our_cookie(cookies);
+    if (c == null) {
+      return -1;
+    }
     int user_id = get_int_from_cookie(c);
     if (user_id == Integer.MIN_VALUE) { return -1; }
     boolean is_logged_in = Database_access.user_is_logged_in(user_id);
