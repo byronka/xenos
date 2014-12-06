@@ -29,6 +29,7 @@
 		<a href="request.jsp?request=<%=r.request_id %>">
 			<%=r.title%>
 		</a>
+		<%=r.points%>
 	</p>
 <% } %>
 </body>
