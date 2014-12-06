@@ -60,8 +60,8 @@ public class Business_logic {
   }
 
 
-  public static Request[] get_all_requests(int user_id) {
-    return Database_access.get_all_requests(user_id);
+  public static Request[] get_requests_for_user(int user_id) {
+    return Database_access.get_requests_for_user(user_id);
   }
 
 

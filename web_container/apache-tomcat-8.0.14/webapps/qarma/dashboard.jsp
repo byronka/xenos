@@ -10,10 +10,26 @@
 <p>Here are your requests:</p>
 <%
   Business_logic.Request[] requests = 
-    Business_logic.get_all_requests(user_id);
+    Business_logic.get_requests_for_user(user_id);
   for (Business_logic.Request r : requests) {
 %>
-<p><a href="request.jsp?request=<%=r.request_id %>"><%=r.description%></a></p>
+	<p>
+		<a href="request.jsp?request=<%=r.request_id %>">
+			<%=r.description%>
+		</a>
+	</p>
+<% } %>
+<p>Here are other's requests:</p>
+<%
+  Business_logic.Request[] requests = 
+    Business_logic.get_requests_for_user(user_id);
+  for (Business_logic.Request r : requests) {
+%>
+	<p>
+		<a href="request.jsp?request=<%=r.request_id %>">
+			<%=r.description%>
+		</a>
+	</p>
 <% } %>
 </body>
 </html>

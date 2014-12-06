@@ -97,7 +97,7 @@ public class Database_access {
     * 
     * @returns an array of Request
     */
-  public static Request[] get_all_requests(int user_id) {
+  public static Request[] get_requests_for_user(int user_id) {
     String sqlText = "SELECT * FROM request WHERE requesting_user = ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
