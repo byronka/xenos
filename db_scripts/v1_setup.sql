@@ -82,3 +82,37 @@ request (
     REFERENCES request_status (request_status_id)
     ON DELETE CASCADE
 );
+
+
+---DELIMITER---
+-- create the tables to store categories and assign them to requests.
+
+CREATE TABLE IF NOT EXISTS 
+request_category ( 
+  request_category_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	request_category_value VARCHAR(20),
+)
+
+---DELIMITER---
+-- now we put our enums into the request_category table.
+-- these are intentionally in all-caps to emphasize they are not
+-- supposed to go straight to the client.  They must be localized first.
+INSERT INTO request_category (request_category_value)
+VALUES('MATH'),('PHYSICS'),('ECONOMICS'),('HISTORY'),('ENGLISH');
+
+---DELIMITER---
+-- here, we set up a table to correlate categories to a given
+-- request.
+
+CREATE TABLE IF NOT EXISTS 
+request_category_to_request ( 
+	request_id INT NOT NULL,
+  request_category_id INT NOT NULL
+  FOREIGN KEY FK_requesting_user_user_id (requesting_user) 
+    REFERENCES user (user_id) 
+    ON DELETE CASCADE,
+  FOREIGN KEY FK_status_request_status_id (status)
+    REFERENCES request_status (request_status_id)
+    ON DELETE CASCADE
+
+)
