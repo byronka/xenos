@@ -93,12 +93,6 @@ request_category (
 	request_category_value VARCHAR(20)
 )
 
----DELIMITER---
--- now we put our enums into the request_category table.
--- these are intentionally in all-caps to emphasize they are not
--- supposed to go straight to the client.  They must be localized first.
-INSERT INTO request_category (request_category_value)
-VALUES('MATH'),('PHYSICS'),('ECONOMICS'),('HISTORY'),('ENGLISH');
 
 ---DELIMITER---
 -- here, we set up a table to correlate categories to a given
