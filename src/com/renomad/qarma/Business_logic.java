@@ -32,6 +32,11 @@ public class Business_logic {
   }
 
 
+	public static String get_user_displayname(int user_id) {
+  	return Database_access.get_user_displayname(user_id);
+	}
+
+
   /**
     * given the query string, we will find the proper string
     * and convert that to a request, and return that.
@@ -70,10 +75,6 @@ public class Business_logic {
     return Database_access.add_user(first_name, last_name, email, password);
   }
 
-
-  public static String[] get_all_users() {
-    return Database_access.get_all_users();
-  }
 
 	public static Request_status[] get_request_statuses() {
 		return Database_access.get_request_statuses();

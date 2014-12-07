@@ -228,31 +228,23 @@ public class Database_access {
 
   
   /**
-    * gets an array of all the users names.
+    * gets a name for display from the user table
     *
-    * @returns an array of users.  If it's an array, we don't have to
-    * import anything special into the jsp when we use it, that's why
-    * I don't use an arraylist.
+    * @returns a string displaying first name, last name, email
     */
-  public static String[] get_all_users() {
-    String sqlText = "SELECT user_id FROM user";
+  public static String get_user_displayname(int user_id) {
+    String sqlText = "SELECT CONCAT(first_name, ' ',last_name,' (', email,')') as user_displayname FROM user WHERE user_id = ?;";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
+			set_integer(pstmt, 1, user_id);
       ResultSet resultSet = execute_query(pstmt);
-
       if (resultset_is_null_or_empty(resultSet)) {
-        return new String[0];
+        return "No user found with user_id of " + user_id;
       }
 
-			//keep adding rows of data while there is more data
-      ArrayList<String> results = new ArrayList<String>();
-      for(;result_set_next(resultSet) == true;) {
-        results.add(get_nstring(resultSet, "user_name"));
-      }
-      //convert arraylist to array
-      String[] array_of_users = 
-        results.toArray(new String[results.size()]);
-      return array_of_users;
+      result_set_next(resultSet); //move to the first set of results.
+      String display_name = get_nstring(resultSet, "user_displayname");
+      return display_name;
     } finally {
       close_statement(pstmt);
     }
