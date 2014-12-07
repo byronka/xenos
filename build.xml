@@ -33,7 +33,7 @@
       in its place, and kicks off the server.
   -->
   <target name="run-initial" 
-    description="sets up a new database with data, compiles, starts server">
+    description="full-cleans (bye-byte data!), makes a new database with sample data, compiles, starts server">
     <antcall target="clean-full" />
     <antcall target="build-schema" />
     <antcall target="build-sample-data" />
