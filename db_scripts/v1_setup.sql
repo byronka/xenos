@@ -74,8 +74,8 @@ request (
   points INT,
   status INT,
   title NVARCHAR(255),
-  requesting_user INT NOT NULL,
-  FOREIGN KEY FK_requesting_user_user_id (requesting_user) 
+  requesting_user_id INT NOT NULL,
+  FOREIGN KEY FK_requesting_user_user_id (requesting_user_id) 
     REFERENCES user (user_id) 
     ON DELETE CASCADE,
   FOREIGN KEY FK_status_request_status_id (status)
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS
 request_category_to_request ( 
 	request_id INT NOT NULL,
   request_category_id INT NOT NULL
-  FOREIGN KEY FK_requesting_user_user_id (requesting_user) 
+  FOREIGN KEY FK_requesting_user_user_id (requesting_user_id) 
     REFERENCES user (user_id) 
     ON DELETE CASCADE,
   FOREIGN KEY FK_status_request_status_id (status)

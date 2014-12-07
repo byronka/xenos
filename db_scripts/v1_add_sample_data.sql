@@ -23,7 +23,7 @@ VALUES
 ---DELIMITER---
 
 INSERT INTO request 
-(datetime, description, points, status, title, requesting_user) 
+(datetime, description, points, status, title, requesting_user_id) 
 VALUES 
 (NOW(), "a fine description for a request", 30, 1, "A great title", 1),
 (NOW(), "Gotta job for ya", 10, 1, "Throw momma from the train", 1),

@@ -41,7 +41,7 @@ public class Database_access {
 
       String sqlText = 
         "INSERT into request (description, datetime, points, " + 
-        "status, title, requesting_user) VALUES (?, ?, ?, ?, ?, ?)"; 
+        "status, title, requesting_user_id) VALUES (?, ?, ?, ?, ?, ?)"; 
 
       PreparedStatement pstmt = get_a_prepared_statement(sqlText);
       try {
@@ -95,7 +95,7 @@ public class Database_access {
   public static Request get_a_request(int request_id) {
 		
     String sqlText = 
-      "SELECT request_id, datetime,description,points,status,title,requesting_user FROM request WHERE request_id = ?";
+      "SELECT request_id, datetime,description,points,status,title,requesting_user_id FROM request WHERE request_id = ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
 
     try {
@@ -112,7 +112,7 @@ public class Database_access {
 			int p = get_integer(resultSet,  "points");
 			int s = get_integer(resultSet,   "status");
 			String t = get_nstring(resultSet,  "title");
-			int ru = get_integer(resultSet,      "requesting_user");
+			int ru = get_integer(resultSet,      "requesting_user_id");
 			Request request = new Request(rid,dt,d,p,s,t,ru);
 
       return request;
@@ -128,7 +128,7 @@ public class Database_access {
     * @returns an array of Request
     */
   public static Request[] get_all_requests_except_for_user(int user_id) {
-    String sqlText = "SELECT * FROM request WHERE requesting_user <> ?";
+    String sqlText = "SELECT * FROM request WHERE requesting_user_id <> ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
       set_integer(pstmt, 1, user_id);
@@ -146,7 +146,7 @@ public class Database_access {
         int p = get_integer(resultSet,  "points");
         int s = get_integer(resultSet,   "status");
         String t = get_nstring(resultSet,  "title");
-        int ru = get_integer(resultSet,      "requesting_user");
+        int ru = get_integer(resultSet,      "requesting_user_id");
         Request request = new Request(rid,dt,d,p,s,t,ru);
         requests.add(request);
       }
@@ -169,7 +169,7 @@ public class Database_access {
     * @returns an array of Request
     */
   public static Request[] get_requests_for_user(int user_id) {
-    String sqlText = "SELECT * FROM request WHERE requesting_user = ?";
+    String sqlText = "SELECT * FROM request WHERE requesting_user_id = ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
       set_integer(pstmt, 1, user_id);
@@ -187,7 +187,7 @@ public class Database_access {
         int p = get_integer(resultSet,  "points");
         int s = get_integer(resultSet,   "status");
         String t = get_nstring(resultSet,  "title");
-        int ru = get_integer(resultSet,      "requesting_user");
+        int ru = get_integer(resultSet,      "requesting_user_id");
         Request request = new Request(rid,dt,d,p,s,t,ru);
         requests.add(request);
       }

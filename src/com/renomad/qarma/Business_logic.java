@@ -125,14 +125,14 @@ public class Business_logic {
   public static class Request {
 
     Request ( int request_id, String datetime, String description, 
-        int points, int status, String title, int requesting_user) {
+        int points, int status, String title, int requesting_user_id) {
       this.request_id       =  request_id;
       this.datetime         =  datetime;
       this.description      =  description;
       this.points           =  points;
       this.status           =  status;
       this.title            =  title;
-      this.requesting_user  =  requesting_user;
+      this.requesting_user_id  =  requesting_user_id;
     }
 
 
@@ -142,7 +142,7 @@ public class Business_logic {
     public final int points;
     private final int status;
     public final String title;
-    public final int requesting_user;
+    public final int requesting_user_id;
 
 		public String get_status() {
     	//for now, there is no localization file, so we'll just include
