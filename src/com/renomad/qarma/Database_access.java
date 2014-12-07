@@ -87,12 +87,66 @@ public class Database_access {
     }
 	}
 
+
+	public static String get_category_localized(int category_id) {
+		//for now, there is no localization file, so we'll just include
+		//the English here.
+
+			switch(category_id) {
+				case 1:
+					return "math";
+				case 2:
+					return "physics";
+				case 3:
+					return "economics";
+				case 4:
+					return "history";
+				case 5:
+					return "english";
+				default:
+					return "ERROR";
+			}
+		}
+
+
+	/**
+		* returns an array of strings representing the available
+		* categories.
+		* @returns array of strings of categories
+		*/
+	public static String[] get_all_categories() {
+    String sqlText = 
+			"SELECT request_category_id FROM request_category; ";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      ResultSet resultSet = execute_query(pstmt);
+      if (resultset_is_null_or_empty(resultSet)) {
+        return new String[0];
+      }
+
+			//keep adding rows of data while there is more data
+      ArrayList<String> categories = new ArrayList<String>();
+      while(result_set_next(resultSet)) {
+        int rcid = get_integer(resultSet,  "request_category_id");
+				String category = get_category_localized(rcid);
+        categories.add(category);
+      }
+
+      //convert arraylist to array
+      String[] array_of_categories = 
+        categories.toArray(new String[categories.size()]);
+      return array_of_categories;
+    } finally {
+      close_statement(pstmt);
+    }
+	}
+
 	/**
 		* gets an array of categories for a given request
 		*
-		*@returns an array of ints, representing the category id's
+		*@returns an array of Strings, representing the categories
 		*/
-	public static Integer[] get_categories_for_request(int request_id) {
+	public static String[] get_categories_for_request(int request_id) {
     String sqlText = 
 			"SELECT request_category_id "+
 				"FROM request_to_category "+
@@ -102,19 +156,20 @@ public class Database_access {
       set_integer(pstmt, 1, request_id);
       ResultSet resultSet = execute_query(pstmt);
       if (resultset_is_null_or_empty(resultSet)) {
-        return new Integer[0];
+        return new String[0];
       }
 
 			//keep adding rows of data while there is more data
-      ArrayList<Integer> categories = new ArrayList<Integer>();
-      for(;result_set_next(resultSet) == true;) {
+      ArrayList<String> categories = new ArrayList<String>();
+      while(result_set_next(resultSet)) {
         int rcid = get_integer(resultSet,  "request_category_id");
-        categories.add(rcid);
+				String category = get_category_localized(rcid);
+        categories.add(category);
       }
 
       //convert arraylist to array
-      Integer[] array_of_categories = 
-        categories.toArray(new Integer[categories.size()]);
+      String[] array_of_categories = 
+        categories.toArray(new String[categories.size()]);
       return array_of_categories;
     } finally {
       close_statement(pstmt);
@@ -150,7 +205,7 @@ public class Database_access {
 			int s = get_integer(resultSet,   "status");
 			String t = get_nstring(resultSet,  "title");
 			int ru = get_integer(resultSet,      "requesting_user_id");
-			Integer[] categories = get_categories_for_request(request_id);
+			String[] categories = get_categories_for_request(request_id);
 			Request request = new Request(rid,dt,d,p,s,t,ru,categories);
 
       return request;

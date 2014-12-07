@@ -5,18 +5,23 @@ import com.renomad.qarma.Utilities;
 
 public class Business_logic {
 
+		public static String[] get_all_categories() {
+    	return Database_access.get_all_categories();
+		}
 
   private static String getCurrentDateSqlFormat() {
     //all this just to get the date in a nice format for SQL!
     // like this: 2014-11-23 20:02:01
     java.util.Calendar cal = java.util.Calendar.getInstance();
     java.util.Date date = cal.getTime();
-    java.text.SimpleDateFormat myformat = new java.text.SimpleDateFormat("yyyy-MM-dd kk:mm:ss"); 
+    java.text.SimpleDateFormat myformat = 
+			new java.text.SimpleDateFormat("yyyy-MM-dd kk:mm:ss"); 
     String formattedDate = null;
     try {
       formattedDate = myformat.format(date);
     } catch (Exception e1) {
-      System.out.println("somehow, there was a failure with formatting the date!");
+      System.out.println(
+					"somehow, there was a failure with formatting the date!");
       System.out.println(e1);
     }
     return formattedDate;
@@ -127,12 +132,12 @@ public class Business_logic {
     Request ( int request_id, String datetime, String description, 
         int points, int status, String title, int requesting_user_id) {
 			this(request_id, datetime, description, points,
-					status, title, requesting_user_id, new Integer[0]);
+					status, title, requesting_user_id, new String[0]);
 		}
 
     Request ( int request_id, String datetime, String description, 
         int points, int status, String title, int requesting_user_id,
-				Integer[] categories) {
+				String[] categories) {
       this.request_id       =  request_id;
       this.datetime         =  datetime;
       this.description      =  description;
@@ -151,38 +156,8 @@ public class Business_logic {
     private final int status;
     public final String title;
     public final int requesting_user_id;
-		private final Integer[] categories;
+		public final String[] categories;
 
-		public String get_categories() {
-    	//for now, there is no localization file, so we'll just include
-			//the English here.
-			String category = "";
-			for(Integer c : categories) {
-
-				switch(c) {
-					case 1:
-						category += "math";
-						break;
-					case 2:
-						category += "physics";
-						break;
-					case 3:
-						category += "economics";
-						break;
-					case 4:
-						category += "history";
-						break;
-					case 5:
-						category += "english";
-						break;
-					default:
-						category += "ERROR";
-				}
-				category += ",";
-
-			}
-			return category;
-		}
 
 		public String get_status() {
     	//for now, there is no localization file, so we'll just include

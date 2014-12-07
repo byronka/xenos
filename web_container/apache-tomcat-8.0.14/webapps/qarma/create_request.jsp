@@ -10,6 +10,14 @@
       <p>Description: <input type="text" name="description" /> </p>
 			<p>Points: <input type="text" name="points" /> </p>
       <p>Title: <input type="text" name="title" /> </p>
+			<p>Categories: <input type="text" name="categories" /></p>
+			<div id='available-categories'>
+				<%
+					String[] categories = Business_logic.get_all_categories();
+					for(String category : categories) { %>
+					<%=category%>,
+				<%}%>
+			</div>
       <button type="submit">Create Request</button>
     </form>
   </body>
