@@ -15,6 +15,8 @@
 <p>Date: <%=r.datetime%>
 <p>Points: <%=r.points%>
 <p>Title: <%=r.title%>
+<p>Requesting user: <%=r.requesting_user_id%>
+<p>Categories: <%=r.get_categories()%>
 </form>
 </body>
 </html>

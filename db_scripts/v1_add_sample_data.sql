@@ -42,4 +42,4 @@ VALUES('MATH'),('PHYSICS'),('ECONOMICS'),('HISTORY'),('ENGLISH');
 ---DELIMITER---
 -- Here we set up all the requests to have some categories.
 INSERT INTO request_to_category (request_id, request_category_id)
-VALUES(1,1),(2,1),(3,1),(4,1);
+VALUES(1,1),(1,3),(1,4),(2,1),(3,1),(3,2),(4,4);

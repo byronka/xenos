@@ -126,6 +126,13 @@ public class Business_logic {
 
     Request ( int request_id, String datetime, String description, 
         int points, int status, String title, int requesting_user_id) {
+			this(request_id, datetime, description, points,
+					status, title, requesting_user_id, new Integer[0]);
+		}
+
+    Request ( int request_id, String datetime, String description, 
+        int points, int status, String title, int requesting_user_id,
+				Integer[] categories) {
       this.request_id       =  request_id;
       this.datetime         =  datetime;
       this.description      =  description;
@@ -133,6 +140,7 @@ public class Business_logic {
       this.status           =  status;
       this.title            =  title;
       this.requesting_user_id  =  requesting_user_id;
+			this.categories       =  categories;
     }
 
 
@@ -143,6 +151,38 @@ public class Business_logic {
     private final int status;
     public final String title;
     public final int requesting_user_id;
+		private final Integer[] categories;
+
+		public String get_categories() {
+    	//for now, there is no localization file, so we'll just include
+			//the English here.
+			String category = "";
+			for(Integer c : categories) {
+
+				switch(c) {
+					case 1:
+						category += "math";
+						break;
+					case 2:
+						category += "physics";
+						break;
+					case 3:
+						category += "economics";
+						break;
+					case 4:
+						category += "history";
+						break;
+					case 5:
+						category += "english";
+						break;
+					default:
+						category += "ERROR";
+				}
+				category += ",";
+
+			}
+			return category;
+		}
 
 		public String get_status() {
     	//for now, there is no localization file, so we'll just include
@@ -154,10 +194,9 @@ public class Business_logic {
 					return "closed";
 				case 3:
 					return "taken";
-				case 4:
+				default:
 					return "ERROR_STATUS_DEV_FIX_ME";
 			}
-			return "";
 		}
   }
 

@@ -87,6 +87,40 @@ public class Database_access {
     }
 	}
 
+	/**
+		* gets an array of categories for a given request
+		*
+		*@returns an array of ints, representing the category id's
+		*/
+	public static Integer[] get_categories_for_request(int request_id) {
+    String sqlText = 
+			"SELECT request_category_id "+
+				"FROM request_to_category "+
+				"WHERE request_id = ?;";
+    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+    try {
+      set_integer(pstmt, 1, request_id);
+      ResultSet resultSet = execute_query(pstmt);
+      if (resultset_is_null_or_empty(resultSet)) {
+        return new Integer[0];
+      }
+
+			//keep adding rows of data while there is more data
+      ArrayList<Integer> categories = new ArrayList<Integer>();
+      for(;result_set_next(resultSet) == true;) {
+        int rcid = get_integer(resultSet,  "request_category_id");
+        categories.add(rcid);
+      }
+
+      //convert arraylist to array
+      Integer[] array_of_categories = 
+        categories.toArray(new Integer[categories.size()]);
+      return array_of_categories;
+    } finally {
+      close_statement(pstmt);
+    }
+	}
+
   /**
     * Gets a specific Request for the user.
     * 
@@ -95,7 +129,10 @@ public class Database_access {
   public static Request get_a_request(int request_id) {
 		
     String sqlText = 
-      "SELECT request_id, datetime,description,points,status,title,requesting_user_id FROM request WHERE request_id = ?";
+      "SELECT request_id, datetime,description,points,"+
+			"status,title,requesting_user_id "+
+			"FROM request "+
+			"WHERE request_id = ?";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
 
     try {
@@ -113,7 +150,8 @@ public class Database_access {
 			int s = get_integer(resultSet,   "status");
 			String t = get_nstring(resultSet,  "title");
 			int ru = get_integer(resultSet,      "requesting_user_id");
-			Request request = new Request(rid,dt,d,p,s,t,ru);
+			Integer[] categories = get_categories_for_request(request_id);
+			Request request = new Request(rid,dt,d,p,s,t,ru,categories);
 
       return request;
     } finally {
