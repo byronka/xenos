@@ -1,10 +1,15 @@
+<%@ page import="com.renomad.qarma.Security" %>
+<%
+  int user_id = Security.check_if_allowed(request);
+	if (user_id > 0) { response.sendRedirect("dashboard.jsp"); }
+%>
 <html>
 <head><title>Account Creation</title></head>
 <body>
 <h2>
   Create a new account
 </h2>
-  <form id="enter_name_form" action="register.jsp" method="post">
+  <form id="enter_name_form" action="handle_register.jsp" method="post">
     <p>
       First Name:
       <input name="first_name" type="text" />
