@@ -90,7 +90,7 @@ request (
 CREATE TABLE IF NOT EXISTS 
 request_category ( 
   request_category_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	request_category_value VARCHAR(20),
+	request_category_value VARCHAR(20)
 )
 
 ---DELIMITER---
@@ -105,14 +105,13 @@ VALUES('MATH'),('PHYSICS'),('ECONOMICS'),('HISTORY'),('ENGLISH');
 -- request.
 
 CREATE TABLE IF NOT EXISTS 
-request_category_to_request ( 
+request_to_category ( 
 	request_id INT NOT NULL,
-  request_category_id INT NOT NULL
-  FOREIGN KEY FK_requesting_user_user_id (requesting_user_id) 
-    REFERENCES user (user_id) 
+  request_category_id INT NOT NULL,
+  FOREIGN KEY FK_request_id_request_id (request_id) 
+    REFERENCES request (request_id) 
     ON DELETE CASCADE,
-  FOREIGN KEY FK_status_request_status_id (status)
-    REFERENCES request_status (request_status_id)
+  FOREIGN KEY FK_request_category_id_request_category_id (request_category_id)
+    REFERENCES request_category (request_category_id)
     ON DELETE CASCADE
-
 )
