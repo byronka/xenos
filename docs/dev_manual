@@ -2,4 +2,28 @@ Much of the development material attempts to be self-documenting.
 However, a little extra time spent explaining things can help ease the
 transition into a new project.  That is what this document is for.
 
+Utilities
+=========
+
+Exuberant Ctags -
+use of the program "exuberant ctags" can make navigation of the code
+base faster.  That program creates an index of symbols used in the code;
+method names, variables, classes, and so on.  It provides this to Vim
+and Emacs for quick navigation.  In Vim, you can press ctrl+[ to visit
+the definition of a given method, and ctrl+T to return.
+
+To create this index, run the program
+  $QARMA_HOME/utils/run_ctags.sh
+
+This will create a file called "tags" in your $QARMA_HOME directory,
+which will be around 25 megabytes or larger.
+
+Using that file with Vim requires Vim to know about it.  You can do
+this by adding the following to your vimrc file:
+
+:set tags=./tags;~/Projects
+
+(add this to your .vimrc). This makes Vim look for a file named tags
+first in its current directory, then in its parent directory, and so
+on recursively up to containing directory ~/Projects.)
 
