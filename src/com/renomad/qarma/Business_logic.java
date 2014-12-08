@@ -30,12 +30,32 @@ public class Business_logic {
   public static boolean add_request(
       int user_id,
       String desc, int status, 
-      String points, String title) {
+      String points, String title, String categories) {
     int p = Utilities.parse_int(points);
     String date = getCurrentDateSqlFormat();
-    return Database_access.add_request(user_id,desc,status, date, p, title);
+		Integer[] categories = parse_categories_string(categories);
+    boolean success = Database_access.add_request(
+				user_id,desc,status, date, p, title, categories);
+		if (!success) {
+			System.out.prinln("failure at add_request first part");
+		}
   }
 
+
+	/**
+		* Convert a single string containing multiple categories into 
+		* an array of integers representing those categories.
+		* the easy way to handle this is to get all the categories and then
+		* regex the string for them.
+		* @Returns an integer array of the applicable categories
+		*/
+	private Integer[] static parse_categories_string(String categories) {
+		String[] all_categories = Database_access.get_all_categories();
+		for (String category : all_categories) {
+			
+		}
+
+	}
 
 	public static String get_user_displayname(int user_id) {
   	return Database_access.get_user_displayname(user_id);

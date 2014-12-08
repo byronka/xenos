@@ -26,17 +26,17 @@ public class Database_access {
   
   /**
     * adds a Request to the database
-    *
+    * @Returns the id of the new request.
     */
-  public static boolean add_request(
+  public static int add_request(
       int user_id,
       String desc, int status, 
-      String date, int points, String title ) {
+      String date, int points, String title , Integer[] categories) {
     
       if (user_id < 0) {
         System.out.println(
             "error: user id was " + user_id + " in add_request");
-        return false;
+        return -1;
       }
 
       String sqlText = 
@@ -312,7 +312,7 @@ public class Database_access {
       set_string(pstmt, 2, last_name);
       set_string(pstmt, 3, email);
       set_string(pstmt, 4, password);
-      boolean is_successful = execute_update(pstmt);
+      boolean is_successful = execute_update(pstmt) > 0;
       return is_successful;
     } finally {
       close_statement(pstmt);
@@ -393,7 +393,7 @@ public class Database_access {
     String sqlText = "UPDATE user SET is_logged_in = false;";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
-      boolean is_successful = execute_update(pstmt);
+      boolean is_successful = execute_update(pstmt) > 0;
       return is_successful;
     } finally {
       close_statement(pstmt);
@@ -521,10 +521,16 @@ public class Database_access {
     get_a_prepared_statement(String queryText) {
     try {
       javax.naming.Context initContext = new javax.naming.InitialContext();
-      javax.naming.Context envContext  = (javax.naming.Context)initContext.lookup("java:/comp/env");
-      javax.sql.DataSource ds = (javax.sql.DataSource)envContext.lookup("jdbc/qarma_db");
+      javax.naming.Context envContext  = 
+				(javax.naming.Context)initContext.lookup("java:/comp/env");
+      javax.sql.DataSource ds = 
+				(javax.sql.DataSource)envContext.lookup("jdbc/qarma_db");
       Connection conn = ds.getConnection();
-      PreparedStatement stmt = conn.prepareStatement(queryText);
+			//we want to return the key, aka the id, of whatever we inserted
+			//or updated, to allow for multiple sql statements targeting the
+			//same data.
+      PreparedStatement stmt = 
+				conn.prepareStatement(queryText, Statement.RETURN_GENERATED_KEYS);
       return stmt;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
@@ -611,20 +617,21 @@ public class Database_access {
     *
     * Opens and closes a connection each time it's run.
     * @param pstmt The prepared statement
-    * @returns a boolean indicating whether this succeeded.  If it
-    * hits an exception, that's when we return false.  if success, true.
+    * @returns an integer that represents the new or updated id.
     */
-  private static boolean execute_update(PreparedStatement pstmt) {
+  private static int execute_update(PreparedStatement pstmt) {
+		int id = -1; // -1 means no key was generated.  aka failure.
     try {
       pstmt.executeUpdate();
+			ResultSet rs = stmt.getGeneratedKeys();
+			rs.next();
+			auto_id = rs.getInt(1);
     } catch (SQLException ex) {
       handle_sql_exception(ex);
-      return false;
     } catch (Exception ex) {
       System.out.println("General exception: " + ex.toString());
-      return false;
     }
-    return true;
+    return id;
   }
   
 
