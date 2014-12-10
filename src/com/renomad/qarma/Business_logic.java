@@ -1,5 +1,6 @@
 package com.renomad.qarma;
 
+import java.util.ArrayList;
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Utilities;
 
@@ -27,18 +28,37 @@ public class Business_logic {
     return formattedDate;
   }
   
+
+  /**
+    * given all the data to add a request, does so.
+    * if any parts fail, this will return false.
+    * @param user_id the user's id
+    * @param desc a description string, the core of the request
+    * @param status look in the database for request status.  e.g. open, closed, taken
+    * @param points the points are the currency for the request
+    * @param title the short title for the request
+    * @param categories the various categories for this request, provided to us here as a single string.  Comes straight from the client, we have to parse it.
+    * @return false if an error occured.
+    */
   public static boolean add_request(
-      int user_id,
-      String desc, int status, 
+      int user_id, String desc, int status, 
       String points, String title, String categories) {
+
+    //add the request to the db
     int p = Utilities.parse_int(points);
     String date = getCurrentDateSqlFormat();
-		Integer[] categories = parse_categories_string(categories);
-    boolean success = Database_access.add_request(
-				user_id,desc,status, date, p, title, categories);
-		if (!success) {
-			System.out.prinln("failure at add_request first part");
-		}
+    int new_request_id = 
+      Database_access.add_request(user_id,desc,status, date, p, title);
+
+    //add the categories
+    if (new_request_id == -1) {
+      System.out.println(
+          "error adding request at Business_logic.add_request()");
+      return false;
+    }
+		Integer[] categories_array = parse_categories_string(categories);
+    Database_access.add_categories(new_request_id, categories_array);
+    return true;
   }
 
 
@@ -46,15 +66,28 @@ public class Business_logic {
 		* Convert a single string containing multiple categories into 
 		* an array of integers representing those categories.
 		* the easy way to handle this is to get all the categories and then
-		* regex the string for them.
-		* @Returns an integer array of the applicable categories
+		* indexof() the string for them.
+    * @param categories_str a single string that contains 0 or more category words, localized.  This value comes straight unchanged from the client.
+		* @return an integer array of the applicable categories
 		*/
-	private Integer[] static parse_categories_string(String categories) {
+	private static Integer[] parse_categories_string(String categories_str) {
+    
 		String[] all_categories = Database_access.get_all_categories();
-		for (String category : all_categories) {
-			
-		}
+    
+    //guard clauses
+    if (all_categories.length == 0) {return new Integer[0];}
+    if (categories_str.length() == 0) {return new Integer[0];}
 
+    ArrayList<Integer> categories_list = new ArrayList<Integer>();
+		for (int i = 0; i < all_categories.length; i++) {
+      String cat = all_categories[i];
+			if (cat.length() > 0 && categories_str.indexOf(cat) > 0) {
+        categories_list.add(i);
+      }
+		}
+    Integer[] my_array = 
+      categories_list.toArray(new Integer[categories_list.size()]);
+    return my_array;
 	}
 
 	public static String get_user_displayname(int user_id) {

@@ -25,13 +25,42 @@ public class Database_access {
 
   
   /**
+    * adds categories for a request to the database.  Cannot fail unless
+    * some constraint is violated or connection to the database fails.  
+    * I'm just trying to say, this should be fairly simple. We add another
+    * row for every unique relationship of request id to category id.
+    */
+  public static void add_categories(int request_id, Integer[] categories) {
+     if (request_id < 0 || categories.length == 0) {return;}
+
+     //assembling dynamic SQL.
+      String sqlText = 
+        "INSERT into request (description, datetime, points, " + 
+        "status, title, requesting_user_id) VALUES (?, ?)"; 
+     for (int i = 1; i < categories.length; i++) {
+       sqlText += ",(?, ?)";
+     }
+     sqlText += ";";
+      
+      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+      try {
+        for (int i = 0; i < categories.length; i += 2 ) {
+          int category_id = categories[i];
+          set_integer(pstmt, i, request_id);
+          set_integer(pstmt, i+1, category_id);
+        }
+        execute_update(pstmt);
+      } finally {
+        close_statement(pstmt);
+      }
+  }
+
+  /**
     * adds a Request to the database
     * @Returns the id of the new request.
     */
-  public static int add_request(
-      int user_id,
-      String desc, int status, 
-      String date, int points, String title , Integer[] categories) {
+  public static int add_request( int user_id, String desc, int status, 
+      String date, int points, String title ) {
     
       if (user_id < 0) {
         System.out.println(
@@ -110,9 +139,8 @@ public class Database_access {
 
 
 	/**
-		* returns an array of strings representing the available
-		* categories.
-		* @returns array of strings of categories
+		* returns an Array of localized categories, indexed by database id.
+		* @return Array of strings, indexed by id
 		*/
 	public static String[] get_all_categories() {
     String sqlText = 
@@ -129,7 +157,10 @@ public class Database_access {
       while(result_set_next(resultSet)) {
         int rcid = get_integer(resultSet,  "request_category_id");
 				String category = get_category_localized(rcid);
-        categories.add(category);
+
+        //note here, we are adding the localized category value
+        //at an index that is the same as its id in the database.  Handy!
+        categories.add(rcid, category); 
       }
 
       //convert arraylist to array
@@ -140,6 +171,7 @@ public class Database_access {
       close_statement(pstmt);
     }
 	}
+
 
 	/**
 		* gets an array of categories for a given request
@@ -623,9 +655,9 @@ public class Database_access {
 		int id = -1; // -1 means no key was generated.  aka failure.
     try {
       pstmt.executeUpdate();
-			ResultSet rs = stmt.getGeneratedKeys();
+			ResultSet rs = pstmt.getGeneratedKeys();
 			rs.next();
-			auto_id = rs.getInt(1);
+			id = rs.getInt(1);
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     } catch (Exception ex) {
