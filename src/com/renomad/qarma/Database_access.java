@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Arrays;
@@ -22,68 +24,79 @@ public class Database_access {
   // BUSINESS LOGIC CODE          *
   // ******************************
 
-
-  
-  /**
-    * adds categories for a request to the database.  Cannot fail unless
-    * some constraint is violated or connection to the database fails.  
-    * I'm just trying to say, this should be fairly simple. We add another
-    * row for every unique relationship of request id to category id.
-    */
-  public static void add_categories(int request_id, Integer[] categories) {
-     if (request_id < 0 || categories.length == 0) {return;}
-
-     //assembling dynamic SQL.
-      String sqlText = 
-        "INSERT into request (description, datetime, points, " + 
-        "status, title, requesting_user_id) VALUES (?, ?)"; 
-     for (int i = 1; i < categories.length; i++) {
-       sqlText += ",(?, ?)";
-     }
-     sqlText += ";";
-      
-      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-      try {
-        for (int i = 0; i < categories.length; i += 2 ) {
-          int category_id = categories[i];
-          set_integer(pstmt, i, request_id);
-          set_integer(pstmt, i+1, category_id);
-        }
-        execute_update(pstmt);
-      } finally {
-        close_statement(pstmt);
-      }
-  }
-
   /**
     * adds a Request to the database
     * @Returns the id of the new request.
     */
   public static int add_request( int user_id, String desc, int status, 
-      String date, int points, String title ) {
+      String date, int points, String title , Integer[] categories) {
     
-      if (user_id < 0) {
-        System.out.println(
-            "error: user id was " + user_id + " in add_request");
-        return -1;
-      }
+		if (user_id < 0) {
+			System.out.println(
+				"error: user id was " + user_id + " in add_request");
+			return -1;
+		}
 
-      String sqlText = 
-        "INSERT into request (description, datetime, points, " + 
-        "status, title, requesting_user_id) VALUES (?, ?, ?, ?, ?, ?)"; 
+		String update_request_sql = 
+			"INSERT into request (description, datetime, points, " + 
+			"status, title, requesting_user_id) VALUES (?, ?, ?, ?, ?, ?)"; 
 
-      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-      try {
-        set_string(pstmt, 1, desc);
-        set_string(pstmt, 2, date);
-        set_integer(pstmt, 3, points);
-        set_integer(pstmt, 4, status);
-        set_string(pstmt, 5, title);
-        set_integer(pstmt, 6, user_id);
-        return execute_update(pstmt);
-      } finally {
-        close_statement(pstmt);
-      }
+     //assembling dynamic SQL to add categories
+		String update_categories_sql = 
+			"INSERT into request_to_category "+
+			"(request_id,request_category_id) "+
+			"VALUES (?, ?)"; 
+		for (int i = 1; i < categories.length; i++) {
+		 update_categories_sql += ",(?, ?)";
+		}
+
+		int request_id = -1; //default to a guard value that indicates failure
+		PreparedStatement req_pstmt = null;
+		PreparedStatement cat_pstmt = null;
+		Connection conn = null;
+	
+		try {
+			javax.sql.DataSource ds = get_a_datasource();
+			conn = get_a_connection(ds, false);
+			conn.setAutoCommit(false);
+			req_pstmt = get_a_prepared_statement(update_request_sql, conn);
+			cat_pstmt = get_a_prepared_statement(update_categories_sql, conn);
+			set_string(req_pstmt, 1, desc);
+			set_string(req_pstmt, 2, date);
+			set_integer(req_pstmt, 3, points);
+			set_integer(req_pstmt, 4, status);
+			set_string(req_pstmt, 5, title);
+			set_integer(req_pstmt, 6, user_id);
+			request_id = execute_update(req_pstmt);
+
+			if (request_id < 0 || categories.length == 0) {
+				try {
+					System.out.println("Transaction is being rolled back");
+					System.out.println("request id:" + request_id);
+					System.out.println("categories length:" + categories.length);
+					conn.rollback();
+				} catch (SQLException ex) {
+					handle_sql_exception(ex);
+				}
+			}
+
+			for (int i = 0; i < categories.length; i++ ) {
+				int category_id = categories[i];
+				set_integer(cat_pstmt, 2*i+1, request_id);
+				set_integer(cat_pstmt, 2*i+2, category_id);
+			}
+
+			execute_update(cat_pstmt);
+
+			conn.commit();
+
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+		} finally {
+			close_statement(req_pstmt);
+			close_statement(cat_pstmt);
+		}
+    return request_id;
   }
 
 	public static Request_status[] get_request_statuses() {
@@ -139,34 +152,28 @@ public class Database_access {
 
 
 	/**
-		* returns an Array of localized categories, indexed by database id.
-		* @return Array of strings, indexed by id
+		* returns a Map of localized categories, indexed by database id.
+		* @return Map of strings, indexed by id, or null if nothing in db.
 		*/
-	public static String[] get_all_categories() {
+	public static Map<Integer,String> get_all_categories() {
     String sqlText = 
 			"SELECT request_category_id FROM request_category; ";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
     try {
       ResultSet resultSet = execute_query(pstmt);
       if (resultset_is_null_or_empty(resultSet)) {
-        return new String[0];
+        return null;
       }
 
 			//keep adding rows of data while there is more data
-      ArrayList<String> categories = new ArrayList<String>();
+      Map<Integer, String> categories = new HashMap<Integer,String>();
       while(result_set_next(resultSet)) {
         int rcid = get_integer(resultSet,  "request_category_id");
 				String category = get_category_localized(rcid);
-
-        //note here, we are adding the localized category value
-        //at an index that is the same as its id in the database.  Handy!
-        categories.add(rcid, category); 
+        categories.put(rcid, category); 
       }
 
-      //convert arraylist to array
-      String[] array_of_categories = 
-        categories.toArray(new String[categories.size()]);
-      return array_of_categories;
+      return categories;
     } finally {
       close_statement(pstmt);
     }
@@ -508,6 +515,24 @@ public class Database_access {
 
 
   /**
+		* this overload of the method will also rollback commits.
+    */
+  private static void handle_sql_exception(SQLException ex, Statement stmt) {
+		try {
+			Connection conn = stmt.getConnection();
+			if (conn != null) {
+				System.err.print("Transaction is being rolled back");
+				conn.rollback();
+			}
+		} catch(SQLException excep) {
+			handle_sql_exception(excep); //inner exception
+		} finally {
+			handle_sql_exception(ex);  //exception from parameter list
+		}
+	}
+
+
+  /**
     * provides a few boilerplate println's for sql exceptions
     */
   private static void handle_sql_exception(SQLException ex) {
@@ -519,16 +544,33 @@ public class Database_access {
   }
 
 
+	/**
+		* Helper to get a connection.  This is to be used for cases
+		* where you need to run multiple statements on a single connection.
+		* @return a connection set up for multiple statements in transaction.
+		*/
+	private static Connection get_a_connection(
+			javax.sql.DataSource ds, boolean setautocommit) {
+		try { 
+			if (ds != null) {
+				Connection conn = ds.getConnection();
+				conn.setAutoCommit(setautocommit);
+				return conn;
+			}
+		} catch (SQLException ex) {
+    	handle_sql_exception(ex);
+		}
+		return null; //if we hit an exception.
+	}
 
-
-  /**
-    * Helper to get a Statement
-    * Opens a connection each time it's run.
-    * We don't have to worry about SQL injection here, 
-    * it should only be called by our own code.
-    * @returns A new Statement object.
-    */
-  private static Statement get_a_statement() throws SQLException {
+	/**
+		* Helper to get a datasource which will give us a Connection
+		* from the connection pool.  Tomcat handles this, mostly.  We use
+		* the lookup service to find the datasource, it is configured
+		* in WEB-INF and META-INF
+		* @return a hot spanking datasource.  Use this to get a connection.
+		*/
+	private static javax.sql.DataSource get_a_datasource() {
     javax.sql.DataSource ds = null;
     try {
       javax.naming.Context initContext = new javax.naming.InitialContext();
@@ -538,6 +580,18 @@ public class Database_access {
       System.out.println("a naming exception occurred.  details: ");
       System.out.println(e);
     }
+		return ds;
+	}
+
+  /**
+    * Helper to get a Statement
+    * Opens a connection each time it's run.
+    * We don't have to worry about SQL injection here, 
+    * it should only be called by our own code.
+    * @returns A new Statement object.
+    */
+  private static Statement get_a_statement() throws SQLException {
+		javax.sql.DataSource ds = get_a_datasource();
     Connection conn = ds.getConnection();
     Statement stmt = conn.createStatement();
     return stmt;
@@ -551,24 +605,28 @@ public class Database_access {
     */
   private static PreparedStatement 
     get_a_prepared_statement(String queryText) {
+		javax.sql.DataSource ds = get_a_datasource();
+		Connection conn = get_a_connection(ds, true);
+		return get_a_prepared_statement(queryText, conn);
+	}
+
+  /**
+    * Helper to get a PreparedStatement.
+    *
+    * Opens a connection each time it's run.
+    * @returns A new PreparedStatement object.
+    */
+  private static PreparedStatement 
+    get_a_prepared_statement(String queryText, Connection conn) {
     try {
-      javax.naming.Context initContext = new javax.naming.InitialContext();
-      javax.naming.Context envContext  = 
-				(javax.naming.Context)initContext.lookup("java:/comp/env");
-      javax.sql.DataSource ds = 
-				(javax.sql.DataSource)envContext.lookup("jdbc/qarma_db");
-      Connection conn = ds.getConnection();
 			//we want to return the key, aka the id, of whatever we inserted
 			//or updated, to allow for multiple sql statements targeting the
-			//same data.
+			//same data.  Therefore, RETURN_GENERATED_KEYS
       PreparedStatement stmt = 
 				conn.prepareStatement(queryText, Statement.RETURN_GENERATED_KEYS);
       return stmt;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
-    } catch (javax.naming.NamingException e) {
-      System.out.println("a naming exception occurred.  details: ");
-      System.out.println(e);
     } catch (Exception ex) {
       System.out.println("General exception: " + ex.toString());
     }
@@ -586,17 +644,12 @@ public class Database_access {
     */
   private static CallableStatement get_a_callable_statement(String proc) {
     try {
-      javax.naming.Context initContext = new javax.naming.InitialContext();
-      javax.naming.Context envContext  = (javax.naming.Context)initContext.lookup("java:/comp/env");
-      javax.sql.DataSource ds = (javax.sql.DataSource)envContext.lookup("jdbc/qarma_db");
+      javax.sql.DataSource ds = get_a_datasource();
       Connection conn = ds.getConnection();
       CallableStatement cs = conn.prepareCall(proc);
       return cs;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
-    } catch (javax.naming.NamingException e) {
-      System.out.println("a naming exception occurred.  details: ");
-      System.out.println(e);
     } catch (Exception ex) {
       System.out.println("General exception: " + ex.toString());
     }
@@ -652,14 +705,17 @@ public class Database_access {
     * @returns an integer that represents the new or updated id.
     */
   private static int execute_update(PreparedStatement pstmt) {
-		int id = -1; // -1 means no key was generated.  aka failure.
+		int id = -1; // -1 means no key was generated.
     try {
       pstmt.executeUpdate();
 			ResultSet rs = pstmt.getGeneratedKeys();
+      if(resultset_is_null_or_empty(rs)) {
+        return id; 
+      }
 			rs.next();
 			id = rs.getInt(1);
     } catch (SQLException ex) {
-      handle_sql_exception(ex);
+      handle_sql_exception(ex, pstmt);
     } catch (Exception ex) {
       System.out.println("General exception: " + ex.toString());
     }
@@ -677,6 +733,11 @@ public class Database_access {
   private static void close_connection_with_commit(Connection c) {
     try {
       if (c != null && !c.isClosed()) {
+				//the following is for the case where we sometimes will
+				//set autocommit to false so we can run multiple statements
+				//as a single transaction, and we need to reset it to committing
+				//after each statement here.
+				c.setAutoCommit(true); 
         c.close();
       }
     } catch (SQLException ex) {

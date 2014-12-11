@@ -1,13 +1,18 @@
 package com.renomad.qarma;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Utilities;
 
 public class Business_logic {
 
 		public static String[] get_all_categories() {
-    	return Database_access.get_all_categories();
+    	Map<Integer,String> categories = Database_access.get_all_categories();
+			java.util.Collection<String> c = categories.values();
+			String[] cat_array = c.toArray(new String[0]);
+			return cat_array;
 		}
 
   private static String getCurrentDateSqlFormat() {
@@ -16,7 +21,7 @@ public class Business_logic {
     java.util.Calendar cal = java.util.Calendar.getInstance();
     java.util.Date date = cal.getTime();
     java.text.SimpleDateFormat myformat = 
-			new java.text.SimpleDateFormat("yyyy-MM-dd kk:mm:ss"); 
+			new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
     String formattedDate = null;
     try {
       formattedDate = myformat.format(date);
@@ -44,20 +49,24 @@ public class Business_logic {
       int user_id, String desc, int status, 
       String points, String title, String categories) {
 
-    //add the request to the db
+		//extract useful information from what the client sent us
     int p = Utilities.parse_int(points);
     String date = getCurrentDateSqlFormat();
-    int new_request_id = 
-      Database_access.add_request(user_id,desc,status, date, p, title);
 
-    //add the categories
+    //parse out the categories from a string the client gave us
+		Integer[] categories_array = parse_categories_string(categories);
+		
+    //send parsed data to the database
+    int new_request_id = 
+      Database_access.add_request(user_id,desc,status, date, p
+					, title, categories_array);
+
     if (new_request_id == -1) {
       System.out.println(
           "error adding request at Business_logic.add_request()");
       return false;
     }
-		Integer[] categories_array = parse_categories_string(categories);
-    Database_access.add_categories(new_request_id, categories_array);
+
     return true;
   }
 
@@ -67,27 +76,30 @@ public class Business_logic {
 		* an array of integers representing those categories.
 		* the easy way to handle this is to get all the categories and then
 		* indexof() the string for them.
-    * @param categories_str a single string that contains 0 or more category words, localized.  This value comes straight unchanged from the client.
+    * @param categories_str a single string that contains 0 or more 
+		* category words, localized.  This value comes straight 
+		* unchanged from the client.
 		* @return an integer array of the applicable categories
 		*/
 	private static Integer[] parse_categories_string(String categories_str) {
     
-		String[] all_categories = Database_access.get_all_categories();
+		Map<Integer,String> all_categories = 
+			Database_access.get_all_categories();
     
     //guard clauses
-    if (all_categories.length == 0) {return new Integer[0];}
+    if (all_categories == null) {return new Integer[0];}
     if (categories_str.length() == 0) {return new Integer[0];}
 
-    ArrayList<Integer> categories_list = new ArrayList<Integer>();
-		for (int i = 0; i < all_categories.length; i++) {
-      String cat = all_categories[i];
-			if (cat.length() > 0 && categories_str.indexOf(cat) > 0) {
-        categories_list.add(i);
-      }
+		ArrayList<Integer> selected_categories = new ArrayList<Integer>();
+		for (Integer i : all_categories.keySet()) {
+    	String c = Database_access.get_category_localized(i);
+			if (categories_str.contains(c)) {
+				selected_categories.add(i);
+			}
 		}
     Integer[] my_array = 
-      categories_list.toArray(new Integer[categories_list.size()]);
-    return my_array;
+			selected_categories.toArray(new Integer[selected_categories.size()]);
+		return my_array;
 	}
 
 	public static String get_user_displayname(int user_id) {
