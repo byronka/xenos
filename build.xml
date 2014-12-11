@@ -11,12 +11,21 @@
   <!-- assign values to be used elsewhere in this script -->
   <!--====================================================-->
 
+	<!-- Tomcat -->
   <property name="tomcat.home.bin" 
     value="web_container/apache-tomcat-8.0.14/bin/" />
   <property name="tomcat.webapps.dir" 
     value="web_container/apache-tomcat-8.0.14/webapps/" />
   <property name="tomcat.lib.dir" 
     value="web_container/apache-tomcat-8.0.14/lib/" />
+
+	<!-- Source directory -->
+  <property name="src.dir" 
+    value="src" />
+
+	<!-- Javadocs -->
+  <property name="docs.dir" 
+    value="docs/javadocs" />
 
  
 
@@ -105,6 +114,7 @@
       includeantruntime="false" 
       classpath="
         lib/mysql-connector-java-5.1.33-bin.jar:
+        lib/junit-4.12.jar:
         ${tomcat.lib.dir}servlet-api.jar"
       srcdir="src" 
       destdir="build/classes">
@@ -163,6 +173,48 @@
       fork="true"
       />
   </target>
+
+
+  <!-- ############## -->
+  <!--     JAVADOC    -->
+  <!-- ############## -->
+	<!-- Scripts for building Javadocs -->
+  <!--====================================================-->
+
+	<!-- Creates Javadoc -->
+	<target name="docs" depends="compile">
+		<javadoc packagenames="com.renomad.qarma" sourcepath="${src.dir}" destdir="${docs.dir}">
+			<!-- Define which files / directory should get included, we include all -->
+			 <fileset dir="${src.dir}">
+								<include name="**" />
+					 </fileset>
+		</javadoc>
+	</target>
+
+
+  <!-- ############## -->
+  <!--     TESTING    -->
+  <!-- ############## -->
+	<!-- Scripts for testing-->
+  <!--====================================================-->
+
+    <!-- Run the JUnit Tests -->
+	<!-- Output is XML, could also be plain-->
+	<target name="junit" depends="compile">
+		<junit printsummary="on" fork="true" haltonfailure="yes" >
+			<classpath>
+				<pathelement 
+					path="
+						build/classes:
+						lib/mysql-connector-java-5.1.33-bin.jar:
+						lib/junit-4.12.jar:
+						lib/hamcrest-core-1.3.jar:
+						${tomcat.lib.dir}servlet-api.jar" />
+				</classpath>
+			<formatter type="plain"/>
+			<test name="com.renomad.qarma.tests.Request_tests"/>
+		</junit>
+	</target>
 
 
   <!-- ############## -->
