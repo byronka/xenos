@@ -34,7 +34,7 @@ public class Build_db_schema {
       Class.forName("com.mysql.jdbc.Driver").newInstance();
       //new com.mysql.jdbc.Driver();
     } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
+      System.err.println("General exception: " + ex.toString());
     }
   }
 
@@ -174,7 +174,7 @@ public class Build_db_schema {
 						next_statement, stmt);
 			}
 		} catch (FileNotFoundException ex) {
-			System.out.println(ex);
+			System.err.println(ex);
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
 		} finally {
@@ -222,7 +222,7 @@ public class Build_db_schema {
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
+      System.err.println("General exception: " + ex.toString());
     }
     return null;
   }
@@ -244,7 +244,7 @@ public class Build_db_schema {
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
+      System.err.println("General exception: " + ex.toString());
     }
     return null;
   }
@@ -263,7 +263,7 @@ public class Build_db_schema {
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
+      System.err.println("General exception: " + ex.toString());
     }
     return false;
   }
@@ -284,7 +284,7 @@ public class Build_db_schema {
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
+      System.err.println("General exception: " + ex.toString());
     }
     return null;
   }
@@ -305,7 +305,7 @@ public class Build_db_schema {
       handle_sql_exception(ex);
       return false;
     } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
+      System.err.println("General exception: " + ex.toString());
       return false;
     }
     return true;
@@ -317,10 +317,10 @@ public class Build_db_schema {
     * provides a few boilerplate println's for sql exceptions
     */
   private static void handle_sql_exception(SQLException ex) {
-    System.out.println("SQLException: " + ex.getMessage());
-    System.out.println("SQLState: " + ex.getSQLState());
-    System.out.println("VendorError: " + ex.getErrorCode());
-    System.out.println("Stacktrace: ");
+    System.err.println("SQLException: " + ex.getMessage());
+    System.err.println("SQLState: " + ex.getSQLState());
+    System.err.println("VendorError: " + ex.getErrorCode());
+    System.err.println("Stacktrace: ");
     Thread.currentThread().dumpStack();
   }
 
@@ -337,7 +337,7 @@ public class Build_db_schema {
     try {
       return (rs == null || !rs.isBeforeFirst());
     } catch (SQLException ex) {
-      System.out.println("ResultSet was null or empty");
+      System.err.println("ResultSet was null or empty");
       handle_sql_exception(ex);
     }
     return true; //true, because if something crashed here, the
@@ -408,7 +408,7 @@ public class Build_db_schema {
       } catch (SQLException ex) {
         handle_sql_exception(ex);
       } catch (Exception ex) {
-        System.out.println("General exception: " + ex.toString());
+        System.err.println("General exception: " + ex.toString());
       } finally {
           close_statement(stmt);
       }

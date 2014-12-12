@@ -26,9 +26,9 @@ public class Business_logic {
     try {
       formattedDate = myformat.format(date);
     } catch (Exception e1) {
-      System.out.println(
+      System.err.println(
 					"somehow, there was a failure with formatting the date!");
-      System.out.println(e1);
+      System.err.println(e1);
     }
     return formattedDate;
   }
@@ -62,7 +62,7 @@ public class Business_logic {
 					, title, categories_array);
 
     if (new_request_id == -1) {
-      System.out.println(
+      System.err.println(
           "error adding request at Business_logic.add_request()");
       return false;
     }
@@ -124,6 +124,9 @@ public class Business_logic {
         request_id = Integer.parseInt(qs.substring(rsl));
     }
     Request r = Database_access.get_a_request(request_id);
+		if (r == null) {
+			return new Request(0,"","",0,1,"",0);
+		}
 		return r;
   }
 
@@ -195,13 +198,13 @@ public class Business_logic {
     */
   public static class Request {
 
-    Request ( int request_id, String datetime, String description, 
+    public Request ( int request_id, String datetime, String description, 
         int points, int status, String title, int requesting_user_id) {
 			this(request_id, datetime, description, points,
 					status, title, requesting_user_id, new Integer[0]);
 		}
 
-    Request ( int request_id, String datetime, String description, 
+    public Request ( int request_id, String datetime, String description, 
         int points, int status, String title, int requesting_user_id,
 				Integer[] categories) {
       this.request_id       =  request_id;

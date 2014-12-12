@@ -31,9 +31,9 @@ public class Database_access {
   public static int add_request( int user_id, String desc, int status, 
       String date, int points, String title , Integer[] categories) {
     
-		if (user_id < 0) {
-			System.out.println(
-				"error: user id was " + user_id + " in add_request");
+		if (user_id < 1) {
+			System.err.println(
+				"error: user id was below 1: it was " + user_id + " in add_request");
 			return -1;
 		}
 
@@ -69,9 +69,9 @@ public class Database_access {
 			request_id = execute_update(req_pstmt);
 
 			if (request_id < 0 || categories.length == 0) {
-				System.out.println("Transaction is being rolled back");
-				System.out.println("request id:" + request_id);
-				System.out.println("categories length:" + categories.length);
+				System.err.println("Transaction is being rolled back");
+				System.err.println("request id:" + request_id);
+				System.err.println("categories length:" + categories.length);
 				conn.rollback();
 			}
 
@@ -227,7 +227,7 @@ public class Database_access {
       set_integer(pstmt, 1, request_id);
       ResultSet resultSet = execute_query(pstmt);
       if (resultset_is_null_or_empty(resultSet)) {
-        return new Request(0,"","",0,1,"",0);
+        return null;
       }
 
       result_set_next(resultSet);
@@ -388,7 +388,7 @@ public class Database_access {
     */
   public static boolean user_is_logged_in(int user_id) {
     if (user_id < 0) {
-      System.out.println("error: user id was " + user_id + 
+      System.err.println("error: user id was " + user_id + 
           " in user_is_logged_in()");
     }
 
@@ -418,7 +418,7 @@ public class Database_access {
     */
   public static boolean set_user_not_logged_in(int user_id) {
     if (user_id < 0) {
-      System.out.println("error: user id was " + user_id + 
+      System.err.println("error: user id was " + user_id + 
           " in set_user_not_logged_in()");
       return false;
     }
@@ -478,7 +478,7 @@ public class Database_access {
     register_details_on_user_login(int user_id, String ip) {
 
       if (user_id < 0) {
-        System.out.println("error: user id was " + user_id + " in register_details_on_user_login");
+        System.err.println("error: user id was " + user_id + " in register_details_on_user_login");
         return;
       }
 
@@ -530,10 +530,10 @@ public class Database_access {
     * provides a few boilerplate println's for sql exceptions
     */
   private static void handle_sql_exception(SQLException ex) {
-    System.out.println("SQLException: " + ex.getMessage());
-    System.out.println("SQLState: " + ex.getSQLState());
-    System.out.println("VendorError: " + ex.getErrorCode());
-    System.out.println("Stacktrace: ");
+    System.err.println("SQLException: " + ex.getMessage());
+    System.err.println("SQLState: " + ex.getSQLState());
+    System.err.println("VendorError: " + ex.getErrorCode());
+    System.err.println("Stacktrace: ");
     Thread.currentThread().dumpStack();
   }
 
@@ -555,11 +555,12 @@ public class Database_access {
 				Class.forName("com.mysql.jdbc.Driver").newInstance();
 				//new com.mysql.jdbc.Driver();
 			} catch (Exception ex) {
-				System.out.println("General exception: " + ex.toString());
+				System.err.println("General exception: " + ex.toString());
 			}
 
 			try {
-				conn = DriverManager.getConnection(System.getProperty("CONNECTION_STRING_WITH_DB"));
+				conn = 
+					DriverManager.getConnection(System.getProperty("CONNECTION_STRING_WITH_DB"));
 				conn.setAutoCommit(setautocommit);
 			} catch (SQLException ex) {
 				handle_sql_exception(ex);
@@ -605,8 +606,8 @@ public class Database_access {
 				(javax.naming.Context)initContext.lookup("java:/comp/env");
       ds = (javax.sql.DataSource)envContext.lookup("jdbc/qarma_db");
     } catch (javax.naming.NamingException e) {
-      System.out.println("a naming exception occurred.  details: ");
-      System.out.println(e);
+      System.err.println("a naming exception occurred.  details: ");
+      System.err.println(e);
     }
 		return ds;
 	}
@@ -654,7 +655,7 @@ public class Database_access {
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
+      System.err.println("General exception: " + ex.toString());
     }
     return null;
   }
@@ -676,7 +677,7 @@ public class Database_access {
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
+      System.err.println("General exception: " + ex.toString());
     }
     return null;
   }
@@ -695,7 +696,7 @@ public class Database_access {
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
+      System.err.println("General exception: " + ex.toString());
     }
     return false;
   }
@@ -716,7 +717,7 @@ public class Database_access {
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
+      System.err.println("General exception: " + ex.toString());
     }
     return null;
   }
@@ -742,7 +743,7 @@ public class Database_access {
     } catch (SQLException ex) {
       handle_sql_exception(ex, pstmt);
     } catch (Exception ex) {
-      System.out.println("General exception: " + ex.toString());
+      System.err.println("General exception: " + ex.toString());
     }
     return id;
   }
@@ -821,7 +822,7 @@ public class Database_access {
 						next_statement, stmt);
 			}
 		} catch (FileNotFoundException ex) {
-			System.out.println(ex);
+			System.err.println(ex);
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
 		} finally {
@@ -842,7 +843,7 @@ public class Database_access {
     try {
       return (rs == null || !rs.isBeforeFirst());
     } catch (SQLException ex) {
-      System.out.println("ResultSet was null or empty");
+      System.err.println("ResultSet was null or empty");
       handle_sql_exception(ex);
     }
     return true; //true, because if something crashed here, the
@@ -999,7 +1000,7 @@ public class Database_access {
     */
   private static void null_or_empty_string_validation(String value) {
     if (value == null || value == "") {
-      System.out.println(
+      System.err.println(
           "error: value was null or empty when it shouldn't have");
     }
   }
