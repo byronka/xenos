@@ -16,10 +16,7 @@
 <p>Points: <%=r.points%>
 <p>Title: <%=r.title%>
 <p>Requesting user: <%=r.requesting_user_id%>
-<p>Categories: 
-	<%for(String category : r.categories) {%>
-		<%=category%>
-	<%}%>
+<p>Categories: <%=r.get_categories()%>
 </form>
 </body>
 </html>

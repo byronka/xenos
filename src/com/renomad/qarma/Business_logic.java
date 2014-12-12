@@ -123,7 +123,8 @@ public class Business_logic {
         (value_index = qs.indexOf(request_string)) >= 0) {
         request_id = Integer.parseInt(qs.substring(rsl));
     }
-    return Database_access.get_a_request(request_id);
+    Request r = Database_access.get_a_request(request_id);
+		return r;
   }
 
 
@@ -197,12 +198,12 @@ public class Business_logic {
     Request ( int request_id, String datetime, String description, 
         int points, int status, String title, int requesting_user_id) {
 			this(request_id, datetime, description, points,
-					status, title, requesting_user_id, new String[0]);
+					status, title, requesting_user_id, new Integer[0]);
 		}
 
     Request ( int request_id, String datetime, String description, 
         int points, int status, String title, int requesting_user_id,
-				String[] categories) {
+				Integer[] categories) {
       this.request_id       =  request_id;
       this.datetime         =  datetime;
       this.description      =  description;
@@ -218,10 +219,10 @@ public class Business_logic {
     public final String datetime;
     public final String description;
     public final int points;
-    private final int status;
+    public final int status;
     public final String title;
     public final int requesting_user_id;
-		public final String[] categories;
+		public final Integer[] categories;
 
 
 		public String get_status() {
@@ -237,6 +238,15 @@ public class Business_logic {
 				default:
 					return "ERROR_STATUS_DEV_FIX_ME";
 			}
+		}
+
+		public String get_categories() {
+			String cat_string = "";
+			for (Integer c : categories) {
+				cat_string += Database_access.get_category_localized(c);
+				cat_string += ", ";
+			}
+			return cat_string;
 		}
   }
 

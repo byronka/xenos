@@ -56,9 +56,8 @@ public class Database_access {
 		Connection conn = null;
 	
 		try {
-			javax.sql.DataSource ds = get_a_datasource();
-			conn = get_a_connection(ds, false);
-			conn.setAutoCommit(false);
+			boolean setautocommit = false;
+			conn = get_a_connection(setautocommit);
 			req_pstmt = get_a_prepared_statement(update_request_sql, conn);
 			cat_pstmt = get_a_prepared_statement(update_categories_sql, conn);
 			set_string(req_pstmt, 1, desc);
@@ -70,14 +69,10 @@ public class Database_access {
 			request_id = execute_update(req_pstmt);
 
 			if (request_id < 0 || categories.length == 0) {
-				try {
-					System.out.println("Transaction is being rolled back");
-					System.out.println("request id:" + request_id);
-					System.out.println("categories length:" + categories.length);
-					conn.rollback();
-				} catch (SQLException ex) {
-					handle_sql_exception(ex);
-				}
+				System.out.println("Transaction is being rolled back");
+				System.out.println("request id:" + request_id);
+				System.out.println("categories length:" + categories.length);
+				conn.rollback();
 			}
 
 			for (int i = 0; i < categories.length; i++ ) {
@@ -185,7 +180,7 @@ public class Database_access {
 		*
 		*@returns an array of Strings, representing the categories
 		*/
-	public static String[] get_categories_for_request(int request_id) {
+	public static Integer[] get_categories_for_request(int request_id) {
     String sqlText = 
 			"SELECT request_category_id "+
 				"FROM request_to_category "+
@@ -195,20 +190,19 @@ public class Database_access {
       set_integer(pstmt, 1, request_id);
       ResultSet resultSet = execute_query(pstmt);
       if (resultset_is_null_or_empty(resultSet)) {
-        return new String[0];
+        return new Integer[0];
       }
 
 			//keep adding rows of data while there is more data
-      ArrayList<String> categories = new ArrayList<String>();
+      ArrayList<Integer> categories = new ArrayList<Integer>();
       while(result_set_next(resultSet)) {
         int rcid = get_integer(resultSet,  "request_category_id");
-				String category = get_category_localized(rcid);
-        categories.add(category);
+        categories.add(rcid);
       }
 
       //convert arraylist to array
-      String[] array_of_categories = 
-        categories.toArray(new String[categories.size()]);
+      Integer[] array_of_categories = 
+        categories.toArray(new Integer[categories.size()]);
       return array_of_categories;
     } finally {
       close_statement(pstmt);
@@ -244,7 +238,7 @@ public class Database_access {
 			int s = get_integer(resultSet,   "status");
 			String t = get_nstring(resultSet,  "title");
 			int ru = get_integer(resultSet,      "requesting_user_id");
-			String[] categories = get_categories_for_request(request_id);
+			Integer[] categories = get_categories_for_request(request_id);
 			Request request = new Request(rid,dt,d,p,s,t,ru,categories);
 
       return request;
@@ -543,6 +537,38 @@ public class Database_access {
     Thread.currentThread().dumpStack();
   }
 
+	private static Connection get_a_connection(boolean setautocommit) {
+		Boolean in_testing = Boolean.parseBoolean(System.getProperty("TESTING_DATABASE_CODE_WITHOUT_TOMCAT"));
+    javax.sql.DataSource ds = null;
+		Connection conn = null;
+
+		if (!in_testing) {
+			//this is the normal place for getting connections if coming from a web server.
+			ds = get_a_datasource();
+			conn = get_a_connection(ds, setautocommit);
+		} else {
+    	//if this is set, we are coming from Junit and don't want
+			//to use connection pools from tomcat
+			try {
+				// The newInstance() call is a work around for some
+				// broken Java implementations
+				Class.forName("com.mysql.jdbc.Driver").newInstance();
+				//new com.mysql.jdbc.Driver();
+			} catch (Exception ex) {
+				System.out.println("General exception: " + ex.toString());
+			}
+
+			try {
+				conn = DriverManager.getConnection(System.getProperty("CONNECTION_STRING_WITH_DB"));
+				conn.setAutoCommit(setautocommit);
+			} catch (SQLException ex) {
+				handle_sql_exception(ex);
+			}
+		}
+
+		return conn;
+	}
+
 
 	/**
 		* Helper to get a connection.  This is to be used for cases
@@ -573,8 +599,10 @@ public class Database_access {
 	private static javax.sql.DataSource get_a_datasource() {
     javax.sql.DataSource ds = null;
     try {
-      javax.naming.Context initContext = new javax.naming.InitialContext();
-      javax.naming.Context envContext  = (javax.naming.Context)initContext.lookup("java:/comp/env");
+      javax.naming.Context initContext = 
+				new javax.naming.InitialContext();
+      javax.naming.Context envContext  = 
+				(javax.naming.Context)initContext.lookup("java:/comp/env");
       ds = (javax.sql.DataSource)envContext.lookup("jdbc/qarma_db");
     } catch (javax.naming.NamingException e) {
       System.out.println("a naming exception occurred.  details: ");
@@ -591,8 +619,7 @@ public class Database_access {
     * @returns A new Statement object.
     */
   private static Statement get_a_statement() throws SQLException {
-		javax.sql.DataSource ds = get_a_datasource();
-    Connection conn = ds.getConnection();
+    Connection conn = get_a_connection(true);
     Statement stmt = conn.createStatement();
     return stmt;
   }
@@ -605,8 +632,7 @@ public class Database_access {
     */
   private static PreparedStatement 
     get_a_prepared_statement(String queryText) {
-		javax.sql.DataSource ds = get_a_datasource();
-		Connection conn = get_a_connection(ds, true);
+		Connection conn = get_a_connection(true);
 		return get_a_prepared_statement(queryText, conn);
 	}
 
@@ -644,8 +670,7 @@ public class Database_access {
     */
   private static CallableStatement get_a_callable_statement(String proc) {
     try {
-      javax.sql.DataSource ds = get_a_datasource();
-      Connection conn = ds.getConnection();
+      Connection conn = get_a_connection(true);
       CallableStatement cs = conn.prepareCall(proc);
       return cs;
     } catch (SQLException ex) {

@@ -24,13 +24,6 @@ import java.io.FileNotFoundException;
   */
 public class Build_db_schema {
 
-  private static String CONNECTION_STRING_WITH_DB =
-        "jdbc:mysql://localhost/test?user=qarmauser&password=password1";
-
-  //used by schema builder.
-  private static String CONNECTION_STRING_WITHOUT_DB =
-        "jdbc:mysql://localhost/?user=qarmauser&password=password1";
-
   /**
     *Boilerplate code necessary to register the mysql db driver.
     */
@@ -57,7 +50,7 @@ public class Build_db_schema {
   private static Statement 
     get_a_statement_before_db_exists() throws SQLException {
     Connection conn = 
-      DriverManager.getConnection(CONNECTION_STRING_WITHOUT_DB);
+      DriverManager.getConnection(System.getProperty("CONNECTION_STRING_WITHOUT_DB"));
     Statement stmt = conn.createStatement();
     return stmt;
   }
@@ -135,7 +128,7 @@ public class Build_db_schema {
     */
   private static Statement get_a_statement() throws SQLException {
     Connection conn = 
-      DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+      DriverManager.getConnection(System.getProperty("CONNECTION_STRING_WITH_DB"));
     Statement stmt = conn.createStatement();
     return stmt;
   }
@@ -223,7 +216,7 @@ public class Build_db_schema {
   private static PreparedStatement 
     get_a_prepared_statement(String queryText) {
     try {
-      Connection conn = DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+      Connection conn = DriverManager.getConnection(System.getProperty("CONNECTION_STRING_WITH_DB"));
       PreparedStatement stmt = conn.prepareStatement(queryText);
       return stmt;
     } catch (SQLException ex) {
@@ -245,7 +238,7 @@ public class Build_db_schema {
     */
   private static CallableStatement get_a_callable_statement(String proc) {
     try {
-      Connection conn = DriverManager.getConnection(CONNECTION_STRING_WITH_DB);
+      Connection conn = DriverManager.getConnection(System.getProperty("CONNECTION_STRING_WITH_DB"));
       CallableStatement cs = conn.prepareCall(proc);
       return cs;
     } catch (SQLException ex) {
