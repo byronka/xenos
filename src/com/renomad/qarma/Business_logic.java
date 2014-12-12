@@ -49,6 +49,12 @@ public class Business_logic {
       int user_id, String desc, int status, 
       String points, String title, String categories) {
 
+		if (user_id < 1) {
+			System.err.println(
+				"error: user id was below 1: it was " + user_id + " in add_request");
+			return false;
+		}
+
 		//extract useful information from what the client sent us
     int p = Utilities.parse_int(points);
     String date = getCurrentDateSqlFormat();

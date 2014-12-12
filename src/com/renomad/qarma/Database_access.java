@@ -26,16 +26,22 @@ public class Database_access {
 
   /**
     * adds a Request to the database
-    * @Returns the id of the new request.
+		* @param categories an array of integers for the categories of this
+		* request.  Important: there must be at least one category.
+		* @param user_id the id of the user making this request
+		* @param desc the text description of the request
+		* @param status the id of the status, e.g. 1 = open
+		* @param date string for date in proper syntax for Sql
+		* @param points the currency of requests.  More points is better!
+		* @param title the title of the request
+    * @return the id of the new request. -1 if not successful.
     */
   public static int add_request( int user_id, String desc, int status, 
       String date, int points, String title , Integer[] categories) {
     
-		if (user_id < 1) {
-			System.err.println(
-				"error: user id was below 1: it was " + user_id + " in add_request");
-			return -1;
-		}
+		//defensive code starts
+		if (categories.length == 0) {return -1;}
+		//defensive code ends
 
 		String update_request_sql = 
 			"INSERT into request (description, datetime, points, " + 
@@ -56,25 +62,36 @@ public class Database_access {
 		Connection conn = null;
 	
 		try {
-			boolean setautocommit = false;
-			conn = get_a_connection(setautocommit);
-			req_pstmt = get_a_prepared_statement(update_request_sql, conn);
-			cat_pstmt = get_a_prepared_statement(update_categories_sql, conn);
+			//get the connection and set to not auto-commit.  Prepare the statements
+			conn = get_a_connection();
+			conn.setAutoCommit(false);
+      req_pstmt  = conn.prepareStatement(
+					update_request_sql, Statement.RETURN_GENERATED_KEYS);
+      cat_pstmt  = conn.prepareStatement(
+					update_categories_sql, Statement.RETURN_GENERATED_KEYS);
+
+			//set values for adding request
 			set_string(req_pstmt, 1, desc);
 			set_string(req_pstmt, 2, date);
 			set_integer(req_pstmt, 3, points);
 			set_integer(req_pstmt, 4, status);
 			set_string(req_pstmt, 5, title);
 			set_integer(req_pstmt, 6, user_id);
+
+
+			//execute one of the updates
 			request_id = execute_update(req_pstmt);
 
-			if (request_id < 0 || categories.length == 0) {
-				System.err.println("Transaction is being rolled back");
-				System.err.println("request id:" + request_id);
-				System.err.println("categories length:" + categories.length);
+			//if we get a -1 for our id, the request insert didn't go through.  
+			//so rollback.
+			if (request_id < 0) {
+				System.err.println(
+						"Transaction is being rolled back for request_id: " + request_id);
 				conn.rollback();
+				return -1;
 			}
 
+			//set values for adding categories
 			for (int i = 0; i < categories.length; i++ ) {
 				int category_id = categories[i];
 				set_integer(cat_pstmt, 2*i+1, request_id);
@@ -82,12 +99,17 @@ public class Database_access {
 			}
 
 			execute_update(cat_pstmt);
-
 			conn.commit();
-
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
 		} finally {
+			if (conn != null) {
+				try {
+					conn.setAutoCommit(true);
+				} catch (SQLException ex) {
+					handle_sql_exception(ex);
+				}
+			}
 			close_statement(req_pstmt);
 			close_statement(cat_pstmt);
 		}
@@ -340,15 +362,18 @@ public class Database_access {
         "INSERT INTO user (first_name, last_name, email, password) " +
         "VALUES (?, ?, ?, ?)";
       PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+			boolean is_successful = false;
     try {
       set_string(pstmt, 1, first_name);
       set_string(pstmt, 2, last_name);
       set_string(pstmt, 3, email);
       set_string(pstmt, 4, password);
-      boolean is_successful = execute_update(pstmt) > 0;
-      return is_successful;
+      is_successful = execute_update(pstmt) > 0;
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
     } finally {
       close_statement(pstmt);
+      return is_successful;
     }
   }
 
@@ -425,11 +450,14 @@ public class Database_access {
 
     String sqlText = "UPDATE user SET is_logged_in = false;";
     PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		boolean is_successful = false;
     try {
-      boolean is_successful = execute_update(pstmt) > 0;
-      return is_successful;
+      is_successful = execute_update(pstmt) > 0;
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
     } finally {
       close_statement(pstmt);
+      return is_successful;
     }
   }
 
@@ -497,6 +525,8 @@ public class Database_access {
         set_string(pstmt, 1, ip);
         set_integer(pstmt, 2, user_id);
         execute_update(pstmt);
+			} catch (SQLException ex) {
+				handle_sql_exception(ex);
       } finally {
         close_statement(pstmt);
       }
@@ -537,33 +567,30 @@ public class Database_access {
     Thread.currentThread().dumpStack();
   }
 
-	private static Connection get_a_connection(boolean setautocommit) {
-		Boolean in_testing = Boolean.parseBoolean(System.getProperty("TESTING_DATABASE_CODE_WITHOUT_TOMCAT"));
+	private static Connection get_a_connection() {
+		Boolean in_testing = Boolean.parseBoolean(
+				System.getProperty("TESTING_DATABASE_CODE_WITHOUT_TOMCAT"));
     javax.sql.DataSource ds = null;
 		Connection conn = null;
 
 		if (!in_testing) {
 			//this is the normal place for getting connections if coming from a web server.
 			ds = get_a_datasource();
-			conn = get_a_connection(ds, setautocommit);
+			conn = get_a_connection(ds);
 		} else {
-    	//if this is set, we are coming from Junit and don't want
+    	//if this is set, we might be coming from Junit and don't want
 			//to use connection pools from tomcat
 			try {
 				// The newInstance() call is a work around for some
 				// broken Java implementations
 				Class.forName("com.mysql.jdbc.Driver").newInstance();
 				//new com.mysql.jdbc.Driver();
-			} catch (Exception ex) {
-				System.err.println("General exception: " + ex.toString());
-			}
-
-			try {
-				conn = 
-					DriverManager.getConnection(System.getProperty("CONNECTION_STRING_WITH_DB"));
-				conn.setAutoCommit(setautocommit);
+				conn = DriverManager.getConnection(
+						System.getProperty("CONNECTION_STRING_WITH_DB"));
 			} catch (SQLException ex) {
 				handle_sql_exception(ex);
+			} catch (Exception ex) {
+				System.err.println("General exception: " + ex.toString());
 			}
 		}
 
@@ -576,12 +603,10 @@ public class Database_access {
 		* where you need to run multiple statements on a single connection.
 		* @return a connection set up for multiple statements in transaction.
 		*/
-	private static Connection get_a_connection(
-			javax.sql.DataSource ds, boolean setautocommit) {
+	private static Connection get_a_connection(javax.sql.DataSource ds) {
 		try { 
 			if (ds != null) {
 				Connection conn = ds.getConnection();
-				conn.setAutoCommit(setautocommit);
 				return conn;
 			}
 		} catch (SQLException ex) {
@@ -620,7 +645,7 @@ public class Database_access {
     * @returns A new Statement object.
     */
   private static Statement get_a_statement() throws SQLException {
-    Connection conn = get_a_connection(true);
+    Connection conn = get_a_connection();
     Statement stmt = conn.createStatement();
     return stmt;
   }
@@ -633,14 +658,14 @@ public class Database_access {
     */
   private static PreparedStatement 
     get_a_prepared_statement(String queryText) {
-		Connection conn = get_a_connection(true);
+		Connection conn = get_a_connection();
 		return get_a_prepared_statement(queryText, conn);
 	}
 
   /**
     * Helper to get a PreparedStatement.
     *
-    * Opens a connection each time it's run.
+    * This uses a connection provided in the parameters.
     * @returns A new PreparedStatement object.
     */
   private static PreparedStatement 
@@ -671,7 +696,7 @@ public class Database_access {
     */
   private static CallableStatement get_a_callable_statement(String proc) {
     try {
-      Connection conn = get_a_connection(true);
+      Connection conn = get_a_connection();
       CallableStatement cs = conn.prepareCall(proc);
       return cs;
     } catch (SQLException ex) {
@@ -730,21 +755,14 @@ public class Database_access {
     * @param pstmt The prepared statement
     * @returns an integer that represents the new or updated id.
     */
-  private static int execute_update(PreparedStatement pstmt) {
+  private static int execute_update(PreparedStatement pstmt) throws SQLException {
 		int id = -1; // -1 means no key was generated.
-    try {
-      pstmt.executeUpdate();
-			ResultSet rs = pstmt.getGeneratedKeys();
-      if(resultset_is_null_or_empty(rs)) {
-        return id; 
-      }
+		pstmt.executeUpdate();
+		ResultSet rs = pstmt.getGeneratedKeys();
+		if(!resultset_is_null_or_empty(rs)) {
 			rs.next();
 			id = rs.getInt(1);
-    } catch (SQLException ex) {
-      handle_sql_exception(ex, pstmt);
-    } catch (Exception ex) {
-      System.err.println("General exception: " + ex.toString());
-    }
+		}
     return id;
   }
   
