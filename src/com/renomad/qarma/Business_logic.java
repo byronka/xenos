@@ -96,10 +96,11 @@ public class Business_logic {
     if (all_categories == null) {return new Integer[0];}
     if (categories_str.length() == 0) {return new Integer[0];}
 
+		String lower_case_categories_str = categories_str.toLowerCase();
 		ArrayList<Integer> selected_categories = new ArrayList<Integer>();
 		for (Integer i : all_categories.keySet()) {
     	String c = Database_access.get_category_localized(i);
-			if (categories_str.contains(c)) {
+			if (lower_case_categories_str.contains(c)) {
 				selected_categories.add(i);
 			}
 		}
