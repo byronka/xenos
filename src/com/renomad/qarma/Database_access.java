@@ -671,11 +671,7 @@ public class Database_access {
   private static PreparedStatement 
     get_a_prepared_statement(String queryText, Connection conn) {
     try {
-			//we want to return the key, aka the id, of whatever we inserted
-			//or updated, to allow for multiple sql statements targeting the
-			//same data.  Therefore, RETURN_GENERATED_KEYS
-      PreparedStatement stmt = 
-				conn.prepareStatement(queryText, Statement.RETURN_GENERATED_KEYS);
+      PreparedStatement stmt = conn.prepareStatement(queryText, Statement.RETURN_GENERATED_KEYS);
       return stmt;
     } catch (SQLException ex) {
       handle_sql_exception(ex);

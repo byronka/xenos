@@ -171,13 +171,13 @@ public class Business_logic {
     */
   public static class Request_status {
 
-    Request_status ( int status_id, String status_value) {
+    public Request_status ( int status_id, String status_value) {
       this.status_id       =  status_id;
       this.status_value    =  status_value;
     }
 
     public final int status_id;
-    private final String status_value;
+    public final String status_value;
 
 		public String get_status_value() {
     	//for now, there is no localization file, so we'll just include

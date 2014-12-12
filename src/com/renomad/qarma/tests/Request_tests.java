@@ -6,10 +6,35 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+
 import com.renomad.qarma.Business_logic.Request;
+import com.renomad.qarma.Business_logic.Request_status;
 import com.renomad.qarma.Database_access;
 
 public class Request_tests {
+
+	@Test
+	public void testing_get_request_statuses() {
+		//act and assert
+		Request_status[] rs_actual = Database_access.get_request_statuses();
+		for (Request_status rs : rs_actual) {
+			switch(rs.status_id) {
+      	case 1:
+					assertEquals("OPEN", rs.status_value);
+					break;
+				case 2:
+					assertEquals("CLOSED", rs.status_value);
+					break;
+				case 3:
+					assertEquals("TAKEN", rs.status_value);
+					break;
+				default:
+					fail("should not get this far");
+			}
+		}
+	}
+
 
 	@Test
 	public void testing_add_request() {
