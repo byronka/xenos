@@ -104,9 +104,10 @@
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.qarma.Delete_db_schema" 
-			jvmargs="-D${conn.str.without.db} -D${conn.str.with.db}"
-      fork="true"
-      />
+      fork="true" >
+			<jvmarg value="-D${conn.str.without.db}" />
+			<jvmarg value="-D${conn.str.with.db}" />
+		</java>
   </target>
 
 
@@ -168,9 +169,10 @@
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.qarma.Build_db_schema" 
-			jvmargs="-D${conn.str.without.db} -D${conn.str.with.db}"
-      fork="true"
-      />
+      fork="true" >
+			<jvmarg value="-D${conn.str.with.db}" />
+			<jvmarg value="-D${conn.str.without.db}" />
+		</java>
   </target>
 
 
@@ -184,9 +186,10 @@
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.qarma.Add_sample_data_to_db"
-			jvmargs="-D${conn.str.without.db} -D${conn.str.with.db}"
-      fork="true"
-      />
+      fork="true" >
+			<jvmarg value="-D${conn.str.with.db}" />
+			<jvmarg value="-D${conn.str.without.db}" />
+		</java>
   </target>
 
 
