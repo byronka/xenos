@@ -692,41 +692,6 @@ public class Database_access {
 		return ds;
 	}
 
-  /**
-    * Helper to get a Statement
-    * Opens a connection each time it's run.
-    * We don't have to worry about SQL injection here, 
-    * it should only be called by our own code.
-    * @return A new Statement object.
-    */
-  private static Statement get_a_statement() throws SQLException {
-    Connection conn = get_a_connection();
-    Statement stmt = conn.createStatement();
-    return stmt;
-  }
-
-
-  /**
-    * This method sets you up to call stored procedures in the database.
-    * example: you might call this with a string 
-    * of "{call blahdy_blahblah(?)}"; ,using JDBC escape syntax
-    * @param procedure_name the name of a procedure we've 
-    *  already added.  See the database
-    * @return A callable statement ready for setting parameters.
-    */
-  private static CallableStatement get_a_callable_statement(String proc) {
-    try {
-      Connection conn = get_a_connection();
-      CallableStatement cs = conn.prepareCall(proc);
-      return cs;
-    } catch (SQLException ex) {
-      handle_sql_exception(ex);
-    } catch (Exception ex) {
-      System.err.println("General exception: " + ex.toString());
-    }
-    return null;
-  }
-
 
   /**
     *A wrapper for PreparedStatement.executeUpdate(PreparedStatement pstmt)
