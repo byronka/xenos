@@ -71,12 +71,12 @@ public class Database_access {
 					update_categories_sql, Statement.RETURN_GENERATED_KEYS);
 
 			//set values for adding request
-			set_string(req_pstmt, 1, desc);
-			set_string(req_pstmt, 2, date);
-			set_integer(req_pstmt, 3, points);
-			set_integer(req_pstmt, 4, status);
-			set_string(req_pstmt, 5, title);
-			set_integer(req_pstmt, 6, user_id);
+			req_pstmt.setString(1, desc);
+			req_pstmt.setString( 2, date);
+			req_pstmt.setInt( 3, points);
+			req_pstmt.setInt( 4, status);
+			req_pstmt.setString( 5, title);
+			req_pstmt.setInt( 6, user_id);
 
 
 			//execute one of the updates
@@ -94,8 +94,8 @@ public class Database_access {
 			//set values for adding categories
 			for (int i = 0; i < categories.length; i++ ) {
 				int category_id = categories[i];
-				set_integer(cat_pstmt, 2*i+1, request_id);
-				set_integer(cat_pstmt, 2*i+2, category_id);
+				cat_pstmt.setInt( 2*i+1, request_id);
+				cat_pstmt.setInt( 2*i+2, category_id);
 			}
 
 			execute_update(cat_pstmt);
@@ -116,13 +116,19 @@ public class Database_access {
     return request_id;
   }
 
+	/**
+		* gets all the current request statuses, like OPEN, CLOSED, and TAKEN
+		* @return an array of request statuses, or null if failure.
+		*/
 	public static Request_status[] get_request_statuses() {
     String sqlText = 
       "SELECT request_status_id, request_status_value FROM request_status;";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
 
+		PreparedStatement pstmt = null;
     try {
-      ResultSet resultSet = execute_query(pstmt);
+			Connection conn = get_a_connection();
+      pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);
+      ResultSet resultSet = pstmt.executeQuery();;
       if (resultset_is_null_or_empty(resultSet)) {
         return new Request_status[0];
       }
@@ -130,9 +136,9 @@ public class Database_access {
 			//keep adding rows of data while there is more data
       ArrayList<Request_status> statuses = 
 				new ArrayList<Request_status>();
-      for(;result_set_next(resultSet) == true;) {
-				int sid = get_integer(resultSet,  "request_status_id");
-				String sv = get_string(resultSet,   "request_status_value");
+      while(resultSet.next()) {
+				int sid = resultSet.getInt("request_status_id");
+				String sv = resultSet.getString("request_status_value");
 				Request_status status = new Request_status(sid,sv);
         statuses.add(status);
 			}
@@ -141,6 +147,9 @@ public class Database_access {
       Request_status[] my_array = 
         statuses.toArray(new Request_status[statuses.size()]);
       return my_array;
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+			return null;
     } finally {
       close_statement(pstmt);
     }
@@ -175,22 +184,27 @@ public class Database_access {
 	public static Map<Integer,String> get_all_categories() {
     String sqlText = 
 			"SELECT request_category_id FROM request_category; ";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		PreparedStatement pstmt = null;
     try {
-      ResultSet resultSet = execute_query(pstmt);
+			Connection conn = get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      ResultSet resultSet = pstmt.executeQuery();;
       if (resultset_is_null_or_empty(resultSet)) {
         return null;
       }
 
 			//keep adding rows of data while there is more data
       Map<Integer, String> categories = new HashMap<Integer,String>();
-      while(result_set_next(resultSet)) {
-        int rcid = get_integer(resultSet,  "request_category_id");
+      while(resultSet.next()) {
+        int rcid = resultSet.getInt("request_category_id");
 				String category = get_category_localized(rcid);
         categories.put(rcid, category); 
       }
 
       return categories;
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+			return null;
     } finally {
       close_statement(pstmt);
     }
@@ -200,25 +214,27 @@ public class Database_access {
 	/**
 		* gets an array of categories for a given request
 		*
-		*@return an array of Strings, representing the categories
+		*@return an array of Strings, representing the categories, or null if failure.
 		*/
 	public static Integer[] get_categories_for_request(int request_id) {
     String sqlText = 
 			"SELECT request_category_id "+
 				"FROM request_to_category "+
 				"WHERE request_id = ?;";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		PreparedStatement pstmt = null;
     try {
-      set_integer(pstmt, 1, request_id);
-      ResultSet resultSet = execute_query(pstmt);
+			Connection conn = get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setInt( 1, request_id);
+      ResultSet resultSet = pstmt.executeQuery();;
       if (resultset_is_null_or_empty(resultSet)) {
         return new Integer[0];
       }
 
 			//keep adding rows of data while there is more data
       ArrayList<Integer> categories = new ArrayList<Integer>();
-      while(result_set_next(resultSet)) {
-        int rcid = get_integer(resultSet,  "request_category_id");
+      while(resultSet.next()) {
+        int rcid = resultSet.getInt("request_category_id");
         categories.add(rcid);
       }
 
@@ -226,6 +242,9 @@ public class Database_access {
       Integer[] array_of_categories = 
         categories.toArray(new Integer[categories.size()]);
       return array_of_categories;
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+			return null;
     } finally {
       close_statement(pstmt);
     }
@@ -243,27 +262,32 @@ public class Database_access {
 			"status,title,requesting_user_id "+
 			"FROM request "+
 			"WHERE request_id = ?";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
 
+		PreparedStatement pstmt = null;
     try {
-      set_integer(pstmt, 1, request_id);
-      ResultSet resultSet = execute_query(pstmt);
+			Connection conn = get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setInt( 1, request_id);
+      ResultSet resultSet = pstmt.executeQuery();;
       if (resultset_is_null_or_empty(resultSet)) {
         return null;
       }
 
-      result_set_next(resultSet);
-			int rid = get_integer(resultSet,  "request_id");
-			String dt = get_string(resultSet,   "datetime");
-			String d = get_nstring(resultSet,  "description");
-			int p = get_integer(resultSet,  "points");
-			int s = get_integer(resultSet,   "status");
-			String t = get_nstring(resultSet,  "title");
-			int ru = get_integer(resultSet,      "requesting_user_id");
+      resultSet.next();
+			int rid = resultSet.getInt("request_id");
+			String dt = resultSet.getString("datetime");
+			String d = resultSet.getNString("description");
+			int p = resultSet.getInt("points");
+			int s = resultSet.getInt("status");
+			String t = resultSet.getNString("title");
+			int ru = resultSet.getInt("requesting_user_id");
 			Integer[] categories = get_categories_for_request(request_id);
 			Request request = new Request(rid,dt,d,p,s,t,ru,categories);
 
       return request;
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+			return null;
     } finally {
       close_statement(pstmt);
     }
@@ -277,24 +301,26 @@ public class Database_access {
     */
   public static Request[] get_all_requests_except_for_user(int user_id) {
     String sqlText = "SELECT * FROM request WHERE requesting_user_id <> ?";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		PreparedStatement pstmt = null;
     try {
-      set_integer(pstmt, 1, user_id);
-      ResultSet resultSet = execute_query(pstmt);
+			Connection conn = get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();;
       if (resultset_is_null_or_empty(resultSet)) {
         return new Request[0];
       }
 
 			//keep adding rows of data while there is more data
       ArrayList<Request> requests = new ArrayList<Request>();
-      for(;result_set_next(resultSet) == true;) {
-        int rid = get_integer(resultSet,  "request_id");
-        String dt = get_string(resultSet,   "datetime");
-        String d = get_nstring(resultSet,  "description");
-        int p = get_integer(resultSet,  "points");
-        int s = get_integer(resultSet,   "status");
-        String t = get_nstring(resultSet,  "title");
-        int ru = get_integer(resultSet,      "requesting_user_id");
+      for(;resultSet.next() == true;) {
+        int rid = resultSet.getInt("request_id");
+        String dt = resultSet.getString("datetime");
+        String d = resultSet.getNString("description");
+        int p = resultSet.getInt("points");
+        int s = resultSet.getInt("status");
+        String t = resultSet.getNString("title");
+        int ru = resultSet.getInt("requesting_user_id");
         Request request = new Request(rid,dt,d,p,s,t,ru);
         requests.add(request);
       }
@@ -303,6 +329,9 @@ public class Database_access {
       Request[] array_of_requests = 
         requests.toArray(new Request[requests.size()]);
       return array_of_requests;
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+			return null;
     } finally {
       close_statement(pstmt);
     }
@@ -318,24 +347,26 @@ public class Database_access {
     */
   public static Request[] get_requests_for_user(int user_id) {
     String sqlText = "SELECT * FROM request WHERE requesting_user_id = ?";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		PreparedStatement pstmt = null;
     try {
-      set_integer(pstmt, 1, user_id);
-      ResultSet resultSet = execute_query(pstmt);
+			Connection conn = get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();;
       if (resultset_is_null_or_empty(resultSet)) {
         return new Request[0];
       }
 
 			//keep adding rows of data while there is more data
       ArrayList<Request> requests = new ArrayList<Request>();
-      for(;result_set_next(resultSet) == true;) {
-        int rid = get_integer(resultSet,  "request_id");
-        String dt = get_string(resultSet,   "datetime");
-        String d = get_nstring(resultSet,  "description");
-        int p = get_integer(resultSet,  "points");
-        int s = get_integer(resultSet,   "status");
-        String t = get_nstring(resultSet,  "title");
-        int ru = get_integer(resultSet,      "requesting_user_id");
+      for(;resultSet.next() == true;) {
+        int rid = resultSet.getInt("request_id");
+        String dt = resultSet.getString("datetime");
+        String d = resultSet.getNString("description");
+        int p = resultSet.getInt("points");
+        int s = resultSet.getInt("status");
+        String t = resultSet.getNString("title");
+        int ru = resultSet.getInt("requesting_user_id");
         Request request = new Request(rid,dt,d,p,s,t,ru);
         requests.add(request);
       }
@@ -344,6 +375,9 @@ public class Database_access {
       Request[] array_of_requests = 
         requests.toArray(new Request[requests.size()]);
       return array_of_requests;
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+			return null;
     } finally {
       close_statement(pstmt);
     }
@@ -361,13 +395,15 @@ public class Database_access {
       String sqlText = 
         "INSERT INTO user (first_name, last_name, email, password) " +
         "VALUES (?, ?, ?, ?)";
-      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-			boolean is_successful = false;
+		boolean is_successful = false;
+		PreparedStatement pstmt = null;
     try {
-      set_string(pstmt, 1, first_name);
-      set_string(pstmt, 2, last_name);
-      set_string(pstmt, 3, email);
-      set_string(pstmt, 4, password);
+			Connection conn = get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setString( 1, first_name);
+      pstmt.setString( 2, last_name);
+      pstmt.setString( 3, email);
+      pstmt.setString( 4, password);
       is_successful = execute_update(pstmt) > 0;
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
@@ -385,17 +421,22 @@ public class Database_access {
     */
   public static String get_user_displayname(int user_id) {
     String sqlText = "SELECT CONCAT(first_name, ' ',last_name,' (', email,')') as user_displayname FROM user WHERE user_id = ?;";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		PreparedStatement pstmt = null;
     try {
-			set_integer(pstmt, 1, user_id);
-      ResultSet resultSet = execute_query(pstmt);
+			Connection conn = get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+			pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();;
       if (resultset_is_null_or_empty(resultSet)) {
         return "No user found with user_id of " + user_id;
       }
 
-      result_set_next(resultSet); //move to the first set of results.
-      String display_name = get_nstring(resultSet, "user_displayname");
+      resultSet.next(); //move to the first set of results.
+      String display_name = resultSet.getNString("user_displayname");
       return display_name;
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+			return null;
     } finally {
       close_statement(pstmt);
     }
@@ -419,17 +460,22 @@ public class Database_access {
 
     String sqlText = "SELECT is_logged_in FROM user WHERE user_id = ?";
 
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		PreparedStatement pstmt = null;
     try {
-      set_integer(pstmt, 1, user_id);
-      ResultSet resultSet = execute_query(pstmt);
+			Connection conn = get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();;
 
       if(resultset_is_null_or_empty(resultSet)) {
         return false; // no results on query - return not logged in
       }
 
-      result_set_next(resultSet); //move to the first set of results.
-      return get_boolean(resultSet, "is_logged_in");
+      resultSet.next(); //move to the first set of results.
+      return resultSet.getBoolean("is_logged_in");
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+			return false;
     } finally {
       close_statement(pstmt);
     }
@@ -449,9 +495,11 @@ public class Database_access {
     }
 
     String sqlText = "UPDATE user SET is_logged_in = false;";
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
 		boolean is_successful = false;
+		PreparedStatement pstmt = null;
     try {
+			Connection conn = get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
       is_successful = execute_update(pstmt) > 0;
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
@@ -473,21 +521,26 @@ public class Database_access {
 
     String sqlText = "SELECT password,user_id FROM user WHERE email = ?";
 
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
+		PreparedStatement pstmt = null;
     try {
-      set_string(pstmt, 1, email);
-      ResultSet resultSet = execute_query(pstmt);
+			Connection conn = get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setString( 1, email);
+      ResultSet resultSet = pstmt.executeQuery();;
 
       if(resultset_is_null_or_empty(resultSet)) {
         return 0; // no results on query - return user "0";
       }
 
-      result_set_next(resultSet); //move to the first set of results.
+      resultSet.next(); //move to the first set of results.
 
-      if (get_nstring(resultSet, "password").equals(password)) {
-        return get_integer(resultSet, "user_id"); //success!
+      if (resultSet.getNString("password").equals(password)) {
+        return resultSet.getInt("user_id"); //success!
       }
       return 0; //password was bad - return user "0"
+		} catch (SQLException ex) {
+			handle_sql_exception(ex);
+			return 0;
     } finally {
       close_statement(pstmt);
     }
@@ -520,10 +573,12 @@ public class Database_access {
         "last_ip_logged_in = ? " + 
         "WHERE user_id = ?";
 
-      PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-      try {
-        set_string(pstmt, 1, ip);
-        set_integer(pstmt, 2, user_id);
+			PreparedStatement pstmt = null;
+			try {
+				Connection conn = get_a_connection();
+				pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+        pstmt.setString( 1, ip);
+        pstmt.setInt( 2, user_id);
         execute_update(pstmt);
 			} catch (SQLException ex) {
 				handle_sql_exception(ex);
@@ -650,37 +705,6 @@ public class Database_access {
     return stmt;
   }
 
-  /**
-    * Helper to get a PreparedStatement.
-    *
-    * Opens a connection each time it's run.
-    * @return A new PreparedStatement object.
-    */
-  private static PreparedStatement 
-    get_a_prepared_statement(String queryText) {
-		Connection conn = get_a_connection();
-		return get_a_prepared_statement(queryText, conn);
-	}
-
-  /**
-    * Helper to get a PreparedStatement.
-    *
-    * This uses a connection provided in the parameters.
-    * @return A new PreparedStatement object.
-    */
-  private static PreparedStatement 
-    get_a_prepared_statement(String queryText, Connection conn) {
-    try {
-      PreparedStatement stmt = conn.prepareStatement(queryText, Statement.RETURN_GENERATED_KEYS);
-      return stmt;
-    } catch (SQLException ex) {
-      handle_sql_exception(ex);
-    } catch (Exception ex) {
-      System.err.println("General exception: " + ex.toString());
-    }
-    return null;
-  }
-  
 
   /**
     * This method sets you up to call stored procedures in the database.
@@ -695,46 +719,6 @@ public class Database_access {
       Connection conn = get_a_connection();
       CallableStatement cs = conn.prepareCall(proc);
       return cs;
-    } catch (SQLException ex) {
-      handle_sql_exception(ex);
-    } catch (Exception ex) {
-      System.err.println("General exception: " + ex.toString());
-    }
-    return null;
-  }
-
-
-  /**
-    *A wrapper for CallableStatement.execute()
-    *
-    * Opens and closes a connection each time it's run.
-    * @return a boolean for success.
-    */
-  private static boolean execute(CallableStatement cs) {
-    try {
-      boolean result = cs.execute();
-      return result;
-    } catch (SQLException ex) {
-      handle_sql_exception(ex);
-    } catch (Exception ex) {
-      System.err.println("General exception: " + ex.toString());
-    }
-    return false;
-  }
-
-
-  /**
-    *A wrapper for PreparedStatement.executeUpdate(PreparedStatement pstmt)
-    *
-    * Opens and closes a connection each time it's run.
-    * @param pstmt The prepared statement
-    * @return a ResultSet object that contains the data 
-    * produced by the query
-    */
-  private static ResultSet execute_query(PreparedStatement pstmt) {
-    try {
-      ResultSet result = pstmt.executeQuery();
-      return result;
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     } catch (Exception ex) {
@@ -763,87 +747,6 @@ public class Database_access {
   }
   
 
-  /**
-    * A wrapper to close connections given a connection without
-    * having to include the necessary try-catch nonsense
-    * note this handles null statements just fine.
-    * we want to close the connection after every statement.
-    * @param c a connection object.
-    */
-  private static void close_connection_with_commit(Connection c) {
-    try {
-      if (c != null && !c.isClosed()) {
-				//the following is for the case where we sometimes will
-				//set autocommit to false so we can run multiple statements
-				//as a single transaction, and we need to reset it to committing
-				//after each statement here.
-				c.setAutoCommit(true); 
-        c.close();
-      }
-    } catch (SQLException ex) {
-      handle_sql_exception(ex);
-    } 
-  }
-
-
-  /**
-    *A wrapper for Statement.execute, and running statements 
-		* that have not come
-		* from the user, so we don't have to worry about SQL Injection.
-    *
-		* Note: does not close connection.
-    * @param sqlText the SQL text we will run - it must be a
-    *  single statement.  Multiple combined statements will fail.
-		* @param stmt the statement
-    * @return true if the first result is a ResultSet object; false 
-    *  if it is an update count or there are no results
-    */
-  public static boolean execute_statement(String sqlText, Statement stmt) {
-		boolean result = false;
-		try {
-			result = stmt.execute(sqlText);
-		}	catch (SQLException ex) {
-			handle_sql_exception(ex);
-		}
-		return result;
-  }
-
-
-  /**
-    *A wrapper for PreparedStatement.execute(), 
-		* used for setting up db schemas.
-    *
-    * Opens and closes a connection each time it's run.
-    * @param sqlText the SQL text we will run - it must be a
-    *  single statement.  Multiple combined statements will fail.
-    * @return true if the first result is a ResultSet object; false 
-    *  if it is an update count or there are no results
-    */
-  public static boolean run_sql_statement(String sqlText) {
-    PreparedStatement pstmt = get_a_prepared_statement(sqlText);
-		boolean result = execute_prepared_statement(pstmt, sqlText);
-		return result;
-  }
-
-	public static void run_multiple_statements(String file) {
-		Statement stmt = null;
-		try (Scanner s = new Scanner(new File(file))) {
-			stmt = get_a_statement();
-			s.useDelimiter("---DELIMITER---");
-			while(s.hasNext()) {
-				String next_statement = s.next();
-				execute_statement(
-						next_statement, stmt);
-			}
-		} catch (FileNotFoundException ex) {
-			System.err.println(ex);
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-		} finally {
-    	close_statement(stmt);
-		}
-	}
-
 
   /**
     * helper method to check whether a newly-returned result set is
@@ -853,88 +756,14 @@ public class Database_access {
     * @param rs the result set we are checking
     * @return true if the result set is null or has no data.
     */
-  private static boolean resultset_is_null_or_empty(ResultSet rs) {
-    try {
-      return (rs == null || !rs.isBeforeFirst());
-    } catch (SQLException ex) {
-      System.err.println("ResultSet was null or empty");
-      handle_sql_exception(ex);
-    }
-    return true; //true, because if something crashed here, the
-                //result set may as well be empty
+  private static boolean resultset_is_null_or_empty(ResultSet rs) throws SQLException {
+		return (rs == null || !rs.isBeforeFirst());
   }
 
 
 	/**
-		* Wrapper around ResultSet.next() to avoid
-		* littering my code with try-next
-		*/
-  private static boolean result_set_next(ResultSet  rs) {
-		try {
-			return rs.next();
-		} catch(SQLException ex) {
-			handle_sql_exception(ex);
-		} 
-		return false;
-	}
-
-	/**
-		* Wrapper around PreparedStatement.execute(String text)
-		* to avoid littering my code with try-catch
-		*/
-	private static boolean execute_prepared_statement(
-			PreparedStatement ps, String sqlText) {
-		try {
-			return ps.execute(sqlText);
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-		} finally {
-			close_statement(ps);
-    }
-		return false;
-	}
-
-
-	/**
-		* Wrapper around CallableStatement.setInt(int, Int)
-		* to avoid littering my code with try-catch
-		*/
-	private static void set_integer(CallableStatement cs, int i, int x) {
-		try {
-			cs.setInt(i, x);
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-		}
-	}
-
-	/**
-		* Wrapper around PreparedStatement.setInt(int, Int)
-		* to avoid littering my code with try-catch
-		*/
-	private static void set_integer(PreparedStatement ps, int i, int x) {
-		try {
-			ps.setInt(i, x);
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-		}
-	}
-
-	/**
-		* Wrapper around PreparedStatement.setString(int, String)
-		* to avoid littering my code with try-catch
-		*/
-	private static void set_string(PreparedStatement ps, int i, String s) {
-		try {
-			ps.setString(i, s);
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-		}
-	}
-
-
-	/**
 		* Wrapper around PreparedStatement.close() to avoid having to
-		* litter my code with try-catch
+		* litter my code with try-catch and to close things in the proper order.
 		*/
 	private static void close_statement(Statement s) {
 		try {
@@ -943,70 +772,14 @@ public class Database_access {
         c = s.getConnection();
         s.close();
       }
-      close_connection_with_commit(c);
+			if (c != null && !c.isClosed()) {
+        c.close();
+			}
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
 		}
 	}
 
-
-	/**
-		* Wrapper around ResultSet.getBoolean(String columnName)
-		* We'll wrap these methods that throw SQLException
-		* so we don't have to worry about it any  more
-		*/
-	private static boolean get_boolean(ResultSet rs, String columnName) {
-		try {
-			return rs.getBoolean(columnName);
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-		}
-		return false;
-	}
-
-	/**
-		* Wrapper around ResultSet.getInt(String columnName)
-		* We'll wrap these methods that throw SQLException
-		* so we don't have to worry about it any  more
-		*/
-	private static Integer get_integer(ResultSet rs, String columnName) {
-		try {
-			return rs.getInt(columnName);
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-		}
-		return null;
-	}
-  
-
-	/**
-		* Wrapper around ResultSet.getString(String columnName)
-		* We'll wrap these methods that throw SQLException
-		* so we don't have to worry about it any  more
-		*/
-	private static String get_string(ResultSet rs, String columnName) {
-		try {
-			return rs.getString(columnName);
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-		}
-		return "";
-	}
-  
-	/**
-		* Wrapper around ResultSet.getNString(String columnName)
-		* We'll wrap these methods that throw SQLException
-		* so we don't have to worry about it any  more
-		*/
-	private static String get_nstring(ResultSet rs, String columnName) {
-		try {
-			return rs.getNString(columnName);
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-		}
-		return "";
-	}
-  
 
   /**
     * helps with boilerplate for validation of whether input
