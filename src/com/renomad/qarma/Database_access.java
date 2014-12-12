@@ -200,7 +200,7 @@ public class Database_access {
 	/**
 		* gets an array of categories for a given request
 		*
-		*@returns an array of Strings, representing the categories
+		*@return an array of Strings, representing the categories
 		*/
 	public static Integer[] get_categories_for_request(int request_id) {
     String sqlText = 
@@ -234,7 +234,7 @@ public class Database_access {
   /**
     * Gets a specific Request for the user.
     * 
-    * @returns a single Request
+    * @return a single Request
     */
   public static Request get_a_request(int request_id) {
 		
@@ -273,7 +273,7 @@ public class Database_access {
   /**
     * Gets all the requests for the user.
     * 
-    * @returns an array of Request
+    * @return an array of Request
     */
   public static Request[] get_all_requests_except_for_user(int user_id) {
     String sqlText = "SELECT * FROM request WHERE requesting_user_id <> ?";
@@ -314,7 +314,7 @@ public class Database_access {
   /**
     * Gets all the requests for the user.
     * 
-    * @returns an array of Request
+    * @return an array of Request
     */
   public static Request[] get_requests_for_user(int user_id) {
     String sqlText = "SELECT * FROM request WHERE requesting_user_id = ?";
@@ -381,7 +381,7 @@ public class Database_access {
   /**
     * gets a name for display from the user table
     *
-    * @returns a string displaying first name, last name, email
+    * @return a string displaying first name, last name, email
     */
   public static String get_user_displayname(int user_id) {
     String sqlText = "SELECT CONCAT(first_name, ' ',last_name,' (', email,')') as user_displayname FROM user WHERE user_id = ?;";
@@ -439,7 +439,7 @@ public class Database_access {
   /**
     * simply sets "is_logged_in" to false in the database for the given user.
     * @param user_id the user in question to set logged_in to false.
-    * @returns a boolean on whether the operation succeeded.
+    * @return a boolean on whether the operation succeeded.
     */
   public static boolean set_user_not_logged_in(int user_id) {
     if (user_id < 0) {
@@ -465,7 +465,7 @@ public class Database_access {
   /**
     * checks the password based on the email, the user's unique key
     *
-    * @returns the user id if the password is correct for that email.
+    * @return the user id if the password is correct for that email.
     */
   public static int check_login(String email, String password) {
     null_or_empty_string_validation(email);
@@ -642,7 +642,7 @@ public class Database_access {
     * Opens a connection each time it's run.
     * We don't have to worry about SQL injection here, 
     * it should only be called by our own code.
-    * @returns A new Statement object.
+    * @return A new Statement object.
     */
   private static Statement get_a_statement() throws SQLException {
     Connection conn = get_a_connection();
@@ -654,7 +654,7 @@ public class Database_access {
     * Helper to get a PreparedStatement.
     *
     * Opens a connection each time it's run.
-    * @returns A new PreparedStatement object.
+    * @return A new PreparedStatement object.
     */
   private static PreparedStatement 
     get_a_prepared_statement(String queryText) {
@@ -666,7 +666,7 @@ public class Database_access {
     * Helper to get a PreparedStatement.
     *
     * This uses a connection provided in the parameters.
-    * @returns A new PreparedStatement object.
+    * @return A new PreparedStatement object.
     */
   private static PreparedStatement 
     get_a_prepared_statement(String queryText, Connection conn) {
@@ -692,7 +692,7 @@ public class Database_access {
     * of "{call blahdy_blahblah(?)}"; ,using JDBC escape syntax
     * @param procedure_name the name of a procedure we've 
     *  already added.  See the database
-    * @returns A callable statement ready for setting parameters.
+    * @return A callable statement ready for setting parameters.
     */
   private static CallableStatement get_a_callable_statement(String proc) {
     try {
@@ -712,7 +712,7 @@ public class Database_access {
     *A wrapper for CallableStatement.execute()
     *
     * Opens and closes a connection each time it's run.
-    * @returns a boolean for success.
+    * @return a boolean for success.
     */
   private static boolean execute(CallableStatement cs) {
     try {
@@ -732,7 +732,7 @@ public class Database_access {
     *
     * Opens and closes a connection each time it's run.
     * @param pstmt The prepared statement
-    * @returns a ResultSet object that contains the data 
+    * @return a ResultSet object that contains the data 
     * produced by the query
     */
   private static ResultSet execute_query(PreparedStatement pstmt) {
@@ -753,7 +753,7 @@ public class Database_access {
     *
     * Opens and closes a connection each time it's run.
     * @param pstmt The prepared statement
-    * @returns an integer that represents the new or updated id.
+    * @return an integer that represents the new or updated id.
     */
   private static int execute_update(PreparedStatement pstmt) throws SQLException {
 		int id = -1; // -1 means no key was generated.
@@ -799,7 +799,7 @@ public class Database_access {
     * @param sqlText the SQL text we will run - it must be a
     *  single statement.  Multiple combined statements will fail.
 		* @param stmt the statement
-    * @returns true if the first result is a ResultSet object; false 
+    * @return true if the first result is a ResultSet object; false 
     *  if it is an update count or there are no results
     */
   public static boolean execute_statement(String sqlText, Statement stmt) {
@@ -820,7 +820,7 @@ public class Database_access {
     * Opens and closes a connection each time it's run.
     * @param sqlText the SQL text we will run - it must be a
     *  single statement.  Multiple combined statements will fail.
-    * @returns true if the first result is a ResultSet object; false 
+    * @return true if the first result is a ResultSet object; false 
     *  if it is an update count or there are no results
     */
   public static boolean run_sql_statement(String sqlText) {
@@ -855,7 +855,7 @@ public class Database_access {
     * retrieved from the result set.  Also note that the method
     * isBeforeFirst() returns false if there are no rows of data.
     * @param rs the result set we are checking
-    * @returns true if the result set is null or has no data.
+    * @return true if the result set is null or has no data.
     */
   private static boolean resultset_is_null_or_empty(ResultSet rs) {
     try {

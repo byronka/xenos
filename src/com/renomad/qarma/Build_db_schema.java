@@ -45,7 +45,7 @@ public class Build_db_schema {
     * Opens a connection each time it's run.
     * We don't have to worry about SQL injection here, 
     * it should only be called by our own code.
-    * @returns A new Statement object.
+    * @return A new Statement object.
     */
   private static Statement 
     get_a_statement_before_db_exists() throws SQLException {
@@ -124,7 +124,7 @@ public class Build_db_schema {
     * Opens a connection each time it's run.
     * We don't have to worry about SQL injection here, 
     * it should only be called by our own code.
-    * @returns A new Statement object.
+    * @return A new Statement object.
     */
   private static Statement get_a_statement() throws SQLException {
     Connection conn = 
@@ -154,7 +154,7 @@ public class Build_db_schema {
     * Opens and closes a connection each time it's run.
     * @param sqlText the SQL text we will run - it must be a
     *  single statement.  Multiple combined statements will fail.
-    * @returns true if the first result is a ResultSet object; false 
+    * @return true if the first result is a ResultSet object; false 
     *  if it is an update count or there are no results
     */
   public static boolean run_sql_statement(String sqlText) {
@@ -193,7 +193,7 @@ public class Build_db_schema {
     * @param sqlText the SQL text we will run - it must be a
     *  single statement.  Multiple combined statements will fail.
 		* @param stmt the statement
-    * @returns true if the first result is a ResultSet object; false 
+    * @return true if the first result is a ResultSet object; false 
     *  if it is an update count or there are no results
     */
   public static boolean execute_statement(String sqlText, Statement stmt) {
@@ -211,7 +211,7 @@ public class Build_db_schema {
     * Helper to get a PreparedStatement.
     *
     * Opens a connection each time it's run.
-    * @returns A new PreparedStatement object.
+    * @return A new PreparedStatement object.
     */
   private static PreparedStatement 
     get_a_prepared_statement(String queryText) {
@@ -234,7 +234,7 @@ public class Build_db_schema {
     * of "{call blahdy_blahblah(?)}"; ,using JDBC escape syntax
     * @param procedure_name the name of a procedure we've 
     *  already added.  See the database
-    * @returns A callable statement ready for setting parameters.
+    * @return A callable statement ready for setting parameters.
     */
   private static CallableStatement get_a_callable_statement(String proc) {
     try {
@@ -254,7 +254,7 @@ public class Build_db_schema {
     *A wrapper for CallableStatement.execute()
     *
     * Opens and closes a connection each time it's run.
-    * @returns a boolean for success.
+    * @return a boolean for success.
     */
   private static boolean execute(CallableStatement cs) {
     try {
@@ -274,7 +274,7 @@ public class Build_db_schema {
     *
     * Opens and closes a connection each time it's run.
     * @param pstmt The prepared statement
-    * @returns a ResultSet object that contains the data 
+    * @return a ResultSet object that contains the data 
     * produced by the query
     */
   private static ResultSet execute_query(PreparedStatement pstmt) {
@@ -295,7 +295,7 @@ public class Build_db_schema {
     *
     * Opens and closes a connection each time it's run.
     * @param pstmt The prepared statement
-    * @returns a boolean indicating whether this succeeded.  If it
+    * @return a boolean indicating whether this succeeded.  If it
     * hits an exception, that's when we return false.  if success, true.
     */
   private static boolean execute_update(PreparedStatement pstmt) {
@@ -331,7 +331,7 @@ public class Build_db_schema {
     * retrieved from the result set.  Also note that the method
     * isBeforeFirst() returns false if there are no rows of data.
     * @param rs the result set we are checking
-    * @returns true if the result set is null or has no data.
+    * @return true if the result set is null or has no data.
     */
   private static boolean resultset_is_null_or_empty(ResultSet rs) {
     try {
