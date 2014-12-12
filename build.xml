@@ -58,7 +58,7 @@
   <!-- cleans, builds, installs into container, restarts tomcat -->
   <target name="run" 
     description="cleans, builds, installs, restarts">
-    <antcall target="clean" />
+    <antcall target="clean-build" />
     <antcall target="compile" />
     <antcall target="install" />
     <antcall target="tomcat-restart" />
@@ -78,13 +78,20 @@
     name="clean-full" 
     description="deletes database (Bye-bye all data) and build directory">
     <antcall target="clean-schema" />
-    <antcall target="clean" />
+    <antcall target="clean-build" />
   </target>
 
 
+  <!-- deletes the javadoc directory --> 
+  <target 
+    name="clean-javadoc" 
+    description="deletes the javadoc directory">
+		<delete dir="${docs.dir}"/>
+  </target>
+
   <!-- deletes the build directory --> 
   <target 
-    name="clean" 
+    name="clean-build" 
     description="deletes the build directory">
     <delete dir="build"/>
   </target>
