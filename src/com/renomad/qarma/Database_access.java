@@ -24,97 +24,6 @@ public class Database_access {
   // BUSINESS LOGIC CODE          *
   // ******************************
 
-  /**
-    * adds a Request to the database
-		* @param request a request object
-    * @return the id of the new request. -1 if not successful.
-    */
-  public static int put_request(Request request) {
-
-		// 1. set the sql
-		String update_request_sql = 
-			"INSERT into request (description, datetime, points, " + 
-			"status, title, requesting_user_id) VALUES (?, ?, ?, ?, ?, ?)"; 
-
-     //assembling dynamic SQL to add categories
-		String update_categories_sql = 
-			"INSERT into request_to_category "+
-			"(request_id,request_category_id) "+
-			"VALUES (?, ?)"; 
-		for (int i = 1; i < request.categories.length; i++) {
-		 update_categories_sql += ",(?, ?)";
-		}
-
-		// 2. set up values we'll need outside the try 
-		int result = -1; //default to a guard value that indicates failure
-		PreparedStatement req_pstmt = null;
-		PreparedStatement cat_pstmt = null;
-		Connection conn = null;
-	
-		try {
-			//get the connection and set to not auto-commit.  Prepare the statements
-			// 3. get the connection and set up a statement
-			conn = get_a_connection();
-			conn.setAutoCommit(false);
-      req_pstmt  = conn.prepareStatement(
-					update_request_sql, Statement.RETURN_GENERATED_KEYS);
-      cat_pstmt  = conn.prepareStatement(
-					update_categories_sql, Statement.RETURN_GENERATED_KEYS);
-
-			// 4. set values into the statement
-			//set values for adding request
-			req_pstmt.setString(1, request.description);
-			req_pstmt.setString( 2, request.datetime);
-			req_pstmt.setInt( 3, request.points);
-			req_pstmt.setInt( 4, request.status);
-			req_pstmt.setString( 5, request.title);
-			req_pstmt.setInt( 6, request.requesting_user_id);
-
-			// 5. execute a statement
-			//execute one of the updates
-			result = execute_update(req_pstmt);
-
-			// 6. check results of statement, if good, continue 
-			// if bad, rollback
-			//if we get a -1 for our id, the request insert didn't go through.  
-			//so rollback.
-			if (result < 0) {
-				System.err.println(
-						"Transaction is being rolled back for request_id: " + result);
-				conn.rollback();
-				return -1;
-			}
-
-			// 7. set values for next statement 
-			//set values for adding categories
-			for (int i = 0; i < request.categories.length; i++ ) {
-				int category_id = request.categories[i];
-				cat_pstmt.setInt( 2*i+1, result);
-				cat_pstmt.setInt( 2*i+2, category_id);
-			}
-
-			// 8. run next statement 
-			execute_update(cat_pstmt);
-
-			// 9. commit 
-			conn.commit();
-
-			// 10. cleanup and exceptions
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.setAutoCommit(true);
-				} catch (SQLException ex) {
-					handle_sql_exception(ex);
-				}
-			}
-			close_statement(req_pstmt);
-			close_statement(cat_pstmt);
-		}
-    return result;
-  }
 
 
 	/**
@@ -400,7 +309,7 @@ public class Database_access {
   }
 
 
-  public static boolean add_user(
+  public static boolean put_user(
 			String first_name, String last_name, String email, String password) {
     //validation section
 
@@ -595,7 +504,7 @@ public class Database_access {
   /**
 		* this overload of the method will also rollback commits.
     */
-  private static void handle_sql_exception(SQLException ex, Statement stmt) {
+  public static void handle_sql_exception(SQLException ex, Statement stmt) {
 		try {
 			Connection conn = stmt.getConnection();
 			if (conn != null) {
@@ -613,7 +522,7 @@ public class Database_access {
   /**
     * provides a few boilerplate println's for sql exceptions
     */
-  private static void handle_sql_exception(SQLException ex) {
+  public static void handle_sql_exception(SQLException ex) {
     System.err.println("SQLException: " + ex.getMessage());
     System.err.println("SQLState: " + ex.getSQLState());
     System.err.println("VendorError: " + ex.getErrorCode());
@@ -621,7 +530,7 @@ public class Database_access {
     Thread.currentThread().dumpStack();
   }
 
-	private static Connection get_a_connection() {
+	public static Connection get_a_connection() {
 		Boolean in_testing = Boolean.parseBoolean(
 				System.getProperty("TESTING_DATABASE_CODE_WITHOUT_TOMCAT"));
     javax.sql.DataSource ds = null;
@@ -699,7 +608,7 @@ public class Database_access {
     * @param pstmt The prepared statement
     * @return an integer that represents the new or updated id.
     */
-  private static int execute_update(PreparedStatement pstmt) throws SQLException {
+  public static int execute_update(PreparedStatement pstmt) throws SQLException {
 		int id = -1; // -1 means no key was generated.
 		pstmt.executeUpdate();
 		ResultSet rs = pstmt.getGeneratedKeys();
@@ -720,7 +629,7 @@ public class Database_access {
     * @param rs the result set we are checking
     * @return true if the result set is null or has no data.
     */
-  private static boolean resultset_is_null_or_empty(ResultSet rs) throws SQLException {
+  public static boolean resultset_is_null_or_empty(ResultSet rs) throws SQLException {
 		return (rs == null || !rs.isBeforeFirst());
   }
 
@@ -729,7 +638,7 @@ public class Database_access {
 		* Wrapper around PreparedStatement.close() to avoid having to
 		* litter my code with try-catch and to close things in the proper order.
 		*/
-	private static void close_statement(Statement s) {
+	public static void close_statement(Statement s) {
 		try {
       Connection c = null;
       if (s != null && !s.isClosed()) {

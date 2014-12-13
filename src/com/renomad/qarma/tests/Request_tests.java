@@ -11,6 +11,7 @@ import java.util.Arrays;
 import com.renomad.qarma.Business_logic.Request;
 import com.renomad.qarma.Business_logic.Request_status;
 import com.renomad.qarma.Database_access;
+import com.renomad.qarma.Business_logic;
 
 public class Request_tests {
 
@@ -43,7 +44,7 @@ public class Request_tests {
 		Request r1 = new Request(0, "2014-12-12 11:19:30.0", "desc", 100, 1, "title", 1, new Integer[]{1,2});
 
 		//act
-		int id = Database_access.put_request(r1);
+		int id = Business_logic.put_request(r1);
 
 		//assert
     Request r2 = Database_access.get_a_request(id);

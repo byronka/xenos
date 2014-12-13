@@ -6,6 +6,12 @@ import java.util.Map;
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Utils;
 
+import java.sql.Statement;
+import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+
 public class Business_logic {
 
 		public static String[] get_all_categories() {
@@ -70,8 +76,7 @@ public class Business_logic {
 		Request request = new Request(-1, date, desc, p, status, title, user_id, categories_array);
 
     //send parsed data to the database
-    int new_request_id = 
-      Database_access.put_request(request);
+    int new_request_id = put_request(request);
 
     if (new_request_id == -1) {
       System.err.println(
@@ -81,6 +86,101 @@ public class Business_logic {
 
     return true;
   }
+
+
+
+  /**
+    * adds a Request to the database
+		* @param request a request object
+    * @return the id of the new request. -1 if not successful.
+    */
+  public static int put_request(Request request) {
+
+		// 1. set the sql
+		String update_request_sql = 
+			"INSERT into request (description, datetime, points, " + 
+			"status, title, requesting_user_id) VALUES (?, ?, ?, ?, ?, ?)"; 
+
+     //assembling dynamic SQL to add categories
+		String update_categories_sql = 
+			"INSERT into request_to_category "+
+			"(request_id,request_category_id) "+
+			"VALUES (?, ?)"; 
+		for (int i = 1; i < request.categories.length; i++) {
+		 update_categories_sql += ",(?, ?)";
+		}
+
+		// 2. set up values we'll need outside the try 
+		int result = -1; //default to a guard value that indicates failure
+		PreparedStatement req_pstmt = null;
+		PreparedStatement cat_pstmt = null;
+		Connection conn = null;
+	
+		try {
+			//get the connection and set to not auto-commit.  Prepare the statements
+			// 3. get the connection and set up a statement
+			conn = Database_access.get_a_connection();
+			conn.setAutoCommit(false);
+      req_pstmt  = conn.prepareStatement(
+					update_request_sql, Statement.RETURN_GENERATED_KEYS);
+      cat_pstmt  = conn.prepareStatement(
+					update_categories_sql, Statement.RETURN_GENERATED_KEYS);
+
+			// 4. set values into the statement
+			//set values for adding request
+			req_pstmt.setString(1, request.description);
+			req_pstmt.setString( 2, request.datetime);
+			req_pstmt.setInt( 3, request.points);
+			req_pstmt.setInt( 4, request.status);
+			req_pstmt.setString( 5, request.title);
+			req_pstmt.setInt( 6, request.requesting_user_id);
+
+			// 5. execute a statement
+			//execute one of the updates
+			result = Database_access.execute_update(req_pstmt);
+
+			// 6. check results of statement, if good, continue 
+			// if bad, rollback
+			//if we get a -1 for our id, the request insert didn't go through.  
+			//so rollback.
+			if (result < 0) {
+				System.err.println(
+						"Transaction is being rolled back for request_id: " + result);
+				conn.rollback();
+				return -1;
+			}
+
+			// 7. set values for next statement 
+			//set values for adding categories
+			for (int i = 0; i < request.categories.length; i++ ) {
+				int category_id = request.categories[i];
+				cat_pstmt.setInt( 2*i+1, result);
+				cat_pstmt.setInt( 2*i+2, category_id);
+			}
+
+			// 8. run next statement 
+			Database_access.execute_update(cat_pstmt);
+
+			// 9. commit 
+			conn.commit();
+
+			// 10. cleanup and exceptions
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.setAutoCommit(true);
+				} catch (SQLException ex) {
+					Database_access.handle_sql_exception(ex);
+				}
+			}
+			Database_access.close_statement(req_pstmt);
+			Database_access.close_statement(cat_pstmt);
+		}
+    return result;
+  }
+
 
 
 	/**
@@ -157,13 +257,13 @@ public class Business_logic {
   /**
     * adds a user.  if successful, returns true
     */
-  public static boolean add_user(
+  public static boolean put_user(
 			String first_name, String last_name, String email, String password) {
       Utils.null_or_empty_string_validation(first_name);
       Utils.null_or_empty_string_validation(last_name);
       Utils.null_or_empty_string_validation(email);
       Utils.null_or_empty_string_validation(password);
-    return Database_access.add_user(first_name, last_name, email, password);
+    return Database_access.put_user(first_name, last_name, email, password);
   }
 
 
