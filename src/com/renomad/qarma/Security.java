@@ -5,7 +5,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.renomad.qarma.Database_access;
-import com.renomad.qarma.Utilities;
+import com.renomad.qarma.Utils;
 
 public class Security {
 
@@ -17,6 +17,14 @@ public class Security {
 
   public static void register_user(int user_id,
       String ip_address) {
+      if (user_id < 0) {
+        System.err.println("error: user id was " + 
+						user_id + " in register_details_on_user_login");
+        return;
+      }
+      if (ip_address == null || ip_address.length() == 0) {
+        ip_address = "error: no ip in request";
+      }
     Database_access.register_details_on_user_login(user_id, ip_address);
   }
 
@@ -35,7 +43,7 @@ public class Security {
   }
 
   private static int get_int_from_cookie(Cookie c) {
-    return Utilities.parse_int(c.getValue());
+    return Utils.parse_int(c.getValue());
   }
 
 

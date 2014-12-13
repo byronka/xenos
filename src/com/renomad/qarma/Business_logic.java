@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import com.renomad.qarma.Database_access;
-import com.renomad.qarma.Utilities;
+import com.renomad.qarma.Utils;
 
 public class Business_logic {
 
@@ -56,7 +56,7 @@ public class Business_logic {
 		}
 
 		//extract useful information from what the client sent us
-    int p = Utilities.parse_int(points);
+    int p = Utils.parse_int(points);
     String date = getCurrentDateSqlFormat();
 
     //parse out the categories from a string the client gave us

@@ -38,8 +38,8 @@ public class Database_access {
     */
   public static int add_request( int user_id, String desc, int status, 
       String date, int points, String title , Integer[] categories) {
-    
 
+		// 1. set the sql
 		String update_request_sql = 
 			"INSERT into request (description, datetime, points, " + 
 			"status, title, requesting_user_id) VALUES (?, ?, ?, ?, ?, ?)"; 
@@ -53,13 +53,15 @@ public class Database_access {
 		 update_categories_sql += ",(?, ?)";
 		}
 
-		int request_id = -1; //default to a guard value that indicates failure
+		// 2. set up values we'll need outside the try 
+		int result = -1; //default to a guard value that indicates failure
 		PreparedStatement req_pstmt = null;
 		PreparedStatement cat_pstmt = null;
 		Connection conn = null;
 	
 		try {
 			//get the connection and set to not auto-commit.  Prepare the statements
+			// 3. get the connection and set up a statement
 			conn = get_a_connection();
 			conn.setAutoCommit(false);
       req_pstmt  = conn.prepareStatement(
@@ -67,6 +69,7 @@ public class Database_access {
       cat_pstmt  = conn.prepareStatement(
 					update_categories_sql, Statement.RETURN_GENERATED_KEYS);
 
+			// 4. set values into the statement
 			//set values for adding request
 			req_pstmt.setString(1, desc);
 			req_pstmt.setString( 2, date);
@@ -75,28 +78,36 @@ public class Database_access {
 			req_pstmt.setString( 5, title);
 			req_pstmt.setInt( 6, user_id);
 
-
+			// 5. execute a statement
 			//execute one of the updates
-			request_id = execute_update(req_pstmt);
+			result = execute_update(req_pstmt);
 
+			// 6. check results of statement, if good, continue 
+			// if bad, rollback
 			//if we get a -1 for our id, the request insert didn't go through.  
 			//so rollback.
-			if (request_id < 0) {
+			if (result < 0) {
 				System.err.println(
-						"Transaction is being rolled back for request_id: " + request_id);
+						"Transaction is being rolled back for request_id: " + result);
 				conn.rollback();
 				return -1;
 			}
 
+			// 7. set values for next statement 
 			//set values for adding categories
 			for (int i = 0; i < categories.length; i++ ) {
 				int category_id = categories[i];
-				cat_pstmt.setInt( 2*i+1, request_id);
+				cat_pstmt.setInt( 2*i+1, result);
 				cat_pstmt.setInt( 2*i+2, category_id);
 			}
 
+			// 8. run next statement 
 			execute_update(cat_pstmt);
+
+			// 9. commit 
 			conn.commit();
+
+			// 10. cleanup and exceptions
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
 		} finally {
@@ -110,26 +121,35 @@ public class Database_access {
 			close_statement(req_pstmt);
 			close_statement(cat_pstmt);
 		}
-    return request_id;
+    return result;
   }
+
 
 	/**
 		* gets all the current request statuses, like OPEN, CLOSED, and TAKEN
 		* @return an array of request statuses, or null if failure.
 		*/
 	public static Request_status[] get_request_statuses() {
+		// 1. set the sql
     String sqlText = 
       "SELECT request_status_id, request_status_value FROM request_status;";
 
+		// 2. set up values we'll need outside the try
 		PreparedStatement pstmt = null;
     try {
+			// 3. get the connection and set up a statement
 			Connection conn = get_a_connection();
       pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);
+
+			// 4. execute a statement
       ResultSet resultSet = pstmt.executeQuery();;
+
+			// 5. check that we got results
       if (resultset_is_null_or_empty(resultSet)) {
         return new Request_status[0];
       }
 
+			// 6. get values from database and convert to an object
 			//keep adding rows of data while there is more data
       ArrayList<Request_status> statuses = 
 				new ArrayList<Request_status>();
@@ -140,6 +160,7 @@ public class Database_access {
         statuses.add(status);
 			}
 
+			// 7. if necessary, create array of objects for return
       //convert arraylist to array
       Request_status[] my_array = 
         statuses.toArray(new Request_status[statuses.size()]);
@@ -179,17 +200,23 @@ public class Database_access {
 		* @return Map of strings, indexed by id, or null if nothing in db.
 		*/
 	public static Map<Integer,String> get_all_categories() {
+		// 1. set the sql
     String sqlText = 
 			"SELECT request_category_id FROM request_category; ";
+		// 2. set up values we'll need outside the try
 		PreparedStatement pstmt = null;
     try {
+			// 3. get the connection and set up a statement
 			Connection conn = get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+			// 4. execute a statement
       ResultSet resultSet = pstmt.executeQuery();;
+			// 5. check that we got results
       if (resultset_is_null_or_empty(resultSet)) {
         return null;
       }
 
+			// 6. get values from database and convert to an object
 			//keep adding rows of data while there is more data
       Map<Integer, String> categories = new HashMap<Integer,String>();
       while(resultSet.next()) {
@@ -385,24 +412,31 @@ public class Database_access {
 			String first_name, String last_name, String email, String password) {
     //validation section
 
+		// 1. set the sql
       String sqlText = 
         "INSERT INTO user (first_name, last_name, email, password) " +
         "VALUES (?, ?, ?, ?)";
-		boolean is_successful = false;
+		// 2. set up values we'll need outside the try
+		boolean result = false;
 		PreparedStatement pstmt = null;
     try {
+			// 3. get the connection and set up a statement
 			Connection conn = get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+			// 4. set values into the statement
       pstmt.setString( 1, first_name);
       pstmt.setString( 2, last_name);
       pstmt.setString( 3, email);
       pstmt.setString( 4, password);
-      is_successful = execute_update(pstmt) > 0;
+			// 5. execute a statement
+      result = execute_update(pstmt) > 0;
+			// 10. cleanup and exceptions
+			return result;
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
+			return false;
     } finally {
       close_statement(pstmt);
-      return is_successful;
     }
   }
 
@@ -410,10 +444,14 @@ public class Database_access {
   /**
     * gets a name for display from the user table
     *
-    * @return a string displaying first name, last name, email
+    * @return a string displaying first name, last name, email, or
+		* null if not found.
     */
   public static String get_user_displayname(int user_id) {
-    String sqlText = "SELECT CONCAT(first_name, ' ',last_name,' (', email,')') as user_displayname FROM user WHERE user_id = ?;";
+    String sqlText = "SELECT CONCAT(first_name, ' ',last_name"+
+			",' (', email,')') as user_displayname "+
+			"FROM user "+
+			"WHERE user_id = ?;";
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = get_a_connection();
@@ -421,7 +459,7 @@ public class Database_access {
 			pstmt.setInt( 1, user_id);
       ResultSet resultSet = pstmt.executeQuery();;
       if (resultset_is_null_or_empty(resultSet)) {
-        return "No user found with user_id of " + user_id;
+        return null;
       }
 
       resultSet.next(); //move to the first set of results.
@@ -482,11 +520,12 @@ public class Database_access {
 			Connection conn = get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
       is_successful = execute_update(pstmt) > 0;
+      return is_successful;
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
+			return false;
     } finally {
       close_statement(pstmt);
-      return is_successful;
     }
   }
 
@@ -534,15 +573,6 @@ public class Database_access {
     */
   public static void 
     register_details_on_user_login(int user_id, String ip) {
-
-      if (user_id < 0) {
-        System.err.println("error: user id was " + user_id + " in register_details_on_user_login");
-        return;
-      }
-
-      if (ip == null || ip.length() == 0) {
-        ip = "error: no ip in request";
-      }
 
       String sqlText = 
         "UPDATE user " + 
