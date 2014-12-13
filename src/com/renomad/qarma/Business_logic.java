@@ -62,7 +62,7 @@ public class Business_logic {
     //parse out the categories from a string the client gave us
 		Integer[] categories_array = parse_categories_string(categories);
 		
-		if (categories.length == 0) {return false;}
+		if (categories_array.length == 0) {return false;}
 
     //send parsed data to the database
     int new_request_id = 
