@@ -309,37 +309,6 @@ public class Database_access {
   }
 
 
-  public static boolean put_user(
-			String first_name, String last_name, String email, String password) {
-    //validation section
-
-		// 1. set the sql
-      String sqlText = 
-        "INSERT INTO user (first_name, last_name, email, password) " +
-        "VALUES (?, ?, ?, ?)";
-		// 2. set up values we'll need outside the try
-		boolean result = false;
-		PreparedStatement pstmt = null;
-    try {
-			// 3. get the connection and set up a statement
-			Connection conn = get_a_connection();
-			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
-			// 4. set values into the statement
-      pstmt.setString( 1, first_name);
-      pstmt.setString( 2, last_name);
-      pstmt.setString( 3, email);
-      pstmt.setString( 4, password);
-			// 5. execute a statement
-      result = execute_update(pstmt) > 0;
-			// 10. cleanup and exceptions
-			return result;
-		} catch (SQLException ex) {
-			handle_sql_exception(ex);
-			return false;
-    } finally {
-      close_statement(pstmt);
-    }
-  }
 
   
   /**

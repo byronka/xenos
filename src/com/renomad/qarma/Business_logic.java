@@ -263,7 +263,39 @@ public class Business_logic {
       Utils.null_or_empty_string_validation(last_name);
       Utils.null_or_empty_string_validation(email);
       Utils.null_or_empty_string_validation(password);
-    return Database_access.put_user(first_name, last_name, email, password);
+			User u = new User(first_name, last_name, email, password);
+    return put_user(u);
+  }
+
+
+  public static boolean put_user(User user) {
+
+		// 1. set the sql
+      String sqlText = 
+        "INSERT INTO user (first_name, last_name, email, password) " +
+        "VALUES (?, ?, ?, ?)";
+		// 2. set up values we'll need outside the try
+		boolean result = false;
+		PreparedStatement pstmt = null;
+    try {
+			// 3. get the connection and set up a statement
+			Connection conn = Database_access.get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+			// 4. set values into the statement
+      pstmt.setString( 1, user.first_name);
+      pstmt.setString( 2, user.last_name);
+      pstmt.setString( 3, user.email);
+      pstmt.setString( 4, user.password);
+			// 5. execute a statement
+      result = Database_access.execute_update(pstmt) > 0;
+			// 10. cleanup and exceptions
+			return result;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return false;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
   }
 
 
@@ -306,6 +338,26 @@ public class Business_logic {
 		}
 
   }
+
+  /**
+    * User encapsulates the core traits of a user.  It is an immutable object.
+    * note that the fields are public, but final.  Once this object
+    * gets constructed, there is no changing it.  You have to create a
+    * new one.
+    */
+	public static class User {
+
+		public User (String first_name, String last_name, String email, String password) {
+			this.first_name = first_name;
+			this.last_name = last_name;
+			this.email = email;
+			this.password = password;
+		}
+		public final String first_name;
+		public final String last_name;
+		public final String email;
+		public final String password;
+	}
 
   /**
     * Request encapsulates a user's request.  It is an immutable object.
