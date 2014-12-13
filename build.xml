@@ -13,15 +13,15 @@
 
 	<!-- Tomcat -->
   <property name="tomcat.home.bin" 
-    value="web_container/apache-tomcat-8.0.14/bin/" />
+		value="./web_container/apache-tomcat-8.0.14/bin/" />
   <property name="tomcat.webapps.dir" 
-    value="web_container/apache-tomcat-8.0.14/webapps/" />
+		value="./web_container/apache-tomcat-8.0.14/webapps/" />
   <property name="tomcat.lib.dir" 
-    value="web_container/apache-tomcat-8.0.14/lib/" />
+		value="./web_container/apache-tomcat-8.0.14/lib/" />
 
 	<!-- Source directory -->
   <property name="src.dir" 
-    value="src" />
+		value="./src" />
 
 	<!-- Javadocs -->
   <property name="docs.dir" 
@@ -32,6 +32,10 @@
 		value="CONNECTION_STRING_WITH_DB=jdbc:mysql://localhost/test?user=qarmauser&amp;password=password1" />
 	<property name="conn.str.without.db"
 		value="CONNECTION_STRING_WITHOUT_DB=jdbc:mysql://localhost/?user=qarmauser&amp;password=password1" />
+
+	<!-- Lint4J, a static code analysis tool -->
+	<property name="lint4j.dist.dir"
+		value="./utils/lint4j-0.9.1" />
 
 
 
@@ -245,6 +249,30 @@
 		<test name="com.renomad.qarma.tests.Request_tests"/>
 	</junit>
 	</target>
+
+
+  <!-- ####################### -->
+  <!--     STATIC ANALYSIS     -->
+  <!-- $$$$$$$$$############## -->
+  <!-- Scripts for running static code analysis on the codebase -->
+  <!--===========================================================-->
+
+	<taskdef name="lint4j" classname="com.jutils.lint4j.ant.Lint4jAntTask">
+		<classpath>
+			<pathelement location="${lint4j.dist.dir}/jars/lint4j.jar" />
+		</classpath>
+	</taskdef>
+
+	<target name="lint" description="Perform code analysis" depends="compile">
+		<lint4j level="5" sourcepath="${src.dir}" packages="com.renomad.*" exact="false" >
+			<classpath>
+				<fileset dir="build/classes">
+					<include name="**" />
+				</fileset>
+			</classpath>
+		</lint4j>
+	</target>
+
 
 
   <!-- ############## -->

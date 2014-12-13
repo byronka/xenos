@@ -27,3 +27,7 @@ this by adding the following to your vimrc file:
 first in its current directory, then in its parent directory, and so
 on recursively up to containing directory ~/Projects.)
 
+Lint4J - 
+A lint program that does static analysis on the code to find any problems.
+http://www.jutils.com
+

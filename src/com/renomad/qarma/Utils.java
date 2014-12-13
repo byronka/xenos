@@ -10,7 +10,7 @@ public class Utils {
     * is null or empty.
     */
   public static void null_or_empty_string_validation(String value) {
-    if (value == null || value == "") {
+    if (value == null || value.equals("")) {
       System.err.println(
           "error: value was null or empty when it shouldn't have");
     }
