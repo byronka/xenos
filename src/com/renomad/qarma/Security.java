@@ -10,6 +10,8 @@ import com.renomad.qarma.Utilities;
 public class Security {
 
   public static int check_login(String username, String password) {
+    Utils.null_or_empty_string_validation(username);
+    Utils.null_or_empty_string_validation(password);
     return Database_access.check_login(username, password);
   }
 
@@ -24,6 +26,11 @@ public class Security {
     * @return true if successful
     */
   public static boolean logout_user(int user_id) {
+    if (user_id < 0) {
+      System.err.println("error: user id was " + user_id + 
+          " in set_user_not_logged_in()");
+      return false;
+    }
     return Database_access.set_user_not_logged_in(user_id);
   }
 
@@ -46,6 +53,11 @@ public class Security {
     }
     int user_id = get_int_from_cookie(c);
     if (user_id == Integer.MIN_VALUE) { return -1; }
+    if (user_id < 0) {
+      System.err.println("error: user id was " + user_id + 
+          " in user_is_logged_in()");
+			return -1;
+    }
     boolean is_logged_in = Database_access.user_is_logged_in(user_id);
     if (is_logged_in) {
       return user_id;

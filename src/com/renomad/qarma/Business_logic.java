@@ -62,6 +62,8 @@ public class Business_logic {
     //parse out the categories from a string the client gave us
 		Integer[] categories_array = parse_categories_string(categories);
 		
+		if (categories.length == 0) {return false;}
+
     //send parsed data to the database
     int new_request_id = 
       Database_access.add_request(user_id,desc,status, date, p
@@ -153,6 +155,10 @@ public class Business_logic {
     */
   public static boolean add_user(
 			String first_name, String last_name, String email, String password) {
+      Utils.null_or_empty_string_validation(first_name);
+      Utils.null_or_empty_string_validation(last_name);
+      Utils.null_or_empty_string_validation(email);
+      Utils.null_or_empty_string_validation(password);
     return Database_access.add_user(first_name, last_name, email, password);
   }
 

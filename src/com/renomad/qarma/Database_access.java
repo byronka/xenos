@@ -39,9 +39,6 @@ public class Database_access {
   public static int add_request( int user_id, String desc, int status, 
       String date, int points, String title , Integer[] categories) {
     
-		//defensive code starts
-		if (categories.length == 0) {return -1;}
-		//defensive code ends
 
 		String update_request_sql = 
 			"INSERT into request (description, datetime, points, " + 
@@ -387,10 +384,6 @@ public class Database_access {
   public static boolean add_user(
 			String first_name, String last_name, String email, String password) {
     //validation section
-      null_or_empty_string_validation(first_name);
-      null_or_empty_string_validation(last_name);
-      null_or_empty_string_validation(email);
-      null_or_empty_string_validation(password);
 
       String sqlText = 
         "INSERT INTO user (first_name, last_name, email, password) " +
@@ -453,13 +446,7 @@ public class Database_access {
     * user is logged in
     */
   public static boolean user_is_logged_in(int user_id) {
-    if (user_id < 0) {
-      System.err.println("error: user id was " + user_id + 
-          " in user_is_logged_in()");
-    }
-
     String sqlText = "SELECT is_logged_in FROM user WHERE user_id = ?";
-
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = get_a_connection();
@@ -488,12 +475,6 @@ public class Database_access {
     * @return a boolean on whether the operation succeeded.
     */
   public static boolean set_user_not_logged_in(int user_id) {
-    if (user_id < 0) {
-      System.err.println("error: user id was " + user_id + 
-          " in set_user_not_logged_in()");
-      return false;
-    }
-
     String sqlText = "UPDATE user SET is_logged_in = false;";
 		boolean is_successful = false;
 		PreparedStatement pstmt = null;
@@ -516,11 +497,7 @@ public class Database_access {
     * @return the user id if the password is correct for that email.
     */
   public static int check_login(String email, String password) {
-    null_or_empty_string_validation(email);
-    null_or_empty_string_validation(password);
-
     String sqlText = "SELECT password,user_id FROM user WHERE email = ?";
-
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = get_a_connection();
@@ -746,14 +723,4 @@ public class Database_access {
 	}
 
 
-  /**
-    * helps with boilerplate for validation of whether input
-    * is null or empty.
-    */
-  private static void null_or_empty_string_validation(String value) {
-    if (value == null || value == "") {
-      System.err.println(
-          "error: value was null or empty when it shouldn't have");
-    }
-  }
 }
