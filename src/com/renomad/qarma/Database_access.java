@@ -29,7 +29,7 @@ public class Database_access {
 		* @param request a request object
     * @return the id of the new request. -1 if not successful.
     */
-  public static int add_request(Request request) {
+  public static int put_request(Request request) {
 
 		// 1. set the sql
 		String update_request_sql = 

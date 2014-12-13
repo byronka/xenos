@@ -47,13 +47,13 @@ public class Business_logic {
 		*  Comes straight from the client, we have to parse it.
     * @return false if an error occured.
     */
-  public static boolean add_request(
+  public static boolean put_request(
       int user_id, String desc, int status, 
       String points, String title, String categories) {
 
 		if (user_id < 1) {
 			System.err.println(
-				"error: user id was below 1: it was " + user_id + " in add_request");
+				"error: user id was below 1: it was " + user_id + " in put_request");
 			return false;
 		}
 
@@ -71,11 +71,11 @@ public class Business_logic {
 
     //send parsed data to the database
     int new_request_id = 
-      Database_access.add_request(request);
+      Database_access.put_request(request);
 
     if (new_request_id == -1) {
       System.err.println(
-          "error adding request at Business_logic.add_request()");
+          "error adding request at Business_logic.put_request()");
       return false;
     }
 

@@ -6,6 +6,6 @@
     String p = request.getParameter("points");
     String t = request.getParameter("title");
     String c = request.getParameter("categories");
-    Business_logic.add_request(user_id, de, s, p, t, c);
+    Business_logic.put_request(user_id, de, s, p, t, c);
     response.sendRedirect("dashboard.jsp");
   %>

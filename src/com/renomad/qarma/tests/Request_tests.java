@@ -37,13 +37,13 @@ public class Request_tests {
 
 
 	@Test
-	public void testing_add_request() {
-		//set up a standard add_request() and use it.
+	public void testing_put_request() {
+		//set up a standard put_request() and use it.
 		//arrange
 		Request r1 = new Request(0, "2014-12-12 11:19:30.0", "desc", 100, 1, "title", 1, new Integer[]{1,2});
 
 		//act
-		int id = Database_access.add_request(r1);
+		int id = Database_access.put_request(r1);
 
 		//assert
     Request r2 = Database_access.get_a_request(id);
