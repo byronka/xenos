@@ -42,7 +42,9 @@ public class Business_logic {
     * @param status look in the database for request status.  e.g. open, closed, taken
     * @param points the points are the currency for the request
     * @param title the short title for the request
-    * @param categories the various categories for this request, provided to us here as a single string.  Comes straight from the client, we have to parse it.
+    * @param categories the various categories for this request, 
+		*  provided to us here as a single string.  
+		*  Comes straight from the client, we have to parse it.
     * @return false if an error occured.
     */
   public static boolean add_request(
@@ -64,10 +66,12 @@ public class Business_logic {
 		
 		if (categories_array.length == 0) {return false;}
 
+		//set up a request object to store this stuff
+		Request request = new Request(-1, date, desc, p, status, title, user_id, categories_array);
+
     //send parsed data to the database
     int new_request_id = 
-      Database_access.add_request(user_id,desc,status, date, p
-					, title, categories_array);
+      Database_access.add_request(request);
 
     if (new_request_id == -1) {
       System.err.println(

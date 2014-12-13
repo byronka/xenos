@@ -26,18 +26,10 @@ public class Database_access {
 
   /**
     * adds a Request to the database
-		* @param categories an array of integers for the categories of this
-		* request.  Important: there must be at least one category.
-		* @param user_id the id of the user making this request
-		* @param desc the text description of the request
-		* @param status the id of the status, e.g. 1 = open
-		* @param date string for date in proper syntax for Sql
-		* @param points the currency of requests.  More points is better!
-		* @param title the title of the request
+		* @param request a request object
     * @return the id of the new request. -1 if not successful.
     */
-  public static int add_request( int user_id, String desc, int status, 
-      String date, int points, String title , Integer[] categories) {
+  public static int add_request(Request request) {
 
 		// 1. set the sql
 		String update_request_sql = 
@@ -49,7 +41,7 @@ public class Database_access {
 			"INSERT into request_to_category "+
 			"(request_id,request_category_id) "+
 			"VALUES (?, ?)"; 
-		for (int i = 1; i < categories.length; i++) {
+		for (int i = 1; i < request.categories.length; i++) {
 		 update_categories_sql += ",(?, ?)";
 		}
 
@@ -71,12 +63,12 @@ public class Database_access {
 
 			// 4. set values into the statement
 			//set values for adding request
-			req_pstmt.setString(1, desc);
-			req_pstmt.setString( 2, date);
-			req_pstmt.setInt( 3, points);
-			req_pstmt.setInt( 4, status);
-			req_pstmt.setString( 5, title);
-			req_pstmt.setInt( 6, user_id);
+			req_pstmt.setString(1, request.description);
+			req_pstmt.setString( 2, request.datetime);
+			req_pstmt.setInt( 3, request.points);
+			req_pstmt.setInt( 4, request.status);
+			req_pstmt.setString( 5, request.title);
+			req_pstmt.setInt( 6, request.requesting_user_id);
 
 			// 5. execute a statement
 			//execute one of the updates
@@ -95,8 +87,8 @@ public class Database_access {
 
 			// 7. set values for next statement 
 			//set values for adding categories
-			for (int i = 0; i < categories.length; i++ ) {
-				int category_id = categories[i];
+			for (int i = 0; i < request.categories.length; i++ ) {
+				int category_id = request.categories[i];
 				cat_pstmt.setInt( 2*i+1, result);
 				cat_pstmt.setInt( 2*i+2, category_id);
 			}

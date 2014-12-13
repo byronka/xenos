@@ -43,8 +43,7 @@ public class Request_tests {
 		Request r1 = new Request(0, "2014-12-12 11:19:30.0", "desc", 100, 1, "title", 1, new Integer[]{1,2});
 
 		//act
-		int id = Database_access.add_request( r1.requesting_user_id, r1.description, r1.status, 
-				r1.datetime, r1.points, r1.title, r1.categories);
+		int id = Database_access.add_request(r1);
 
 		//assert
     Request r2 = Database_access.get_a_request(id);
