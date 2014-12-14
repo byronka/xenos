@@ -16,6 +16,24 @@ public class Utils {
     }
   }
 
+  public static String getCurrentDateSqlFormat() {
+    //all this just to get the date in a nice format for SQL!
+    // like this: 2014-11-23 20:02:01
+    java.util.Calendar cal = java.util.Calendar.getInstance();
+    java.util.Date date = cal.getTime();
+    java.text.SimpleDateFormat myformat = 
+			new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+    String formattedDate = null;
+    try {
+      formattedDate = myformat.format(date);
+    } catch (Exception e1) {
+      System.err.println(
+					"somehow, there was a failure with formatting the date!");
+      System.err.println(e1);
+    }
+    return formattedDate;
+  }
+
   public static int parse_int(String s) {
     int val;
     try

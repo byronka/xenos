@@ -380,23 +380,20 @@ public class Database_access {
   /**
     * simply sets "is_logged_in" to false in the database for the given user.
     * @param user_id the user in question to set logged_in to false.
-    * @return a boolean on whether the operation succeeded.
     */
   public static boolean set_user_not_logged_in(int user_id) {
     String sqlText = "UPDATE user SET is_logged_in = false;";
-		boolean is_successful = false;
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
-      is_successful = execute_update(pstmt) > 0;
-      return is_successful;
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
-			return false;
+			return false; //if a failure occurred.
     } finally {
       close_statement(pstmt);
     }
+		return true;
   }
 
 

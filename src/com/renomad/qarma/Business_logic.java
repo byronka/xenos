@@ -21,23 +21,6 @@ public class Business_logic {
 			return cat_array;
 		}
 
-  private static String getCurrentDateSqlFormat() {
-    //all this just to get the date in a nice format for SQL!
-    // like this: 2014-11-23 20:02:01
-    java.util.Calendar cal = java.util.Calendar.getInstance();
-    java.util.Date date = cal.getTime();
-    java.text.SimpleDateFormat myformat = 
-			new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-    String formattedDate = null;
-    try {
-      formattedDate = myformat.format(date);
-    } catch (Exception e1) {
-      System.err.println(
-					"somehow, there was a failure with formatting the date!");
-      System.err.println(e1);
-    }
-    return formattedDate;
-  }
   
 
   /**
@@ -51,29 +34,17 @@ public class Business_logic {
     * @param categories the various categories for this request, 
 		*  provided to us here as a single string.  
 		*  Comes straight from the client, we have to parse it.
-    * @return false if an error occured.
     */
-  public static boolean put_request(
-      int user_id, String desc, int status, 
-      String points, String title, String categories) {
+  public static void put_request(
+      int user_id, String desc, int points, 
+			String title, Integer[] categories) {
 
-		if (user_id < 1) {
-			System.err.println(
-				"error: user id was below 1: it was " + user_id + " in put_request");
-			return false;
-		}
-
-		//extract useful information from what the client sent us
-    int p = Utils.parse_int(points);
-    String date = getCurrentDateSqlFormat();
-
-    //parse out the categories from a string the client gave us
-		Integer[] categories_array = parse_categories_string(categories);
-		
-		if (categories_array.length == 0) {return false;}
+    String date = Utils.getCurrentDateSqlFormat();
 
 		//set up a request object to store this stuff
-		Request request = new Request(-1, date, desc, p, status, title, user_id, categories_array);
+		int status = 1; //always starts open
+		Request request = new Request(
+				-1, date, desc, points, status, title, user_id, categories);
 
     //send parsed data to the database
     int new_request_id = put_request(request);
@@ -81,10 +52,8 @@ public class Business_logic {
     if (new_request_id == -1) {
       System.err.println(
           "error adding request at Business_logic.put_request()");
-      return false;
     }
 
-    return true;
   }
 
 
@@ -193,14 +162,15 @@ public class Business_logic {
 		* unchanged from the client.
 		* @return an integer array of the applicable categories
 		*/
-	private static Integer[] parse_categories_string(String categories_str) {
+	public static Integer[] parse_categories_string(String categories_str) {
     
 		Map<Integer,String> all_categories = 
 			Database_access.get_all_categories();
     
     //guard clauses
     if (all_categories == null) {return new Integer[0];}
-    if (categories_str.length() == 0) {return new Integer[0];}
+    if (categories_str == null || 
+				categories_str.length() == 0) {return new Integer[0];}
 
 		String lower_case_categories_str = categories_str.toLowerCase();
 		ArrayList<Integer> selected_categories = new ArrayList<Integer>();
