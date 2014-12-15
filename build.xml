@@ -26,6 +26,8 @@
 	<!-- Javadocs -->
   <property name="docs.dir" 
 		value="${tomcat.webapps.dir}/qarma_javadocs" />
+  <property name="lint.output.dir" 
+		value="${tomcat.webapps.dir}/lint" />
 
 	<!-- Connection strings -->
 	<property name="conn.str.with.db"
@@ -124,9 +126,7 @@
   <target 
     name="clean-code-analysis" 
     description="deletes the output from code analysis">
-    <delete file="lint4j_output.txt"/>
-    <delete file="pmd_report.html"/>
-    <delete file="findbugs_output.html"/>
+		<delete dir="${lint.output.dir}"/>
   </target>
 
 
@@ -295,10 +295,14 @@
   <!-- Scripts for running static code analysis on the codebase -->
   <!--===========================================================-->
 
-  <target name="all_lint" depends="findbugs, pmd, lint4j"
+  <target name="all-lint" depends="findbugs, pmd, lint4j"
     description="runs all the lint programs" />
 
-  <target name="findbugs" depends="compile">
+	<target name="build-lint-output">
+		<mkdir dir="${lint.output.dir}"/>
+	</target>
+
+  <target name="findbugs" depends="compile, build-lint-output">
     <taskdef name="findbugs" 
       classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
       <classpath>
@@ -308,14 +312,14 @@
     </taskdef>
     <findbugs home="${findbugs.dist.dir}"
               output="html"
-              outputFile="findbugs_output.html" >
+              outputFile="${lint.output.dir}/findbugs_output.html" >
       <sourcePath path="./src" />
       <class location="./build/classes" />
     </findbugs>
-    <echo message="output from findbugs is in findbugs_output.html" />
+		<echo message="output from findbugs is in http://localhost:8080/lint/findbugs_output.html" />
   </target>
 
-  <target name="pmd" depends="compile">
+  <target name="pmd" depends="compile,build-lint-output">
     <path id="pmd.classpath">
       <fileset dir="${tomcat.lib.dir}/" >
         <include name="*.jar" />
@@ -333,18 +337,18 @@
       <sourceLanguage name="java" version="1.6"/>
       <ruleset>rulesets/java/design.xml</ruleset>
       <ruleset>java-basic</ruleset>
-      <formatter type="html" toFile="pmd_report.html">
+      <formatter type="html" toFile="${lint.output.dir}/pmd_report.html">
         <param name="linkPrefix" value="http://pmd.sourceforge.net/xref/"/>
       </formatter>
       <fileset dir="src/">
         <include name="**"/>
       </fileset>
     </pmd>
-    <echo message="output from pmd is in pmd_report.html" />
+		<echo message="output from pmd is in http://localhost:8080/lint/pmd_report.html" />
   </target>
 
 
-  <target name="lint4j" depends="compile">
+  <target name="lint4j" depends="compile,build-lint-output">
     <taskdef 
       name="lint4j" 
       classname="com.jutils.lint4j.ant.Lint4jAntTask"  >
@@ -367,10 +371,10 @@
 				</fileset>
 			</classpath>
       <formatters>
-        <formatter type="text" toFile="lint4j_output.txt"/>
+				<formatter type="text" toFile="${lint.output.dir}/lint4j_output.txt"/>
       </formatters>
 		</lint4j>
-    <echo message="output from lint4j is in lint4j_output.txt" />
+		<echo message="output from lint4j is in http://localhost:8080/lint/lint4j_output.txt" />
 	</target>
 
 

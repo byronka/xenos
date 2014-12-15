@@ -3,10 +3,8 @@ web_container/apache-tomcat-8.0.14/logs/
 web_container/apache-tomcat-8.0.14/work/
 web_container/apache-tomcat-8.0.14/webapps/qarma/WEB-INF/classes
 web_container/apache-tomcat-8.0.14/webapps/qarma_javadocs
+web_container/apache-tomcat-8.0.14/webapps/lint
 .ant-targets-build.xml
 web_container/apache-tomcat-8.0.14/temp/pidfile
 tags
 TEST*
-lint4j_output.txt
-pmd_report.html
-findbugs_output.html

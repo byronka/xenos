@@ -52,3 +52,16 @@ Lint4J -
 A lint program that does static analysis on the code to find any problems.
 http://www.jutils.com
 
+PMD - 
+A static code analysis program.  Very thorough, but many false positives. 
+http://pmd.sourceforge.net/
+
+FindBugs -
+A static code analysis program.
+http://findbugs.sourceforge.net/
+
+You can run all three of these by running
+	ant all-lint
+
+the output will be found at http://localhost:8080/lint/
+
