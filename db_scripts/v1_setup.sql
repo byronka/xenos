@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS
 request ( 
   request_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   datetime DATETIME,
-  description NVARCHAR(1000),
+  description NVARCHAR(10000),
   points INT,
   status INT,
   title NVARCHAR(255),

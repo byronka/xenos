@@ -118,8 +118,10 @@
   <target 
     name="clean-tomcat" 
     description="deletes the tomcat log and work directory">
-    <delete dir="web_container/apache-tomcat-8.0.14/logs"/>
-    <delete dir="web_container/apache-tomcat-8.0.14/work/"/>
+		<delete>
+			<fileset dir="web_container/apache-tomcat-8.0.14/logs" includes="**"/>
+			<fileset dir="web_container/apache-tomcat-8.0.14/work" includes="**"/>
+		</delete>
   </target>
 
   <!-- deletes the output from code analysis tools. --> 
