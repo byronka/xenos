@@ -297,7 +297,6 @@ public class Business_logic {
     * if any parts fail, this will return false.
     * @param user_id the user's id
     * @param desc a description string, the core of the request
-    * @param status look in the database for request status.  e.g. open, closed, taken
     * @param points the points are the currency for the request
     * @param title the short title for the request
     * @param categories the various categories for this request, 
