@@ -295,7 +295,7 @@
   <!-- Scripts for running static code analysis on the codebase -->
   <!--===========================================================-->
 
-  <target name="all-lint" depends="findbugs, pmd, lint4j"
+  <target name="lint-all" depends="findbugs, pmd, lint4j"
     description="runs all the lint programs" />
 
 	<target name="build-lint-output">
