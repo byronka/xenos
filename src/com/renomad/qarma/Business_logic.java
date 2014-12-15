@@ -16,6 +16,37 @@ import java.sql.PreparedStatement;
 public class Business_logic {
 
 
+  /**
+    * gets a name for display from the user table
+    *
+    * @return a string displaying first name, last name, email, or
+		* null if not found.
+    */
+  public static String get_user_displayname(int user_id) {
+    String sqlText = "SELECT CONCAT(first_name, ' ',last_name"+
+			",' (', email,')') as user_displayname "+
+			"FROM user "+
+			"WHERE user_id = ?;";
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+			pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();;
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return null;
+      }
+
+      resultSet.next(); //move to the first set of results.
+      String display_name = resultSet.getNString("user_displayname");
+      return display_name;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
 
 	public static String get_category_localized(int category_id) {
 		//for now, there is no localization file, so we'll just include
@@ -420,10 +451,6 @@ public class Business_logic {
     Integer[] my_array = 
 			selected_categories.toArray(new Integer[selected_categories.size()]);
 		return my_array;
-	}
-
-	public static String get_user_displayname(int user_id) {
-  	return Database_access.get_user_displayname(user_id);
 	}
 
 

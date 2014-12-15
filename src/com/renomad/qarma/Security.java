@@ -7,12 +7,127 @@ import javax.servlet.http.HttpServletResponse;
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Utils;
 
+import java.sql.Statement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 public class Security {
 
-  public static int check_login(String username, String password) {
-    Utils.null_or_empty_string_validation(username);
+
+  /**
+    * Checks the database, given the user id, whether that
+    * user is logged in
+    */
+  public static boolean user_is_logged_in(int user_id) {
+    String sqlText = "SELECT is_logged_in FROM user WHERE user_id = ?";
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();;
+
+      if(Database_access.resultset_is_null_or_empty(resultSet)) {
+        return false; // no results on query - return not logged in
+      }
+
+      resultSet.next(); //move to the first set of results.
+      return resultSet.getBoolean("is_logged_in");
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return false;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+
+  }
+
+  /**
+    * simply sets "is_logged_in" to false in the database for the given user.
+    * @param user_id the user in question to set logged_in to false.
+    */
+  public static boolean set_user_not_logged_in(int user_id) {
+    String sqlText = "UPDATE user SET is_logged_in = false;";
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return false; //if a failure occurred.
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+		return true;
+  }
+
+
+  /**
+    * checks the password based on the email, the user's unique key
+    *
+    * @return the user id if the password is correct for that email.
+    */
+  public static int check_login(String email, String password) {
+    Utils.null_or_empty_string_validation(email);
     Utils.null_or_empty_string_validation(password);
-    return Database_access.check_login(username, password);
+    String sqlText = "SELECT password,user_id FROM user WHERE email = ?";
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setString( 1, email);
+      ResultSet resultSet = pstmt.executeQuery();;
+
+      if(Database_access.resultset_is_null_or_empty(resultSet)) {
+        return 0; // no results on query - return user "0";
+      }
+
+      resultSet.next(); //move to the first set of results.
+
+      if (resultSet.getNString("password").equals(password)) {
+        return resultSet.getInt("user_id"); //success!
+      }
+      return 0; //password was bad - return user "0"
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return 0;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
+    * stores information on the user when they login, things like
+    * their ip, time they logged in, that they are in fact logged in,
+    * etc.
+    *
+    * @param user_id the user's id, an int.
+    * @param ip the user's ip.
+    */
+  public static void 
+    register_details_on_user_login(int user_id, String ip) {
+
+      String sqlText = 
+        "UPDATE user " + 
+        "SET is_logged_in = 1, last_time_logged_in = NOW(), " + 
+        "last_ip_logged_in = ? " + 
+        "WHERE user_id = ?";
+
+			PreparedStatement pstmt = null;
+			try {
+				Connection conn = Database_access.get_a_connection();
+				pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+        pstmt.setString( 1, ip);
+        pstmt.setInt( 2, user_id);
+        Database_access.execute_update(pstmt);
+			} catch (SQLException ex) {
+				Database_access.handle_sql_exception(ex);
+      } finally {
+        Database_access.close_statement(pstmt);
+      }
   }
 
   public static void register_user(int user_id,
@@ -25,7 +140,7 @@ public class Security {
       if (ip_address == null || ip_address.length() == 0) {
         ip_address = "error: no ip in request";
       }
-    Database_access.register_details_on_user_login(user_id, ip_address);
+    register_details_on_user_login(user_id, ip_address);
   }
 
   /**
@@ -39,7 +154,7 @@ public class Security {
           " in set_user_not_logged_in()");
       return false;
     }
-    return Database_access.set_user_not_logged_in(user_id);
+    return set_user_not_logged_in(user_id);
   }
 
   private static int get_int_from_cookie(Cookie c) {
@@ -66,7 +181,7 @@ public class Security {
           " in user_is_logged_in()");
 			return -1;
     }
-    boolean is_logged_in = Database_access.user_is_logged_in(user_id);
+    boolean is_logged_in = user_is_logged_in(user_id);
     if (is_logged_in) {
       return user_id;
     }
@@ -85,8 +200,5 @@ public class Security {
     return null;
   }
 
-  public boolean user_is_logged_in(int user_id) {
-    return Database_access.user_is_logged_in(user_id);
-  }
 
 }
