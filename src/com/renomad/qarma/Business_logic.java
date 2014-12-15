@@ -161,7 +161,7 @@ public final class Business_logic {
 	}
 
   /**
-    * Gets a specific Request for the user.
+    * Gets a specific Request 
     * 
     * @return a single Request
     */
