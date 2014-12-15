@@ -8,18 +8,256 @@ import com.renomad.qarma.Utils;
 
 import java.sql.Statement;
 import java.sql.SQLException;
+import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 
 public class Business_logic {
 
-		public static String[] get_all_categories() {
-    	Map<Integer,String> categories = Database_access.get_all_categories();
+
+
+	public static String get_category_localized(int category_id) {
+		//for now, there is no localization file, so we'll just include
+		//the English here.
+
+			switch(category_id) {
+				case 1:
+					return "math";
+				case 2:
+					return "physics";
+				case 3:
+					return "economics";
+				case 4:
+					return "history";
+				case 5:
+					return "english";
+				default:
+					return "ERROR";
+			}
+		}
+
+	public static String[] get_str_array_categories() {
+			Map<Integer, String> categories = get_all_categories();
 			java.util.Collection<String> c = categories.values();
 			String[] cat_array = c.toArray(new String[0]);
-			return cat_array;
-		}
+      return cat_array;
+	}
+
+
+	/**
+		* returns a Map of localized categories, indexed by database id.
+		* @return Map of strings, indexed by id, or null if nothing in db.
+		*/
+	public static Map<Integer, String> get_all_categories() {
+		// 1. set the sql
+    String sqlText = 
+			"SELECT request_category_id FROM request_category; ";
+		// 2. set up values we'll need outside the try
+		PreparedStatement pstmt = null;
+    try {
+			// 3. get the connection and set up a statement
+			Connection conn = Database_access.get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+			// 4. execute a statement
+      ResultSet resultSet = pstmt.executeQuery();;
+			// 5. check that we got results
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return null;
+      }
+
+			// 6. get values from database and convert to an object
+			//keep adding rows of data while there is more data
+      Map<Integer, String> categories = new HashMap<Integer,String>();
+      while(resultSet.next()) {
+        int rcid = resultSet.getInt("request_category_id");
+				String category = get_category_localized(rcid);
+        categories.put(rcid, category); 
+      }
+
+			return categories;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+	}
+
+
+	/**
+		* gets an array of categories for a given request
+		*
+		*@return an array of Strings, representing the categories, or null if failure.
+		*/
+	public static Integer[] get_categories_for_request(int request_id) {
+    String sqlText = 
+			"SELECT request_category_id "+
+				"FROM request_to_category "+
+				"WHERE request_id = ?;";
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setInt( 1, request_id);
+      ResultSet resultSet = pstmt.executeQuery();;
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Integer[0];
+      }
+
+			//keep adding rows of data while there is more data
+      ArrayList<Integer> categories = new ArrayList<Integer>();
+      while(resultSet.next()) {
+        int rcid = resultSet.getInt("request_category_id");
+        categories.add(rcid);
+      }
+
+      //convert arraylist to array
+      Integer[] array_of_categories = 
+        categories.toArray(new Integer[categories.size()]);
+      return array_of_categories;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+	}
+
+  /**
+    * Gets a specific Request for the user.
+    * 
+    * @return a single Request
+    */
+  public static Request get_a_request(int request_id) {
+		
+    String sqlText = 
+      "SELECT request_id, datetime,description,points,"+
+			"status,title,requesting_user_id "+
+			"FROM request "+
+			"WHERE request_id = ?";
+
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setInt( 1, request_id);
+      ResultSet resultSet = pstmt.executeQuery();;
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return null;
+      }
+
+      resultSet.next();
+			int rid = resultSet.getInt("request_id");
+			String dt = resultSet.getString("datetime");
+			String d = resultSet.getNString("description");
+			int p = resultSet.getInt("points");
+			int s = resultSet.getInt("status");
+			String t = resultSet.getNString("title");
+			int ru = resultSet.getInt("requesting_user_id");
+			Integer[] categories = get_categories_for_request(request_id);
+			Request request = new Request(rid,dt,d,p,s,t,ru,categories);
+
+      return request;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
+    * Gets all the requests for the user.
+    * 
+    * @return an array of Request
+    */
+  public static Request[] get_all_requests_except_for_user(int user_id) {
+    String sqlText = "SELECT * FROM request WHERE requesting_user_id <> ?";
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();;
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Request[0];
+      }
+
+			//keep adding rows of data while there is more data
+      ArrayList<Request> requests = new ArrayList<Request>();
+      for(;resultSet.next() == true;) {
+        int rid = resultSet.getInt("request_id");
+        String dt = resultSet.getString("datetime");
+        String d = resultSet.getNString("description");
+        int p = resultSet.getInt("points");
+        int s = resultSet.getInt("status");
+        String t = resultSet.getNString("title");
+        int ru = resultSet.getInt("requesting_user_id");
+        Request request = new Request(rid,dt,d,p,s,t,ru);
+        requests.add(request);
+      }
+
+      //convert arraylist to array
+      Request[] array_of_requests = 
+        requests.toArray(new Request[requests.size()]);
+      return array_of_requests;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+		
+
+
+  /**
+    * Gets all the requests for the user.
+    * 
+    * @return an array of Request
+    */
+  public static Request[] get_requests_for_user(int user_id) {
+    String sqlText = "SELECT * FROM request WHERE requesting_user_id = ?";
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();;
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Request[0];
+      }
+
+			//keep adding rows of data while there is more data
+      ArrayList<Request> requests = new ArrayList<Request>();
+      for(;resultSet.next() == true;) {
+        int rid = resultSet.getInt("request_id");
+        String dt = resultSet.getString("datetime");
+        String d = resultSet.getNString("description");
+        int p = resultSet.getInt("points");
+        int s = resultSet.getInt("status");
+        String t = resultSet.getNString("title");
+        int ru = resultSet.getInt("requesting_user_id");
+        Request request = new Request(rid,dt,d,p,s,t,ru);
+        requests.add(request);
+      }
+
+      //convert arraylist to array
+      Request[] array_of_requests = 
+        requests.toArray(new Request[requests.size()]);
+      return array_of_requests;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
 
   
 
@@ -164,8 +402,7 @@ public class Business_logic {
 		*/
 	public static Integer[] parse_categories_string(String categories_str) {
     
-		Map<Integer,String> all_categories = 
-			Database_access.get_all_categories();
+		Map<Integer,String> all_categories = get_all_categories();
     
     //guard clauses
     if (all_categories == null) {return new Integer[0];}
@@ -175,7 +412,7 @@ public class Business_logic {
 		String lower_case_categories_str = categories_str.toLowerCase();
 		ArrayList<Integer> selected_categories = new ArrayList<Integer>();
 		for (Integer i : all_categories.keySet()) {
-    	String c = Database_access.get_category_localized(i);
+    	String c = get_category_localized(i);
 			if (lower_case_categories_str.contains(c)) {
 				selected_categories.add(i);
 			}
@@ -206,21 +443,11 @@ public class Business_logic {
         (value_index = qs.indexOf(request_string)) >= 0) {
         request_id = Integer.parseInt(qs.substring(rsl));
     }
-    Request r = Database_access.get_a_request(request_id);
+    Request r = get_a_request(request_id);
 		if (r == null) {
 			return new Request(0,"","",0,1,"",0);
 		}
 		return r;
-  }
-
-
-  public static Request[] get_requests_for_user(int user_id) {
-    return Database_access.get_requests_for_user(user_id);
-  }
-
-
-  public static Request[] get_all_requests_except_for_user(int user_id) {
-    return Database_access.get_all_requests_except_for_user(user_id);
   }
 
 
@@ -269,8 +496,52 @@ public class Business_logic {
   }
 
 
+	/**
+		* gets all the current request statuses, like OPEN, CLOSED, and TAKEN
+		* @return an array of request statuses, or null if failure.
+		*/
 	public static Request_status[] get_request_statuses() {
-		return Database_access.get_request_statuses();
+		// 1. set the sql
+    String sqlText = 
+      "SELECT request_status_id, request_status_value FROM request_status;";
+
+		// 2. set up values we'll need outside the try
+		PreparedStatement pstmt = null;
+    try {
+			// 3. get the connection and set up a statement
+			Connection conn = Database_access.get_a_connection();
+      pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);
+
+			// 4. execute a statement
+      ResultSet resultSet = pstmt.executeQuery();
+
+			// 5. check that we got results
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Request_status[0];
+      }
+
+			// 6. get values from database and convert to an object
+			//keep adding rows of data while there is more data
+      ArrayList<Request_status> statuses = 
+				new ArrayList<Request_status>();
+      while(resultSet.next()) {
+				int sid = resultSet.getInt("request_status_id");
+				String sv = resultSet.getString("request_status_value");
+				Request_status status = new Request_status(sid,sv);
+        statuses.add(status);
+			}
+
+			// 7. if necessary, create array of objects for return
+      //convert arraylist to array
+      Request_status[] my_array = 
+        statuses.toArray(new Request_status[statuses.size()]);
+      return my_array;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
 	}
 
 
@@ -385,7 +656,7 @@ public class Business_logic {
 		public String get_categories() {
 			String cat_string = "";
 			for (Integer c : categories) {
-				cat_string += Database_access.get_category_localized(c);
+				cat_string += get_category_localized(c);
 				cat_string += ", ";
 			}
 			return cat_string;

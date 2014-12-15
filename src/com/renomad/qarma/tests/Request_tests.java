@@ -18,7 +18,7 @@ public class Request_tests {
 	@Test
 	public void testing_get_request_statuses() {
 		//act and assert
-		Request_status[] rs_actual = Database_access.get_request_statuses();
+		Request_status[] rs_actual = Business_logic.get_request_statuses();
 		for (Request_status rs : rs_actual) {
 			switch(rs.status_id) {
       	case 1:
@@ -47,7 +47,7 @@ public class Request_tests {
 		int id = Business_logic.put_request(r1);
 
 		//assert
-    Request r2 = Database_access.get_a_request(id);
+    Request r2 = Business_logic.get_a_request(id);
     assertEquals(r1.datetime, r2.datetime);
     assertEquals(r1.description, r2.description);
     assertEquals(r2.points, r2.points);

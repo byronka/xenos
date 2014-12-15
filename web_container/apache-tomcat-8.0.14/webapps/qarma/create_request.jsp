@@ -59,7 +59,7 @@
 			<p>Categories: <input type="text" name="categories" value="<%=c%>"/></p>
 			<div id='available-categories'>
 				<%
-					String[] categories = Business_logic.get_all_categories();
+					String[] categories = Business_logic.get_str_array_categories();
 					for(String category : categories) { %>
 					<%=category%>,
 				<%}%>
