@@ -13,7 +13,12 @@ import com.renomad.qarma.Business_logic.Request_status;
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Business_logic;
 
-public class Request_tests {
+public final class Request_tests {
+
+	private Request_tests () {
+		//we don't want anyone instantiating this
+		//do nothing.
+	}
 
 	@Test
 	public void testing_get_request_statuses() {
@@ -32,6 +37,7 @@ public class Request_tests {
 					break;
 				default:
 					fail("should not get this far");
+					break;
 			}
 		}
 	}
@@ -54,7 +60,7 @@ public class Request_tests {
     assertEquals(r2.status, r2.status);
     assertEquals(r2.title, r2.title);
     assertEquals(r2.requesting_user_id, r2.requesting_user_id);
-		assertArrayEquals(r1.categories, r2.categories);
+		assertArrayEquals(r1.get_categories(), r2.get_categories());
 	}
 
 }

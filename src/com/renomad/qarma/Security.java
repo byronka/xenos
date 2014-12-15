@@ -13,8 +13,12 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-public class Security {
+public final class Security {
 
+	private Security () {
+		//we don't want anyone instantiating this
+		//do nothing.
+	}
 
   /**
     * Checks the database, given the user id, whether that
@@ -27,7 +31,7 @@ public class Security {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();;
+      ResultSet resultSet = pstmt.executeQuery();
 
       if(Database_access.resultset_is_null_or_empty(resultSet)) {
         return false; // no results on query - return not logged in
@@ -78,7 +82,7 @@ public class Security {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
       pstmt.setString( 1, email);
-      ResultSet resultSet = pstmt.executeQuery();;
+      ResultSet resultSet = pstmt.executeQuery();
 
       if(Database_access.resultset_is_null_or_empty(resultSet)) {
         return 0; // no results on query - return user "0";
@@ -137,10 +141,11 @@ public class Security {
 						user_id + " in register_details_on_user_login");
         return;
       }
+			String ip = ip_address;
       if (ip_address == null || ip_address.length() == 0) {
-        ip_address = "error: no ip in request";
+        ip = "error: no ip in request";
       }
-    register_details_on_user_login(user_id, ip_address);
+    register_details_on_user_login(user_id, ip);
   }
 
   /**

@@ -22,7 +22,12 @@ import java.io.FileNotFoundException;
   * that this one uses its own driver rather than relying on
   * the container.
   */
-public class Build_db_schema {
+public final class Build_db_schema {
+
+	private Build_db_schema () {
+		//we don't want anyone instantiating this
+		//do nothing.
+	}
 
   /**
     *Boilerplate code necessary to register the mysql db driver.
@@ -165,7 +170,7 @@ public class Build_db_schema {
 
 	public static void run_multiple_statements(String file) {
 		Statement stmt = null;
-		try (Scanner s = new Scanner(new File(file))) {
+		try (Scanner s = new Scanner(new File(file), "UTF-8")) {
 			stmt = get_a_statement();
 			s.useDelimiter("---DELIMITER---");
 			while(s.hasNext()) {
@@ -223,7 +228,7 @@ public class Build_db_schema {
       handle_sql_exception(ex);
     } catch (Exception ex) {
       System.err.println("General exception: " + ex.toString());
-    }
+    } 
     return null;
   }
   

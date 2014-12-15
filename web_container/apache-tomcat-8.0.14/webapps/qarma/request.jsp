@@ -16,7 +16,7 @@
 <p>Points: <%=r.points%>
 <p>Title: <%=r.title%>
 <p>Requesting user: <%=r.requesting_user_id%>
-<p>Categories: <%=r.get_categories()%>
+<p>Categories: <%=r.get_categories_string()%>
 </form>
 </body>
 </html>

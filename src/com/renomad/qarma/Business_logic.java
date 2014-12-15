@@ -3,6 +3,7 @@ package com.renomad.qarma;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Utils;
 
@@ -13,8 +14,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 
-public class Business_logic {
+public final class Business_logic {
 
+	private Business_logic () {
+		//we don't want anyone instantiating this
+		//do nothing.
+	}
 
   /**
     * gets a name for display from the user table
@@ -32,7 +37,7 @@ public class Business_logic {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
 			pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();;
+      ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
       }
@@ -91,7 +96,7 @@ public class Business_logic {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
 			// 4. execute a statement
-      ResultSet resultSet = pstmt.executeQuery();;
+      ResultSet resultSet = pstmt.executeQuery();
 			// 5. check that we got results
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
@@ -131,7 +136,7 @@ public class Business_logic {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
       pstmt.setInt( 1, request_id);
-      ResultSet resultSet = pstmt.executeQuery();;
+      ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Integer[0];
       }
@@ -173,7 +178,7 @@ public class Business_logic {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
       pstmt.setInt( 1, request_id);
-      ResultSet resultSet = pstmt.executeQuery();;
+      ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
       }
@@ -211,14 +216,14 @@ public class Business_logic {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();;
+      ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Request[0];
       }
 
 			//keep adding rows of data while there is more data
       ArrayList<Request> requests = new ArrayList<Request>();
-      for(;resultSet.next() == true;) {
+      while(resultSet.next()) {
         int rid = resultSet.getInt("request_id");
         String dt = resultSet.getString("datetime");
         String d = resultSet.getNString("description");
@@ -257,14 +262,14 @@ public class Business_logic {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();;
+      ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Request[0];
       }
 
 			//keep adding rows of data while there is more data
       ArrayList<Request> requests = new ArrayList<Request>();
-      for(;resultSet.next() == true;) {
+      while(resultSet.next()) {
         int rid = resultSet.getInt("request_id");
         String dt = resultSet.getString("datetime");
         String d = resultSet.getNString("description");
@@ -339,13 +344,14 @@ public class Business_logic {
 			"status, title, requesting_user_id) VALUES (?, ?, ?, ?, ?, ?)"; 
 
      //assembling dynamic SQL to add categories
-		String update_categories_sql = 
-			"INSERT into request_to_category "+
-			"(request_id,request_category_id) "+
-			"VALUES (?, ?)"; 
-		for (int i = 1; i < request.categories.length; i++) {
-		 update_categories_sql += ",(?, ?)";
+		StringBuilder sb = new StringBuilder("");
+			sb.append("INSERT into request_to_category ")
+			.append("(request_id,request_category_id) ")
+			.append("VALUES (?, ?)"); 
+		for (int i = 1; i < request.get_categories().length; i++) {
+		 sb.append(",(?, ?)");
 		}
+		String update_categories_sql = sb.toString();
 
 		// 2. set up values we'll need outside the try 
 		int result = -1; //default to a guard value that indicates failure
@@ -463,7 +469,7 @@ public class Business_logic {
     int request_id = 0;
     int value_index = 0;
     String request_string = "request=";
-    int rsl = request_string.length();
+    final int rsl = request_string.length();
     //if we have a query string and it has request= in it.
     if ((qs = query_string) != null &&
         (value_index = qs.indexOf(request_string)) >= 0) {
@@ -580,13 +586,13 @@ public class Business_logic {
     */
   public static class Request_status {
 
+    public final int status_id;
+    public final String status_value;
+
     public Request_status ( int status_id, String status_value) {
       this.status_id       =  status_id;
       this.status_value    =  status_value;
     }
-
-    public final int status_id;
-    public final String status_value;
 
 		public String get_status_value() {
     	//for now, there is no localization file, so we'll just include
@@ -614,16 +620,19 @@ public class Business_logic {
     */
 	public static class User {
 
-		public User (String first_name, String last_name, String email, String password) {
+		public final String first_name;
+		public final String last_name;
+		public final String email;
+		public final String password;
+
+		public User (
+				String first_name, 
+				String last_name, String email, String password) {
 			this.first_name = first_name;
 			this.last_name = last_name;
 			this.email = email;
 			this.password = password;
 		}
-		public final String first_name;
-		public final String last_name;
-		public final String email;
-		public final String password;
 	}
 
   /**
@@ -633,6 +642,15 @@ public class Business_logic {
     * new one.
     */
   public static class Request {
+
+    public final int request_id;
+    public final String datetime;
+    public final String description;
+    public final int points;
+    public final int status;
+    public final String title;
+    public final int requesting_user_id;
+		private Integer[] categories;
 
     public Request ( int request_id, String datetime, String description, 
         int points, int status, String title, int requesting_user_id) {
@@ -653,15 +671,10 @@ public class Business_logic {
 			this.categories       =  categories;
     }
 
-
-    public final int request_id;
-    public final String datetime;
-    public final String description;
-    public final int points;
-    public final int status;
-    public final String title;
-    public final int requesting_user_id;
-		public final Integer[] categories;
+		public Integer[] get_categories() {
+			Integer[] c = Arrays.copyOf(categories, categories.length);
+			return c;
+		}
 
 
 		public String get_status() {
@@ -679,13 +692,12 @@ public class Business_logic {
 			}
 		}
 
-		public String get_categories() {
-			String cat_string = "";
+		public String get_categories_string() {
+			StringBuilder sb = new StringBuilder("");
 			for (Integer c : categories) {
-				cat_string += get_category_localized(c);
-				cat_string += ", ";
+				sb.append(get_category_localized(c)).append(" ");
 			}
-			return cat_string;
+			return sb.toString();
 		}
   }
 

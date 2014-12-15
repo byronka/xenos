@@ -3,7 +3,12 @@ package com.renomad.qarma;
 /**
 	* Utils holds utilities that apply across many situations
 	*/
-public class Utils {
+public final class Utils {
+
+	private Utils () {
+		//we don't want anyone instantiating this
+		//do nothing.
+	}
 
   /**
     * helps with boilerplate for validation of whether input

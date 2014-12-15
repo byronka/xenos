@@ -369,6 +369,7 @@
 				<fileset dir="build/classes">
 					<include name="**" />
 				</fileset>
+				<pathelement location="${tomcat.lib.dir}servlet-api.jar" />
 			</classpath>
       <formatters>
 				<formatter type="text" toFile="${lint.output.dir}/lint4j_output.txt"/>

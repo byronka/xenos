@@ -17,17 +17,12 @@ import java.io.FileNotFoundException;
 import com.renomad.qarma.Business_logic.Request;
 import com.renomad.qarma.Business_logic.Request_status;
 
-public class Database_access {
+public final class Database_access {
 
-  // ******************************
-  // SECURITY CODE                *
-  // ******************************
-
-
-  // ******************************
-  // HELPERS AND BOILERPLATE CODE *
-  // ******************************
-
+	private Database_access () {
+		//we don't want anyone instantiating this
+		//do nothing.
+	}
 
   /**
 		* this overload of the method will also rollback commits.
@@ -59,12 +54,12 @@ public class Database_access {
   }
 
 	public static Connection get_a_connection() {
-		Boolean in_testing = Boolean.parseBoolean(
+		Boolean regular_usage = Boolean.parseBoolean(
 				System.getProperty("TESTING_DATABASE_CODE_WITHOUT_TOMCAT"));
     javax.sql.DataSource ds = null;
 		Connection conn = null;
 
-		if (!in_testing) {
+		if (regular_usage) {
 			//this is the normal place for getting connections if coming from a web server.
 			ds = get_a_datasource();
 			conn = get_a_connection(ds);
@@ -97,8 +92,7 @@ public class Database_access {
 	private static Connection get_a_connection(javax.sql.DataSource ds) {
 		try { 
 			if (ds != null) {
-				Connection conn = ds.getConnection();
-				return conn;
+				return ds.getConnection();
 			}
 		} catch (SQLException ex) {
     	handle_sql_exception(ex);
@@ -158,7 +152,7 @@ public class Database_access {
     * @return true if the result set is null or has no data.
     */
   public static boolean resultset_is_null_or_empty(ResultSet rs) throws SQLException {
-		return (rs == null || !rs.isBeforeFirst());
+		return rs == null || !rs.isBeforeFirst();
   }
 
 

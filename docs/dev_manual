@@ -52,8 +52,11 @@ Lint4J -
 A lint program that does static analysis on the code to find any problems.
 http://www.jutils.com
 
-PMD - 
-A static code analysis program.  Very thorough, but many false positives. 
+PMD - A static code analysis program.  Very thorough, but many false
+positives.  In particular, it is coded with the assumption that OOP is
+the one true path.  In contrast, OOP should be considered one possible
+solution to problems, not the only solution.  Again, lots of false
+positives.
 http://pmd.sourceforge.net/
 
 FindBugs -
