@@ -33,9 +33,15 @@
 	<property name="conn.str.without.db"
 		value="CONNECTION_STRING_WITHOUT_DB=jdbc:mysql://localhost/?user=qarmauser&amp;password=password1" />
 
-	<!-- Lint4J, a static code analysis tool -->
+	<!-- static code analysis -->
 	<property name="lint4j.dist.dir"
 		value="./utils/lint4j-0.9.1" />
+	<property name="findbugs.dist.dir"
+		value="./utils/findbugs-3.0.0" />
+	<property name="pmd.dist.dir"
+		value="./utils/pmd-bin-5.2.2" />
+	<property name="checkstyle.dist.dir"
+		value="./utils/checkstyle" />
 
 
 
@@ -257,20 +263,82 @@
   <!-- Scripts for running static code analysis on the codebase -->
   <!--===========================================================-->
 
-	<taskdef name="lint4j" classname="com.jutils.lint4j.ant.Lint4jAntTask">
-		<classpath>
-			<pathelement location="${lint4j.dist.dir}/jars/lint4j.jar" />
-		</classpath>
-	</taskdef>
+  <target name="all_lint" depends="findbugs, pmd, lint4j"
+    description="runs all the lint programs" />
 
-	<target name="lint" description="Perform code analysis" depends="compile">
-		<lint4j level="5" sourcepath="${src.dir}" packages="com.renomad.*" exact="false" >
+  <target name="findbugs" depends="compile">
+    <taskdef name="findbugs" 
+      classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
+      <classpath>
+        <pathelement location="${tomcat.lib.dir}servlet-api.jar" />
+        <pathelement location="${findbugs.dist.dir}/lib/findbugs-ant.jar" />
+      </classpath>
+    </taskdef>
+    <findbugs home="${findbugs.dist.dir}"
+              output="html"
+              outputFile="findbugs_output.html" >
+      <sourcePath path="./src" />
+      <class location="./build/classes" />
+    </findbugs>
+    <echo message="output from findbugs is in findbugs_output.html" />
+  </target>
+
+  <target name="pmd" depends="compile">
+    <path id="pmd.classpath">
+      <fileset dir="${tomcat.lib.dir}/" >
+        <include name="*.jar" />
+      </fileset>
+      <fileset dir="${pmd.dist.dir}/lib/">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+    <taskdef 
+      name="pmd" 
+      classname="net.sourceforge.pmd.ant.PMDTask" 
+      classpathref="pmd.classpath">
+    </taskdef>
+    <pmd shortFilenames="true">
+      <sourceLanguage name="java" version="1.6"/>
+      <ruleset>rulesets/java/design.xml</ruleset>
+      <ruleset>java-basic</ruleset>
+      <formatter type="html" toFile="pmd_report.html">
+        <param name="linkPrefix" value="http://pmd.sourceforge.net/xref/"/>
+      </formatter>
+      <fileset dir="src/">
+        <include name="**"/>
+      </fileset>
+    </pmd>
+    <echo message="output from pmd is in pmd_report.html" />
+  </target>
+
+
+  <target name="lint4j" depends="compile">
+    <taskdef 
+      name="lint4j" 
+      classname="com.jutils.lint4j.ant.Lint4jAntTask"  >
+      <classpath>
+        <pathelement location="${lint4j.dist.dir}/jars/lint4j.jar" />
+      </classpath>
+    </taskdef>
+		<lint4j 
+        level="5" 
+        packages="com.renomad.*" 
+        exact="false" >
+      <sourcepath>
+        <dirset dir="${src.dir}">
+          <include name="**"/>
+        </dirset>
+      </sourcepath>
 			<classpath>
 				<fileset dir="build/classes">
 					<include name="**" />
 				</fileset>
 			</classpath>
+      <formatters>
+        <formatter type="text" toFile="lint4j_output.txt"/>
+      </formatters>
 		</lint4j>
+    <echo message="output from lint4j is in lint4j_output.txt" />
 	</target>
 
 

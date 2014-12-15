@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Type Resolution</title>
+</properties>
+<body>
+<section name="Type Resolution">
+
+  
+These are rules which resolve java Class files for comparison, as opposed to a String
+  
+
+
+    <subsection name="LooseCoupling">
+<p>Since: PMD 3.9</p>
+<p>
+Avoid using implementation types (i.e., HashSet); use the interface (i.e, Set) instead
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/typeresolution/rules/LooseCoupling.html">net.sourceforge.pmd.lang.java.typeresolution.rules.LooseCoupling</a>
+</p>Example(s):
+	        	<source>
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+public class Bar {
+		// Use List instead
+	private ArrayList list = new ArrayList();
+		// Use Set instead
+	public HashSet getFoo() {
+    return new HashSet();
+  }
+}
+  
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="CloneMethodMustImplementCloneable">
+<p>Since: PMD 3.9</p>
+<p>
+The method clone() should only be implemented if the class implements the Cloneable interface with the exception 
+of a final method that only throws CloneNotSupportedException. This version uses PMD's type resolution facilities, 
+and can detect if the class implements or extends a Cloneable class.
+        </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/typeresolution/rules/CloneMethodMustImplementCloneable.html">net.sourceforge.pmd.lang.java.typeresolution.rules.CloneMethodMustImplementCloneable</a>
+</p>Example(s):
+	        	<source>
+            
+public class MyClass {
+	public Object clone() throws CloneNotSupportedException {
+		return foo;
+	}
+}
+   
+        </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+  <subsection name="UnusedImports">
+<p>Since: PMD 4.0</p>
+<p>
+Avoid unused import statements. This rule will find unused on demand imports, i.e. import com.foo.*.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/typeresolution/rules/imports/UnusedImports.html">net.sourceforge.pmd.lang.java.typeresolution.rules.imports.UnusedImports</a>
+</p>Example(s):
+	        	<source>
+
+import java.io.*;	// not referenced or required
+
+public class Foo {}
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+    
+    <subsection name="SignatureDeclareThrowsException">
+<p>Since: PMD 4.0</p>
+<p>
+It is unclear which exceptions that can be thrown from the methods.
+It might be difficult to document and understand the vague interfaces.
+Use either a class derived from RuntimeException or a checked exception.
+
+JUnit classes are excluded.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/typeresolution/rules/SignatureDeclareThrowsException.html">net.sourceforge.pmd.lang.java.typeresolution.rules.SignatureDeclareThrowsException</a>
+</p>Example(s):
+	        	<source>
+      	
+public void methodThrowingException() throws Exception {
+}
+      	
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>IgnoreJUnitCompletely</td>
+<td>false</td>
+<td>If true, all methods in a JUnit testcase may throw Exception</td>
+</tr>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>IgnoreJUnitCompletely</td>
+<td>false</td>
+<td>Allow all methods in a JUnit testcase to throw Exceptions</td>
+</tr>
+</table>
+</subsection> 
+    
+ </section>
+</body>
+</document>

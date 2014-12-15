@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Basic Velocity</title>
+</properties>
+<body>
+<section name="Basic Velocity">
+
+  
+	The Basic Velocity ruleset contains basic rules for Apache Velocity pages.
+  
+  
+  <subsection name="AvoidDeeplyNestedIfStmts">
+<p>Since: PMD 5.1</p>
+<p>
+	Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/vm/rule/basic/AvoidDeeplyNestedIfStmtsRule.html">net.sourceforge.pmd.lang.vm.rule.basic.AvoidDeeplyNestedIfStmtsRule</a>
+</p>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>problemDepth</td>
+<td>3</td>
+<td>The if statement depth reporting threshold</td>
+</tr>
+</table>
+</subsection>
+  
+    <subsection name="CollapsibleIfStatements">
+<p>Since: PMD 5.1</p>
+<p>
+Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/vm/rule/basic/CollapsibleIfStatementsRule.html">net.sourceforge.pmd.lang.vm.rule.basic.CollapsibleIfStatementsRule</a>
+</p>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+  
+    <subsection name="ExcessiveTemplateLength">
+<p>Since: PMD 5.1</p>
+<p>
+The template is too long. It should be broken up into smaller pieces.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/vm/rule/basic/ExcessiveTemplateLengthRule.html">net.sourceforge.pmd.lang.vm.rule.basic.ExcessiveTemplateLengthRule</a>
+</p>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>minimum</td>
+<td>1000</td>
+<td/>
+</tr>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>topscore</td>
+<td/>
+<td>Top score value</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td/>
+<td>Minimum reporting threshold</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td/>
+<td>Sigma value</td>
+</tr>
+</table>
+</subsection>
+  
+    <subsection name="AvoidReassigningParameters">
+<p>Since: PMD 5.1</p>
+<p>
+Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
+	    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/vm/rule/basic/AvoidReassigningParametersRule.html">net.sourceforge.pmd.lang.vm.rule.basic.AvoidReassigningParametersRule</a>
+</p>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+	
+    <subsection name="EmptyIfStmt">
+<p>Since: PMD 5.1</p>
+<p>
+Empty if statements should be deleted.
+	    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/vm/rule/basic/EmptyIfStmtRule.html">net.sourceforge.pmd.lang.vm.rule.basic.EmptyIfStmtRule</a>
+</p>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+	
+    <subsection name="EmptyForeachStmt">
+<p>Since: PMD 5.1</p>
+<p>
+Empty foreach statements should be deleted.
+	    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/vm/rule/basic/EmptyForeachStmtRule.html">net.sourceforge.pmd.lang.vm.rule.basic.EmptyForeachStmtRule</a>
+</p>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+	  
+    <subsection name="UnusedMacroParameter">
+<p>Since: PMD 5.1</p>
+<p>
+Avoid unused macro parameters. They should be deleted.
+	    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/vm/rule/basic/UnusedMacroParameterRule.html">net.sourceforge.pmd.lang.vm.rule.basic.UnusedMacroParameterRule</a>
+</p>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+	
+    <subsection name="NoInlineJavaScript">
+<p>Since: PMD 5.1</p>
+<p>
+Avoid inline JavaScript. Import .js files instead.
+	    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/vm/rule/basic/NoInlineJavaScriptRule.html">net.sourceforge.pmd.lang.vm.rule.basic.NoInlineJavaScriptRule</a>
+</p>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+	
+    <subsection name="NoInlineStyles">
+<p>Since: PMD 5.1</p>
+<p>
+Avoid inline styles. Use css classes instead.
+	    </p>
+<source>
+					 
+	//Text[matches(@literal, "&lt;[^&gt;]+\s[sS][tT][yY][lL][eE]\s*=")]
+					 
+				</source>
+</subsection>
+	  
+</section>
+</body>
+</document>

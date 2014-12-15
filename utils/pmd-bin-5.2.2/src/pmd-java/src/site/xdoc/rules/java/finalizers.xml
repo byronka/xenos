@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Finalizer</title>
+</properties>
+<body>
+<section name="Finalizer">
+
+  
+These rules deal with different problems that can occur with finalizers.
+  
+
+    <subsection name="EmptyFinalizer">
+<p>Since: PMD 1.5</p>
+<p>
+Empty finalize methods serve no purpose and should be removed.
+       </p>
+<source>
+
+//MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
+  /Block[count(*)=0]
+
+                </source>Example(s):
+	        	<source>
+
+public class Foo {
+   protected void finalize() {}
+}
+
+       </source>
+</subsection>
+
+    <subsection name="FinalizeOnlyCallsSuperFinalize">
+<p>Since: PMD 1.5</p>
+<p>
+If the finalize() is implemented, it should do something besides just calling super.finalize().
+       </p>
+<source>
+
+//MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
+   /Block[count(BlockStatement)=1]
+     /BlockStatement[
+       Statement/StatementExpression/PrimaryExpression
+       [./PrimaryPrefix[@SuperModifier='true']]
+       [./PrimarySuffix[@Image='finalize']]
+     ]
+
+                </source>Example(s):
+	        	<source>
+           
+protected void finalize() {
+	super.finalize();
+}
+           
+       </source>
+</subsection>
+
+<subsection name="FinalizeOverloaded">
+<p>Since: PMD 1.5</p>
+<p>
+Methods named finalize() should not have parameters.  It is confusing and most likely an attempt to
+overload Object.finalize(). It will not be called by the VM.
+   </p>
+<source>
+
+//MethodDeclaration
+ /MethodDeclarator[@Image='finalize'][FormalParameters[count(*)&gt;0]]
+
+            </source>Example(s):
+	        	<source>
+
+public class Foo {
+   // this is confusing and probably a bug
+   protected void finalize(int a) {
+   }
+}
+
+   </source>
+</subsection>
+
+    <subsection name="FinalizeDoesNotCallSuperFinalize">
+<p>Since: PMD 1.5</p>
+<p>
+If the finalize() is implemented, its last action should be to call super.finalize.
+       </p>
+<source>
+
+
+//MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
+   /Block
+      /BlockStatement[last()]
+      [not(Statement/StatementExpression/PrimaryExpression
+            [./PrimaryPrefix[@SuperModifier='true']]
+            [./PrimarySuffix[@Image='finalize']]
+          )
+      ]
+      [not(Statement/TryStatement/FinallyStatement
+       /Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
+            [./PrimaryPrefix[@SuperModifier='true']]
+            [./PrimarySuffix[@Image='finalize']]
+          )
+      ]
+
+                </source>Example(s):
+	        	<source>
+
+protected void finalize() {
+	something();
+	// neglected to call super.finalize()
+}
+
+       </source>
+</subsection>
+
+    <subsection name="FinalizeShouldBeProtected">
+<p>Since: PMD 1.1</p>
+<p>
+When overriding the finalize(), the new method should be set as protected.  If made public, 
+other classes may invoke it at inappropriate times.
+      </p>
+<source>
+                    
+//MethodDeclaration[@Protected="false"]
+  /MethodDeclarator[@Image="finalize"]
+  [not(FormalParameters/*)]
+                    
+                </source>Example(s):
+	        	<source>
+  
+public void finalize() {
+	// do something
+}
+  
+      </source>
+</subsection>
+
+    <subsection name="AvoidCallingFinalize">
+<p>Since: PMD 3.0</p>
+<p>
+The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
+that there are no more references to the object. It should not be invoked by application logic.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/finalizers/AvoidCallingFinalizeRule.html">net.sourceforge.pmd.lang.java.rule.finalizers.AvoidCallingFinalizeRule</a>
+</p>Example(s):
+	        	<source>
+
+void foo() {
+	Bar b = new Bar();
+	b.finalize();
+}
+
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+ </section>
+</body>
+</document>

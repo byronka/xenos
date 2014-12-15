@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Unnecessary</title>
+</properties>
+<body>
+<section name="Unnecessary">
+  
+The Unnecessary Ruleset contains a collection of rules for unnecessary code.
+  
+
+  <subsection name="UnnecessaryParentheses">
+<p>Since: PMD 5.0</p>
+<p>Unnecessary parentheses should be removed.</p>
+<source>
+          
+//ParenthesizedExpression/ParenthesizedExpression
+          
+          </source>Example(s):
+	        	<source>
+    
+var x = 1; // Ok
+var y = (1 + 1); // Ok
+var z = ((1 + 1)); // Bad
+    
+    </source>
+</subsection>
+
+  <subsection name="UnnecessaryBlock">
+<p>Since: PMD 5.0</p>
+<p>An unnecessary Block is present.  Such Blocks are often used in other languages to
+    introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, and using them can
+    be misleading.  Considering removing this unnecessary Block.</p>
+<source>
+          
+	//Block[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
+			or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
+|
+	//Scope[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
+			or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
+          
+          </source>Example(s):
+	        	<source>
+    
+if (foo) {
+   // Ok
+}
+if (bar) {
+   {
+      // Bad
+   }
+}
+    
+    </source>
+</subsection>
+
+</section>
+</body>
+</document>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/DECORATION/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PMD Java" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd">
+
+  <body>
+    <menu ref="parent"/>
+
+    <!-- The rulesets part of navigation will be added during pre-site and the
+         list is build dynamically based on rulesets folder directory layout -->
+
+
+    <!--THIS FILE HAS BEEN AUTOMATICLY GENERATED.--><menu name="Rule Sets">
+<item name="java" collapse="false" href="/rules/index.html">
+<item name="Android" href="/rules/java/android.html"/>
+<item name="Basic" href="/rules/java/basic.html"/>
+<item name="Braces" href="/rules/java/braces.html"/>
+<item name="Clone Implementation" href="/rules/java/clone.html"/>
+<item name="Code Size" href="/rules/java/codesize.html"/>
+<item name="Comments" href="/rules/java/comments.html"/>
+<item name="Controversial" href="/rules/java/controversial.html"/>
+<item name="Coupling" href="/rules/java/coupling.html"/>
+<item name="Design" href="/rules/java/design.html"/>
+<item name="Empty Code" href="/rules/java/empty.html"/>
+<item name="Finalizer" href="/rules/java/finalizers.html"/>
+<item name="Import Statements" href="/rules/java/imports.html"/>
+<item name="J2EE" href="/rules/java/j2ee.html"/>
+<item name="JavaBeans" href="/rules/java/javabeans.html"/>
+<item name="JUnit" href="/rules/java/junit.html"/>
+<item name="Jakarta Commons Logging" href="/rules/java/logging-jakarta-commons.html"/>
+<item name="Java Logging" href="/rules/java/logging-java.html"/>
+<item name="Migration" href="/rules/java/migrating.html"/>
+<item name="Naming" href="/rules/java/naming.html"/>
+<item name="Optimization" href="/rules/java/optimizations.html"/>
+<item name="Strict Exceptions" href="/rules/java/strictexception.html"/>
+<item name="String and StringBuffer" href="/rules/java/strings.html"/>
+<item name="Security Code Guidelines" href="/rules/java/sunsecure.html"/>
+<item name="Type Resolution" href="/rules/java/typeresolution.html"/>
+<item name="Unnecessary" href="/rules/java/unnecessary.html"/>
+<item name="Unused Code" href="/rules/java/unusedcode.html"/>
+</item>
+</menu>
+
+
+    <!-- *********** -->
+
+    <menu ref="reports"/>
+
+  </body>
+</project>

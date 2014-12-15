@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Braces</title>
+</properties>
+<body>
+<section name="Braces">
+  
+The Braces Ruleset contains a collection of braces rules.
+  
+
+   <subsection name="IfStmtsMustUseBraces">
+<p>Since: PMD 5.0</p>
+<p>
+Avoid using if statements without using curly braces.
+     </p>
+<source>
+                   
+//IfStatement[@Else = "false" and not(child::Scope)]
+                   
+               </source>Example(s):
+	        	<source>
+ 
+// Ok
+if (foo) {
+   x++;
+}
+
+// Bad
+if (foo)
+   x++;
+ 
+     </source>
+</subsection>
+
+      <subsection name="IfElseStmtsMustUseBraces">
+<p>Since: PMD 5.0</p>
+<p>
+Avoid using if..else statements without using curly braces.
+       </p>
+<source>
+
+//ExpressionStatement[parent::IfStatement[@Else = "true"]]
+   [not(child::Scope)]
+   [not(child::IfStatement)]
+ 
+                 </source>Example(s):
+	        	<source>
+
+// Ok
+if (foo) {
+   x++;
+} else {
+   y++;
+}
+
+// Bad
+if (foo)
+   x++;
+else
+   y++;
+
+       </source>
+</subsection>
+
+    <subsection name="WhileLoopsMustUseBraces">
+<p>Since: PMD 5.0</p>
+<p>
+Avoid using 'while' statements without using curly braces.
+      </p>
+<source>
+
+//WhileLoop[not(child::Scope)]
+
+                </source>Example(s):
+	        	<source>
+
+// Ok
+while (true) {
+   x++;
+}
+
+// Bad
+while (true)
+   x++;
+
+      </source>
+</subsection>
+
+     <subsection name="ForLoopsMustUseBraces">
+<p>Since: PMD 5.0</p>
+<p>
+Avoid using 'for' statements without using curly braces.
+       </p>
+<source>
+
+	//ForLoop[not(child::Scope)]
+|
+	//ForInLoop[not(child::Scope)]
+
+                 </source>Example(s):
+	        	<source>
+
+// Ok
+for (var i = 0; i &lt; 42; i++) {
+   foo();
+}
+
+// Bad
+for (var i = 0; i &lt; 42; i++)
+   foo();
+
+       </source>
+</subsection>
+
+</section>
+</body>
+</document>

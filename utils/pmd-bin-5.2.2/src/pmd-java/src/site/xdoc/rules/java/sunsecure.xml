@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Security Code Guidelines</title>
+</properties>
+<body>
+<section name="Security Code Guidelines">
+  
+These rules check the security guidelines from Sun, published at http://java.sun.com/security/seccodeguide.html#gcg
+  
+
+    <subsection name="MethodReturnsInternalArray">
+<p>Since: PMD 2.2</p>
+<p>
+Exposing internal arrays to the caller violates object encapsulation since elements can be 
+removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/sunsecure/MethodReturnsInternalArrayRule.html">net.sourceforge.pmd.lang.java.rule.sunsecure.MethodReturnsInternalArrayRule</a>
+</p>Example(s):
+	        	<source>
+  
+public class SecureSystem {
+  UserData [] ud;
+  public UserData [] getUserData() {
+      // Don't return directly the internal array, return a copy
+      return ud;
+  }
+}
+  
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="ArrayIsStoredDirectly">
+<p>Since: PMD 2.2</p>
+<p>
+Constructors and methods receiving arrays should clone objects and store the copy.
+This prevents future changes from the user from affecting the original array.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/sunsecure/ArrayIsStoredDirectlyRule.html">net.sourceforge.pmd.lang.java.rule.sunsecure.ArrayIsStoredDirectlyRule</a>
+</p>Example(s):
+	        	<source>
+  
+public class Foo {
+  private String [] x;
+    public void foo (String [] param) {
+      // Don't do this, make a copy of the array at least
+      this.x=param;
+    }
+}
+  
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+    
+</section>
+</body>
+</document>

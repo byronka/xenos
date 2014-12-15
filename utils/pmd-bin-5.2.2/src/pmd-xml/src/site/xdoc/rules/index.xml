@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="mikkey@sourceforge.net">Miguel Griffa</author>
+<title>PMD Rulesets index</title>
+</properties>
+<body>
+<section name="Current Rulesets">
+<p>List of rulesets and rules contained in each ruleset.</p>
+<ul>
+<li>
+<a href="#Basic_XML">Basic XML</a>: The Basic XML Ruleset contains a collection of good practices which everyone should follow.  </li>
+<li>
+<a href="#XPath_in_XSL">XPath in XSL</a>: This ruleset regroups a collection of good practices regarding XPath querying and functions inside an XSL.  </li>
+</ul>
+<a name="Basic_XML"/>
+<subsection name="Basic XML (xml)">
+<ul>
+<li>
+<a href="xml/basic.html#MistypedCDATASection">MistypedCDATASection</a>: An XML CDATA section begins with a &lt;!CDATA[ marker, which has only one [, and ends with a ]]&gt; marker, which has only two ].      </li>
+</ul>
+</subsection>
+<a name="XPath_in_XSL"/>
+<subsection name="XPath in XSL (xsl)">
+<ul>
+<li>
+<a href="xsl/xpath.html#UseConcatOnce">UseConcatOnce</a>: The XPath concat() functions accepts as many arguments as required so you can have "concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".     </li>
+<li>
+<a href="xsl/xpath.html#AvoidAxisNavigation">AvoidAxisNavigation</a>: Avoid using the 'following' or 'preceeding' axes whenever possible, as these can cut through 100% of the document in the worst case.  Also, try to avoid using 'descendant' or 'descendant-self' axes, as if you're at the top of the Document, it necessarily means cutting through 100% of the document.      </li>
+</ul>
+</subsection>
+</section>
+</body>
+</document>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Import Statements</title>
+</properties>
+<body>
+<section name="Import Statements">
+
+  
+These rules deal with different problems that can occur with import statements.
+  
+
+  <subsection name="DuplicateImports">
+<p>Since: PMD 0.5</p>
+<p>
+Duplicate or overlapping import statements should be avoided.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/imports/DuplicateImportsRule.html">net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule</a>
+</p>Example(s):
+	        	<source>
+
+import java.lang.String;
+import java.lang.*;
+public class Foo {}
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+  <subsection name="DontImportJavaLang">
+<p>Since: PMD 0.5</p>
+<p>
+Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/imports/DontImportJavaLangRule.html">net.sourceforge.pmd.lang.java.rule.imports.DontImportJavaLangRule</a>
+</p>Example(s):
+	        	<source>
+
+import java.lang.String;	// this is unnecessary
+
+public class Foo {}
+
+// --- in another source code file...
+
+import java.lang.*;	// this is bad
+
+public class Foo {}
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+  <subsection name="UnusedImports">
+<p>Since: PMD 1.0</p>
+<p>
+Avoid the use of unused import statements to prevent unwanted dependencies.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/imports/UnusedImportsRule.html">net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule</a>
+</p>Example(s):
+	        	<source>
+
+// this is bad
+import java.io.File;
+public class Foo {}
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="ImportFromSamePackage">
+<p>Since: PMD 1.02</p>
+<p>
+There is no need to import a type that lives in the same package.
+     </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/imports/ImportFromSamePackageRule.html">net.sourceforge.pmd.lang.java.rule.imports.ImportFromSamePackageRule</a>
+</p>Example(s):
+	        	<source>
+ 
+ package foo;
+ 
+ import foo.Buz; // no need for this
+ import foo.*; // or this
+ 
+ public class Bar{}
+ 
+     </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+	<subsection name="TooManyStaticImports">
+<p>Since: PMD 4.1</p>
+<p>
+If you overuse the static import feature, it can make your program unreadable and 
+unmaintainable, polluting its namespace with all the static members you import. 
+Readers of your code (including you, a few months after you wrote it) will not know 
+which class a static member comes from (Sun 1.5 Language Guide).
+		 </p>
+<source>
+.[count(ImportDeclaration[@Static = 'true']) &gt; $maximumStaticImports]
+	             </source>Example(s):
+	        	<source>
+import static Lennon;
+import static Ringo;
+import static George;
+import static Paul;
+import static Yoko; // Too much !
+		  </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>maximumStaticImports</td>
+<td>4</td>
+<td>All static imports can be disallowed by setting this to 0</td>
+</tr>
+</table>
+</subsection>
+    
+	<subsection name="UnnecessaryFullyQualifiedName">
+<p>Since: PMD 5.0</p>
+<p>
+Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
+which is covered by an import statement is redundant.  Consider using the non-fully qualified name.
+		 </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/imports/UnnecessaryFullyQualifiedNameRule.html">net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule</a>
+</p>Example(s):
+	        	<source>
+import java.util.List;
+
+public class Foo {
+   private java.util.List list1; // Unnecessary FQN
+   private List list2; // More appropriate given import of 'java.util.List'
+}
+		  </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+</section>
+</body>
+</document>

@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Naming</title>
+</properties>
+<body>
+<section name="Naming">
+  
+The Naming Ruleset contains rules regarding preferred usage of names and identifiers.
+  
+
+
+  <subsection name="ShortVariable">
+<p>Since: PMD 0.3</p>
+<p>
+Fields, local variables, or parameter names that are very short are not helpful to the reader.
+    </p>
+<source>
+                  
+//VariableDeclaratorId[string-length(@Image) &lt; 3]
+ [not(ancestor::ForInit)]
+ [not(../../VariableDeclarator and ../../../LocalVariableDeclaration and ../../../../ForStatement)]
+ [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
+                  
+              </source>Example(s):
+	        	<source>
+
+public class Something {
+    private int q = 15;                         // field - too short
+    public static void main( String as[] ) {    // formal arg - too short
+        int r = 20 + q;                         // local var - too short
+        for (int i = 0; i &lt; 10; i++) {          // not a violation (inside 'for' loop)
+            r += q;
+        }
+        for (Integer i : numbers) {             // not a violation (inside 'for-each' loop)
+            r += q;
+        }
+    }
+}
+
+    </source>
+</subsection>
+
+  <subsection name="LongVariable">
+<p>Since: PMD 0.3</p>
+<p>
+Fields, formal arguments, or local variable names that are too long can make the code difficult to follow.
+    </p>
+<source>
+                  
+//VariableDeclaratorId[string-length(@Image) &gt; $minimum]
+                  
+              </source>Example(s):
+	        	<source>
+
+public class Something {
+	int reallyLongIntName = -3;  			// VIOLATION - Field
+	public static void main( String argumentsList[] ) { // VIOLATION - Formal
+		int otherReallyLongName = -5; 		// VIOLATION - Local
+		for (int interestingIntIndex = 0;	// VIOLATION - For
+             interestingIntIndex &lt; 10;
+             interestingIntIndex ++ ) {
+    }
+}
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>minimum</td>
+<td>17</td>
+<td>The variable length reporting threshold</td>
+</tr>
+</table>
+</subsection>
+
+  <subsection name="ShortMethodName">
+<p>Since: PMD 0.3</p>
+<p>
+Method names that are very short are not helpful to the reader.
+     </p>
+<source>
+                  
+//MethodDeclarator[string-length(@Image) &lt; 3]
+                  
+              </source>Example(s):
+	        	<source>
+
+public class ShortMethod {
+	public void a( int i ) { // Violation
+	}
+}
+
+     </source>
+</subsection>
+
+
+    <subsection name="VariableNamingConventions">
+<p>Since: PMD 1.2</p>
+<p>
+A variable naming conventions rule - customize this to your liking.  Currently, it
+checks for final variables that should be fully capitalized and non-final variables
+that should not include underscores.
+        </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/naming/VariableNamingConventionsRule.html">net.sourceforge.pmd.lang.java.rule.naming.VariableNamingConventionsRule</a>
+</p>Example(s):
+	        	<source>
+
+public class Foo {
+   public static final int MY_NUM = 0;
+   public String myTest = "";
+   DataModule dmTest = new DataModule();
+}
+
+        </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>parameterSuffix</td>
+<td>[]</td>
+<td>Method parameter variable suffixes</td>
+</tr>
+<tr>
+<td>parameterPrefix</td>
+<td>[]</td>
+<td>Method parameter variable prefixes</td>
+</tr>
+<tr>
+<td>localSuffix</td>
+<td>[]</td>
+<td>Local variable suffixes</td>
+</tr>
+<tr>
+<td>localPrefix</td>
+<td>[]</td>
+<td>Local variable prefixes</td>
+</tr>
+<tr>
+<td>memberSuffix</td>
+<td>[]</td>
+<td>Member variable suffixes</td>
+</tr>
+<tr>
+<td>memberPrefix</td>
+<td>[]</td>
+<td>Member variable prefixes</td>
+</tr>
+<tr>
+<td>staticSuffix</td>
+<td>[]</td>
+<td>Static variable suffixes</td>
+</tr>
+<tr>
+<td>staticPrefix</td>
+<td>[]</td>
+<td>Static variable prefixes</td>
+</tr>
+<tr>
+<td>checkParameters</td>
+<td>true</td>
+<td>Check constructor and method parameter variables</td>
+</tr>
+<tr>
+<td>checkLocals</td>
+<td>true</td>
+<td>Check local variables</td>
+</tr>
+<tr>
+<td>checkMembers</td>
+<td>true</td>
+<td>Check member variables</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="MethodNamingConventions">
+<p>Since: PMD 1.2</p>
+<p>
+Method names should always begin with a lower case character, and should not contain underscores.
+          </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/naming/MethodNamingConventionsRule.html">net.sourceforge.pmd.lang.java.rule.naming.MethodNamingConventionsRule</a>
+</p>Example(s):
+	        	<source>
+
+public class Foo {
+	public void fooStuff() {
+	}
+}
+
+          </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="ClassNamingConventions">
+<p>Since: PMD 1.2</p>
+<p>
+Class names should always begin with an upper case character.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/naming/ClassNamingConventionsRule.html">net.sourceforge.pmd.lang.java.rule.naming.ClassNamingConventionsRule</a>
+</p>Example(s):
+	        	<source>
+
+public class Foo {}
+
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="AbstractNaming">
+<p>Since: PMD 1.4</p>
+<p>
+Abstract classes should be named 'AbstractXXX'.
+       </p>
+<source>
+                    
+//ClassOrInterfaceDeclaration
+ [@Abstract='true' and @Interface='false']
+ [not (starts-with(@Image,'Abstract'))]
+                    
+                </source>Example(s):
+	        	<source>
+
+public abstract class Foo { // should be AbstractFoo
+}
+
+       </source>
+</subsection>
+
+    <subsection name="AvoidDollarSigns">
+<p>Since: PMD 1.5</p>
+<p>
+Avoid using dollar signs in variable/method/class/interface names.
+       </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/naming/AvoidDollarSignsRule.html">net.sourceforge.pmd.lang.java.rule.naming.AvoidDollarSignsRule</a>
+</p>Example(s):
+	        	<source>
+   
+public class Fo$o {  // not a recommended name
+}
+   
+       </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="MethodWithSameNameAsEnclosingClass">
+<p>Since: PMD 1.5</p>
+<p>
+Non-constructor methods should not have the same name as the enclosing class.
+       </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/naming/MethodWithSameNameAsEnclosingClassRule.html">net.sourceforge.pmd.lang.java.rule.naming.MethodWithSameNameAsEnclosingClassRule</a>
+</p>Example(s):
+	        	<source>
+    
+public class MyClass {
+
+	public MyClass() {}			// this is OK because it is a constructor
+	
+	public void MyClass() {}	// this is bad because it is a method
+}
+    
+       </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="SuspiciousHashcodeMethodName">
+<p>Since: PMD 1.5</p>
+<p>
+The method name and return type are suspiciously close to hashCode(), which may denote an intention
+to override the hashCode() method.
+       </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/naming/SuspiciousHashcodeMethodNameRule.html">net.sourceforge.pmd.lang.java.rule.naming.SuspiciousHashcodeMethodNameRule</a>
+</p>Example(s):
+	        	<source>
+    
+public class Foo {
+	public int hashcode() {	// oops, this probably was supposed to be 'hashCode'
+	
+	}
+}
+    
+       </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="SuspiciousConstantFieldName">
+<p>Since: PMD 2.0</p>
+<p>
+Field names using all uppercase characters - Sun's Java naming conventions indicating constants - should
+be declared as final.
+       </p>
+<source>
+
+//ClassOrInterfaceDeclaration[@Interface='false']
+ /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+  [@Final='false']
+  [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
+ 
+                </source>Example(s):
+	        	<source>
+    
+public class Foo {
+ // this is bad, since someone could accidentally
+ // do PI = 2.71828; which is actually e
+ // final double PI = 3.16; is ok
+  double PI = 3.16;
+}
+    
+       </source>
+</subsection>
+
+    <subsection name="SuspiciousEqualsMethodName">
+<p>Since: PMD 2.0</p>
+<p>
+The method name and parameter number are suspiciously close to equals(Object), which can denote an
+intention to override the equals(Object) method.
+        </p>
+<source>
+//MethodDeclarator[@Image = 'equals']
+[   
+    (count(FormalParameters/*) = 1
+    and not (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+        [@Image = 'Object' or @Image = 'java.lang.Object'])
+    or not (../ResultType/Type/PrimitiveType[@Image = 'boolean'])
+    )  or  (
+    count(FormalParameters/*) = 2
+    and ../ResultType/Type/PrimitiveType[@Image = 'boolean']
+    and FormalParameters//ClassOrInterfaceType[@Image = 'Object' or @Image = 'java.lang.Object']
+    )
+]
+| //MethodDeclarator[@Image = 'equal']
+[
+    count(FormalParameters/*) = 1
+    and FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+        [@Image = 'Object' or @Image = 'java.lang.Object']
+]           
+
+                    </source>Example(s):
+	        	<source>
+public class Foo {
+   public int equals(Object o) {
+     // oops, this probably was supposed to be boolean equals
+   }
+   public boolean equals(String s) {
+     // oops, this probably was supposed to be equals(Object)
+   }
+   public boolean equals(Object o1, Object o2) {
+     // oops, this probably was supposed to be equals(Object)
+   }
+}
+        </source>
+</subsection>
+
+    <subsection name="AvoidFieldNameMatchingTypeName">
+<p>Since: PMD 3.0</p>
+<p>
+It is somewhat confusing to have a field name matching the declaring class name.
+This probably means that type and/or field names should be chosen more carefully.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/naming/AvoidFieldNameMatchingTypeNameRule.html">net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingTypeNameRule</a>
+</p>Example(s):
+	        	<source>
+
+public class Foo extends Bar {
+	int foo;	// There is probably a better name that can be used
+}
+
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="AvoidFieldNameMatchingMethodName">
+<p>Since: PMD 3.0</p>
+<p>
+It can be confusing to have a field name with the same name as a method. While this is permitted, 
+having information (field) and actions (method) is not clear naming. Developers versed in 
+Smalltalk often prefer this approach as the methods denote accessor methods.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/naming/AvoidFieldNameMatchingMethodNameRule.html">net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingMethodNameRule</a>
+</p>Example(s):
+	        	<source>
+
+public class Foo {
+	Object bar;
+	// bar is data or an action or both?
+	void bar() {
+	}
+}
+
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+
+
+    <subsection name="NoPackage">
+<p>Since: PMD 3.3</p>
+<p>
+Detects when a class or interface does not have a package definition.
+    </p>
+<source>
+                  
+//ClassOrInterfaceDeclaration[count(preceding::PackageDeclaration) = 0]
+                  
+              </source>Example(s):
+	        	<source>
+
+// no package declaration
+public class ClassInDefaultPackage {
+}
+
+    </source>
+</subsection>
+
+    <subsection name="PackageCase">
+<p>Since: PMD 3.3</p>
+<p>
+Detects when a package definition contains uppercase characters.
+        </p>
+<source>
+                      
+//PackageDeclaration/Name[lower-case(@Image)!=@Image]
+                      
+                  </source>Example(s):
+	        	<source>
+    
+package com.MyCompany;  // should be lowercase name
+
+public class SomeClass {
+}
+    
+        </source>
+</subsection>
+
+    <subsection name="MisleadingVariableName">
+<p>Since: PMD 3.4</p>
+<p>
+Detects when a non-field has a name starting with 'm_'.  This usually denotes a field and could be confusing.
+      </p>
+<source>
+                    
+//VariableDeclaratorId
+[starts-with(@Image, 'm_')]
+[not (../../../FieldDeclaration)]
+                    
+                </source>Example(s):
+	        	<source>
+  
+public class Foo {
+    private int m_foo; // OK
+    public void bar(String m_baz) {  // Bad
+      int m_boz = 42; // Bad
+    }
+}
+  
+      </source>
+</subsection>
+
+    <subsection name="BooleanGetMethodName">
+<p>Since: PMD 4.0</p>
+<p>
+Methods that return boolean results should be named as predicate statements to denote this.
+I.e, 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc.   Avoid the use of the 'get'
+prefix for these methods.
+        </p>
+<source>
+                    
+//MethodDeclaration[
+MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameterizedMethods = 'true']
+                [starts-with(@Image, 'get')]
+and
+ResultType/Type/PrimitiveType[@Image = 'boolean']
+]
+
+                </source>Example(s):
+	        	<source>
+            
+public boolean getFoo(); 	// bad
+public boolean isFoo(); 	// ok
+public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
+     </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>checkParameterizedMethods</td>
+<td>false</td>
+<td>Check parameterized methods</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="ShortClassName">
+<p>Since: PMD 5.0</p>
+<p>
+            
+Short Classnames with fewer than e.g. five characters are not recommended.
+            
+        </p>
+<source>
+                      
+//ClassOrInterfaceDeclaration[string-length(@Image) &lt; $minimum]
+                      
+                  </source>Example(s):
+	        	<source>
+    
+public class Foo {
+}
+    
+        </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>minimum</td>
+<td>5</td>
+<td>Number of characters that are required as a minimum for a class name.</td>
+</tr>
+</table>
+</subsection>
+
+   <subsection name="GenericsNaming">
+<p>Since: PMD 4.2.6</p>
+<p>
+Names for references to generic values should be limited to a single uppercase letter.
+        </p>
+<source>
+                    
+//TypeDeclaration/ClassOrInterfaceDeclaration/TypeParameters/TypeParameter[
+  string-length(@Image) &gt; 1 
+  or
+  string:upper-case(@Image) != @Image
+]
+
+                </source>Example(s):
+	        	<source>
+            
+public interface GenericDao&lt;E extends BaseModel, K extends Serializable&gt; extends BaseDao {
+   // This is ok...
+}
+
+public interface GenericDao&lt;E extends BaseModel, K extends Serializable&gt; {
+   // Also this
+}
+
+public interface GenericDao&lt;e extends BaseModel, K extends Serializable&gt; {
+   // 'e' should be an 'E'
+}
+
+public interface GenericDao&lt;EF extends BaseModel, K extends Serializable&gt; {
+   // 'EF' is not ok.
+}
+     </source>
+</subsection>
+
+</section>
+</body>
+</document>

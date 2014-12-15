@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Android</title>
+</properties>
+<body>
+<section name="Android">
+  
+These rules deal with the Android SDK, mostly related to best practices.
+To get better results, make sure that the auxclasspath is defined for type resolution to work.
+  
+
+  <subsection name="CallSuperFirst">
+<p>Since: PMD 4.2.5</p>
+<p>Super should be called at the start of the method</p>
+<source>
+//MethodDeclaration[MethodDeclarator[
+  @Image='onCreate' or
+  @Image='onConfigurationChanged' or
+  @Image='onPostCreate' or
+  @Image='onPostResume' or
+  @Image='onRestart' or
+  @Image='onRestoreInstanceState' or
+  @Image='onResume' or
+  @Image='onStart'
+  ]]
+    /Block[not(
+      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image]))]
+[ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
+  typeof(@Image, 'android.app.Activity', 'Activity') or
+  typeof(@Image, 'android.app.Application', 'Application') or
+  typeof(@Image, 'android.app.Service', 'Service')
+]]]
+
+        </source>Example(s):
+	        	<source>
+public class DummyActivity extends Activity {
+	public void onCreate(Bundle bundle) {
+     // missing call to super.onCreate(bundle)
+		foo();
+	}
+}
+
+    </source>
+</subsection>
+
+  <subsection name="CallSuperLast">
+<p>Since: PMD 4.2.5</p>
+<p>Super should be called at the end of the method</p>
+<source>
+          
+//MethodDeclaration[MethodDeclarator[
+  @Image='finish' or
+  @Image='onDestroy' or
+  @Image='onPause' or
+  @Image='onSaveInstanceState' or
+  @Image='onStop' or
+  @Image='onTerminate'
+  ]]
+   /Block/BlockStatement[last()]
+    [not(Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image])]
+[ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
+  typeof(@Image, 'android.app.Activity', 'Activity') or
+  typeof(@Image, 'android.app.Application', 'Application') or
+  typeof(@Image, 'android.app.Service', 'Service')
+]]]
+
+        </source>Example(s):
+	        	<source>
+      
+public class DummyActivity extends Activity {
+	public void onPause() {
+		foo();
+		// missing call to super.onPause()
+	}
+}
+
+    </source>
+</subsection>
+
+  <subsection name="DoNotHardCodeSDCard">
+<p>Since: PMD 4.2.6</p>
+<p>Use Environment.getExternalStorageDirectory() instead of "/sdcard"</p>
+<source>//Literal[starts-with(@Image,'"/sdcard')]</source>Example(s):
+	        	<source>
+      
+public class MyActivity extends Activity {
+	protected void foo() {
+		String storageLocation = "/sdcard/mypackage";	// hard-coded, poor approach
+
+		storageLocation = Environment.getExternalStorageDirectory() + "/mypackage"; // preferred approach
+	}
+}
+
+    </source>
+</subsection>
+
+</section>
+</body>
+</document>

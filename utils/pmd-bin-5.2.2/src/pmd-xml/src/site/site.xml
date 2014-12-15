@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/DECORATION/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PMD XML" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd">
+
+  <body>
+    <menu ref="parent"/>
+
+    <!-- The rulesets part of navigation will be added during pre-site and the
+         list is build dynamically based on rulesets folder directory layout -->
+
+
+    <!--THIS FILE HAS BEEN AUTOMATICLY GENERATED.--><menu name="Rule Sets">
+<item name="xml" collapse="false" href="/rules/index.html">
+<item name="Basic XML" href="/rules/xml/basic.html"/>
+</item>
+<item name="xsl" collapse="false" href="/rules/index.html">
+<item name="XPath in XSL" href="/rules/xsl/xpath.html"/>
+</item>
+</menu>
+
+
+    <!-- *********** -->
+
+    <menu ref="reports"/>
+
+  </body>
+</project>

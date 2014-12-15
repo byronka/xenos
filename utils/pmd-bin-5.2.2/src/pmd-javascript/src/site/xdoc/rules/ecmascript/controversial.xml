@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Controversial Ecmascript</title>
+</properties>
+<body>
+<section name="Controversial Ecmascript">
+
+  
+The Controversial ruleset contains rules that, for whatever reason, are considered controversial.
+They are held here to allow people to include them as they see fit within their custom rulesets.
+  
+
+  <subsection name="AvoidWithStatement">
+<p>Since: PMD 5.0.1</p>
+<p>Avoid using with - it's bad news</p>
+<source>
+//WithStatement
+   </source>Example(s):
+	        	<source>
+with (object) {
+  property = 3; // Might be on object, might be on window: who knows.
+}
+      </source>
+</subsection>
+</section>
+</body>
+</document>

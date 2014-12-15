@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Comments</title>
+</properties>
+<body>
+<section name="Comments">
+
+  
+Rules intended to catch errors related to code comments
+  
+
+   <subsection name="CommentRequired">
+<p>Since: PMD 5.1</p>
+<p>
+Denotes whether comments are required (or unwanted) for specific language elements.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/comments/CommentRequiredRule.html">net.sourceforge.pmd.lang.java.rule.comments.CommentRequiredRule</a>
+</p>Example(s):
+	        	<source>
+
+/**
+* 
+*
+* @author George Bush
+*/
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>enumCommentRequirement</td>
+<td>Required</td>
+<td>Enum comments. Possible values: [Required, Ignored, Unwanted]</td>
+</tr>
+<tr>
+<td>protectedMethodCommentRequirement</td>
+<td>Required</td>
+<td>Protected method constructor comments. Possible values: [Required, Ignored, Unwanted]</td>
+</tr>
+<tr>
+<td>publicMethodCommentRequirement</td>
+<td>Required</td>
+<td>Public method and constructor comments. Possible values: [Required, Ignored, Unwanted]</td>
+</tr>
+<tr>
+<td>fieldCommentRequirement</td>
+<td>Required</td>
+<td>Field comments. Possible values: [Required, Ignored, Unwanted]</td>
+</tr>
+<tr>
+<td>headerCommentRequirement</td>
+<td>Required</td>
+<td>Header comments. Possible values: [Required, Ignored, Unwanted]</td>
+</tr>
+</table>
+</subsection>
+  
+    <subsection name="CommentSize">
+<p>Since: PMD 5.0</p>
+<p>
+Determines whether the dimensions of non-header comments found are within the specified limits.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/comments/CommentSizeRule.html">net.sourceforge.pmd.lang.java.rule.comments.CommentSizeRule</a>
+</p>Example(s):
+	        	<source>
+
+/**
+*
+*	too many lines!
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*/
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>maxLines</td>
+<td>6</td>
+<td>Maximum lines</td>
+</tr>
+<tr>
+<td>maxLineLength</td>
+<td>80</td>
+<td>Maximum line length</td>
+</tr>
+</table>
+</subsection>
+
+  <subsection name="CommentContent">
+<p>Since: PMD 5.0</p>
+<p>
+A rule for the politically correct... we don't want to offend anyone.
+  </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/comments/CommentContentRule.html">net.sourceforge.pmd.lang.java.rule.comments.CommentContentRule</a>
+</p>Example(s):
+	        	<source>
+      
+//	OMG, this is horrible, Bob is an idiot !!!
+      
+  </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>disallowedTerms</td>
+<td>[idiot, jerk]</td>
+<td>Illegal terms or phrases</td>
+</tr>
+<tr>
+<td>caseSensitive</td>
+<td>false</td>
+<td>Case sensitive</td>
+</tr>
+<tr>
+<td>wordsAreRegex</td>
+<td>false</td>
+<td>Use regular expressions</td>
+</tr>
+</table>
+</subsection>
+
+
+ </section>
+</body>
+</document>

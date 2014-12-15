@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Empty Code</title>
+</properties>
+<body>
+<section name="Empty Code">
+  
+The Empty Code ruleset contains rules that find empty statements of any kind (empty method,
+empty block statement, empty try or catch block,...).
+  
+
+ <subsection name="EmptyCatchBlock">
+<p>Since: PMD 0.1</p>
+<p>
+Empty Catch Block finds instances where an exception is caught, but nothing is done.  
+In most circumstances, this swallows an exception which should either be acted on 
+or reported.
+      </p>
+<source>
+    
+//CatchStatement
+ [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
+ [FormalParameter/Type/ReferenceType
+   /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
+ ]
+ 
+             </source>Example(s):
+	        	<source>
+  
+public void doSomething() {
+  try {
+    FileInputStream fis = new FileInputStream("/tmp/bugger");
+  } catch (IOException ioe) {
+      // not good
+  }
+}
+ 
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>allowCommentedBlocks</td>
+<td>false</td>
+<td>Empty blocks containing comments will be skipped</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="EmptyIfStmt">
+<p>Since: PMD 0.1</p>
+<p>
+Empty If Statement finds instances where a condition is checked but nothing is done about it.
+    </p>
+<source>
+
+//IfStatement/Statement
+ [EmptyStatement or Block[count(*) = 0]]
+ 
+              </source>Example(s):
+	        	<source>
+    
+public class Foo {
+ void bar(int x) {
+  if (x == 0) {
+   // empty!
+  }
+ }
+}
+ 
+       </source>
+</subsection>
+
+
+    <subsection name="EmptyWhileStmt">
+<p>Since: PMD 0.2</p>
+<p>
+Empty While Statement finds all instances where a while statement does nothing.  
+If it is a timing loop, then you should use Thread.sleep() for it; if it is
+a while loop that does a lot in the exit expression, rewrite it to make it clearer.
+       </p>
+<source>
+
+//WhileStatement/Statement[./Block[count(*) = 0]  or ./EmptyStatement]
+
+              </source>Example(s):
+	        	<source>
+  
+void bar(int a, int b) {
+	while (a == b) {
+	// empty!
+	}
+}
+ 
+       </source>
+</subsection>
+
+
+    <subsection name="EmptyTryBlock">
+<p>Since: PMD 0.4</p>
+<p>
+Avoid empty try blocks - what's the point?
+      </p>
+<source>
+
+//TryStatement/Block[1][count(*) = 0]
+
+              </source>Example(s):
+	        	<source>
+  
+public class Foo {
+ public void bar() {
+  try {
+  } catch (Exception e) {
+    e.printStackTrace();
+  }
+ }
+}
+
+      </source>
+</subsection>
+
+    <subsection name="EmptyFinallyBlock">
+<p>Since: PMD 0.4</p>
+<p>
+Empty finally blocks serve no purpose and should be removed.
+      </p>
+<source>
+
+//FinallyStatement[count(Block/BlockStatement) = 0]
+ 
+              </source>Example(s):
+	        	<source>
+  
+public class Foo {
+ public void bar() {
+  try {
+    int x=2;
+   } finally {
+    // empty!
+   }
+ }
+}
+ 
+      </source>
+</subsection>
+
+
+    <subsection name="EmptySwitchStatements">
+<p>Since: PMD 1.0</p>
+<p>
+Empty switch statements serve no purpose and should be removed.
+      </p>
+<source>
+
+//SwitchStatement[count(*) = 1]
+ 
+              </source>Example(s):
+	        	<source>
+  
+public void bar() {
+	int x = 2;
+	switch (x) {
+	// once there was code here
+	// but it's been commented out or something
+	}
+}
+
+      </source>
+</subsection>
+
+    <subsection name="EmptySynchronizedBlock">
+<p>Since: PMD 1.3</p>
+<p>
+Empty synchronized blocks serve no purpose and should be removed.
+      </p>
+<source>
+
+//SynchronizedStatement/Block[1][count(*) = 0]
+
+              </source>Example(s):
+	        	<source>
+
+public class Foo {
+ public void bar() {
+  synchronized (this) {
+   // empty!
+  }
+ }
+}
+
+      </source>
+</subsection>
+
+
+    <subsection name="EmptyStatementNotInLoop">
+<p>Since: PMD 1.5</p>
+<p>
+An empty statement (or a semicolon by itself) that is not used as the sole body of a 'for' 
+or 'while' loop is probably a bug.  It could also be a double semicolon, which has no purpose
+and should be removed.
+       </p>
+<source>
+
+//EmptyStatement
+ [not(
+       ../../../ForStatement
+       or ../../../WhileStatement
+       or ../../../BlockStatement/ClassOrInterfaceDeclaration
+       or ../../../../../../ForStatement/Statement[1]
+        /Block[1]/BlockStatement[1]/Statement/EmptyStatement
+       or ../../../../../../WhileStatement/Statement[1]
+        /Block[1]/BlockStatement[1]/Statement/EmptyStatement)
+ ]
+
+                </source>Example(s):
+	        	<source>
+
+public void doit() {
+      // this is probably not what you meant to do
+      ;
+      // the extra semicolon here this is not necessary
+      System.out.println("look at the extra semicolon");;
+}
+
+       </source>
+</subsection>
+
+<subsection name="EmptyInitializer">
+<p>Since: PMD 5.0</p>
+<p>
+Empty initializers serve no purpose and should be removed.
+       </p>
+<source>
+
+//Initializer/Block[count(*)=0]
+
+                 </source>Example(s):
+	        	<source>
+   
+public class Foo {
+
+   static {} // Why ?
+
+   {} // Again, why ?
+
+}
+    
+    </source>
+</subsection>
+
+  <subsection name="EmptyStatementBlock">
+<p>Since: PMD 5.0</p>
+<p>
+Empty block statements serve no purpose and should be removed.
+	</p>
+<source>
+          
+//BlockStatement/Statement/Block[count(*) = 0]
+          
+          </source>Example(s):
+	        	<source>
+    
+public class Foo {
+
+   private int _bar;
+
+   public void setBar(int bar) {
+      { _bar = bar; } // Why not?
+      {} // But remove this.
+   }
+
+}
+    
+    </source>
+</subsection>
+
+    <subsection name="EmptyStaticInitializer">
+<p>Since: PMD 1.5</p>
+<p>
+An empty static initializer serve no purpose and should be removed.
+       </p>
+<source>
+
+//Initializer[@Static='true']/Block[count(*)=0]
+
+                 </source>Example(s):
+	        	<source>
+   
+public class Foo {
+	static {
+	// empty
+	}
+}
+
+       </source>
+</subsection>
+
+</section>
+</body>
+</document>

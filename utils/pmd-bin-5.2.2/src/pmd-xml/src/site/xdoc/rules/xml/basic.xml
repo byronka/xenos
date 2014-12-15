@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Basic XML</title>
+</properties>
+<body>
+<section name="Basic XML">
+  
+The Basic XML Ruleset contains a collection of good practices which everyone should follow.
+  
+
+	<subsection name="MistypedCDATASection">
+<p>Since: PMD 5.0</p>
+<p>
+An XML CDATA section begins with a &lt;!CDATA[ marker, which has only one [, and ends with a ]]&gt; marker, which has only two ]. 
+     </p>
+<source>
+ 
+//cdata-section[starts-with(@Image,'[') or ends-with(@Image,']')]
+
+             </source>Example(s):
+	        	<source>
+ 
+An extra [ looks like &amp;lt;!CDATA[[]]&amp;gt;, and an extra ] looks like &amp;lt;!CDATA[]]]&amp;gt;.
+ 
+     </source>
+</subsection>
+</section>
+</body>
+</document>

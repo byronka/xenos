@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: XPath in XSL</title>
+</properties>
+<body>
+<section name="XPath in XSL">
+  
+This ruleset regroups a collection of good practices regarding XPath querying and functions inside an XSL.
+  
+
+	<subsection name="UseConcatOnce">
+<p>Since: PMD 5.0</p>
+<p>
+The XPath concat() functions accepts as many arguments as required so you can have "concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".
+     </p>
+<source>
+ 
+//node()[contains(substring-after(@select,'concat'),'concat')]
+
+
+             </source>Example(s):
+	        	<source>
+ 
+ &lt;xsl:variable name="var" select="concat("Welcome",concat("to you ",$name))"/&gt;
+ &lt;xsl:variable name="var" select="concat("Welcome","to you ",$name))"&gt;
+ 
+     </source>
+</subsection>
+     <subsection name="AvoidAxisNavigation">
+<p>Since: PMD 5.0</p>
+<p>
+Avoid using the 'following' or 'preceeding' axes whenever possible, as these can cut through 100% of the document in the worst case.  Also, try to avoid using 'descendant' or 'descendant-self' axes, as if you're at the top of the Document, it necessarily means cutting through 100% of the document. 
+     </p>
+<source>
+ 
+//node()[
+  contains(@select,'preceeding::')
+  or
+  contains(@select,'following::')
+  or
+  contains(@select,'descendant::')
+  or 
+  contains(@select,'descendant-self::')
+  or (
+    ($checkSelfDescendantAbreviation = 'true' )
+    and
+    contains(@select,'//')
+    )
+]
+
+
+             </source>Example(s):
+	        	<source>
+ 
+ &lt;xsl:variable name="var" select="//item/descendant::child"/&gt;
+ 
+     </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>checkSelfDescendantAbreviation</td>
+<td>false</td>
+<td>descendant::self abreviation, '//', will also trigger this rule.</td>
+</tr>
+</table>
+</subsection>
+</section>
+</body>
+</document>

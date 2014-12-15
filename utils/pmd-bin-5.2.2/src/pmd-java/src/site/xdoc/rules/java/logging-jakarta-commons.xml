@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Jakarta Commons Logging</title>
+</properties>
+<body>
+<section name="Jakarta Commons Logging">
+  
+The Jakarta Commons Logging ruleset contains a collection of rules that find questionable usages of that framework.
+  
+
+	<subsection name="UseCorrectExceptionLogging">
+<p>Since: PMD 3.2</p>
+<p>
+To make sure the full stacktrace is printed out, use the logging statement with two arguments: a String and a Throwable.
+        </p>
+<source>
+//CatchStatement/Block/BlockStatement/Statement/StatementExpression
+/PrimaryExpression[PrimaryPrefix/Name[starts-with(@Image,
+concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
+[Type//ClassOrInterfaceType[@Image='Log']]
+/VariableDeclarator/VariableDeclaratorId/@Image, '.'))]]
+[PrimarySuffix/Arguments[@ArgumentCount='1']]
+[PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]
+         </source>Example(s):
+	        	<source>
+public class Main {
+   private static final Log _LOG = LogFactory.getLog( Main.class );
+   void bar() {
+     try {
+     } catch( Exception e ) {
+      _LOG.error( e ); //Wrong!
+     } catch( OtherException oe ) {
+      _LOG.error( oe.getMessage(), oe ); //Correct
+     }
+   }
+}
+</source>
+</subsection>
+
+    <subsection name="ProperLogger">
+<p>Since: PMD 3.3</p>
+<p>
+A logger should normally be defined private static final and be associated with the correct class.
+Private final Log log; is also allowed for rare cases where loggers need to be passed around,
+with the restriction that the logger needs to be passed into the constructor.
+             </p>
+<source>
+     
+//ClassOrInterfaceBodyDeclaration[FieldDeclaration//ClassOrInterfaceType[@Image='Log']
+ and
+ not(FieldDeclaration[@Final='true'][@Static='true'][@Private='true'][.//VariableDeclaratorId[@Image=$staticLoggerName]]
+ //ArgumentList//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration/@Image)
+ and
+ not(FieldDeclaration[@Final='true'][@Private='true'][.//VariableDeclaratorId[@Image='log']]
+ [count(.//VariableInitializer)=0]
+ [ancestor::ClassOrInterfaceBody//StatementExpression[.//PrimaryExpression/descendant::*[@Image='log']][count(.//AllocationExpression)=0]]
+ )]
+     
+                     </source>Example(s):
+	        	<source>
+ 
+public class Foo {
+
+   private static final Log LOG = LogFactory.getLog(Foo.class);	   // proper way
+
+   protected Log LOG = LogFactory.getLog(Testclass.class);			// wrong approach
+}
+ 
+            </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>staticLoggerName</td>
+<td>LOG</td>
+<td>Name of the static Logger variable</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="GuardDebugLogging">
+<p>Since: PMD 4.3</p>
+<p>
+            When log messages are composed by concatenating strings, the whole section should be guarded
+            by a isDebugEnabled() check to avoid performance and memory issues.
+        </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/logging/GuardDebugLoggingRule.html">net.sourceforge.pmd.lang.java.rule.logging.GuardDebugLoggingRule</a>
+</p>Example(s):
+	        	<source>
+            
+public class Test {
+    private static final Log __log = LogFactory.getLog(Test.class);
+    public void test() {
+        // okay:
+        __log.debug("log something");
+
+        // okay:
+        __log.debug("log something with exception", e);
+
+        // bad:
+        __log.debug("log something" + " and " + "concat strings");
+
+        // bad:
+        __log.debug("log something" + " and " + "concat strings", e);
+
+        // good:
+        if (__log.isDebugEnabled()) {
+        __log.debug("bla" + "",e );
+        }
+    }
+}
+            
+        </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>guardsMethods</td>
+<td>[]</td>
+<td>method use to guard the log statement</td>
+</tr>
+<tr>
+<td>logLevels</td>
+<td>[]</td>
+<td>LogLevels to guard</td>
+</tr>
+</table>
+</subsection>
+
+   <subsection name="GuardLogStatement">
+<p>Since: PMD 5.1.0</p>
+<p>
+Whenever using a log level, one should check if the loglevel is actually enabled, or
+otherwise skip the associate String creation and manipulation.
+     </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/logging/GuardLogStatementRule.html">net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementRule</a>
+</p>Example(s):
+	        	<source>
+ 
+    // Add this for performance
+    if (log.isDebugEnabled() { ...
+        log.debug("log something" + " and " + "concat strings");
+
+     </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>guardsMethods</td>
+<td>[]</td>
+<td>method use to guard the log statement</td>
+</tr>
+<tr>
+<td>logLevels</td>
+<td>[]</td>
+<td>LogLevels to guard</td>
+</tr>
+</table>
+</subsection>
+
+</section>
+</body>
+</document>

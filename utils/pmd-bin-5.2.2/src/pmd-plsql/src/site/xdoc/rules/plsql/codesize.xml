@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Code Size</title>
+</properties>
+<body>
+<section name="Code Size">
+
+  
+The Code Size ruleset contains rules that find problems related to code size or complexity.
+  
+
+<subsection name="NPathComplexity">
+<p>Since: PMD 5.1</p>
+<p>
+The NPath complexity of a method is the number of acyclic execution paths through that method.
+A threshold of 200 is generally considered the point where measures should be taken to reduce 
+complexity and increase readability.
+   </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/plsql/rule/codesize/NPathComplexityRule.html">net.sourceforge.pmd.lang.plsql.rule.codesize.NPathComplexityRule</a>
+</p>Example(s):
+	        	<source>
+ 
+CREATE OR REPLACE
+PROCEDURE bar AS BEGIN	-- this is something more complex than it needs to be,
+	if (y) THEN	-- it should be broken down into smaller methods or functions
+		for j IN 0 .. j-1 LOOP
+			if (j &gt; r) THEN
+				doSomething;
+				while (f &lt; 5 ) LOOP
+					anotherThing;
+					f := f - 27;
+					END LOOP;
+			else
+					tryThis();
+			END IF;
+		END LOOP;
+	END IF;
+	if ( r - n &gt; 45) THEN
+		while (doMagic) LOOP
+			findRabbits;
+		END LOOP;
+	END IF;
+	BEGIN
+		doSomethingDangerous();
+	EXCEPTION WHEN FooException THEN
+		makeAmends;
+		BEGIN
+			dontDoItAgain;
+		EXCEPTION
+		WHEN OTHERS THEN
+				log_problem;
+		END;
+	END;
+END;
+
+ 
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>topscore</td>
+<td/>
+<td>Top score value</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td>200.0</td>
+<td>Minimum reporting threshold</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td/>
+<td>Sigma value</td>
+</tr>
+</table>
+</subsection>
+
+ <subsection name="ExcessiveMethodLength">
+<p>Since: PMD 5.1</p>
+<p>
+When methods are excessively long this usually indicates that the method is doing more than its
+name/signature might suggest. They also become challenging for others to digest since excessive 
+scrolling causes readers to lose focus.
+Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+   </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessiveMethodLengthRule.html">net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveMethodLengthRule</a>
+</p>Example(s):
+	        	<source>
+
+CREATE OR REPLACE
+PROCEDURE doSomething BEGIN
+	DBMS_OUTPUT.PUT_LINE("Hello world!");
+	DBMS_OUTPUT.PUT_LINE("Hello world!");
+		-- 98 copies omitted for brevity.
+END;
+
+
+   </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>topscore</td>
+<td/>
+<td>Top score value</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td>100.0</td>
+<td>Minimum reporting threshold</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td/>
+<td>Sigma value</td>
+</tr>
+</table>
+</subsection>
+
+
+ <subsection name="ExcessiveParameterList">
+<p>Since: PMD 5.1</p>
+<p>
+Methods with numerous parameters are a challenge to maintain, especially if most of them share the
+same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
+   </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessiveParameterListRule.html">net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveParameterListRule</a>
+</p>Example(s):
+	        	<source>
+
+CREATE OR REPLACE
+PROCEDURE addPerson(		-- too many arguments liable to be mixed up
+	birthYear pls_integer, birthMonth pls_integer, birthDate pls_integer, height pls_integer, weight pls_integer, ssn pls_integer) {
+
+	. . . .
+END ADDPERSON;
+ 
+CREATE OR REPLACE
+PROCEDURE addPerson(		-- preferred approach
+	birthdate DATE, measurements BodyMeasurements , ssn INTEGER) BEGIN
+
+	. . . .
+END;
+
+   </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>topscore</td>
+<td/>
+<td>Top score value</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td>10.0</td>
+<td>Minimum reporting threshold</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td/>
+<td>Sigma value</td>
+</tr>
+</table>
+</subsection>
+
+ <subsection name="ExcessiveObjectLength">
+<p>Since: PMD 5.1</p>
+<p>
+Excessive object line lengths are usually indications that the object may be burdened with excessive 
+responsibilities that could be provided by other objects. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+   </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessiveObjectLengthRule.html">net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveObjectLengthRule</a>
+</p>Example(s):
+	        	<source>
+
+CREATE OR REPLACE
+PACKAGE BODY Foo AS
+	PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+	END bar1;
+	PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+	END bar2;
+    PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+	END bar3;
+	
+	
+    PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+	END barn;
+END;
+
+   </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>topscore</td>
+<td/>
+<td>Top score value</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td>1000.0</td>
+<td>Minimum reporting threshold</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td/>
+<td>Sigma value</td>
+</tr>
+</table>
+</subsection>
+
+
+ <subsection name="ExcessiveTypeLength">
+<p>Since: PMD 5.1</p>
+<p>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+   </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessiveTypeLengthRule.html">net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveTypeLengthRule</a>
+</p>Example(s):
+	        	<source>
+
+CREATE OR REPLACE
+TYPE BODY Foo AS
+	 MEMBER PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+	END bar1;
+	 MEMBER PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+	END bar2;
+     MEMBER PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+	END bar3;
+	
+	
+     MEMBER PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+	END barn;
+END;
+
+   </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>topscore</td>
+<td/>
+<td>Top score value</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td>1000.0</td>
+<td>Minimum reporting threshold</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td/>
+<td>Sigma value</td>
+</tr>
+</table>
+</subsection>
+
+ <subsection name="ExcessivePackageBodyLength">
+<p>Since: PMD 5.1</p>
+<p>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+   </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessivePackageBodyLengthRule.html">net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePackageBodyLengthRule</a>
+</p>Example(s):
+	        	<source>
+
+CREATE OR REPLACE
+PACKAGE BODY Foo AS
+	PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+	END bar1;
+	PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+	END bar2;
+    PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+	END bar3;
+	
+	
+    PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+	END barn;
+END;
+
+   </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>topscore</td>
+<td/>
+<td>Top score value</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td>1000.0</td>
+<td>Minimum reporting threshold</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td/>
+<td>Sigma value</td>
+</tr>
+</table>
+</subsection>
+
+
+ <subsection name="ExcessivePackageSpecificationLength">
+<p>Since: PMD 5.1</p>
+<p>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+   </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/plsql/rule/codesize/ExcessivePackageSpecificationLengthRule.html">net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePackageSpecificationLengthRule</a>
+</p>Example(s):
+	        	<source>
+
+
+CREATE OR REPLACE
+PACKAGE Foo AS
+	PROCEDURE bar1 ;
+	PROCEDURE bar2 ;
+        PROCEDURE bar3 ;
+	
+    ..
+	
+        PROCEDURE barN ;
+END;
+   </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>topscore</td>
+<td/>
+<td>Top score value</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td>1000.0</td>
+<td>Minimum reporting threshold</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td/>
+<td>Sigma value</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="CyclomaticComplexity">
+<p>Since: PMD 5.1</p>
+<p>
+   		
+Complexity directly affects maintenance costs is determined by the number of decision points in a method 
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity.
+		
+   </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/plsql/rule/codesize/CyclomaticComplexityRule.html">net.sourceforge.pmd.lang.plsql.rule.codesize.CyclomaticComplexityRule</a>
+</p>Example(s):
+	        	<source>
+
+-- Cyclomatic Complexity of 25 
+CREATE OR REPLACE PACKAGE BODY pkg_pmd_working_sequence  AS 
+1 PROCEDURE ty_logger  IS BEGIN
+2        IF true
+         THEN
+              DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+3		 IF true
+		 THEN
+		      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+4			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+5			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+6		 ELSIF false
+		 THEN
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+7			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+8			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+		 ELSE
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+9			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+10			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+		 END IF;
+11         ELSIF false
+         THEN
+		DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+12		 IF true
+		 THEN
+		      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+13			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+14			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+15		 ELSIF false
+		 THEN
+16			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+17			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+		 ELSE
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+		 END IF;
+	 ELSE
+		DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+18		 IF true
+		 THEN
+		      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+19			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+20			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+21		 ELSIF false
+		 THEN
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+22			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+23			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+		 ELSE
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+24			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+25			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+		 END IF;
+	 END IF;
+END;								
+						
+END;
+
+   </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>showMethodsComplexity</td>
+<td>true</td>
+<td>Add method average violations to the report</td>
+</tr>
+<tr>
+<td>showClassesComplexity</td>
+<td>true</td>
+<td>Add class average violations to the report</td>
+</tr>
+<tr>
+<td>reportLevel</td>
+<td>10</td>
+<td>Cyclomatic Complexity reporting threshold</td>
+</tr>
+</table>
+</subsection>
+
+
+
+
+    <subsection name="TooManyFields">
+<p>Since: PMD 5.1</p>
+<p>
+Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
+possibly through grouping related fields in new objects.  For example, a class with individual 
+city/state/zip fields could park them within a single Address field.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/plsql/rule/codesize/TooManyFieldsRule.html">net.sourceforge.pmd.lang.plsql.rule.codesize.TooManyFieldsRule</a>
+</p>Example(s):
+	        	<source>
+   
+CREATE OR REPLACE PACKAGE pkg_too_many_fields AS
+    C_CHAR_A CONSTANT CHAR(1 CHAR) := 'A';
+    C_CHAR_B CONSTANT CHAR(1 CHAR) := 'B';
+    ...
+    C_CHAR_Z CONSTANT CHAR(1 CHAR) := 'Z';
+END pkg_too_many_fields;
+
+   
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>maxfields</td>
+<td>15</td>
+<td>Max allowable fields</td>
+</tr>
+</table>
+</subsection>
+
+
+<subsection name="NcssMethodCount">
+<p>Since: PMD 5.1</p>
+<p>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/plsql/rule/codesize/NcssMethodCountRule.html">net.sourceforge.pmd.lang.plsql.rule.codesize.NcssMethodCountRule</a>
+</p>Example(s):
+	        	<source>
+
+CREATE OR REPLACE PACKAGE BODY AS
+ FUNCTION methd RETURN INTEGER IS
+ BEGIN
+   RETURN 1;;
+ END;
+END;
+
+   </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>topscore</td>
+<td/>
+<td>Top score value</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td>100.0</td>
+<td>Minimum reporting threshold</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td/>
+<td>Sigma value</td>
+</tr>
+</table>
+</subsection>
+
+<subsection name="NcssObjectCount">
+<p>Since: PMD 5.1</p>
+<p>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given Oracle object. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/plsql/rule/codesize/NcssObjectCountRule.html">net.sourceforge.pmd.lang.plsql.rule.codesize.NcssObjectCountRule</a>
+</p>Example(s):
+	        	<source>
+
+CREATE OR REPLACE PACKAGE pkg_
+ PROCEDURE Foo IS
+ BEGIN
+ --this class only has 6 NCSS lines
+     super();
+     super();
+ END;
+}
+
+   </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>topscore</td>
+<td/>
+<td>Top score value</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td>1500.0</td>
+<td>Minimum reporting threshold</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td/>
+<td>Sigma value</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="TooManyMethods">
+<p>Since: PMD 5.1</p>
+<p>
+            
+A package or type with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to
+have more fine grained objects.
+            
+        </p>
+<source>
+                    
+//node()
+     [ (
+        local-name(.) = 'PackageSpecification'
+        or
+        local-name(.) = 'TypeSpecification'
+       )
+       and 
+      (
+      count(/descendant::ProgramUnit[
+                                         not (
+                                                starts-with(@Image,'get')
+                                                or
+                                                starts-with(@Image,'set')
+                                                or
+                                                starts-with(@Image,'is')
+                                            )
+                                       ]
+           )
+      +
+      count(/descendant::TypeMethod[
+                                         not (
+                                                starts-with(@Image,'get')
+                                                or
+                                                starts-with(@Image,'set')
+                                                or
+                                                starts-with(@Image,'is')
+                                            )
+                                       ]
+           )
+      ) &gt; $maxmethods
+     ]
+                    
+                </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>maxmethods</td>
+<td>1</td>
+<td>The method count reporting threshold</td>
+</tr>
+</table>
+</subsection>
+
+</section>
+</body>
+</document>

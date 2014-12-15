@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="mikkey@sourceforge.net">Miguel Griffa</author>
+<title>PMD Rulesets index</title>
+</properties>
+<body>
+<section name="Current Rulesets">
+<p>List of rulesets and rules contained in each ruleset.</p>
+<ul>
+<li>
+<a href="#Basic_Velocity">Basic Velocity</a>: 	The Basic Velocity ruleset contains basic rules for Apache Velocity pages.  </li>
+</ul>
+<a name="Basic_Velocity"/>
+<subsection name="Basic Velocity (vm)">
+<ul>
+<li>
+<a href="vm/basic.html#AvoidDeeplyNestedIfStmts">AvoidDeeplyNestedIfStmts</a>: 	Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.    </li>
+<li>
+<a href="vm/basic.html#CollapsibleIfStatements">CollapsibleIfStatements</a>: Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.      </li>
+<li>
+<a href="vm/basic.html#ExcessiveTemplateLength">ExcessiveTemplateLength</a>: The template is too long. It should be broken up into smaller pieces.      </li>
+<li>
+<a href="vm/basic.html#AvoidReassigningParameters">AvoidReassigningParameters</a>: Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.	    </li>
+<li>
+<a href="vm/basic.html#EmptyIfStmt">EmptyIfStmt</a>: Empty if statements should be deleted.	    </li>
+<li>
+<a href="vm/basic.html#EmptyForeachStmt">EmptyForeachStmt</a>: Empty foreach statements should be deleted.	    </li>
+<li>
+<a href="vm/basic.html#UnusedMacroParameter">UnusedMacroParameter</a>: Avoid unused macro parameters. They should be deleted.	    </li>
+<li>
+<a href="vm/basic.html#NoInlineJavaScript">NoInlineJavaScript</a>: Avoid inline JavaScript. Import .js files instead.	    </li>
+<li>
+<a href="vm/basic.html#NoInlineStyles">NoInlineStyles</a>: Avoid inline styles. Use css classes instead.	    </li>
+</ul>
+</subsection>
+</section>
+</body>
+</document>

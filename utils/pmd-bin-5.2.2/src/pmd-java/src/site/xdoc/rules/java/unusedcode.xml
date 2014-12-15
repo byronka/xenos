@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Unused Code</title>
+</properties>
+<body>
+<section name="Unused Code">
+  
+The Unused Code ruleset contains rules that find unused or ineffective code.
+  
+
+  <subsection name="UnusedPrivateField">
+<p>Since: PMD 0.1</p>
+<p>
+Detects when a private field is declared and/or assigned a value, but not used.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedPrivateFieldRule.html">net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateFieldRule</a>
+</p>Example(s):
+	        	<source>
+
+public class Something {
+  private static int FOO = 2; // Unused
+  private int i = 5; // Unused
+  private int j = 6;
+  public int addOne() {
+    return j++;
+  }
+}
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+  <subsection name="UnusedLocalVariable">
+<p>Since: PMD 0.1</p>
+<p>
+Detects when a local variable is declared and/or assigned, but not used.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedLocalVariableRule.html">net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule</a>
+</p>Example(s):
+	        	<source>
+
+public class Foo {
+	public void doSomething() {
+		int i = 5; // Unused
+	}
+}
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+  <subsection name="UnusedPrivateMethod">
+<p>Since: PMD 0.7</p>
+<p>
+Unused Private Method detects when a private method is declared but is unused.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedPrivateMethodRule.html">net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateMethodRule</a>
+</p>Example(s):
+	        	<source>
+
+public class Something {
+	private void foo() {} // unused
+}
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+
+  <subsection name="UnusedFormalParameter">
+<p>Since: PMD 0.8</p>
+<p>
+Avoid passing parameters to methods or constructors without actually referencing them in the method body.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedFormalParameterRule.html">net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedFormalParameterRule</a>
+</p>Example(s):
+	        	<source>
+
+public class Foo {
+	private void bar(String howdy) {
+	// howdy is not used
+	}
+}
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>checkAll</td>
+<td>false</td>
+<td>Check all methods, including non-private ones</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="UnusedModifier">
+<p>Since: PMD 1.02</p>
+<p>
+Fields in interfaces are automatically public static final, and methods are public abstract.
+Classes or interfaces nested in an interface are automatically public and static (all nested interfaces are automatically static).
+For historical reasons, modifiers which are implied by the context are accepted by the compiler, but are superfluous.
+     </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedModifierRule.html">net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedModifierRule</a>
+</p>Example(s):
+	        	<source>
+ 
+public interface Foo {
+  public abstract void bar(); 		// both abstract and public are ignored by the compiler
+  public static final int X = 0; 	// public, static, and final all ignored
+  public static class Bar {} 		// public, static ignored
+  public static interface Baz {} 	// ditto
+}
+public class Bar {
+  public static interface Baz {} // static ignored
+}
+ 
+     </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+ </section>
+</body>
+</document>

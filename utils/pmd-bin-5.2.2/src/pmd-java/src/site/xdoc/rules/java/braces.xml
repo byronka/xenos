@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Braces</title>
+</properties>
+<body>
+<section name="Braces">
+  
+The Braces ruleset contains rules regarding the use and placement of braces.
+  
+
+   <subsection name="IfStmtsMustUseBraces">
+<p>Since: PMD 1.0</p>
+<p>
+Avoid using if statements without using braces to surround the code block. If the code 
+formatting or indentation is lost then it becomes difficult to separate the code being
+controlled from the rest.
+     </p>
+<source>
+                   
+//IfStatement[count(*) &lt; 3][not(Statement/Block)]
+                   
+               </source>Example(s):
+	        	<source>
+ 
+
+if (foo)	// not recommended
+	x++;
+
+if (foo) {	// preferred approach
+	x++;
+}
+
+ 
+     </source>
+</subsection>
+
+    <subsection name="WhileLoopsMustUseBraces">
+<p>Since: PMD 0.7</p>
+<p>
+Avoid using 'while' statements without using braces to surround the code block. If the code 
+formatting or indentation is lost then it becomes difficult to separate the code being
+controlled from the rest.
+      </p>
+<source>
+
+//WhileStatement[not(Statement/Block)]
+
+                </source>Example(s):
+	        	<source>
+
+while (true)	// not recommended
+      x++;
+      
+while (true) {	// preferred approach
+      x++;
+}
+
+      </source>
+</subsection>
+
+      <subsection name="IfElseStmtsMustUseBraces">
+<p>Since: PMD 0.2</p>
+<p>
+Avoid using if..else statements without using surrounding braces. If the code formatting 
+or indentation is lost then it becomes difficult to separate the code being controlled 
+from the rest.
+       </p>
+<source>
+
+//Statement
+ [parent::IfStatement[@Else='true']]
+ [not(child::Block)]
+ [not(child::IfStatement)]
+ 
+                 </source>Example(s):
+	        	<source>
+
+   // this is OK
+if (foo) x++;
+   
+   // but this is not
+if (foo)
+       x = x+1;
+   else
+       x = x-1;
+
+       </source>
+</subsection>
+
+     <subsection name="ForLoopsMustUseBraces">
+<p>Since: PMD 0.7</p>
+<p>
+Avoid using 'for' statements without using curly braces. If the code formatting or 
+indentation is lost then it becomes difficult to separate the code being controlled 
+from the rest.
+       </p>
+<source>
+ 
+//ForStatement[not(Statement/Block)]
+ 
+                 </source>Example(s):
+	        	<source>
+
+for (int i = 0; i &lt; 42; i++)
+   foo();
+
+       </source>
+</subsection>
+
+</section>
+</body>
+</document>

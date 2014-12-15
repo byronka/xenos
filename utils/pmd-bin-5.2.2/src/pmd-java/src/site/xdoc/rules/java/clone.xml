@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Clone Implementation</title>
+</properties>
+<body>
+<section name="Clone Implementation">
+  
+The Clone Implementation ruleset contains a collection of rules that find questionable usages of the clone() method.
+  
+
+    <subsection name="ProperCloneImplementation">
+<p>Since: PMD 1.4</p>
+<p>
+Object clone() should be implemented with super.clone().
+     </p>
+<source>
+                 
+//MethodDeclarator
+[@Image = 'clone']
+[count(FormalParameters/*) = 0]
+[count(../Block//*[
+    (self::AllocationExpression) and
+    (./ClassOrInterfaceType/@Image = ancestor::
+ClassOrInterfaceDeclaration[1]/@Image)
+  ])&gt; 0
+]
+                
+             </source>Example(s):
+	        	<source>
+ 
+class Foo{
+    public Object clone(){
+        return new Foo(); // This is bad
+    }
+}
+
+     </source>
+</subsection>
+
+    <subsection name="CloneThrowsCloneNotSupportedException">
+<p>Since: PMD 1.9</p>
+<p>
+The method clone() should throw a CloneNotSupportedException.
+         </p>
+<source>
+                     
+//MethodDeclaration
+[
+MethodDeclarator/@Image = 'clone'
+and count(MethodDeclarator/FormalParameters/*) = 0
+and count(NameList/Name[contains
+(@Image,'CloneNotSupportedException')]) = 0
+]
+[
+../../../../ClassOrInterfaceDeclaration[@Final = 'false']
+]
+                     
+                 </source>Example(s):
+	        	<source>
+             
+ public class MyClass implements Cloneable{
+     public Object clone() { // will cause an error
+          MyClass clone = (MyClass)super.clone();
+          return clone;
+     }
+ }
+    
+         </source>
+</subsection>
+
+    <subsection name="CloneMethodMustImplementCloneable">
+<p>Since: PMD 1.9</p>
+<p>
+The method clone() should only be implemented if the class implements the Cloneable interface with the exception of a final method that only throws CloneNotSupportedException.
+        </p>
+<source>
+                    
+//ClassOrInterfaceDeclaration
+[not(./ImplementsList/ClassOrInterfaceType
+[@Image='Cloneable'])]
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+[MethodDeclaration
+[MethodDeclarator[@Image
+= 'clone' and count(FormalParameters/*) = 0]]
+[not((../MethodDeclaration[@Final = 'true'] or ancestor::ClassOrInterfaceDeclaration[1][@Final = 'true'])
+and Block[count(BlockStatement)=1]
+/BlockStatement/Statement/ThrowStatement/Expression
+/PrimaryExpression/PrimaryPrefix/AllocationExpression
+/ClassOrInterfaceType[@Image = 'CloneNotSupportedException'])]]
+
+                    
+                </source>Example(s):
+	        	<source>
+            
+public class MyClass {
+ public Object clone() throws CloneNotSupportedException {
+  return foo;
+ }
+}
+   
+        </source>
+</subsection>
+
+</section>
+</body>
+</document>

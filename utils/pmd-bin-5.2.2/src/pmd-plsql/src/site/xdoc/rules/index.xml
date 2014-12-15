@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="mikkey@sourceforge.net">Miguel Griffa</author>
+<title>PMD Rulesets index</title>
+</properties>
+<body>
+<section name="Current Rulesets">
+<p>List of rulesets and rules contained in each ruleset.</p>
+<ul>
+<li>
+<a href="#Code_Size">Code Size</a>: The Code Size ruleset contains rules that find problems related to code size or complexity.  </li>
+<li>
+<a href="#PLSQL_DATETIME">PLSQL DATETIME</a>: The Dates ruleset deals with PLSQL DATETIME usages.  </li>
+<li>
+<a href="#Tom_Kyte's_Despair">Tom Kyte's Despair</a>:     Rules based on Thomas Kyte's recommendations on http://asktom.oracle.com/ and http://tkyte.blogspot.com/.</li>
+</ul>
+<a name="Tom_Kyte's_Despair"/>
+<subsection name="Tom Kyte's Despair (plsql)">
+<ul>
+<li>
+<a href="plsql/TomKytesDespair.html#TomKytesDespair">TomKytesDespair</a>:   "WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR   </li>
+</ul>
+</subsection>
+<a name="Code_Size"/>
+<subsection name="Code Size (plsql)">
+<ul>
+<li>
+<a href="plsql/codesize.html#NPathComplexity">NPathComplexity</a>: The NPath complexity of a method is the number of acyclic execution paths through that method.A threshold of 200 is generally considered the point where measures should be taken to reduce complexity and increase readability.   </li>
+<li>
+<a href="plsql/codesize.html#ExcessiveMethodLength">ExcessiveMethodLength</a>: When methods are excessively long this usually indicates that the method is doing more than itsname/signature might suggest. They also become challenging for others to digest since excessive scrolling causes readers to lose focus.Try to reduce the method length by creating helper methods and removing any copy/pasted code.   </li>
+<li>
+<a href="plsql/codesize.html#ExcessiveParameterList">ExcessiveParameterList</a>: Methods with numerous parameters are a challenge to maintain, especially if most of them share thesame datatype. These situations usually denote the need for new objects to wrap the numerous parameters.   </li>
+<li>
+<a href="plsql/codesize.html#ExcessiveObjectLength">ExcessiveObjectLength</a>: Excessive object line lengths are usually indications that the object may be burdened with excessive responsibilities that could be provided by other objects. In breaking these methodsapart the code becomes more managable and ripe for reuse.   </li>
+<li>
+<a href="plsql/codesize.html#ExcessiveTypeLength">ExcessiveTypeLength</a>: Excessive class file lengths are usually indications that the class may be burdened with excessive responsibilities that could be provided by external classes or functions. In breaking these methodsapart the code becomes more managable and ripe for reuse.   </li>
+<li>
+<a href="plsql/codesize.html#ExcessivePackageBodyLength">ExcessivePackageBodyLength</a>: Excessive class file lengths are usually indications that the class may be burdened with excessive responsibilities that could be provided by external classes or functions. In breaking these methodsapart the code becomes more managable and ripe for reuse.   </li>
+<li>
+<a href="plsql/codesize.html#ExcessivePackageSpecificationLength">ExcessivePackageSpecificationLength</a>: Excessive class file lengths are usually indications that the class may be burdened with excessive responsibilities that could be provided by external classes or functions. In breaking these methodsapart the code becomes more managable and ripe for reuse.   </li>
+<li>
+<a href="plsql/codesize.html#CyclomaticComplexity">CyclomaticComplexity</a>:    		Complexity directly affects maintenance costs is determined by the number of decision points in a method plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denotehigh complexity, and 11+ is very high complexity.		   </li>
+<li>
+<a href="plsql/codesize.html#TooManyFields">TooManyFields</a>: Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,possibly through grouping related fields in new objects.  For example, a class with individual city/state/zip fields could park them within a single Address field.      </li>
+<li>
+<a href="plsql/codesize.html#NcssMethodCount">NcssMethodCount</a>: This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of linesof code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,lines of code that are split are counted as one.    </li>
+<li>
+<a href="plsql/codesize.html#NcssObjectCount">NcssObjectCount</a>: This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of linesof code for a given Oracle object. NCSS ignores comments, and counts actual statements. Using this algorithm,lines of code that are split are counted as one.    </li>
+<li>
+<a href="plsql/codesize.html#TooManyMethods">TooManyMethods</a>:             A package or type with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way tohave more fine grained objects.                    </li>
+</ul>
+</subsection>
+<a name="PLSQL_DATETIME"/>
+<subsection name="PLSQL DATETIME (plsql)">
+<ul>
+<li>
+<a href="plsql/dates.html#TO_DATEWithoutDateFormat">TO_DATEWithoutDateFormat</a>:   TO_DATE without date format- use TO_DATE(expression, date-format)  </li>
+<li>
+<a href="plsql/dates.html#TO_DATE_TO_CHAR">TO_DATE_TO_CHAR</a>:   TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-veriable)  </li>
+<li>
+<a href="plsql/dates.html#TO_TIMESTAMPWithoutDateFormat">TO_TIMESTAMPWithoutDateFormat</a>:   TO_TIMESTAMP without date format- use TO_TIMESTAMP(expression, date-format)  </li>
+</ul>
+</subsection>
+</section>
+</body>
+</document>

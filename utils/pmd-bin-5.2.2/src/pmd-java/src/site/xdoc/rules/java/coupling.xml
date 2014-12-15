@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="tom@infoether.com">Tom Copeland</author>
+<title>Ruleset: Coupling</title>
+</properties>
+<body>
+<section name="Coupling">
+
+  
+Rules which find instances of high or inappropriate coupling between objects and packages.
+  
+
+    <subsection name="CouplingBetweenObjects">
+<p>Since: PMD 1.04</p>
+<p>
+This rule counts the number of unique attributes, local variables, and return types within an object. 
+A number higher than the specified threshold can indicate a high degree of coupling.
+    </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/coupling/CouplingBetweenObjectsRule.html">net.sourceforge.pmd.lang.java.rule.coupling.CouplingBetweenObjectsRule</a>
+</p>Example(s):
+	        	<source>
+
+import com.Blah;
+import org.Bar;
+import org.Bardo;
+
+public class Foo {
+   private Blah var1;
+   private Bar var2;
+ 
+ 	//followed by many imports of unique objects
+   void ObjectC doWork() {
+     Bardo var55;
+     ObjectA var44;
+     ObjectZ var93;
+     return something;
+   }
+}
+
+    </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>threshold</td>
+<td>20</td>
+<td>Unique type reporting threshold</td>
+</tr>
+</table>
+</subsection>
+
+  <subsection name="ExcessiveImports">
+<p>Since: PMD 1.04</p>
+<p>
+A high number of imports can indicate a high degree of coupling within an object. This rule 
+counts the number of unique imports and reports a violation if the count is above the 
+user-specified threshold.
+  </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/coupling/ExcessiveImportsRule.html">net.sourceforge.pmd.lang.java.rule.coupling.ExcessiveImportsRule</a>
+</p>Example(s):
+	        	<source>
+      
+import blah.blah.Baz;
+import blah.blah.Bif;
+// 18 others from the same package elided
+public class Foo {
+ public void doWork() {}
+}
+      
+  </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>topscore</td>
+<td/>
+<td>Top score value</td>
+</tr>
+<tr>
+<td>minimum</td>
+<td>30.0</td>
+<td>Minimum reporting threshold</td>
+</tr>
+<tr>
+<td>sigma</td>
+<td/>
+<td>Sigma value</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="LooseCoupling">
+<p>Since: PMD 0.7</p>
+<p>
+The use of implementation types as object references limits your ability to use alternate
+implementations in the future as requirements change. Whenever available, referencing objects 
+by their interface types provides much more flexibility.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/coupling/LooseCouplingRule.html">net.sourceforge.pmd.lang.java.rule.coupling.LooseCouplingRule</a>
+</p>Example(s):
+	        	<source>
+
+	// sub-optimal approach
+private ArrayList list = new ArrayList();
+
+public HashSet getFoo() {
+	return new HashSet();
+}
+
+	// preferred approach
+private List list = new ArrayList();
+
+public Set getFoo() {
+	return new HashSet();
+}
+
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+
+    <subsection name="LoosePackageCoupling">
+<p>Since: PMD 5.0</p>
+<p>
+Avoid using classes from the configured package hierarchy outside of the package hierarchy, 
+except when using one of the configured allowed classes.
+      </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/coupling/LoosePackageCouplingRule.html">net.sourceforge.pmd.lang.java.rule.coupling.LoosePackageCouplingRule</a>
+</p>Example(s):
+	        	<source>
+
+package some.package;
+
+import some.other.package.subpackage.subsubpackage.DontUseThisClass;
+
+public class Bar {
+   DontUseThisClass boo = new DontUseThisClass();
+}
+  
+      </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>[]</td>
+<td>Allowed classes</td>
+</tr>
+<tr>
+<td>packages</td>
+<td>[]</td>
+<td>Restricted packages</td>
+</tr>
+</table>
+</subsection>
+
+   <subsection name="LawOfDemeter">
+<p>Since: PMD 5.0</p>
+<p>
+The Law of Demeter is a simple rule, that says "only talk to friends". It helps to reduce coupling between classes or objects. 
+See also the references:
+Andrew Hunt, David Thomas, and Ward Cunningham. The Pragmatic Programmer. From Journeyman to Master. Addison-Wesley Longman, Amsterdam, October 1999.;
+K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented programs. Software, IEEE, 6(5):38–48, 1989.;
+http://www.ccs.neu.edu/home/lieber/LoD.html;
+http://en.wikipedia.org/wiki/Law_of_Demeter
+        </p>
+<p>This rule is defined by the following Java class: <a href="../../xref/net/sourceforge/pmd/lang/java/rule/coupling/LawOfDemeterRule.html">net.sourceforge.pmd.lang.java.rule.coupling.LawOfDemeterRule</a>
+</p>Example(s):
+	        	<source>
+
+public class Foo {
+    /**
+     * This example will result in two violations.
+     */
+    public void example(Bar b) {
+        // this method call is ok, as b is a parameter of "example"
+        C c = b.getC();
+        
+        // this method call is a violation, as we are using c, which we got from B.
+        // We should ask b directly instead, e.g. "b.doItOnC();"
+        c.doIt();
+        
+        // this is also a violation, just expressed differently as a method chain without temporary variables.
+        b.getC().doIt();
+        
+        // a constructor call, not a method call.
+        D d = new D();
+        // this method call is ok, because we have create the new instance of D locally.
+        d.doSomethingElse(); 
+    }
+}
+
+        </source>
+<p>This rule has the following properties:</p>
+<table>
+<th>Name</th>
+<th>Default Value</th>
+<th>Description</th>
+<tr>
+<td>violationSuppressRegex</td>
+<td/>
+<td>Suppress violations with messages matching a regular expression</td>
+</tr>
+<tr>
+<td>violationSuppressXPath</td>
+<td/>
+<td>Suppress violations on nodes which match a given relative XPath expression.</td>
+</tr>
+</table>
+</subsection>
+    
+
+ </section>
+</body>
+</document>

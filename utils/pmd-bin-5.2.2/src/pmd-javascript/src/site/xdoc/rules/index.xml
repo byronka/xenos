@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><document>
+<properties>
+<author email="mikkey@sourceforge.net">Miguel Griffa</author>
+<title>PMD Rulesets index</title>
+</properties>
+<body>
+<section name="Current Rulesets">
+<p>List of rulesets and rules contained in each ruleset.</p>
+<ul>
+<li>
+<a href="#Basic_Ecmascript">Basic Ecmascript</a>: Rules concerning basic ECMAScript guidelines.</li>
+<li>
+<a href="#Braces">Braces</a>: The Braces Ruleset contains a collection of braces rules.  </li>
+<li>
+<a href="#Controversial_Ecmascript">Controversial Ecmascript</a>: The Controversial ruleset contains rules that, for whatever reason, are considered controversial.They are held here to allow people to include them as they see fit within their custom rulesets.  </li>
+<li>
+<a href="#Unnecessary">Unnecessary</a>: The Unnecessary Ruleset contains a collection of rules for unnecessary code.  </li>
+</ul>
+<a name="Basic_Ecmascript"/>
+<subsection name="Basic Ecmascript (ecmascript)">
+<ul>
+<li>
+<a href="ecmascript/basic.html#AssignmentInOperand">AssignmentInOperand</a>: Avoid assignments in operands; this can make code more complicated and harder to read.  This is sometimeindicative of the bug where the assignment operator '=' was used instead of the equality operator '=='.  </li>
+<li>
+<a href="ecmascript/basic.html#UnreachableCode">UnreachableCode</a>: A 'return', 'break', 'continue', or 'throw' statement should be the last in a block. Statements after thesewill never execute.  This is a bug, or extremely poor style.      </li>
+<li>
+<a href="ecmascript/basic.html#InnaccurateNumericLiteral">InnaccurateNumericLiteral</a>: The numeric literal will have at different value at runtime, which can happen if you provide too muchprecision in a floating point number.  This may result in numeric calculations being in error.      </li>
+<li>
+<a href="ecmascript/basic.html#ConsistentReturn">ConsistentReturn</a>: ECMAScript does provide for return types on functions, and therefore there is no solid rule as to their usage.However, when a function does use returns they should all have a value, or all with no value.  Mixed returnusage is likely a bug, or at best poor style.      </li>
+<li>
+<a href="ecmascript/basic.html#ScopeForInVariable">ScopeForInVariable</a>: A for-in loop in which the variable name is not explicitly scoped to the enclosing scope with the 'var' keyword canrefer to a variable in an enclosing scope outside the nearest enclosing scope.  This will overwrite theexisting value of the variable in the outer scope when the body of the for-in is evaluated.  When the for-in loophas finished, the variable will contain the last value used in the for-in, and the original value from beforethe for-in loop will be gone.  Since the for-in variable name is most likely intended to be a temporary name, itis better to explicitly scope the variable name to the nearest enclosing scope with 'var'.      </li>
+<li>
+<a href="ecmascript/basic.html#EqualComparison">EqualComparison</a>:       Using == in condition may lead to unexpected results, as the variables are automatically casted to be of the      same type. The === operator avoids the casting.      </li>
+<li>
+<a href="ecmascript/basic.html#GlobalVariable">GlobalVariable</a>: This rule helps to avoid using accidently global variables by simply missing the "var" declaration.Global variables can lead to side-effects that are hard to debug.    </li>
+<li>
+<a href="ecmascript/basic.html#AvoidTrailingComma">AvoidTrailingComma</a>: This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.    </li>
+<li>
+<a href="ecmascript/basic.html#UseBaseWithParseInt">UseBaseWithParseInt</a>: TODO</li>
+</ul>
+</subsection>
+<a name="Braces"/>
+<subsection name="Braces (ecmascript)">
+<ul>
+<li>
+<a href="ecmascript/braces.html#IfStmtsMustUseBraces">IfStmtsMustUseBraces</a>: Avoid using if statements without using curly braces.     </li>
+<li>
+<a href="ecmascript/braces.html#IfElseStmtsMustUseBraces">IfElseStmtsMustUseBraces</a>: Avoid using if..else statements without using curly braces.       </li>
+<li>
+<a href="ecmascript/braces.html#WhileLoopsMustUseBraces">WhileLoopsMustUseBraces</a>: Avoid using 'while' statements without using curly braces.      </li>
+<li>
+<a href="ecmascript/braces.html#ForLoopsMustUseBraces">ForLoopsMustUseBraces</a>: Avoid using 'for' statements without using curly braces.       </li>
+</ul>
+</subsection>
+<a name="Controversial_Ecmascript"/>
+<subsection name="Controversial Ecmascript (ecmascript)">
+<ul>
+<li>
+<a href="ecmascript/basic.html#AvoidWithStatement">AvoidWithStatement</a>: Avoid using with - it's bad news</li>
+</ul>
+</subsection>
+<a name="Unnecessary"/>
+<subsection name="Unnecessary (ecmascript)">
+<ul>
+<li>
+<a href="ecmascript/unnecessary.html#UnnecessaryParentheses">UnnecessaryParentheses</a>: Unnecessary parentheses should be removed.</li>
+<li>
+<a href="ecmascript/unnecessary.html#UnnecessaryBlock">UnnecessaryBlock</a>: An unnecessary Block is present.  Such Blocks are often used in other languages to    introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, and using them can    be misleading.  Considering removing this unnecessary Block.</li>
+</ul>
+</subsection>
+</section>
+</body>
+</document>
