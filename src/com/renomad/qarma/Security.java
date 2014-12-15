@@ -112,7 +112,17 @@ public final class Security {
     * @param ip the user's ip.
     */
   public static void 
-    register_details_on_user_login(int user_id, String ip) {
+    register_user(int user_id, String ip) {
+
+      if (user_id < 0) {
+        System.err.println("error: user id was " + 
+						user_id + " in register_details_on_user_login");
+        return;
+      }
+			String ip_address = ip;
+      if (ip_address == null || ip_address.length() == 0) {
+        ip = "error: no ip in request";
+      }
 
       String sqlText = 
         "UPDATE user " + 
@@ -132,20 +142,6 @@ public final class Security {
       } finally {
         Database_access.close_statement(pstmt);
       }
-  }
-
-  public static void register_user(int user_id,
-      String ip_address) {
-      if (user_id < 0) {
-        System.err.println("error: user id was " + 
-						user_id + " in register_details_on_user_login");
-        return;
-      }
-			String ip = ip_address;
-      if (ip_address == null || ip_address.length() == 0) {
-        ip = "error: no ip in request";
-      }
-    register_details_on_user_login(user_id, ip);
   }
 
   /**
@@ -193,6 +189,13 @@ public final class Security {
     return -1; //-1 means not allowed or failure.
   }
 
+	/**
+		* given all the cookies the client sent us, 
+		* find the one that belongs to us. It will have a name
+		* of "qarma_cookie"
+		* @param all_cookies a string array of all the cookies for this domain.
+		* @return the one cookie we want.
+		*/
   public static Cookie find_our_cookie(Cookie[] all_cookies) {
     if (all_cookies == null) {
       return null;

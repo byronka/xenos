@@ -53,6 +53,13 @@ public final class Database_access {
     Thread.currentThread().dumpStack();
   }
 
+	/**
+		* this provides a {@link java.sql.Connection Connection} object.
+		* The cool thing is that it tests to see whether we are in
+		* testing mode, which is set by a magic property when running.
+		* if it's a test, then we use a standard connection rather
+		* than a connection from a pool managed by Tomcat.
+		*/
 	public static Connection get_a_connection() {
 		Boolean regular_usage = Boolean.parseBoolean(
 				System.getProperty("TESTING_DATABASE_CODE_WITHOUT_TOMCAT"));
