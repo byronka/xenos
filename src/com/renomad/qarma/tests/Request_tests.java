@@ -13,12 +13,7 @@ import com.renomad.qarma.Business_logic.Request_status;
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Business_logic;
 
-public final class Request_tests {
-
-	private Request_tests () {
-		//we don't want anyone instantiating this
-		//do nothing.
-	}
+public class Request_tests {
 
 	@Test
 	public void testing_get_request_statuses() {

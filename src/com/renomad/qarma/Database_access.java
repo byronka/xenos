@@ -61,8 +61,9 @@ public final class Database_access {
 		* than a connection from a pool managed by Tomcat.
 		*/
 	public static Connection get_a_connection() {
-		Boolean regular_usage = Boolean.parseBoolean(
+		Boolean in_testing = Boolean.parseBoolean(
 				System.getProperty("TESTING_DATABASE_CODE_WITHOUT_TOMCAT"));
+		boolean regular_usage = !in_testing;
     javax.sql.DataSource ds = null;
 		Connection conn = null;
 
