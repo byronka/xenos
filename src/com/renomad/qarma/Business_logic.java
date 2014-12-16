@@ -28,10 +28,7 @@ public final class Business_logic {
 		* null if not found.
     */
   public static String get_user_displayname(int user_id) {
-    String sqlText = "SELECT CONCAT(first_name, ' ',last_name"+
-			",' (', email,')') as user_displayname "+
-			"FROM user "+
-			"WHERE user_id = ?;";
+    String sqlText = "SELECT CONCAT(first_name, ' ',last_name,' (', email,'), ',points,' points') as user_displayname FROM user WHERE user_id = ?;";
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
@@ -43,7 +40,7 @@ public final class Business_logic {
       }
 
       resultSet.next(); //move to the first set of results.
-      String display_name = resultSet.getNString("user_displayname");
+      String display_name = resultSet.getString("user_displayname");
       return display_name;
 		} catch (SQLException ex) {
 			Database_access.handle_sql_exception(ex);
