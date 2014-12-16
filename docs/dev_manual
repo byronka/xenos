@@ -2,6 +2,9 @@ Much of the development material attempts to be self-documenting.
 However, a little extra time spent explaining things can help ease the
 transition into a new project.  That is what this document is for.
 
+
+
+
 Programming suggestions
 =======================
 
@@ -23,10 +26,14 @@ developed thus far:
 * Validation code happens in the JSP file.  
 
 
+
+
+
 Utilities
 =========
 
 Exuberant Ctags -
+-----------------
 use of the program "exuberant ctags" can make navigation of the code
 base faster.  That program creates an index of symbols used in the code;
 method names, variables, classes, and so on.  It provides this to Vim
@@ -49,10 +56,13 @@ first in its current directory, then in its parent directory, and so
 on recursively up to containing directory ~/Projects.)
 
 Lint4J - 
+-----------------
 A lint program that does static analysis on the code to find any problems.
 http://www.jutils.com
 
-PMD - A static code analysis program.  Very thorough, but many false
+PMD - 
+------
+A static code analysis program.  Very thorough, but many false
 positives.  In particular, it is coded with the assumption that OOP is
 the one true path.  In contrast, OOP should be considered one possible
 solution to problems, not the only solution.  Again, lots of false
@@ -60,6 +70,7 @@ positives.
 http://pmd.sourceforge.net/
 
 FindBugs -
+----------
 A static code analysis program.
 http://findbugs.sourceforge.net/
 
