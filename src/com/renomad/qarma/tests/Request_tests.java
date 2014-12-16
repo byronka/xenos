@@ -49,7 +49,8 @@ public class Request_tests {
 		Integer[] categories = {1,2};
 
 		//act
-		int id = Business_logic.put_request(user_id, desc, points, title, categories);
+		int id = Business_logic.put_request(
+				user_id, desc, points, title, categories);
 
 		//assert
     Request r2 = Business_logic.get_a_request(id);
@@ -60,6 +61,9 @@ public class Request_tests {
     assertEquals(title, r2.title);
     assertEquals(user_id, r2.requesting_user_id);
 		assertArrayEquals(categories, r2.get_categories());
+
+		//cleanup
+		Business_logic.delete_request(id);
 	}
 
 }

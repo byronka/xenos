@@ -297,6 +297,41 @@ public final class Business_logic {
 
   
 
+	/**
+		* deletes a request.
+		* @param id the id of the request to delete
+		* @return true if successful
+		*/
+	public static boolean delete_request(int id) {
+		// 1. set the sql
+		String delete_request_sql = 
+			"delete from request where request_id = ?";
+
+		int result = -1; //default to a guard value that indicates failure
+		PreparedStatement pstmt = null;
+		Connection conn = null;
+		try {
+			// 3. get the connection and set up a statement
+			conn = Database_access.get_a_connection();
+      pstmt  = conn.prepareStatement(delete_request_sql, Statement.RETURN_GENERATED_KEYS);
+
+			// 4. set values into the statement
+			pstmt.setInt(1, id);
+
+			// 5. execute a statement
+			//execute one of the updates
+			Database_access.execute_update(pstmt);
+
+			// 6. cleanup and exceptions
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return false;
+		} finally {
+			Database_access.close_statement(pstmt);
+		}
+    return true;
+  }
+
   /**
     * given all the data to add a request, does so.
     * if any parts fail, this will return false.
