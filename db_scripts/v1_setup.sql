@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS
     last_name NVARCHAR(100),
     email NVARCHAR(200) UNIQUE,
     password NVARCHAR(100),
-		points int
+		points int unsigned
   );
 
 ---DELIMITER---
@@ -72,7 +72,7 @@ request (
   request_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   datetime DATETIME,
   description NVARCHAR(10000),
-  points INT,
+  points INT UNSIGNED,
   status INT,
   title NVARCHAR(255),
   requesting_user_id INT NOT NULL,

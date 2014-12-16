@@ -9,11 +9,23 @@
 		String c = "";
 		String p_error_msg = "";
 		String cat_error_msg = "";
+		String desc_error_msg = "";
+		String not_enough_points_error_msg = "";
+		String title_error_msg = "";
 
 		if (request.getMethod().equals("POST")) {
 			boolean validation_error = false;
 			de = request.getParameter("description");
+			if (de.length() == 0) {
+      	desc_error_msg = "Please enter a description";
+				validation_error |= true;
+			}
+
 			t = request.getParameter("title");
+			if (t.length() == 0) {
+      	title_error_msg = "Please enter a title";
+				validation_error |= true;
+			}
 
 			//extract useful information from what the client sent us
 			p = request.getParameter("points");
@@ -34,8 +46,14 @@
 			}
 
 			if (!validation_error) {
-				Business_logic.put_request(user_id, de, points, t, cat);
-				response.sendRedirect("dashboard.jsp");
+				Business_logic.Request_response result = 
+					Business_logic.put_request(user_id, de, points, t, cat);
+				if (result.s == Business_logic.Request_response.Stat.LACK_POINTS) {
+					not_enough_points_error_msg = 
+						"You don't have enough points to make this request!";
+				} else {
+					response.sendRedirect("dashboard.jsp");
+				}
 			}
 		}
   %>
@@ -46,17 +64,32 @@
     <%@include file="includes/header.jsp" %>
     <h2>Create a Request!</h2>
     <form method="POST" action="create_request.jsp">
+			<div><%=not_enough_points_error_msg %></div>
 			<p>Description: 
 				<input 
 					type="text" 
 					name="description" 
 					value="<%=de%>"/> 
+			<span><%=desc_error_msg%></span>
 			</p>
-		<div><%=p_error_msg%></div>
-			<p>Points: <input type="text" name="points" value="<%=p%>"/> </p>
-      <p>Title: <input type="text" name="title" value="<%=t%>"/> </p>
-		<div><%=cat_error_msg%></div>
-			<p>Categories: <input type="text" name="categories" value="<%=c%>"/></p>
+
+		<p>
+			Points: 
+			<input type="text" name="points" value="<%=p%>"/> 
+			<span><%=p_error_msg%></span>
+		</p>
+
+		<p>
+			Title: <input type="text" name="title" value="<%=t%>"/> 
+			<span><%=title_error_msg%></span>
+		</p>
+
+		<p>
+		Categories: 
+		<input type="text" name="categories" value="<%=c%>"/>
+		<span><%=cat_error_msg%></span>
+		</p>
+
 			<div id='available-categories'>
 				<%
 					String[] categories = Business_logic.get_str_array_categories();

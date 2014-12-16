@@ -49,11 +49,12 @@ public class Request_tests {
 		Integer[] categories = {1,2};
 
 		//act
-		int id = Business_logic.put_request(
+		Business_logic.Request_response response = Business_logic.put_request(
 				user_id, desc, points, title, categories);
 
 		//assert
-    Request r2 = Business_logic.get_a_request(id);
+		System.out.println("response id is " + response.id);
+    Request r2 = Business_logic.get_a_request(response.id);
     assertTrue(r2.datetime.length() > 0);
     assertEquals(desc, r2.description);
     assertEquals(points, r2.points);
@@ -63,7 +64,7 @@ public class Request_tests {
 		assertArrayEquals(categories, r2.get_categories());
 
 		//cleanup
-		Business_logic.delete_request(id);
+		Business_logic.delete_request(response.id);
 	}
 
 }

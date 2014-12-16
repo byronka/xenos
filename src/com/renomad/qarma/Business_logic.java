@@ -70,7 +70,7 @@ public final class Business_logic {
 			}
 		}
 
-	private static String[] get_str_array_categories() {
+	public static String[] get_str_array_categories() {
 			Map<Integer, String> categories = get_all_categories();
 			java.util.Collection<String> c = categories.values();
 			String[] cat_array = c.toArray(new String[0]);
@@ -341,7 +341,7 @@ public final class Business_logic {
 		*  Comes straight from the client, we have to parse it.
 		* @return id of new request, or -1 if failed to add
     */
-  public static int put_request(
+  public static Request_response put_request(
       int user_id, String desc, int points, 
 			String title, Integer[] categories) {
 
@@ -350,25 +350,39 @@ public final class Business_logic {
 		//set up a request object to store this stuff
 		int status = 1; //always starts open
 		Request request = new Request(
-				-1, date, desc, points, status, title, user_id, categories);
+				date, desc, points, status, title, user_id, categories);
 
     //send parsed data to the database
-    int new_request_id = put_request(request);
-
-    if (new_request_id == -1) {
-			System.err.println("error adding request at Business_logic.put_request()");
-    }
-		return new_request_id;
+    Request_response response = put_request(request);
+		return response;
   }
 
 
 
+	/**
+		* a type solely used to set the response from putting a request
+		*/
+	public static class Request_response { 
+		public enum Stat {
+			LACK_POINTS, OK , ERROR
+		}
+		public final Stat s;
+		public final int id;
+
+		public Request_response(Stat s, int id) {
+			this.s = s;
+			this.id = id;
+		}
+	
+	}
+
   /**
     * adds a Request to the database
 		* @param request a request object
-    * @return the id of the new request. -1 if not successful.
+		* @return the id of the new request. -1 if not successful.  also an
+		* enum that designates the error if one exists, like lacking points
     */
-  private static int put_request(Request request) {
+  private static Request_response put_request(Request request) {
 
 		// 1. set the sql
 		String update_request_sql = 
@@ -385,10 +399,15 @@ public final class Business_logic {
 		}
 		String update_categories_sql = sb.toString();
 
+		String check_points_sql = "SELECT points FROM user WHERE user_id = ?";
+		String update_points_sql = "UPDATE user SET points = points - ? WHERE user_id = ?";
+
 		// 2. set up values we'll need outside the try 
 		int result = -1; //default to a guard value that indicates failure
 		PreparedStatement req_pstmt = null;
 		PreparedStatement cat_pstmt = null;
+		PreparedStatement ck_points_pstmt = null;
+		PreparedStatement up_points_pstmt = null;
 		Connection conn = null;
 	
 		try {
@@ -400,6 +419,31 @@ public final class Business_logic {
 					update_request_sql, Statement.RETURN_GENERATED_KEYS);
       cat_pstmt  = conn.prepareStatement(
 					update_categories_sql, Statement.RETURN_GENERATED_KEYS);
+      ck_points_pstmt  = conn.prepareStatement(
+					check_points_sql, Statement.RETURN_GENERATED_KEYS);
+      up_points_pstmt  = conn.prepareStatement(
+					update_points_sql, Statement.RETURN_GENERATED_KEYS);
+
+			// execute a statement to check points for user
+			ck_points_pstmt.setInt( 1, request.requesting_user_id);
+      ResultSet resultSet = ck_points_pstmt.executeQuery();
+
+			// check that we got results
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+				System.err.println(
+						"Transaction is being rolled back for request_id: " + result);
+				conn.rollback();
+        return new Request_response(Request_response.Stat.ERROR, -1);
+      }
+
+			//get those points
+      resultSet.next();
+			int points = resultSet.getInt("points");
+
+			//if the user doesn't have enough points for making this request.
+			if (points < request.points) {
+        return new Request_response(Request_response.Stat.LACK_POINTS, -1);
+			}
 
 			// 4. set values into the statement
 			//set values for adding request
@@ -422,7 +466,7 @@ public final class Business_logic {
 				System.err.println(
 						"Transaction is being rolled back for request_id: " + result);
 				conn.rollback();
-				return -1;
+        return new Request_response(Request_response.Stat.ERROR, -1);
 			}
 
 			// 7. set values for next statement 
@@ -435,11 +479,18 @@ public final class Business_logic {
 
 			// 8. run next statement 
 			Database_access.execute_update(cat_pstmt);
+			
+			// 9. set values for updating points.
+			up_points_pstmt.setInt(1, request.points);
+			up_points_pstmt.setInt(2, request.requesting_user_id);
 
-			// 9. commit 
+			// 10. update the points
+			Database_access.execute_update(up_points_pstmt);
+
+			// 11. commit 
 			conn.commit();
 
-			// 10. cleanup and exceptions
+			// 12. cleanup and exceptions
 		} catch (SQLException ex) {
 			Database_access.handle_sql_exception(ex);
 		} finally {
@@ -452,8 +503,10 @@ public final class Business_logic {
 			}
 			Database_access.close_statement(req_pstmt);
 			Database_access.close_statement(cat_pstmt);
+			Database_access.close_statement(ck_points_pstmt);
+			Database_access.close_statement(up_points_pstmt);
 		}
-    return result;
+    return new Request_response(Request_response.Stat.OK, result);
   }
 
 
@@ -692,6 +745,23 @@ public final class Business_logic {
     public final int requesting_user_id;
 		private Integer[] categories;
 
+		/**
+			* This constructor is probably used for sending a new
+			* request to be added to the database, therefore we won't
+			* have the request id yet.
+			*/
+    public Request ( String datetime, String description, 
+        int points, int status, String title, 
+				int requesting_user_id, Integer[] categories) {
+			this(-1, datetime, description, points,
+					status, title, requesting_user_id, categories);
+		}
+
+		/** 
+			* This constructor is for those cases where we are getting 
+			* data from the database.  It's difficult to get categories
+			* at the same time, so we don't use it here.
+			*/
     public Request ( int request_id, String datetime, String description, 
         int points, int status, String title, int requesting_user_id) {
 			this(request_id, datetime, description, points,
