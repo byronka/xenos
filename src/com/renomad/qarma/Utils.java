@@ -13,12 +13,10 @@ public final class Utils {
   /**
     * helps with boilerplate for validation of whether input
     * is null or empty.
+		* @return true if null or empty string
     */
-  public static void null_or_empty_string_validation(String value) {
-    if (value == null || value.equals("")) {
-      System.err.println(
-          "error: value was null or empty when it shouldn't have");
-    }
+  public static boolean null_or_empty_string_validation(String value) {
+    return value == null || value.equals("");
   }
 
   public static String getCurrentDateSqlFormat() {

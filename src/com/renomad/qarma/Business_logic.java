@@ -485,15 +485,20 @@ public final class Business_logic {
 
   /**
     * adds a user.  if successful, returns true
+		* @return true if successful
     */
   public static boolean put_user(
 			String first_name, String last_name, String email, String password) {
-      Utils.null_or_empty_string_validation(first_name);
-      Utils.null_or_empty_string_validation(last_name);
-      Utils.null_or_empty_string_validation(email);
-      Utils.null_or_empty_string_validation(password);
+			boolean is_bad = false;
+      is_bad |= Utils.null_or_empty_string_validation(first_name);
+      is_bad |= Utils.null_or_empty_string_validation(last_name);
+      is_bad |= Utils.null_or_empty_string_validation(email);
+      is_bad |= Utils.null_or_empty_string_validation(password);
+			if (is_bad) {
+				return false;
+			}
 			User u = new User(first_name, last_name, email, password);
-    return put_user(u);
+			return put_user(u);
   }
 
 

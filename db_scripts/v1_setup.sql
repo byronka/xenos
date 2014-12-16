@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS
     user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
     first_name NVARCHAR(100),
     last_name NVARCHAR(100),
-    email NVARCHAR(200),
+    email NVARCHAR(200) UNIQUE,
     password NVARCHAR(100)
   );
 
