@@ -42,20 +42,24 @@ public class Request_tests {
 	public void testing_put_request() {
 		//set up a standard put_request() and use it.
 		//arrange
-		Request r1 = new Request(0, "2014-12-12 11:19:30.0", "desc", 100, 1, "title", 1, new Integer[]{1,2});
+		int user_id = 1;
+		String desc = "desc";
+		int points = 100; 
+		String title = "title"; 
+		Integer[] categories = {1,2};
 
 		//act
-		int id = Business_logic.put_request(r1);
+		int id = Business_logic.put_request(user_id, desc, points, title, categories);
 
 		//assert
     Request r2 = Business_logic.get_a_request(id);
-    assertEquals(r1.datetime, r2.datetime);
-    assertEquals(r1.description, r2.description);
-    assertEquals(r2.points, r2.points);
-    assertEquals(r2.status, r2.status);
-    assertEquals(r2.title, r2.title);
-    assertEquals(r2.requesting_user_id, r2.requesting_user_id);
-		assertArrayEquals(r1.get_categories(), r2.get_categories());
+    assertTrue(r2.datetime.length() > 0);
+    assertEquals(desc, r2.description);
+    assertEquals(points, r2.points);
+    assertEquals(1, r2.status); //always starts OPEN
+    assertEquals(title, r2.title);
+    assertEquals(user_id, r2.requesting_user_id);
+		assertArrayEquals(categories, r2.get_categories());
 	}
 
 }

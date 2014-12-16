@@ -53,7 +53,7 @@ public final class Business_logic {
     }
   }
 
-	public static String get_category_localized(int category_id) {
+	private static String get_category_localized(int category_id) {
 		//for now, there is no localization file, so we'll just include
 		//the English here.
 
@@ -73,7 +73,7 @@ public final class Business_logic {
 			}
 		}
 
-	public static String[] get_str_array_categories() {
+	private static String[] get_str_array_categories() {
 			Map<Integer, String> categories = get_all_categories();
 			java.util.Collection<String> c = categories.values();
 			String[] cat_array = c.toArray(new String[0]);
@@ -308,7 +308,7 @@ public final class Business_logic {
 		*  provided to us here as a single string.  
 		*  Comes straight from the client, we have to parse it.
     */
-  public static void put_request(
+  public static int put_request(
       int user_id, String desc, int points, 
 			String title, Integer[] categories) {
 
@@ -323,10 +323,9 @@ public final class Business_logic {
     int new_request_id = put_request(request);
 
     if (new_request_id == -1) {
-      System.err.println(
-          "error adding request at Business_logic.put_request()");
+			System.err.println("error adding request at Business_logic.put_request()");
     }
-
+		return new_request_id;
   }
 
 
@@ -336,7 +335,7 @@ public final class Business_logic {
 		* @param request a request object
     * @return the id of the new request. -1 if not successful.
     */
-  public static int put_request(Request request) {
+  private static int put_request(Request request) {
 
 		// 1. set the sql
 		String update_request_sql = 
@@ -502,7 +501,7 @@ public final class Business_logic {
   }
 
 
-  public static boolean put_user(User user) {
+  private static boolean put_user(User user) {
 
 		// 1. set the sql
       String sqlText = 
