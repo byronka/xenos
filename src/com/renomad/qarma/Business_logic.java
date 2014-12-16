@@ -442,6 +442,7 @@ public final class Business_logic {
 
 			//if the user doesn't have enough points for making this request.
 			if (points < request.points) {
+				conn.rollback();
         return new Request_response(Request_response.Stat.LACK_POINTS, -1);
 			}
 
