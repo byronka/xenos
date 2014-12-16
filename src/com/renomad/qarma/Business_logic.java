@@ -532,7 +532,7 @@ public final class Business_logic {
 			if (is_bad) {
 				return false;
 			}
-			User u = new User(first_name, last_name, email, password);
+			User u = new User(first_name, last_name, email, password, 100);
 			return put_user(u);
   }
 
@@ -541,8 +541,8 @@ public final class Business_logic {
 
 		// 1. set the sql
       String sqlText = 
-        "INSERT INTO user (first_name, last_name, email, password) " +
-        "VALUES (?, ?, ?, ?)";
+        "INSERT INTO user (first_name, last_name, email, password, points) " +
+        "VALUES (?, ?, ?, ?, ?)";
 		// 2. set up values we'll need outside the try
 		boolean result = false;
 		PreparedStatement pstmt = null;
@@ -555,6 +555,7 @@ public final class Business_logic {
       pstmt.setString( 2, user.last_name);
       pstmt.setString( 3, user.email);
       pstmt.setString( 4, user.password);
+      pstmt.setInt( 5, user.points);
 			// 5. execute a statement
       result = Database_access.execute_update(pstmt) > 0;
 			// 10. cleanup and exceptions
@@ -664,14 +665,16 @@ public final class Business_logic {
 		public final String last_name;
 		public final String email;
 		public final String password;
+		public final int points;
 
 		public User (
 				String first_name, 
-				String last_name, String email, String password) {
+				String last_name, String email, String password, int points) {
 			this.first_name = first_name;
 			this.last_name = last_name;
 			this.email = email;
 			this.password = password;
+			this.points = points;
 		}
 	}
 

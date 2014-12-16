@@ -5,10 +5,10 @@
  ------------*/
 
 INSERT INTO user
-(first_name, last_name, email, password, is_logged_in, last_time_logged_in, last_ip_logged_in)
+(first_name, last_name, email, password, is_logged_in, last_time_logged_in, last_ip_logged_in, points)
 VALUES
-("byron","katz","bk@coolnet", "password",1,"2014-11-11","198.24.24.26"),
-("dan","simone","ds@coolnet", "password",1,"2014-11-11","198.24.24.27")
+("byron","katz","bk@coolnet", "password",1,"2014-11-11","198.24.24.26", 100),
+("dan","simone","ds@coolnet", "password",1,"2014-11-11","198.24.24.27", 100)
 
 ---DELIMITER---
 
