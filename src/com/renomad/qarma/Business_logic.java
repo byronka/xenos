@@ -307,6 +307,7 @@ public final class Business_logic {
     * @param categories the various categories for this request, 
 		*  provided to us here as a single string.  
 		*  Comes straight from the client, we have to parse it.
+		* @return id of new request, or -1 if failed to add
     */
   public static int put_request(
       int user_id, String desc, int points, 
