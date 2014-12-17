@@ -92,7 +92,7 @@
 
 			<div id='available-categories'>
 				<%
-					String[] categories = Business_logic.get_str_array_categories();
+					String[] categories = Request_utils.get_str_array_categories();
 					for(String category : categories) { %>
 					<%=category%>,
 				<%}%>
