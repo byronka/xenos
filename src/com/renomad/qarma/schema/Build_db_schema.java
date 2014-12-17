@@ -1,4 +1,4 @@
-package com.renomad.qarma;
+package com.renomad.qarma.schema;
 
 import java.sql.SQLException;
 import java.sql.Connection;

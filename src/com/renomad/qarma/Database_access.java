@@ -14,8 +14,8 @@ import java.util.Scanner;
 import java.util.Arrays;
 import java.io.File;
 import java.io.FileNotFoundException;
-import com.renomad.qarma.Business_logic.Request;
-import com.renomad.qarma.Business_logic.Request_status;
+import com.renomad.qarma.Request;
+import com.renomad.qarma.Request_status;
 
 public final class Database_access {
 

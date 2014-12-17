@@ -8,8 +8,9 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
-import com.renomad.qarma.Business_logic.Request;
-import com.renomad.qarma.Business_logic.Request_status;
+import com.renomad.qarma.Request;
+import com.renomad.qarma.Request_utils;
+import com.renomad.qarma.Request_status;
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Business_logic;
 
@@ -18,7 +19,7 @@ public class Request_tests {
 	@Test
 	public void testing_get_request_statuses() {
 		//act and assert
-		Request_status[] rs_actual = Business_logic.get_request_statuses();
+		Request_status[] rs_actual = Request_utils.get_request_statuses();
 		for (Request_status rs : rs_actual) {
 			switch(rs.status_id) {
       	case 1:
@@ -49,12 +50,12 @@ public class Request_tests {
 		Integer[] categories = {1,2};
 
 		//act
-		Business_logic.Request_response response = Business_logic.put_request(
+		Request_utils.Request_response response = Request_utils.put_request(
 				user_id, desc, points, title, categories);
 
 		//assert
 		System.out.println("response id is " + response.id);
-    Request r2 = Business_logic.get_a_request(response.id);
+    Request r2 = Request_utils.get_a_request(response.id);
     assertTrue(r2.datetime.length() > 0);
     assertEquals(desc, r2.description);
     assertEquals(points, r2.points);
@@ -64,7 +65,7 @@ public class Request_tests {
 		assertArrayEquals(categories, r2.get_categories());
 
 		//cleanup
-		Business_logic.delete_request(response.id);
+		Request_utils.delete_request(response.id);
 	}
 
 }

@@ -1,6 +1,6 @@
-package com.renomad.qarma;
+package com.renomad.qarma.schema;
 
-import com.renomad.qarma.Build_db_schema;
+import com.renomad.qarma.schema.Build_db_schema;
 
 public final class Add_sample_data_to_db {
 
