@@ -61,6 +61,9 @@ public class Request {
 		return c;
 	}
 
+	public String get_status() {
+		return Business_logic.get_request_status_localized(status);
+	}
 
 
 	public String get_categories_string() {
@@ -70,8 +73,6 @@ public class Request {
 		}
 		return sb.toString();
 	}
-
-
 
 
 }

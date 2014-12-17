@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Utils;
 
@@ -253,9 +255,10 @@ public final class Request_utils {
 	/**
 		* deletes a request.
 		* @param id the id of the request to delete
-		* @return true if successful. false if a SQL failure occurred.
+		* @param deleting_user_id the id of the user making the request
+		* @return true if successful
 		*/
-	public static boolean delete_request(int id) {
+	public static boolean delete_request(int id, int deleting_user_id) {
 		// 1. set the sql
 		String get_points_in_request_sql = 
 			"SELECT points, requesting_user_id FROM request WHERE request_id = ?";
@@ -289,6 +292,14 @@ public final class Request_utils {
       resultSet.next();
 			int points = resultSet.getInt("points");
 			int user_id = resultSet.getInt("requesting_user_id");
+
+			//check if the user wanting the delete is the one who
+			//created the Request.  If not, deny!
+			//note: we may change this in the future to allow admin privs.
+			if (deleting_user_id != user_id) {
+				conn.rollback();
+				return false;
+			}
 
 			//delete the request
       del_pstmt = Database_access
@@ -575,29 +586,32 @@ public final class Request_utils {
   /**
     * given the query string, we will find the proper string
     * and convert that to a request, and return that.
-		* @param query_string this is the query string used in request.jsp and
+		* @param qs this is the query string used in request.jsp and
 		* other places where there is a string with the id of a particular
 		* request.
-		* @return a request object
+		* @return a request object or null if no match
     */
   public static 
-		Request parse_querystring_and_get_request(String query_string) {
-    String qs = null;
-    int request_id = 0;
-    int value_index = 0;
-    String request_string = "request=";
-    final int rsl = request_string.length();
-    //if we have a query string and it has request= in it.
-    if ((qs = query_string) != null &&
-        (value_index = qs.indexOf(request_string)) >= 0) {
-        request_id = Integer.parseInt(qs.substring(rsl));
-    }
-    Request r = get_a_request(request_id);
-		if (r == null) {
-			return new Request(0,"","",0,1,"",0);
+		Request parse_querystring_and_get_request(String qs) {
+			int id = parse_qs_for_request_id(qs);
+			return get_a_request(id);
 		}
-		return r;
-  }
+
+
+	public static int parse_qs_for_request_id(String qs) {
+			Pattern p = Pattern.compile("request=(\\d+?)");
+			Matcher m = p.matcher(qs);
+			if(m.find()) {
+				try {
+					String request_id = m.group(1);
+					return Integer.parseInt(request_id);
+				} catch (Exception ex) {
+					System.err.println(
+							"Error(5): could not parse request id from string " + qs);
+				}
+			}
+			return -1;
+	}
 
 
 	/**

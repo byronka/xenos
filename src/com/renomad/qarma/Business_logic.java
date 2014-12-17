@@ -49,7 +49,7 @@ public final class Business_logic {
 		* the English here.
 		* 
 		*/
-	public String get_request_status_localized(int status) {
+	public static String get_request_status_localized(int status) {
 		switch(status) {
 			case 1:
 				return "open";

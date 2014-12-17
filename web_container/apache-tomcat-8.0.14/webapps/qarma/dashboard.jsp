@@ -18,6 +18,7 @@
 		<a href="request.jsp?request=<%=r.request_id %>">
 			<%=r.title%>
 		</a>
+		<a href="request.jsp?request=<%=r.request_id%>&delete=true">Delete</a>
 	</p>
 <% } %>
 <p>Here are other's requests:</p>

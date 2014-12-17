@@ -19,20 +19,4 @@ public class Request_status {
 		this.status_value    =  status_value;
 	}
 
-	public String get_status_value() {
-		//for now, there is no localization file, so we'll just include
-		//the English here.
-		switch(status_id) {
-			case 1:
-				return "open";
-			case 2:
-				return "closed";
-			case 3:
-				return "taken";
-			case 4:
-				return "ERROR_STATUS_DEV_FIX_ME";
-		}
-		return "";
-	}
-
 }

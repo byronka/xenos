@@ -69,7 +69,7 @@ public class Request_tests {
 		assertArrayEquals(categories, r2.get_categories());
 
 		//cleanup
-		Request_utils.delete_request(response.id);
+		Request_utils.delete_request(response.id, user_id);
 		int refunded_points = User_utils.get_user_points(user_id);
 
 		//we should have gotten refunded when deleting the request.
