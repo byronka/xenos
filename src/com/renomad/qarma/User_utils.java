@@ -23,6 +23,35 @@ public final class User_utils {
 		//do nothing - prevent instantiation
 	}
 
+	/**
+		* gets the points for a given user.
+		* @param user_id the id for the user
+		* @return the number of points that user has, or -1 if SQL failure.
+		*/
+	public static int get_user_points(int user_id) {
+    String sqlText = "SELECT points FROM user WHERE user_id = ?;";
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
+			pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return -1;
+      }
+
+      resultSet.next(); //move to the first set of results.
+      int points = resultSet.getInt("points");
+      return points;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return -1;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+
+	}
 
   /** * gets a name for display from the user table
     *
@@ -34,7 +63,8 @@ public final class User_utils {
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
-			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
 			pstmt.setInt( 1, user_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -84,7 +114,8 @@ public final class User_utils {
     try {
 			// 3. get the connection and set up a statement
 			Connection conn = Database_access.get_a_connection();
-			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
 			// 4. set values into the statement
       pstmt.setString( 1, user.first_name);
       pstmt.setString( 2, user.last_name);

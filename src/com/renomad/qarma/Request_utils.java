@@ -37,8 +37,8 @@ public final class Request_utils {
     try {
 			// 3. get the connection and set up a statement
 			Connection conn = Database_access.get_a_connection();
-			pstmt = conn.prepareStatement(
-					sqlText, Statement.RETURN_GENERATED_KEYS);     
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
 			// 4. execute a statement
       ResultSet resultSet = pstmt.executeQuery();
 			// 5. check that we got results
@@ -80,8 +80,8 @@ public final class Request_utils {
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
-			pstmt = conn.prepareStatement(
-					sqlText, Statement.RETURN_GENERATED_KEYS);     
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
       pstmt.setInt( 1, request_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -124,8 +124,8 @@ public final class Request_utils {
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
-			pstmt = conn.prepareStatement(
-					sqlText, Statement.RETURN_GENERATED_KEYS);     
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
       pstmt.setInt( 1, request_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -164,8 +164,8 @@ public final class Request_utils {
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
-			pstmt = conn.prepareStatement(
-					sqlText, Statement.RETURN_GENERATED_KEYS);     
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
       pstmt.setInt( 1, user_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -212,8 +212,8 @@ public final class Request_utils {
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
-			pstmt = conn.prepareStatement(
-					sqlText, Statement.RETURN_GENERATED_KEYS);     
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
       pstmt.setInt( 1, user_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -257,30 +257,57 @@ public final class Request_utils {
 		*/
 	public static boolean delete_request(int id) {
 		// 1. set the sql
+		String get_points_in_request_sql = 
+			"SELECT points, requesting_user_id FROM request WHERE request_id = ?";
 		String delete_request_sql = 
-			"delete from request where request_id = ?";
+			"DELETE FROM request WHERE request_id = ?";
+		String update_points_sql = 
+			"UPDATE user SET points = points + ? WHERE user_id = ?";
 
 		int result = -1; //default to a guard value that indicates failure
-		PreparedStatement pstmt = null;
+		PreparedStatement get_pts_pstmt = null; //getting the points statement
+		PreparedStatement del_pstmt = null; //the deletion statement
+		PreparedStatement up_pts_pstmt = null; //updating the points statement
 		Connection conn = null;
 		try {
 			// 3. get the connection and set up a statement
 			conn = Database_access.get_a_connection();
-      pstmt  = conn.prepareStatement(delete_request_sql, Statement.RETURN_GENERATED_KEYS);
 
-			// 4. set values into the statement
-			pstmt.setInt(1, id);
+			//get the points on the request
+      get_pts_pstmt  = conn.prepareStatement(get_points_in_request_sql);
+			get_pts_pstmt.setInt(1, id); 
+			ResultSet resultSet = get_pts_pstmt.executeQuery();
+			// check that we got results
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+				System.err.println(
+						"Error(3): Transaction is being rolled back "+
+						"for request_id: " + result);
+				conn.rollback();
+        return false;
+      }
+			//get those points and the user
+      resultSet.next();
+			int points = resultSet.getInt("points");
+			int user_id = resultSet.getInt("requesting_user_id");
 
-			// 5. execute a statement
-			//execute one of the updates
-			Database_access.execute_update(pstmt);
+			//delete the request
+      del_pstmt = Database_access
+				.prepare_statement(conn, delete_request_sql);
+			del_pstmt.setInt(1, id); 
+			Database_access.execute_update(del_pstmt);
 
-			// 6. cleanup and exceptions
+      up_pts_pstmt = Database_access
+				.prepare_statement(conn, update_points_sql);
+			up_pts_pstmt.setInt(1,points); 
+			up_pts_pstmt.setInt(2,user_id); 
+			Database_access.execute_update(up_pts_pstmt);
 		} catch (SQLException ex) {
 			Database_access.handle_sql_exception(ex);
 			return false;
 		} finally {
-			Database_access.close_statement(pstmt);
+			Database_access.close_statement(get_pts_pstmt);
+			Database_access.close_statement(del_pstmt);
+			Database_access.close_statement(up_pts_pstmt);
 		}
     return true;
   }
@@ -399,14 +426,13 @@ public final class Request_utils {
 			// 3. get the connection and set up a statement
 			conn = Database_access.get_a_connection();
 			conn.setAutoCommit(false);
-      req_pstmt  = conn.prepareStatement(
-					update_request_sql, Statement.RETURN_GENERATED_KEYS);
-      cat_pstmt  = conn.prepareStatement(
-					update_categories_sql, Statement.RETURN_GENERATED_KEYS);
-      ck_points_pstmt  = conn.prepareStatement(
-					check_points_sql, Statement.RETURN_GENERATED_KEYS);
-      up_points_pstmt  = conn.prepareStatement(
-					update_points_sql, Statement.RETURN_GENERATED_KEYS);
+      req_pstmt  = Database_access.prepare_statement(
+					conn, update_request_sql);
+      cat_pstmt  = Database_access.prepare_statement(
+					conn, update_categories_sql);
+      ck_points_pstmt  = conn.prepareStatement(check_points_sql);
+      up_points_pstmt  = Database_access.prepare_statement(
+					conn, update_points_sql);
 
 			// execute a statement to check points for user
 			ck_points_pstmt.setInt( 1, request.requesting_user_id);
@@ -415,7 +441,8 @@ public final class Request_utils {
 			// check that we got results
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
 				System.err.println(
-						"Error(1): Transaction is being rolled back for request_id: " + result);
+						"Error(1): Transaction is being rolled back "+
+						"for request_id: " + result);
 				conn.rollback();
         return new Request_response(Request_response.Stat.ERROR, -1);
       }
@@ -509,7 +536,8 @@ public final class Request_utils {
     try {
 			// 3. get the connection and set up a statement
 			Connection conn = Database_access.get_a_connection();
-      pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);
+      pstmt = Database_access.prepare_statement(
+					conn, sqlText);
 
 			// 4. execute a statement
       ResultSet resultSet = pstmt.executeQuery();

@@ -1,5 +1,5 @@
 <%@ page import="com.renomad.qarma.Security" %>
-<%@ page import="com.renomad.qarma.Business_logic" %>
+<%@ page import="com.renomad.qarma.User_utils" %>
 <%
 	//check if they are already logged in.  If so, just skip to
 	//dashboard.  it just checks the user cookie to see if we are good
@@ -50,7 +50,7 @@
 		}
 
 		if (!validation_error) {
-		boolean succeed = Business_logic.put_user(
+		boolean succeed = User_utils.put_user(
 			first_name, last_name, email, password);
 			if (succeed) {
 				response.sendRedirect("thanks.htm");

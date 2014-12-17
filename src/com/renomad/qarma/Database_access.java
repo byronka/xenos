@@ -150,6 +150,13 @@ public final class Database_access {
   }
   
 
+	/**
+		* a helper method to avoid some of the boilerplate.
+		*/
+	public static PreparedStatement prepare_statement(Connection conn, String sqlText) throws SQLException {
+      return conn.prepareStatement(
+					sqlText, Statement.RETURN_GENERATED_KEYS);
+	}
 
   /**
     * helper method to check whether a newly-returned result set is

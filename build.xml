@@ -273,6 +273,9 @@
     <!-- Run the JUnit Tests -->
 	<target name="test" depends="compile"
     description="runs the tests">
+    <antcall target="clean-db-and-classes" />
+    <antcall target="build-schema" />
+    <antcall target="build-sample-data" />
 		<junit printsummary="on" fork="true" haltonfailure="yes">
 			<jvmarg value="-DTESTING_DATABASE_CODE_WITHOUT_TOMCAT=true"	/>
 			<jvmarg value="-D${conn.str.with.db}"	/>

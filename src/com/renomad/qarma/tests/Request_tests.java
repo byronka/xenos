@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 import com.renomad.qarma.Request;
 import com.renomad.qarma.Request_utils;
+import com.renomad.qarma.User_utils;
 import com.renomad.qarma.Request_status;
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Business_logic;
@@ -50,6 +51,9 @@ public class Request_tests {
 		Integer[] categories = {1,2};
 
 		//act
+		// this will cause user 1 to issue a 100 point request.  we will
+		// need to clean up at the end of this test to refund those points.
+		// deleting the request at the end should refund automatically.
 		Request_utils.Request_response response = Request_utils.put_request(
 				user_id, desc, points, title, categories);
 
@@ -66,6 +70,10 @@ public class Request_tests {
 
 		//cleanup
 		Request_utils.delete_request(response.id);
+		int refunded_points = User_utils.get_user_points(user_id);
+
+		//we should have gotten refunded when deleting the request.
+		assertEquals(100, refunded_points);
 	}
 
 }

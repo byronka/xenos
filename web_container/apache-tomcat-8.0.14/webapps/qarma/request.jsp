@@ -1,4 +1,5 @@
-<%@ page import="com.renomad.qarma.Business_logic" %>
+<%@ page import="com.renomad.qarma.Request_utils" %>
+<%@ page import="com.renomad.qarma.Request" %>
 <%@include file="includes/check_auth.jsp" %>
 
 <html>
@@ -7,7 +8,8 @@
 <%@include file="includes/header.jsp" %>
 <h2>Here is a request in more detail!</h2>
 <%
-  Business_logic.Request r = Business_logic.parse_querystring_and_get_request(request.getQueryString());
+	Request r = Request_utils
+		.parse_querystring_and_get_request(request.getQueryString());
 %>
 <form>
 <p>Description: <%=r.description%>

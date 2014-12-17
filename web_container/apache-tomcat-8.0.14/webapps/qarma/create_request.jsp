@@ -1,5 +1,5 @@
 <%@include file="includes/check_auth.jsp" %>
-<%@ page import="com.renomad.qarma.Business_logic" %>
+<%@ page import="com.renomad.qarma.Request_utils" %>
 <%@ page import="com.renomad.qarma.Utils" %>
   <% 
 		//get the values straight from the client
@@ -38,7 +38,7 @@
 			//parse out the categories from a string the client gave us
 			c = request.getParameter("categories");
 			
-			Integer[] cat = Business_logic.parse_categories_string(c);
+			Integer[] cat = Request_utils.parse_categories_string(c);
 			
 			if (cat.length == 0) {
 				validation_error |= true;
@@ -46,9 +46,9 @@
 			}
 
 			if (!validation_error) {
-				Business_logic.Request_response result = 
-					Business_logic.put_request(user_id, de, points, t, cat);
-				if (result.s == Business_logic.Request_response.Stat.LACK_POINTS) {
+				Request_utils.Request_response result = 
+					Request_utils.put_request(user_id, de, points, t, cat);
+				if (result.s == Request_utils.Request_response.Stat.LACK_POINTS) {
 					not_enough_points_error_msg = 
 						"You don't have enough points to make this request!";
 				} else {
