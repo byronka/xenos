@@ -38,6 +38,9 @@ response.setDateHeader("Expires", 0); // Proxies.
 			<%=r.title%>
 		</a>
 		<%=r.points%>
+	<a href="request.jsp?request=<%=r.request_id%>&service=true">
+		Handle
+	</a>
 	</p>
 <% } %>
 </body>
