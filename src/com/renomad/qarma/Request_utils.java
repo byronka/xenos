@@ -593,24 +593,37 @@ public final class Request_utils {
     */
   public static 
 		Request parse_querystring_and_get_request(String qs) {
-			int id = parse_qs_for_request_id(qs);
+			int id = -1;
+			try {
+				id = Integer.parseInt(parse_qs(qs).get("request"));
+			} catch (Exception ex) {
+				System.err.println("Error(6): couldn't parse int from querystring " + qs);
+				System.err.println(ex);
+				return null;
+			}
 			return get_a_request(id);
 		}
 
 
-	public static int parse_qs_for_request_id(String qs) {
-			Pattern p = Pattern.compile("request=(\\d+?)");
-			Matcher m = p.matcher(qs);
-			if(m.find()) {
-				try {
-					String request_id = m.group(1);
-					return Integer.parseInt(request_id);
-				} catch (Exception ex) {
-					System.err.println(
-							"Error(5): could not parse request id from string " + qs);
-				}
+	/**
+		* gets all the parameters from a query string
+		* @param qs a query string
+		* @return a map of params to values
+		*/
+	public static Map<String, String> parse_qs(String qs) {
+		String[] params = qs.split("&");
+		if (params.length == 0) {
+			return null;
+		}
+		Map<String,String> values = new HashMap<String,String>();
+		for (String p : params) {
+			String[] items = p.split("=");
+			if (items.length != 2) {
+				continue;
 			}
-			return -1;
+			values.put(items[0], items[1]);
+		}
+		return values;
 	}
 
 

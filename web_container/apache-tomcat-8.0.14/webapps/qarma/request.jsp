@@ -9,6 +9,10 @@
 <%
 	String qs = request.getQueryString();
 	Request r = Request_utils.parse_querystring_and_get_request(qs);
+	if (r == null) {
+		response.sendRedirect("general_error.jsp");
+		return;
+	}
 	boolean in_deleting = (qs.indexOf("delete=true") > 0);
 %>
 	<p>Description: <%=r.description%>
