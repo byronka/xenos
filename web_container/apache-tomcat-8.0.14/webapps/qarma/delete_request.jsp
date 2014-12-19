@@ -4,7 +4,8 @@
 
 <%
 	String qs = request.getQueryString();
-	int request_id = Request_utils.parse_qs_for_request_id(qs);
+	int request_id = 
+		Integer.parseInt(Request_utils.parse_qs(qs).get("request"));
 	boolean success = Request_utils.delete_request(request_id, user_id);
 	if (!success) {
 		response.sendRedirect("error_deleting.jsp");
