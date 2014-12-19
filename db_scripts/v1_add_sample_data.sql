@@ -43,3 +43,17 @@ VALUES('MATH'),('PHYSICS'),('ECONOMICS'),('HISTORY'),('ENGLISH');
 -- Here we set up all the requests to have some categories.
 INSERT INTO request_to_category (request_id, request_category_id)
 VALUES(1,1),(1,3),(1,4),(2,1),(3,1),(3,2),(4,4);
+
+
+
+---DELIMITER---
+-- add some messages for some requests
+INSERT INTO request_message (request_id, message, timestamp, user_id)
+VALUES 
+(1, "Hi there mom!","2014-12-18 21:22:42",1 ),
+(1,"What do ya know?","2014-12-18 21:22:43",1 ),
+(1,"this sure is fun!","2014-12-18 21:22:44",1 ),
+(2,"a man, a plan, a canal, Panama!","2014-12-18 21:22:45",1 ),
+(2,"byron: What we could do is to do something or other","2014-12-18 21:22:46",1 ),
+(2,"dan: what do you think about this then?","2014-12-18 21:22:47",2 )
+

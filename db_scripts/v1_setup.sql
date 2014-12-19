@@ -110,3 +110,20 @@ request_to_category (
     REFERENCES request_category (request_category_id)
     ON DELETE CASCADE
 )
+
+---DELIMITER---
+-- create a table of meesages for requests
+
+CREATE TABLE IF NOT EXISTS 
+request_message ( 
+  request_id INT NOT NULL,
+	message NVARCHAR(10000),
+	timestamp datetime,
+	user_id INT NOT NULL,
+  FOREIGN KEY FK_request_id (request_id)
+	REFERENCES request (request_id)
+	ON DELETE CASCADE,
+  FOREIGN KEY FK_user_id (user_id)
+	REFERENCES user (user_id)
+	ON DELETE CASCADE
+)

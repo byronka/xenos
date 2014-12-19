@@ -339,12 +339,10 @@ public final class Request_utils {
       int user_id, String desc, int points, 
 			String title, Integer[] categories) {
 
-    String date = Utils.getCurrentDateSqlFormat();
-
 		//set up a request object to store this stuff
 		int status = 1; //always starts open
 		Request request = new Request(
-				date, desc, points, status, title, user_id, categories);
+				"", desc, points, status, title, user_id, categories);
 
     //send parsed data to the database
     Request_response response = put_request(request);
@@ -409,7 +407,7 @@ public final class Request_utils {
 		// 1. set the sql
 		String update_request_sql = 
 			"INSERT into request (description, datetime, points, " + 
-			"status, title, requesting_user_id) VALUES (?, ?, ?, ?, ?, ?)"; 
+			"status, title, requesting_user_id) VALUES (?, now(), ?, ?, ?, ?)"; 
 
      //assembling dynamic SQL to add categories
 		StringBuilder sb = new StringBuilder("");
@@ -471,11 +469,10 @@ public final class Request_utils {
 			// 4. set values into the statement
 			//set values for adding request
 			req_pstmt.setString(1, request.description);
-			req_pstmt.setString( 2, request.datetime);
-			req_pstmt.setInt( 3, request.points);
-			req_pstmt.setInt( 4, request.status);
-			req_pstmt.setString( 5, request.title);
-			req_pstmt.setInt( 6, request.requesting_user_id);
+			req_pstmt.setInt( 2, request.points);
+			req_pstmt.setInt( 3, request.status);
+			req_pstmt.setString( 4, request.title);
+			req_pstmt.setInt( 5, request.requesting_user_id);
 
 			// 5. execute a statement
 			//execute one of the updates
@@ -604,6 +601,89 @@ public final class Request_utils {
 			return get_a_request(id);
 		}
 
+
+	/**
+		* sets a new message into the database.  These are used for
+		* correspondence between users of the system on a given request.
+		* @param msg the message to store.
+		* @param request_id the id of the request
+		* @param user_id the user creating the message
+		* @return true if successful
+		*/
+	public static boolean set_message(String msg, int request_id, int user_id) {
+
+		// 1. set the sql
+      String sqlText = 
+			"INSERT INTO request_message "+
+			"(message, request_id, user_id, timestamp)"+
+			"SELECT DISTINCT "+
+				"CONCAT(u.first_name,' says:', ?), ?, u.user_id, now() "+
+			"FROM user u "+
+			"JOIN request_message rm ON rm.user_id = u.user_id "+
+			"WHERE u.user_id = ? LIMIT 1";
+
+		// 2. set up values we'll need outside the try
+		boolean result = false;
+		PreparedStatement pstmt = null;
+    try {
+			// 3. get the connection and set up a statement
+			Connection conn = Database_access.get_a_connection();
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
+			// 4. set values into the statement
+      pstmt.setString( 1, msg );
+      pstmt.setInt( 2, request_id);
+      pstmt.setInt( 3, user_id);
+			// 5. execute a statement
+      result = Database_access.execute_update(pstmt) > 0;
+			// 10. cleanup and exceptions
+			return result;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return false;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+
+	}
+
+	/**
+		* gets all the messages (correspondence between users) for a request.
+		* @param request_id the key for the messages
+		* @return an array of messages for this request, 
+		* or empty array if failure.
+		*/
+	public static String[] get_messages(int request_id) {
+    String sqlText = "SELECT message FROM request_message WHERE request_id = ?";
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
+      pstmt.setInt( 1, request_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new String[0];
+      }
+
+			//keep adding rows of data while there is more data
+      ArrayList<String> messages = new ArrayList<String>();
+      while(resultSet.next()) {
+        String msg = resultSet.getString("message");
+        messages.add(msg);
+      }
+
+      //convert arraylist to array
+      String[] array_of_messages = 
+        messages.toArray(new String[messages.size()]);
+      return array_of_messages;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return new String[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+	}
 
 	/**
 		* gets all the parameters from a query string
