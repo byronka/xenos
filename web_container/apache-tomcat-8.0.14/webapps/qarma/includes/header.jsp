@@ -2,7 +2,7 @@
   if (user_id <= 0) { response.sendRedirect("sorry.htm"); }
 %>
 <a href="dashboard.jsp">Qarma</a>
-<form style="display:inline;" method="GET" action="dashboard.jsp" >
+<form method="GET" action="dashboard.jsp" >
 	<span><input type=text" name="search" maxlength="20" />
 <button>Search</button></span>
 </form>
