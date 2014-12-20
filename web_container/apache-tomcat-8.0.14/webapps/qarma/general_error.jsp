@@ -1,8 +1,9 @@
-<%@ page import="com.renomad.qarma.Request_utils" %>
-<%@ page import="com.renomad.qarma.Request" %>
 <%@include file="includes/header.jsp" %>
 <html>                                 
 <head><title>General Error</title></head>
+
+<%@ page import="com.renomad.qarma.Request_utils" %>
+<%@ page import="com.renomad.qarma.Request" %>
 <body>
 
 <h2>General error</h2>

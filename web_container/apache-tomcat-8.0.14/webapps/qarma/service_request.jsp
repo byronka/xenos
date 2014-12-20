@@ -1,9 +1,9 @@
-<%@ page import="com.renomad.qarma.Request_utils" %>
-<%@ page import="com.renomad.qarma.Request" %>
 <%@include file="includes/header.jsp" %>
 <html>
 <head><title>Handle a request</title></head>
-<body>
+
+<%@ page import="com.renomad.qarma.Request_utils" %>
+<%@ page import="com.renomad.qarma.Request" %>
 <%
 	String qs = request.getQueryString();
 	Request r = Request_utils.parse_querystring_and_get_request(qs);
@@ -16,6 +16,7 @@
 		response.sendRedirect("general_error.jsp");
 	}
 %>
+<body>
 	<p>Description: <%=r.description%>
 	<p>Status: <%=r.get_status()%>
 	<p>Date: <%=r.datetime%>

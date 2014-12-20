@@ -1,7 +1,7 @@
-<%@ page import="com.renomad.qarma.Request_utils" %>
-<%@ page import="com.renomad.qarma.Request" %>
 <%@include file="includes/header.jsp" %>
 
+<%@ page import="com.renomad.qarma.Request_utils" %>
+<%@ page import="com.renomad.qarma.Request" %>
 <%
 	String qs = request.getQueryString();
 	int request_id = 

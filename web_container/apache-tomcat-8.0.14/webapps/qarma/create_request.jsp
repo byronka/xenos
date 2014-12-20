@@ -1,8 +1,9 @@
-<%@ page import="com.renomad.qarma.Request_utils" %>
-<%@ page import="com.renomad.qarma.Utils" %>
 <%@include file="includes/header.jsp" %>
 <html>                                 
   <head><title>Create a request page</title></head>
+
+<%@ page import="com.renomad.qarma.Request_utils" %>
+<%@ page import="com.renomad.qarma.Utils" %>
   <% 
 		//get the values straight from the client
 		String de = "";
