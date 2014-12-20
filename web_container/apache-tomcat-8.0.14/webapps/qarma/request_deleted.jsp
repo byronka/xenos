@@ -1,11 +1,9 @@
 <%@ page import="com.renomad.qarma.Request_utils" %>
 <%@ page import="com.renomad.qarma.Request" %>
-<%@include file="includes/check_auth.jsp" %>
-
+<%@include file="includes/header.jsp" %>
 <html>
 <head><title>Request has been deleted</title></head>
 <body>
-<%@include file="includes/header.jsp" %>
 <%
 	String qs = request.getQueryString();
 	int request_id = 

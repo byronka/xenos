@@ -1,6 +1,6 @@
 <%@ page import="com.renomad.qarma.Request_utils" %>
 <%@ page import="com.renomad.qarma.Request" %>
-<%@include file="includes/check_auth.jsp" %>
+<%@include file="includes/header.jsp" %>
 
 <%
 	String qs = request.getQueryString();

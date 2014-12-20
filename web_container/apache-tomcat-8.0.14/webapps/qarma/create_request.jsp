@@ -1,6 +1,8 @@
-<%@include file="includes/check_auth.jsp" %>
 <%@ page import="com.renomad.qarma.Request_utils" %>
 <%@ page import="com.renomad.qarma.Utils" %>
+<%@include file="includes/header.jsp" %>
+<html>                                 
+  <head><title>Create a request page</title></head>
   <% 
 		//get the values straight from the client
 		String de = "";
@@ -58,10 +60,7 @@
 		}
   %>
 
-<html>                                 
-  <head><title>Create a request page</title></head>
   <body>
-    <%@include file="includes/header.jsp" %>
     <h2>Create a Request!</h2>
     <form method="POST" action="create_request.jsp">
 			<div><%=not_enough_points_error_msg %></div>
