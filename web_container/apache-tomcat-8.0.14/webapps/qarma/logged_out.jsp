@@ -4,6 +4,6 @@
 </head>
 <body>
   <p>You have successfully logged out</p>
-  <p>click <a href="index.htm">here</a> to return to the login page</p>
+  <p>click <a href="index.jsp">here</a> to return to the login page</p>
 </body>
 </html>

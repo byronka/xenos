@@ -53,7 +53,7 @@
 		boolean succeed = User_utils.put_user(
 			first_name, last_name, email, password);
 			if (succeed) {
-				response.sendRedirect("thanks.htm");
+				response.sendRedirect("thanks.jsp");
 			} else {
 			  user_creation_error_msg = "That user already exists";
 			}

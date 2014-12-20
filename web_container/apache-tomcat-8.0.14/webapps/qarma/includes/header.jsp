@@ -4,7 +4,7 @@
 <a href="dashboard.jsp">Qarma</a>
 <form method="GET" action="dashboard.jsp" >
 	<span><input type=text" name="search" maxlength="20" />
-<button>Search</button></span>
+		<button><%=Text.get(lang, 1, "search");%></button></span>
 </form>
 <a href="create_request.jsp" >Create Request</a>
 <a href="logout.jsp" >Logout</a>
