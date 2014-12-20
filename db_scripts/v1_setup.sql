@@ -25,9 +25,10 @@ CREATE TABLE IF NOT EXISTS
     user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
     first_name NVARCHAR(100),
     last_name NVARCHAR(100),
-    email NVARCHAR(200) UNIQUE,
+    email NVARCHAR(200) UNIQUE, 
     password NVARCHAR(100),
-		points int unsigned
+		points int unsigned,
+		language int unsigned NOT NULL DEFAULT 1
   );
 
 ---DELIMITER---
@@ -126,4 +127,29 @@ request_message (
   FOREIGN KEY FK_user_id (user_id)
 	REFERENCES user (user_id)
 	ON DELETE CASCADE
+)
+
+---DELIMITER---
+-- create a table of known languages
+
+CREATE TABLE IF NOT EXISTS 
+languages ( 
+  language_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	language_name	NVARCHAR(30)
+)
+
+---DELIMITER---
+-- add to a table of known languages
+
+INSERT INTO languages (language_name)
+VALUES('English'),('French'),('Spanish')
+
+---DELIMITER---
+-- create a lookup table for words and 
+-- phrases to their localized counterparts, e.g. French, English, etc.
+
+CREATE TABLE IF NOT EXISTS 
+localization_lookup ( 
+  local_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	English NVARCHAR(1000)
 )

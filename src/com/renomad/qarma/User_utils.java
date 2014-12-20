@@ -53,6 +53,34 @@ public final class User_utils {
 
 	}
 
+  /** * gets the user's preferred language
+    *
+    * @return an int representing the user's preferred language, or
+		* -1 if failure occurred.
+    */
+  public static int get_user_language(int user_id) {
+    String sqlText = "SELECT language FROM user WHERE user_id = ?;";
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
+			pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return -1;
+      }
+
+      resultSet.next(); //move to the first set of results.
+      return resultSet.getInt("language");
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return -1;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
   /** * gets a name for display from the user table
     *
     * @return a string displaying first name, last name, email, or

@@ -13,13 +13,16 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import javax.servlet.http.HttpServletRequest;
 
 public final class Business_logic {
+
 
 	private Business_logic () {
 		//we don't want anyone instantiating this
 		//do nothing.
 	}
+
 
     /**
 			* for now, there is no localization file, so we'll just include

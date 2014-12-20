@@ -158,11 +158,6 @@ public final class Security {
     return set_user_not_logged_in(user_id);
   }
 
-  private static int get_int_from_cookie(Cookie c) {
-    return Utils.parse_int(c.getValue());
-  }
-
-
   /**
     * we just look up the user.  If they are logged in, we
     * return the user id.  if failed, return -1;
@@ -171,11 +166,11 @@ public final class Security {
     */
   public static int check_if_allowed(HttpServletRequest r) {
     Cookie[] cookies = r.getCookies();
-    Cookie c = find_our_cookie(cookies);
+    Cookie c = find_security_cookie(cookies);
     if (c == null) {
       return -1;
     }
-    int user_id = get_int_from_cookie(c);
+    int user_id = Utils.parse_int(c.getValue());
     if (user_id == Integer.MIN_VALUE) { return -1; }
     if (user_id < 0) {
       System.err.println("error: user id was " + user_id + 
@@ -196,7 +191,7 @@ public final class Security {
 		* @param all_cookies a string array of all the cookies for this domain.
 		* @return the one cookie we want.
 		*/
-  public static Cookie find_our_cookie(Cookie[] all_cookies) {
+  private static Cookie find_security_cookie(Cookie[] all_cookies) {
     if (all_cookies == null) {
       return null;
     }
