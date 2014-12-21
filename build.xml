@@ -1,7 +1,4 @@
-<project name="Qarma"
-xmlns:if="ant:if"
-  xmlns:unless="ant:unless"
->
+<project name="Qarma" >
 
   <!-- Note: it is important that this file, build.xml, remain
        at the top of the directory, as it refers to directories
@@ -47,14 +44,6 @@ xmlns:if="ant:if"
 	<property name="checkstyle.dist.dir"
 		value="./utils/checkstyle" />
 	
-	 <condition property="isWindows">
-		<os family="windows" />
-	 </condition>
-
-	 <condition property="isLinux">
-		<os family="unix" />
-	 </condition>
-
 
 
   <!-- ##################### -->
@@ -417,16 +406,16 @@ xmlns:if="ant:if"
   </target>
 
   <target name="tomcat-start" description="start tomcat">
-    <exec if:true="isLinux" executable="${tomcat.home.bin}startup.sh" />
-    <exec if:true="isWindows" executable="${tomcat.home.bin}startup.bat" />
+    <exec executable="${tomcat.home.bin}startup.sh" osfamily="unix" />
+    <exec executable="${tomcat.home.bin}startup.bat" osfamily="windows" />
   </target>
 
   <target name="tomcat-stop" 
     description="stop tomcat"
     depends="check-if-tomcat-running" 
     if="tomcat.running">
-    <exec if:true="isLinux" executable="${tomcat.home.bin}shutdown.sh" />
-    <exec if:true="isWindows" executable="${tomcat.home.bin}shutdown.bat" />
+    <exec executable="${tomcat.home.bin}shutdown.sh" osfamily="unix" />
+    <exec executable="${tomcat.home.bin}shutdown.bat" osfamily="windows" />
   </target>
 
 </project>
