@@ -35,7 +35,7 @@
 			int points = Utils.parse_int(p);
 			if (points == Integer.MIN_VALUE) { 
 				validation_error |= true;
-				p_error_msg = "couldn't parse points";
+				p_error_msg = loc.get(7,"Couldn't parse points");
 			}
 
 			//parse out the categories from a string the client gave us
@@ -45,7 +45,7 @@
 			
 			if (cat.length == 0) {
 				validation_error |= true;
-				cat_error_msg = "No categories found in string";
+				cat_error_msg = loc.get(8,"No categories found in string");
 			}
 
 			if (!validation_error) {
@@ -53,7 +53,7 @@
 					Request_utils.put_request(user_id, de, points, t, cat);
 				if (result.s == Request_utils.Request_response.Stat.LACK_POINTS) {
 					not_enough_points_error_msg = 
-						"You don't have enough points to make this request!";
+						loc.get(9,"You don't have enough points to make this request!");
 				} else {
 					response.sendRedirect("dashboard.jsp");
 				}
@@ -65,7 +65,7 @@
     <h2>Create a Request!</h2>
     <form method="POST" action="create_request.jsp">
 			<div><%=not_enough_points_error_msg %></div>
-			<p>Description: 
+			<p><%=loc.get(10,"Description")%>: 
 				<input 
 					type="text" 
 					name="description" 
@@ -74,18 +74,18 @@
 			</p>
 
 		<p>
-			Points: 
+			<%=loc.get(11,"Points")%>: 
 			<input type="text" name="points" value="<%=p%>"/> 
 			<span><%=p_error_msg%></span>
 		</p>
 
 		<p>
-			Title: <input type="text" name="title" value="<%=t%>"/> 
+			<%=loc.get(12,"Title")%>: <input type="text" name="title" value="<%=t%>"/> 
 			<span><%=title_error_msg%></span>
 		</p>
 
 		<p>
-		Categories: 
+		<%=loc.get(13,"Categories")%>: 
 		<input type="text" name="categories" value="<%=c%>"/>
 		<span><%=cat_error_msg%></span>
 		</p>
@@ -97,7 +97,7 @@
 					<%=category%>,
 				<%}%>
 			</div>
-      <button type="submit">Create Request</button>
+      <button type="submit"><%=loc.get(14,"Create Request")%></button>
     </form>
   </body>
 </html>

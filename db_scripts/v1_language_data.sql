@@ -12,5 +12,15 @@ VALUES
 (3, 'Logout', 'FrenchLogout', 'SpanishLogout'),
 (4, 'Points', 'FrenchPoints', 'SpanishPoints'),
 (5, 'Please enter a description', 'FrenchPlease enter a description', 'SpanishPlease enter a description'),
-(6, 'Please enter a title', 'FrenchPlease enter a title', 'SpanishPlease enter a title')
+(6, 'Please enter a title', 'FrenchPlease enter a title', 'SpanishPlease enter a title'),
+(7, 'Could not parse points', 'FrenchCould not parse points', 'SpanishCould not parse points'),
+(8, 'No categories found in string', 'FrenchNo categories found in string', 'SpanishNo categories found in string'),
+(9, 'You do not have enough points to make this request!', 'FrenchYou do not have enough points to make this request!', 'SpanishYou do not have enough points to make this request!'),
+(10, 'Description', 'FrenchDescription', 'SpanishDescription'),
+(11, 'Points', 'FrenchPoints', 'SpanishPoints'),
+(12, 'Title', 'FrenchTitle', 'SpanishTitle'),
+(13, 'Categories', 'FrenchCategories', 'SpanishCategories'),
+(14, 'Create Request', 'FrenchCreate Request', 'SpanishCreate Request')
+
+
 
