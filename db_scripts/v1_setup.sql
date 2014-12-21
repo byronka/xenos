@@ -15,6 +15,7 @@ BEGIN
 END
 
 ---DELIMITER---
+-- Here we set the version of the database.  This needs to get incremented each release.
 CALL set_version(1);
 ---DELIMITER---
 
@@ -141,5 +142,15 @@ VALUES('English'),('French'),('Spanish')
 CREATE TABLE IF NOT EXISTS 
 localization_lookup ( 
   local_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	English NVARCHAR(1000)
+	English NVARCHAR(1000),
+	French NVARCHAR(1000),
+	Spanish NVARCHAR(1000)
 )
+
+---DELIMITER---
+-- insert into the lookup table for words and 
+-- phrases to their localized counterparts, e.g. French, English, etc.
+INSERT INTO localization_lookup (English, French, Spanish)
+VALUES
+('Search', 'FrenchSearch', 'SpanishSearch')
+
