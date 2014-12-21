@@ -31,9 +31,9 @@ public class Text implements javax.servlet.ServletContextListener {
 		* 	at that place.
 		* @return the localized string
 		*/
-	public static void get(int user_id, int index, String reminder) {
+	public static String get(int user_id, int index, String reminder) {
 		int user_lang = User_utils.get_user_language(user_id);
-
+		return "testing";
 	}
 
 }

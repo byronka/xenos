@@ -43,6 +43,14 @@
 		value="./utils/pmd-bin-5.2.2" />
 	<property name="checkstyle.dist.dir"
 		value="./utils/checkstyle" />
+
+	<condition property="isWindows">
+		<os family="windows" />
+	</condition>
+
+	<condition property="isUnix">
+		<os family="unix" />
+	</condition>
 	
 
 
@@ -394,11 +402,21 @@
   <!-- This target acts as a dependency to tell if Tomcat is running 
       "pidfile" is set in $CATALINA_HOME/bin/setenv.sh, and contains
       the process id of Catalina.-->
-  <target name="check-if-tomcat-running">
-    <available 
-      file="web_container/apache-tomcat-8.0.14/temp/pidfile" 
-      property="tomcat.running"/>
+  <target name="check-if-tomcat-running" 
+	depends="check-unix-tomcat-running, check-windows-tomcat-running">
   </target>
+
+	<!-- Just always return true if we are on windows -->
+	<target name="check-windows-tomcat-running" if="isWindows">
+		<property name="tomcat.running" value="true" />
+	</target>
+
+	<target name="check-unix-tomcat-running" if="isUnix">
+		<available 
+		  file="web_container/apache-tomcat-8.0.14/temp/pidfile" 
+		  property="tomcat.running"
+		  value="true" />
+	</target>
 
   <target name="tomcat-restart" description="restart the tomcat server">
       <antcall target="tomcat-stop" />
