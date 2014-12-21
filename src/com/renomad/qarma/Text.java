@@ -7,10 +7,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import com.renomad.qarma.Database_access;
+import com.renomad.qarma.User_utils;
+
 
 /**
  * Note that the annotation WebListener registers this class as a listener
@@ -61,9 +61,8 @@ public class Text implements javax.servlet.ServletContextListener {
 				System.err.println("Error (8): null resultset when pulling localized values");
 			}
 
-			String[] words = new String[3];
 			while (resultSet_words.next()) {
-				Arrays.fill(words, ""); //clear out the junk in the array.
+				String[] words = new String[3];
 				int id = resultSet_words.getInt("local_id");
 				words[0] = resultSet_words.getString("English");
 				words[1] = resultSet_words.getString("French");
@@ -71,11 +70,14 @@ public class Text implements javax.servlet.ServletContextListener {
 				words_array[id] = words;
 			}
 			
+			/*
+			 * This code will display all the localizations stored when Tomcat starts
 			for (int i = 0; i < words_array.length; i++) {
 				for (int j = 0; j < words_array[i].length; j++) {
 					System.out.printf("words_array[%d][%d]: %s\n", i,j,words_array[i][j]);
 				}
 			}
+			*/
 		} catch (SQLException ex) {
 			Database_access.handle_sql_exception(ex);
 		} finally {
@@ -88,22 +90,16 @@ public class Text implements javax.servlet.ServletContextListener {
 		//Nothing to do here.  Required to satisfy ServletContextListener interface.
 		//We *do* need contextInitialized to load up the localization object.
 	}
-
 	
 	
 	/**
 		* this is our localization mechanism.  It gets the localized text
 		* by id.
-		* @param user_id the user's id - they can set their preferred language
+		* @param user_lang the language set for a given user
 		* @param index index into the array of strings
-		* @param reminder this is not used in the method, but is crucial for 
-		* understanding the code in place.  Always include the reminder string
-		* so a person reviewing the code will know the intended word or phrase
-		* 	at that place.
 		* @return the localized string
 		*/
-	public static String get(int user_id, int index, String reminder) {
-		int user_lang = User_utils.get_user_language(user_id);
+	public static String get(int user_lang, int index) {
 		return words_array[index][user_lang];
 	}
 
