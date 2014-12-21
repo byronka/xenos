@@ -1,9 +1,7 @@
 package com.renomad.qarma;
 
-import java.io.IOException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Utils;
 

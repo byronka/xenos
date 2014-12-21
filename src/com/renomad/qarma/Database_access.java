@@ -2,20 +2,10 @@ package com.renomad.qarma;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.CallableStatement;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Arrays;
-import java.io.File;
-import java.io.FileNotFoundException;
-import com.renomad.qarma.Request;
-import com.renomad.qarma.Request_status;
 
 public final class Database_access {
 

@@ -3,13 +3,7 @@ package com.renomad.qarma;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import com.renomad.qarma.Database_access;
-import com.renomad.qarma.Utils;
-
-import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Connection;

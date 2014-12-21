@@ -1,10 +1,6 @@
 package com.renomad.qarma;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletContextEvent;
-import javax.servlet.http.Cookie;
-import com.renomad.qarma.Utils;
 import java.util.ArrayList;
 
 public class Text implements javax.servlet.ServletContextListener {
