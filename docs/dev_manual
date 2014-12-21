@@ -2,6 +2,13 @@ Much of the development material attempts to be self-documenting.
 However, a little extra time spent explaining things can help ease the
 transition into a new project.  That is what this document is for.
 
+Contents:
+=========
+Programming suggestions
+Utilities
+Setting up Eclipse as a IDE for Qarma
+
+
 
 
 
@@ -78,4 +85,33 @@ You can run all three of these by running
 	ant all-lint
 
 the output will be found at http://localhost:8080/lint/
+
+
+
+Setting up Eclipse as a IDE for Qarma
+=====================================
+
+Base Project - 
+* Start Eclipse
+* Press Ctrl+N (if you changed your keybindings, go to File -> New -> Other
+* Click on "Java Project from Existing Ant Buildfile" and click Next
+* Click on Browse and search for the build.xml at the top of the Qarma directory
+* The pane below should be filled with '<> "javac" task found in target "compile"'
+* Don't check "link to the buildfile in the file system" as this will cause any build changes in Eclipse to be written to build.xml.  However, if you want to experiment or you know what you're doing, feel free.  The anticipated convention in building is to use the IDE for help with writing the code, but use the command line to build.
+* continue through and you will have a new Qarma project in Eclipse.  Congrats!
+
+db scripts and JSP files - 
+1) right click on the newly created Qarma project and select from the context menu: New -> Other
+* Under general, select "Folder" and click next.
+* Select Qarma as the parent directory
+* Click the Advanced button
+* Click the "Link to alternate location (Linked Folder)" radio button
+* Click Browse.
+* Find the db_scripts directory, where the SQL scripts are held.
+* Continue through, and you'll have db_scripts as a folder in your project.
+* Repeat from step 1 to add the directory for the web files, which is in $CATALINA_HOME/webapps/qarma
+
+You should now have access to all the files needed for Qarma development in Eclipse.  Unless you have a strong reason for doing so, use the ant commands for major functionalities, e.g. building, cleaning, etc.
+
+
 
