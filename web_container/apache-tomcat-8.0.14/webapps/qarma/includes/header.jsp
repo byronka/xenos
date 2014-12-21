@@ -1,11 +1,11 @@
 <% 
-	int user_id = com.renomad.qarma.Security.check_if_allowed(request);
+  int user_id = com.renomad.qarma.Security.check_if_allowed(request);
   if (user_id <= 0) { response.sendRedirect("login.jsp"); }
 %>
 <a href="dashboard.jsp">Qarma</a>
 <form method="GET" action="dashboard.jsp" >
 	<span><input type=text" name="search" maxlength="20" />
-		<button><%=com.renomad.qarma.Text.get(user_id, 1, "search")%></button></span>
+		<button><%=com.renomad.qarma.Text.get(user_id, 0, "search")%></button></span>
 </form>
 <a href="create_request.jsp" >Create Request</a>
 <a href="logout.jsp" >Logout</a>
