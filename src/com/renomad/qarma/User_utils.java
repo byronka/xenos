@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 /**
-	* utilties methods used to work with users
+	* Utilities methods used to work with users
 	*/
 public final class User_utils {
 
