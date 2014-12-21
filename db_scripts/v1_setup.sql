@@ -146,14 +146,3 @@ localization_lookup (
 	French NVARCHAR(1000),
 	Spanish NVARCHAR(1000)
 )
-
----DELIMITER---
--- insert into the lookup table for words and 
--- phrases to their localized counterparts, e.g. French, English, etc.
-INSERT INTO localization_lookup (local_id, English, French, Spanish)
-VALUES
-(1, 'Search', 'FrenchSearch', 'SpanishSearch'),
-(2, 'Create Request', 'FrenchCreate Request', 'SpanishCreate Request'),
-(3, 'Logout', 'FrenchLogout', 'SpanishLogout'),
-(4, 'Points', 'FrenchPoints', 'SpanishPoints')
-

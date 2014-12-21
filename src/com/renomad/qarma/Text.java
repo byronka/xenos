@@ -100,7 +100,11 @@ public class Text implements javax.servlet.ServletContextListener {
 		* @return the localized string
 		*/
 	public static String get(int user_lang, int index) {
+		try {
 		return words_array[index][user_lang];
+		} catch (ArrayIndexOutOfBoundsException ex) {
+			return "out_of_index: " + ex.getLocalizedMessage();
+		}
 	}
 
 }

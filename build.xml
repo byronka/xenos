@@ -70,6 +70,7 @@
     <antcall target="clean-db-and-classes" />
     <antcall target="build-schema" />
     <antcall target="build-sample-data" />
+	<antcall target="build-language-data" />
     <antcall target="run" />
   </target>
 
@@ -241,6 +242,22 @@
 			<jvmarg value="-D${conn.str.with.db}" />
 			<jvmarg value="-D${conn.str.without.db}" />
 		</java>
+  </target>
+  
+   <!-- 
+    build-language-data adds localized text to the database
+  -->
+  <target name="build-language-data" 
+    depends="compile" 
+    description="adds localized language data">
+    <java 
+      classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
+      classname="com.renomad.qarma.schema.Add_language_data_to_db"
+      fork="true" >
+			<jvmarg value="-D${conn.str.with.db}" />
+			<jvmarg value="-D${conn.str.without.db}" />
+		</java>
+	<echo message="Hi! run 'ant run' to get this new data in the system"/>
   </target>
 
 

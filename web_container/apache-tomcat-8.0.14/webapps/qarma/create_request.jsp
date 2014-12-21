@@ -20,13 +20,13 @@
 			boolean validation_error = false;
 			de = request.getParameter("description");
 			if (de.length() == 0) {
-      	desc_error_msg = "Please enter a description";
+      	desc_error_msg = loc.get(5, "Please enter a description");
 				validation_error |= true;
 			}
 
 			t = request.getParameter("title");
 			if (t.length() == 0) {
-      	title_error_msg = "Please enter a title";
+      	title_error_msg = loc.get(6, "Please enter a title");
 				validation_error |= true;
 			}
 
