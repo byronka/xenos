@@ -34,5 +34,17 @@ VALUES
 (25, 'Date', 'FrenchDate', 'SpanishDate'),
 (26, 'Points', 'FrenchPoints', 'SpanishPoints'),
 (27, 'Title', 'FrenchTitle', 'SpanishTitle'),
-(28, 'Categories', 'FrenchCategories', 'SpanishCategories')
+(28, 'Categories', 'FrenchCategories', 'SpanishCategories'),
+(29, 'Yes, delete!', 'FrenchYes, delete!', 'SpanishYes, delete!'),
+(30, 'Nevermind, do not delete it', 'FrenchNevermind, do not delete it', 'SpanishNevermind, do not delete it'),
+(31, 'Request has been deleted', 'FrenchRequest has been deleted', 'SpanishRequest has been deleted'),
+(32, 'Request', 'FrenchRequest', 'SpanishRequest'),
+(33, 'deleted', 'Frenchdeleted', 'Spanishdeleted'),
+(34, 'This request has been deleted, its points have been refunded to you', 'FrenchThis request has been deleted, its points have been refunded to you', 'SpanishThis request has been deleted, its points have been refunded to you'),
+(35, 'Dashboard', 'FrenchDashboard', 'SpanishDashboard'),
+(36, 'Send message', 'FrenchSend message', 'SpanishSend message'),
+(37, 'Handle', 'FrenchHandle', 'SpanishHandle'),
+(38, 'Message (up to 10,000 characters)', 'FrenchMessage (up to 10,000 characters)', 'SpanishMessage (up to 10,000 characters)'),
+(39, 'Are you sure you want to delete this request?', 'FrenchAre you sure you want to delete this request?', 'SpanishAre you sure you want to delete this request?'),
+(40, '"points will be refunded to you', 'French"points will be refunded to you', 'Spanish"points will be refunded to you')
 -- (99999, 'BLAH', 'FrenchBLAH', 'SpanishBLAH')

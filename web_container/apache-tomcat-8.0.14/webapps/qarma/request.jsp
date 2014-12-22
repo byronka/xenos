@@ -50,21 +50,21 @@
 	if (show_delete_info) {%>
 
 		<p>
-			Are you sure you want to delete this request? <%=r.points%> points
-			will be refunded to you 
+			<%=loc.get(39,"Are you sure you want to delete this request?")%> <%=r.points%> <%=loc.get(39,"points will be refunded to you")%>
+			 
 		</p>
 
 		<p>
-			<a href="delete_request.jsp?request=<%=r.request_id%>">Yes, delete!</a>
+			<a href="delete_request.jsp?request=<%=r.request_id%>"><%=loc.get(29, "Yes, delete!")%></a>
 		</p>
 		<p>
-			<a href="dashboard.jsp">nevermind, don't delete it</a>
+			<a href="dashboard.jsp"><%=loc.get(30,"Nevermind, do not delete it")%></a>
 		</p>
 
 		<%} if (show_handle_button) {%>
 
 			<a href="request.jsp?request=<%=r.request_id%>&service=true">
-				Handle
+				<%=loc.get(37,"Handle")%>
 			</a>
 
 			<%}
@@ -75,9 +75,9 @@
 
 			<%} if (show_message_input) { %>
 		<form method="POST" action="request.jsp?request=<%=r.request_id%>&service=true">
-			<p>Message (up to 10,000 characters)</p>
+			<p><%=loc.get(38,"Message (up to 10,000 characters)")%></p>
 			<input type="text" name="message" maxlength="10000" />
-      <button type="submit">Send message</button>
+      <button type="submit"><%=loc.get(36,"Send message")%></button>
 		</form>
 	<% } %>
 

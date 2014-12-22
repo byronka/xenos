@@ -1,6 +1,6 @@
 <%@include file="includes/header.jsp" %>
 <html>
-<head><title>Request has been deleted</title></head>
+<head><title><%=loc.get(31, "Request has been deleted")%></title></head>
 
 <%@ page import="com.renomad.qarma.Request_utils" %>
 <%@ page import="com.renomad.qarma.Request" %>
@@ -11,12 +11,11 @@
 %>
 
 <body>
-<h2>Request <%=request_id%> deleted</h2>
+<h2><%=loc.get(32, "Request")%> <%=request_id%> <%=loc.get(33, "deleted")%></h2>
 <p>
-	This request has been deleted, its points have 
-	been refunded to you
+	<%=loc.get(34, "Request has been deleted")%>
 </p>
-<p>Click <a href="dashboard.jsp">here</a> to return to the dashboard</p>
+<p><a href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
 </body>
 </html>
 

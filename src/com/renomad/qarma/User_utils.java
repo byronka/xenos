@@ -76,13 +76,15 @@ public final class User_utils {
     }
   }
 
-  /** * gets a name for display from the user table
-    *
-    * @return a string displaying first name, last name, email, or
+  
+  /** *
+   * gets a name for display from the user table
+   *  
+    * @return a User object filled with first name, last name, email, and points, or
 		* null if not found.
     */
-  public static String get_user_displayname(int user_id) {
-    String sqlText = "SELECT CONCAT(first_name, ' ',last_name,' (', email,'), ',points,' points') as user_displayname FROM user WHERE user_id = ?;";
+  public static User get_user_displayname(int user_id) {
+    String sqlText = "SELECT first_name,last_name,email,points FROM user WHERE user_id = ?;";
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
@@ -95,8 +97,11 @@ public final class User_utils {
       }
 
       resultSet.next(); //move to the first set of results.
-      String display_name = resultSet.getString("user_displayname");
-      return display_name;
+      String first_name = resultSet.getString("first_name");
+      String last_name = resultSet.getString("last_name");
+      String email = resultSet.getString("email");
+      int points = resultSet.getInt("points");
+      return new User(first_name, last_name, email, "", points);
 		} catch (SQLException ex) {
 			Database_access.handle_sql_exception(ex);
 			return null;
@@ -105,11 +110,6 @@ public final class User_utils {
     }
   }
   
-  
-  public static String get_user_displaynameSafe(int user_id) {
-	  return Utils.safe_render(get_user_displayname(user_id));
-  }
-
 
   /**
     * adds a user.  if successful, returns true
