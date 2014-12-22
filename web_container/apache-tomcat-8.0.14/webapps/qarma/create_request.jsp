@@ -1,6 +1,6 @@
 <%@include file="includes/header.jsp" %>
 <html>                                 
-  <head><title>Create a request page</title></head>
+  <head><title><%=loc.get(15, "Create a request")%></title></head>
 
 <%@ page import="com.renomad.qarma.Request_utils" %>
 <%@ page import="com.renomad.qarma.Utils" %>

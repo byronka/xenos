@@ -20,7 +20,11 @@ VALUES
 (11, 'Points', 'FrenchPoints', 'SpanishPoints'),
 (12, 'Title', 'FrenchTitle', 'SpanishTitle'),
 (13, 'Categories', 'FrenchCategories', 'SpanishCategories'),
-(14, 'Create Request', 'FrenchCreate Request', 'SpanishCreate Request')
-
-
-
+(14, 'Create Request', 'FrenchCreate Request', 'SpanishCreate Request'),
+(15, 'Create a request', 'FrenchCreate a request', 'SpanishCreate a request'),
+(16, 'The dashboard', 'FrenchThe dashboard', 'SpanishThe dashboard'),
+(17, 'Welcome to the dashboard!', 'FrenchWelcome to the dashboard!', 'SpanishWelcome to the dashboard!'),
+(18, 'Here are your requests', 'FrenchHere are your requests', 'SpanishHere are your requests'),
+(19, 'Here are other\'s requests', 'FrenchHere are other\'s requests', 'SpanishHere are other\'s requests'),
+(20, 'Handle', 'FrenchHandle', 'SpanishHandle'),
+(21, 'Delete', 'FrenchDelete', 'SpanishDelete')
