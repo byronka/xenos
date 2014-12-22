@@ -104,6 +104,11 @@ public final class User_utils {
       Database_access.close_statement(pstmt);
     }
   }
+  
+  
+  public static String get_user_displaynameSafe(int user_id) {
+	  return Utils.safe_render(get_user_displayname(user_id));
+  }
 
 
   /**

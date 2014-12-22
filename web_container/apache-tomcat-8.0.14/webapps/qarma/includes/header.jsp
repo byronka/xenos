@@ -11,4 +11,4 @@
 </form>
 <a href="create_request.jsp" ><%=loc.get(2, "Create Request")%></a>
 <a href="logout.jsp" ><%=loc.get(3, "Logout")%></a>
-<span><%=com.renomad.qarma.User_utils.get_user_displayname(user_id)%></span>
+<span><%=com.renomad.qarma.User_utils.get_user_displaynameSafe(user_id)%></span>

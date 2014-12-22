@@ -21,7 +21,7 @@ response.setDateHeader("Expires", 0); // Proxies.
 %>
 	<p>
 		<a href="request.jsp?request=<%=r.request_id %>">
-			<%=r.title%>
+			<%=r.titleSafe()%>
 		</a>
 		<a href="request.jsp?request=<%=r.request_id%>&delete=true"><%=loc.get(21,"Delete")%></a>
 	</p>
@@ -34,7 +34,7 @@ response.setDateHeader("Expires", 0); // Proxies.
 %>
 	<p>
 		<a href="request.jsp?request=<%=r.request_id %>">
-			<%=r.title%>
+			<%=r.titleSafe()%>
 		</a>
 		<%=r.points%>
 	<a href="request.jsp?request=<%=r.request_id%>&service=true">

@@ -64,6 +64,22 @@ public class Request {
 	public String get_status() {
 		return Business_logic.get_request_status_localized(status);
 	}
+	
+	/**
+	 * Renders description after cleaning for html
+	 * @return a html-safe rendering of description
+	 */
+	public String descriptionSafe() {
+		return Utils.safe_render(description);
+	}
+	
+	/**
+	 * Renders title after cleaning for html
+	 * @return a html-safe rendering of title
+	 */
+	public String titleSafe() {
+		return Utils.safe_render(title);
+	}
 
 
 	public String get_categories_string() {

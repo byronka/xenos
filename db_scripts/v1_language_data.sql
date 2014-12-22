@@ -27,4 +27,12 @@ VALUES
 (18, 'Here are your requests', 'FrenchHere are your requests', 'SpanishHere are your requests'),
 (19, 'Here are other\'s requests', 'FrenchHere are other\'s requests', 'SpanishHere are other\'s requests'),
 (20, 'Handle', 'FrenchHandle', 'SpanishHandle'),
-(21, 'Delete', 'FrenchDelete', 'SpanishDelete')
+(21, 'Delete', 'FrenchDelete', 'SpanishDelete'),
+(22, 'Request Details', 'FrenchRequest Details', 'SpanishRequest Details'),
+(23, 'Description', 'FrenchDescription', 'SpanishDescription'),
+(24, 'Status', 'FrenchStatus', 'SpanishStatus'),
+(25, 'Date', 'FrenchDate', 'SpanishDate'),
+(26, 'Points', 'FrenchPoints', 'SpanishPoints'),
+(27, 'Title', 'FrenchTitle', 'SpanishTitle'),
+(28, 'Categories', 'FrenchCategories', 'SpanishCategories')
+-- (99999, 'BLAH', 'FrenchBLAH', 'SpanishBLAH')

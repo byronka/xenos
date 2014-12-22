@@ -1,6 +1,6 @@
 <%@include file="includes/header.jsp" %>
 <html>
-<head><title>The request page</title></head>
+<head><title><%=loc.get(22,"Request Details")%></title></head>
 
 <%@ page import="com.renomad.qarma.Request_utils" %>
 <%@ page import="com.renomad.qarma.Request" %>
@@ -40,12 +40,12 @@
 
 %>
 <body>
-	<p>Description: <%=r.description%>
-	<p>Status: <%=r.get_status()%>
-	<p>Date: <%=r.datetime%>
-	<p>Points: <%=r.points%>
-	<p>Title: <%=r.title%>
-	<p>Categories: <%=r.get_categories_string()%>
+	<p><%=loc.get(23,"Description")%>: <%=r.descriptionSafe()%>
+	<p><%=loc.get(24,"Status")%>: <%=r.get_status()%>
+	<p><%=loc.get(25,"Date")%>: <%=r.datetime%>
+	<p><%=loc.get(26,"Points")%>: <%=r.points%>
+	<p><%=loc.get(27,"Title")%>: <%=r.titleSafe()%>
+	<p><%=loc.get(28,"Categories")%>: <%=r.get_categories_string()%>
 	<%
 	if (show_delete_info) {%>
 
@@ -68,7 +68,7 @@
 			</a>
 
 			<%}
-			String[] messages = Request_utils.get_messages(r.request_id);
+			String[] messages = Request_utils.get_messagesSafe(r.request_id);
 		 	for (String m : messages) { %>
 
 			<p><%=m%></p>
