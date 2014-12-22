@@ -7,8 +7,8 @@ Contents:
 Programming suggestions
 Utilities
 Setting up Eclipse as a IDE for Qarma
-
-
+Localization
+Safe Rendering of Client-provided values
 
 
 
@@ -112,6 +112,40 @@ db scripts and JSP files -
 * Repeat from step 1 to add the directory for the web files, which is in $CATALINA_HOME/webapps/qarma
 
 You should now have access to all the files needed for Qarma development in Eclipse.  Unless you have a strong reason for doing so, use the ant commands for major functionalities, e.g. building, cleaning, etc.
+
+
+
+
+
+Localization
+============
+The localization mechanism is fairly simple.  All the words that come from Qarma
+system, that is, the non-user-editable words, need to exist for multiple
+languages.  That way we can roll this out across the world.  To do that, I made
+a very minimalistic localization tool.  When Tomcat first starts up the app, it
+pulls from the database all the values in the localization_lookup table. This
+contains words and phrases in English, along with translations in French and
+Spanish.  It stores all those values into a static value that remains in memory.
+Succinctly, all the localization values sit, unchanging, in memory.  Whenever
+a page needs values, it runs the command Localization.get(), along with the
+index of the value it needs and the phrase it needs localized.  
+
+
+
+
+
+Safe Rendering of Client-provided values
+========================================
+One of the problems web apps have is that users will occasionally enter html
+values for input.  Sometimes this is by accident, sometimes malicious.  Either
+way, it is crucial that we not allow the browser to see that text as valid
+html markup.  If it were to do so, then a user could enter their name as
+something like <script>alert(1)</script> and when the server sent that to the
+browser, it would parse that and run the code inside.  Yuck.  So to prevent that
+problem, we "clean" the text.  That is, all the greater-than and less-than symbols ,> or <, we convert to &gt; and &lt;
+
+The browser knows how to render that, and we are safe.  However, as time goes on
+we must be constantly vigilant to not allow any unaltered text through.
 
 
 
