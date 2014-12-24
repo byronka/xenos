@@ -46,5 +46,11 @@ VALUES
 (37, 'Handle', 'FrenchHandle', 'SpanishHandle'),
 (38, 'Message (up to 10,000 characters)', 'FrenchMessage (up to 10,000 characters)', 'SpanishMessage (up to 10,000 characters)'),
 (39, 'Are you sure you want to delete this request?', 'FrenchAre you sure you want to delete this request?', 'SpanishAre you sure you want to delete this request?'),
-(40, '"points will be refunded to you', 'French"points will be refunded to you', 'Spanish"points will be refunded to you')
+(40, 'points will be refunded to you', 'Frenchpoints will be refunded to you', 'Spanishpoints will be refunded to you'),
+(41, 'Error deleting request', 'FrenchError deleting request', 'SpanishError deleting request'),
+(42, 'Login', 'FrenchLogin', 'SpanishLogin'),
+(43, 'Register', 'FrenchRegister', 'SpanishRegister'),
+(44, 'Welcome to Qarma!', 'FrenchWelcome to Qarma!', 'SpanishWelcome to Qarma!'),
+(45, 'Successfully logged out', 'FrenchSuccessfully logged out', 'SpanishSuccessfully logged out'),
+(46, 'General Error', 'FrenchGeneral Error', 'SpanishGeneral Error')
 -- (99999, 'BLAH', 'FrenchBLAH', 'SpanishBLAH')

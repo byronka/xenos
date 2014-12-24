@@ -1,9 +1,9 @@
 <html>
 <head>
-<title>Successfully logged out</title>
+	<title>Logged out</title>
 </head>
 <body>
-  <p>You have successfully logged out</p>
-  <p>click <a href="index.jsp">here</a> to return to the login page</p>
+	<p>You have successfully logged out</p>
+	<p><a href="index.jsp">Login</a></p>
 </body>
 </html>
