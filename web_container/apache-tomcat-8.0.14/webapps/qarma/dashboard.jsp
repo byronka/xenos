@@ -13,33 +13,32 @@ response.setDateHeader("Expires", 0); // Proxies.
 <body>
 <h2><%=loc.get(17, "Welcome to the dashboard!")%></h2>
 <p><%=loc.get(18, "Here are your requests")%>:</p>
+<div class="my-requests">
 <%
   Request[] my_requests = 
     Request_utils.get_requests_for_user(user_id);
   for (Request r : my_requests) {
 %>
-	<p>
-		<a href="request.jsp?request=<%=r.request_id %>">
-			<%=r.titleSafe()%>
-		</a>
-		<a href="request.jsp?request=<%=r.request_id%>&delete=true"><%=loc.get(21,"Delete")%></a>
+	<p class="request">
+		<a href="request.jsp?request=<%=r.request_id %>"> <%=r.titleSafe()%> </a>
+		<span class="points"><%=r.points%></span>
+		<a class="delete-button" href="request.jsp?request=<%=r.request_id%>&delete=true"><%=loc.get(21,"Delete")%></a>
 	</p>
 <% } %>
+</div>
 <p><%=loc.get(19, "Here are other's requests")%>:</p>
+<div class="others-requests">
 <%
   Request[] others_requests = 
     Request_utils.get_all_requests_except_for_user(user_id);
   for (Request r : others_requests) {
 %>
-	<p>
-		<a href="request.jsp?request=<%=r.request_id %>">
-			<%=r.titleSafe()%>
-		</a>
-		<%=r.points%>
-	<a href="request.jsp?request=<%=r.request_id%>&service=true">
-		<%=loc.get(20, "Handle")%>
-	</a>
+	<p class="request">
+		<a href="request.jsp?request=<%=r.request_id %>"> <%=r.titleSafe()%> </a>
+		<span class="points"><%=r.points%></span>
+		<a class="handle-button" href="request.jsp?request=<%=r.request_id%>&service=true"> <%=loc.get(20, "Handle")%> </a>
 	</p>
 <% } %>
+</div>
 </body>
 </html>
