@@ -1,11 +1,15 @@
 <%@ page import="com.renomad.qarma.Security" %>
 <%@ page import="com.renomad.qarma.User_utils" %>
+<%@ page import="com.renomad.qarma.Localization" %>
 <%
 	//check if they are already logged in.  If so, just skip to
 	//dashboard.  it just checks the user cookie to see if we are good
 	//to go.  It doesn't use username and password.
   int user_id = Security.check_if_allowed(request);
 	if (user_id > 0) { response.sendRedirect("dashboard.jsp"); }
+
+	//set up an object to localize text
+  Localization loc  = new Localization(request.getLocale());
 
 	//get the values straight from the client
 	String first_name = "";
@@ -26,26 +30,26 @@
 		//check the first name
     first_name = request.getParameter("first_name");
 		if (first_name.length() == 0) {
-			first_name_error_msg = "Please enter a first name";
+			first_name_error_msg = loc.get(53,"Please enter a first name");
 			validation_error |= true;
 		}
 
 		//check the last name
     last_name = request.getParameter("last_name");
 		if (last_name.length() == 0) {
-			last_name_error_msg = "Please enter a last name";
+			last_name_error_msg = loc.get(54,"Please enter a last name");
 			validation_error |= true;
 		}
 
     email = request.getParameter("email");
 		if (email.length() == 0) {
-			email_error_msg = "Please enter an email";
+			email_error_msg = loc.get(55,"Please enter an email");
 			validation_error |= true;
 		}
 
     password = request.getParameter("password");
 		if (password.length() == 0) {
-			password_error_msg = "Please enter a password";
+			password_error_msg = loc.get(56,"Please enter a password");
 			validation_error |= true;
 		}
 
@@ -55,41 +59,41 @@
 			if (succeed) {
 				response.sendRedirect("thanks.jsp");
 			} else {
-			  user_creation_error_msg = "That user already exists";
+			  user_creation_error_msg = loc.get(57,"That user already exists");
 			}
 		}
 	}
 %>
 <html>
-<head><title>Account Creation</title></head>
+	<head><title><%=loc.get(58,"Account Creation")%></title></head>
 <body>
 <h2>
-  Create a new account
+	<%=loc.get(59,"Create a new account")%>
 </h2>
   <form id="enter_name_form" action="register.jsp" method="post">
 		<div><%=user_creation_error_msg%></div>
     <p>
-      First Name:
+		<%=loc.get(60,"First Name")%>:
 			<input value="<%=first_name%>" name="first_name" type="text" />
 			<span><%=first_name_error_msg %></span>
 		</p>
 		<p>
-      Last Name:
+		<%=loc.get(61,"Last Name")%>:
 			<input value="<%=last_name%>" name="last_name" type="text" />
 			<span><%=last_name_error_msg %></span>
     </p>
     <p>
-      Email:
+		<%=loc.get(62,"Email")%>:
 			<input value="<%=email%>" name="email" type="text" />
 			<span><%=email_error_msg %></span>
     </p>
     <p>
-      Password:
+		<%=loc.get(63,"Password")%>:
 			<input value="<%=password%>" name="password" type="password" />
 			<span><%=password_error_msg %></span>
     </p>
 
-    <button form="enter_name_form" >Create my new user!</button>
+		<button form="enter_name_form" ><%=loc.get(64,"Create my new user!")%></button>
   </form>
 </body>
 </html>

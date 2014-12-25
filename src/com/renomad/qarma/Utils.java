@@ -1,5 +1,8 @@
 package com.renomad.qarma;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
 	* Utils holds utilities that apply across many situations
 	*/
@@ -35,6 +38,29 @@ public final class Utils {
 	  return s.replaceAll("<", "&lt;")
 			  .replaceAll(">", "&gt;");
   }
+
+	/**
+		* gets all the parameters from a query string
+		* @param qs a query string from a url string
+		* @return a map of params to values, as strings.  It is
+		* incumbent upon you to convert strings as needed.
+		*/
+	public static Map<String, String> parse_qs(String qs) {
+		String[] params = qs.split("&");
+		if (params.length == 0) {
+			return null;
+		}
+		Map<String,String> values = new HashMap<String,String>();
+		for (String p : params) {
+			String[] items = p.split("=");
+			if (items.length != 2) {
+				continue;
+			}
+			values.put(items[0], items[1]);
+		}
+		return values;
+	}
+
 
   public static int parse_int(String s) {
     int val;

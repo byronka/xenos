@@ -141,7 +141,7 @@ public final class Build_db_schema {
   private static void create_database() {
 		//create the database
       run_sql_statement_before_db_exists(
-          "CREATE DATABASE IF NOT EXISTS test;");
+          "CREATE DATABASE IF NOT EXISTS qarma_database;");
 
 		//create the config table
 			run_sql_statement(

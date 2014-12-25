@@ -13,6 +13,13 @@ import com.renomad.qarma.User_utils;
 
 
 /**
+ * This class acts to get localization data from the database and store
+ * that in an object that stays resident throughout the runtime of the app.
+ * That is, it gets our text in various languages (French, English, etc.) 
+ * like "welcome to Qarma" and puts that into a multi-dimensional array, 
+ * called words_array.  That array is then available to the entire app through
+ * some methods in this class.  It is non-writable, so no concern over
+ * multi-threading issues.
  * Note that the annotation WebListener registers this class as a listener
  * so that Tomcat will call the method contextInitialized when the app starts
  * so we can load our localization object.
@@ -88,7 +95,7 @@ public class Text implements javax.servlet.ServletContextListener {
 
 	public void contextDestroyed(ServletContextEvent sce) {
 		//Nothing to do here.  Required to satisfy ServletContextListener interface.
-		//We *do* need contextInitialized to load up the localization object.
+		//We *do* need contextInitialized() to load up the localization object.
 	}
 	
 	
@@ -97,7 +104,8 @@ public class Text implements javax.servlet.ServletContextListener {
 		* by id.
 		* @param user_lang the language set for a given user
 		* @param index index into the array of strings
-		* @return the localized string
+		* @return the localized string, or an error message indicating
+		* out-of-index error with the values that are out-of-index.
 		*/
 	public static String get(int user_lang, int index) {
 		try {

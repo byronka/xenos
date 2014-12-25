@@ -1,10 +1,14 @@
 <%@ page import="com.renomad.qarma.Security" %>
+<%@ page import="com.renomad.qarma.Localization" %>
 <%
 	//check if they are already logged in.  If so, just skip to dashboard.
 	//it just checks the user cookie to see if we are good to go.  It doesn't use
 	//username and password.
   int user_id = Security.check_if_allowed(request);
 	if (user_id > 0) { response.sendRedirect("dashboard.jsp"); }
+
+	//set up an object to localize text
+  Localization loc  = new Localization(request.getLocale());
 
 	//get the values straight from the client
 	String user = "";
@@ -23,12 +27,12 @@
 
 		//validate the password field
 		if (pass.length() == 0) {
-				pass_error_msg = "Please enter a password";
+				pass_error_msg = loc.get(47,"Please enter a password");
 		}
 
 		//validate the username field
 		if (user.length() == 0) {
-				user_error_msg = "Please enter a username";
+				user_error_msg = loc.get(48,"Please enter a username");
 		}
 
 		int uid = 0;
@@ -39,27 +43,27 @@
 				new Cookie("qarma_cookie", Integer.toString(uid)));
 			response.sendRedirect("dashboard.jsp");
 		} else {
-			login_error_msg = "Invalid username / password combination";
+			login_error_msg = loc.get(49,"Invalid username / password combination");
 		}
 	}
 
 %>
 <html>
-	<head><title>Login page</title></head>
+	<head><title><%=loc.get(50,"Login page")%></title></head>
 	<body>
 		<form method="POST" action="login.jsp">
 		<div><%=login_error_msg%></div>
 		<p>
-		Username: 
+		<%=loc.get(51,"Username")%>: 
 			<input type="text" autofocus="autofocus" name="username" value="<%=user%>"/>
 			<span><%=user_error_msg%></span>
 		</p>
 		<p>
-		Password: 
+		<%=loc.get(52,"Password")%>: 
 		<input type="password" name="password" value="<%=pass%>"/>
 		<span><%=pass_error_msg%></span>
 		</p>
-		<button type="submit">Login</button>
+		<button type="submit"><%=loc.get(42,"Login")%></button>
 	</form>
 	</body>
 </html>

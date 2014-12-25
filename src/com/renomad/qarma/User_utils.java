@@ -51,9 +51,9 @@ public final class User_utils {
   /** * gets the user's preferred language
     *
     * @return an int representing the user's preferred language, or
-		* -1 if failure occurred.
+		* null if they have no preferred language or error.
     */
-  public static int get_user_language(int user_id) {
+  public static Integer get_user_language(int user_id) {
     String sqlText = "SELECT language FROM user WHERE user_id = ?;";
 		PreparedStatement pstmt = null;
     try {
@@ -63,14 +63,14 @@ public final class User_utils {
 			pstmt.setInt( 1, user_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return -1;
+        return null;
       }
 
       resultSet.next(); //move to the first set of results.
-      return resultSet.getInt("language");
+      return resultSet.getObject("language", Integer.class);
 		} catch (SQLException ex) {
 			Database_access.handle_sql_exception(ex);
-			return -1;
+			return null;
     } finally {
       Database_access.close_statement(pstmt);
     }

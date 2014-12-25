@@ -28,11 +28,11 @@ CREATE TABLE IF NOT EXISTS
     last_name NVARCHAR(100),
     email NVARCHAR(200) UNIQUE, 
     password NVARCHAR(100),
-	points int unsigned,
-	language int unsigned NOT NULL DEFAULT 0,
-	is_logged_in BOOL, 
-	last_time_logged_in DATETIME,
-	last_ip_logged_in VARCHAR(40)
+		points int unsigned,
+		language int unsigned NULL,
+		is_logged_in BOOL, 
+		last_time_logged_in DATETIME,
+		last_ip_logged_in VARCHAR(40)
   );
 
 ---DELIMITER---
