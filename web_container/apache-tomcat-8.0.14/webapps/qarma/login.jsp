@@ -50,20 +50,25 @@
 %>
 <html>
 	<head><title><%=loc.get(50,"Login page")%></title></head>
+	<link rel="stylesheet" href="login.css" />
 	<body>
-		<form method="POST" action="login.jsp">
-		<div><%=login_error_msg%></div>
-		<p>
-		<%=loc.get(51,"Username")%>: 
-			<input type="text" autofocus="autofocus" name="username" value="<%=user%>"/>
-			<span><%=user_error_msg%></span>
-		</p>
-		<p>
-		<%=loc.get(52,"Password")%>: 
-		<input type="password" name="password" value="<%=pass%>"/>
-		<span><%=pass_error_msg%></span>
-		</p>
-		<button type="submit"><%=loc.get(42,"Login")%></button>
-	</form>
+		<div class="signin">
+			<form method="POST" action="login.jsp">
+			<div><%=login_error_msg%></div>
+			<div class="user-input">
+				<div class="label"><%=loc.get(51,"Username")%>: </div>
+				<input type="text" autofocus="autofocus" name="username" value="<%=user%>"/>
+				<span><%=user_error_msg%></span>
+			</div>
+			<div class="password-input">
+				<div class="label"><%=loc.get(52,"Password")%>: </div>
+				<input type="password" name="password" value="<%=pass%>"/>
+				<span><%=pass_error_msg%></span>
+			</div>
+			<button type="submit">
+				<%=loc.get(42,"Login")%>
+			</button>
+			</form>
+		</div>
 	</body>
 </html>
