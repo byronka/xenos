@@ -18,7 +18,7 @@ public final class Delete_db_schema {
     */
   static void delete_database() {
     Build_db_schema
-      .run_sql_statement_before_db_exists("DROP DATABASE test;");
+      .run_sql_statement_before_db_exists("DROP DATABASE qarma_database;");
   }
 
 }
