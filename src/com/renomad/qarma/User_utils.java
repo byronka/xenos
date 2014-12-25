@@ -67,7 +67,11 @@ public final class User_utils {
       }
 
       resultSet.next(); //move to the first set of results.
-      return resultSet.getObject("language", Integer.class);
+      int lang = resultSet.getInt("language");
+			if (resultSet.wasNull()) {
+				return null;
+			}
+			return lang;
 		} catch (SQLException ex) {
 			Database_access.handle_sql_exception(ex);
 			return null;
