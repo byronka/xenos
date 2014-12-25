@@ -149,3 +149,9 @@ we must be constantly vigilant to not allow any unaltered text through.
 
 
 
+
+Viewing the database values
+===========================
+Qarma stores its values in a schema named qarma-database.
+There are a variety of tables, they are often self-explanatory, but more clues
+can often be found by reviewing the scripts in db_scripts/
