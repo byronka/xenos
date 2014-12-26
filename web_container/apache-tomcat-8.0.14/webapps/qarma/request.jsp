@@ -1,4 +1,4 @@
-<%@include file="includes/header.jsp" %>
+<%@include file="includes/init.jsp" %>
 <html>
 <head><title><%=loc.get(22,"Request Details")%></title></head>
 
@@ -40,6 +40,7 @@
 
 %>
 <body>
+	<%@include file="includes/header.jsp" %>
 	<p><%=loc.get(23,"Description")%>: <%=r.descriptionSafe()%>
 	<p><%=loc.get(24,"Status")%>: <%=r.get_status()%>
 	<p><%=loc.get(25,"Date")%>: <%=r.datetime%>

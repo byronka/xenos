@@ -1,17 +1,6 @@
-<%@ page import="com.renomad.qarma.Localization" %>
-<%@ page import="com.renomad.qarma.User_utils" %>
-<%@ page import="com.renomad.qarma.User" %>
-<% 
-	//Note that these objects below will thus be available to most pages.
-  int user_id = com.renomad.qarma.Security.check_if_allowed(request);
-  if (user_id <= 0) { 
-  	response.sendRedirect("login.jsp"); 
-  	return;
-  }
-  Localization loc  = new Localization(user_id, request.getLocale());
-  User user = User_utils.get_user_displayname(user_id);
-%>
-<a href="dashboard.jsp">Qarma</a>
+<nav class="cl-effect-1">
+	<a class="trademark" href="dashboard.jsp">Qarma</a>
+</nav>
 <form method="GET" action="dashboard.jsp" >
 	<span><input type=text" name="search" maxlength="20" />
 		<button><%=loc.get(1, "search")%></button></span>

@@ -1,4 +1,4 @@
-<%@include file="includes/header.jsp" %>
+<%@include file="includes/init.jsp" %>
 <html>                                 
   <head><title><%=loc.get(15, "Create a request")%></title></head>
 
@@ -62,6 +62,7 @@
   %>
 
   <body>
+	<%@include file="includes/header.jsp" %>
     <h2>Create a Request!</h2>
     <form method="POST" action="create_request.jsp">
 			<div><%=not_enough_points_error_msg %></div>

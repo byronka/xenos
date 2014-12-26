@@ -1,4 +1,4 @@
-<%@include file="includes/header.jsp" %>
+<%@include file="includes/init.jsp" %>
 <html>
 <head><title><%=loc.get(31, "Request has been deleted")%></title></head>
 

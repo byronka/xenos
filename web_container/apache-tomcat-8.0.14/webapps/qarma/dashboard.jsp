@@ -1,6 +1,9 @@
-<%@include file="includes/header.jsp" %>
+<%@include file="includes/init.jsp" %>
 <html>                                 
-	<head><title><%=loc.get(16,"The dashboard")%></title></head>
+	<head>
+		<link rel="stylesheet" href="dashboard.css" >
+		<title><%=loc.get(16,"The dashboard")%></title>
+	</head>
 
 <%@ page import="com.renomad.qarma.Request_utils" %>
 <%@ page import="com.renomad.qarma.Request" %>
@@ -11,6 +14,7 @@ response.setDateHeader("Expires", 0); // Proxies.
 %>
 
 <body>
+<%@include file="includes/header.jsp" %>
 <h2><%=loc.get(17, "Welcome to the dashboard!")%></h2>
 <p><%=loc.get(18, "Here are your requests")%>:</p>
 <div class="my-requests">
