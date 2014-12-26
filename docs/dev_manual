@@ -155,3 +155,14 @@ Viewing the database values
 Qarma stores its values in a schema named qarma-database.
 There are a variety of tables, they are often self-explanatory, but more clues
 can often be found by reviewing the scripts in db_scripts/
+
+
+
+
+Running Tomcat in SSL
+=====================
+I set up Tomcat to work exclusively on SSL, following the instructions at:
+
+http://tomcat.apache.org/tomcat-6.0-doc/ssl-howto.html#Configuration
+
+I have made a copy of that file here, at ssl-howto-tomcat.txt
