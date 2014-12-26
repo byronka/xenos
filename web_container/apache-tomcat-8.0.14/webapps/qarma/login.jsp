@@ -52,6 +52,7 @@
 	<head><title><%=loc.get(50,"Login page")%></title></head>
 	<link rel="stylesheet" href="login.css" />
 	<body>
+		<div class="trademark">Qarma</div>
 		<div class="signin">
 			<form method="POST" action="login.jsp">
 			<div><%=login_error_msg%></div>
