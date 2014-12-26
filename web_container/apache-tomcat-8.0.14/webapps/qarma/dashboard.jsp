@@ -15,8 +15,7 @@ response.setDateHeader("Expires", 0); // Proxies.
 
 <body>
 <%@include file="includes/header.jsp" %>
-<h2><%=loc.get(17, "Welcome to the dashboard!")%></h2>
-<p><%=loc.get(18, "Here are your requests")%>:</p>
+<h2 class="my-requests-header"><%=loc.get(18, "Your requests")%>:</h2>
 <div class="my-requests">
 <%
   Request[] my_requests = 
@@ -30,7 +29,7 @@ response.setDateHeader("Expires", 0); // Proxies.
 	</p>
 <% } %>
 </div>
-<p><%=loc.get(19, "Here are other's requests")%>:</p>
+<h2 class="others-requests-header"><%=loc.get(19, "Other's requests")%>:</h2>
 <div class="others-requests">
 <%
   Request[] others_requests = 

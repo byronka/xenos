@@ -18,22 +18,84 @@ body {
 	background: -ms-linear-gradient(top, #2F2727, #1a82f7);
 	/* Opera 11.10+ */
 	background: -o-linear-gradient(top, #2F2727, #1a82f7);
+	height: 100%;
 }
 
-.trademark {
+.search {
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	width: 300px;
+}
+
+form.search input {
+	height:30px;
+}
+
+form.search button {
+	height: 30px;
+}
+
+div.user-displayname {
+	position: relative;
+	top: 10px;
+	left: 20px;
+}
+
+section.header {
+	border: 1px solid grey;
+	height: 60px;
+}
+
+h2.my-requests-header {
+	margin-left: auto;
+	margin-right: auto;
+  width: 400px;
+	color:#FF6600;
+}
+div.my-requests {
+	background-color: white;
+	margin-left: auto;
+	margin-right: auto;
+  width: 400px;
+}
+
+h2.others-requests-header {
+	margin-left: auto;
+	margin-right: auto;
+  width: 400px;
+	color:#FF6600;
+}
+
+div.others-requests {
+	background-color: white;
+	margin-left: auto;
+	margin-right: auto;
+  width: 400px;
+}
+
+div.trademark {
 	text-shadow:6px 7px 4px rgba(34,87,73,0.5);
-	font-weight:normal;
+	font-weight:bold;
 	color:#FF6600;
 	letter-spacing:10pt;
 	word-spacing:1pt;
 	font-size:36px;
 	text-align:left;
-	font-family:impact, sans-serif;
 	line-height:1;
 	position: absolute;
-	top: 10px;
-	left: 10px;
 }
+
+nav a {
+	position: relative;
+	display: inline-block;
+	outline: none;
+	color:#FF6600;
+	text-decoration: none;
+	text-shadow: 0 0 1px rgba(255,255,255,0.3);
+	font-size: 1.35em;
+}
+
 
 nav a:hover,
 nav a:focus {
