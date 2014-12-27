@@ -22,7 +22,11 @@
 	<div class="request">
 		<a href="request.jsp?request=<%=r.request_id %>"> <%=r.titleSafe()%> </a>
 		<span class="points"><%=r.points%></span>
-		<a class="delete-button" href="request.jsp?request=<%=r.request_id%>&delete=true"><%=loc.get(21,"Delete")%></a>
+		<a 
+			class="delete-button" 
+			href="request.jsp?request=<%=r.request_id%>&delete=true">
+			<%=loc.get(21,"Delete")%>
+		</a>
 	</div>
 <% } %>
 </div>
@@ -39,12 +43,15 @@
 		<a href="request.jsp?request=<%=r.request_id %>">
 			<%=r.titleSafe()%> 
 		</a>
-		<span class="points"><%=r.points%></span>
-		<span class="rank"><%=r.rank%></span>
-		<span class="description"><%=r.descriptionSafe()%></span>
-		<span class="status"><%=r.get_status()%></span>
-		<span class="datetime"><%=r.datetime%></span>
-		<span class="requesting-user-id"><%=r.requesting_user_id%></span>
+		<div class="points"><%=r.points%></div>
+		<div class="rank"><%=r.rank%></div>
+		<div class="description"><%=r.descriptionSafe()%></div>
+		<div class="status"><%=loc.get(Request_utils.get_status_localization_value(r.status),"")%></div>
+		<div class="datetime"><%=r.datetime%></div>
+		<div class="requesting-user-id"><%=r.requesting_user_id%></div>
+		<%for (Integer c : r.get_categories()) {%>
+			<div class="category"><%=loc.get(c,"")%></div>
+		<%}%>
 		<a 
 			class="handle-button" 
 			href="request.jsp?request=<%=r.request_id%>&service=true"> 

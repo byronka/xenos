@@ -1,6 +1,5 @@
 package com.renomad.qarma;
 
-import com.renomad.qarma.Business_logic;
 import java.util.Arrays;
 
 /**
@@ -61,9 +60,6 @@ public class Request {
 		return c;
 	}
 
-	public String get_status() {
-		return Business_logic.get_request_status_localized(status);
-	}
 	
 	/**
 	 * Renders description after cleaning for html
@@ -79,15 +75,6 @@ public class Request {
 	 */
 	public String titleSafe() {
 		return Utils.safe_render(title);
-	}
-
-
-	public String get_categories_string() {
-		StringBuilder sb = new StringBuilder("");
-		for (Integer c : categories) {
-			sb.append(Business_logic.get_category_localized(c)).append(" ");
-		}
-		return sb.toString();
 	}
 
 

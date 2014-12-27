@@ -38,8 +38,10 @@ VALUES
 -- these are intentionally in all-caps to emphasize they are not
 -- supposed to go straight to the client.  They must be localized first.
 -- this should be easy to expand later.
-INSERT INTO request_category (request_category_value)
-VALUES('MATH'),('PHYSICS'),('ECONOMICS'),('HISTORY'),('ENGLISH');
+INSERT INTO request_category (request_category_value, localization_value )
+VALUES('MATH',71),('PHYSICS',72),('ECONOMICS',73),('HISTORY',74),('ENGLISH',75);
+
+
 
 ---DELIMITER---
 -- Here we set up all the requests to have some categories.

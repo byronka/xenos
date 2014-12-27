@@ -13,7 +13,6 @@ import com.renomad.qarma.Request_utils;
 import com.renomad.qarma.User_utils;
 import com.renomad.qarma.Request_status;
 import com.renomad.qarma.Database_access;
-import com.renomad.qarma.Business_logic;
 
 public class Request_tests {
 

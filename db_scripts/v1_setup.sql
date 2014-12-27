@@ -84,7 +84,11 @@ request (
 CREATE TABLE IF NOT EXISTS 
 request_category ( 
   request_category_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	request_category_value VARCHAR(20)
+	request_category_value VARCHAR(20),
+	localization_value INT NOT NULL,
+  FOREIGN KEY FK_localization_value (localization_value )
+    REFERENCES localization_lookup (local_id)
+    ON DELETE CASCADE
 )
 
 

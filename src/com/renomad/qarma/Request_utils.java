@@ -22,14 +22,14 @@ public final class Request_utils {
 	}
 
 	/**
-		* returns a Map of localized request categories, 
+		* returns a Map of localization values
 		* indexed by database id.
-		* @return Map of strings, indexed by id, or null if nothing in db.
+		* @return Map of Integers, indexed by id, or null if nothing in db.
 		*/
-	public static Map<Integer, String> get_all_categories() {
+	public static Map<Integer, Integer> get_all_categories() {
 		// 1. set the sql
     String sqlText = 
-			"SELECT request_category_id FROM request_category; ";
+			"SELECT request_category_id, localization_value FROM request_category; ";
 		// 2. set up values we'll need outside the try
 		PreparedStatement pstmt = null;
     try {
@@ -46,11 +46,11 @@ public final class Request_utils {
 
 			// 6. get values from database and convert to an object
 			//keep adding rows of data while there is more data
-      Map<Integer, String> categories = new HashMap<Integer,String>();
+      Map<Integer, Integer> categories = new HashMap<Integer,Integer>();
       while(resultSet.next()) {
         int rcid = resultSet.getInt("request_category_id");
-				String category = Business_logic.get_category_localized(rcid);
-        categories.put(rcid, category); 
+				int localval = resultSet.getInt("localization_value");
+        categories.put(rcid, localval); 
       }
 
 			return categories;
@@ -64,17 +64,18 @@ public final class Request_utils {
 
 
 	/**
-		* gets an array of request categories for a given request
+		* gets an array of request categories for a given request as localization values
 		*
 		* @param request_id the id of the request to check categories
-		* @return an array of Strings, 
-		* representing the categories, or null if failure.
+		* @return an array of Integers representing the localization values
+		*  or null if failure.
 		*/
 	public static Integer[] get_categories_for_request(int request_id) {
     String sqlText = 
-			"SELECT request_category_id "+
-				"FROM request_to_category "+
-				"WHERE request_id = ?;";
+			"SELECT rc.localization_value "+
+				"FROM request_to_category rtc "+
+				"JOIN request_category rc ON rc.request_category_id = rtc.request_category_id "+
+				"WHERE rtc.request_id = ?;";
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
@@ -89,8 +90,8 @@ public final class Request_utils {
 			//keep adding rows of data while there is more data
       ArrayList<Integer> categories = new ArrayList<Integer>();
       while(resultSet.next()) {
-        int rcid = resultSet.getInt("request_category_id");
-        categories.add(rcid);
+        int lv = resultSet.getInt("localization_value");
+        categories.add(lv);
       }
 
       //convert arraylist to array
@@ -327,15 +328,11 @@ public final class Request_utils {
 
   /**
     * given all the data to add a request, does so.
-    * if any parts fail, this will return false.
     * @param user_id the user's id
     * @param desc a description string, the core of the request
     * @param points the points are the currency for the request
     * @param title the short title for the request
     * @param categories the various categories for this request, 
-		*  provided to us here as a single string.  
-		*  Comes straight from the client, we have to parse it.
-		* @return id of new request, or -1 if failed to add
     */
   public static Request_response put_request(
       int user_id, String desc, int points, 
@@ -354,13 +351,14 @@ public final class Request_utils {
 
 	/**
 		* gets all the request categories that exist as an
-		* array of String.
-		* @return a String array of all categories
+		* array of their localization values, as Integers.
+		* @return a Integer array of all categories' localization values, useful
+		* for calling to the localization mechanism.  See com.renomad.qarma.Localization
 		*/
-	public static String[] get_str_array_categories() {
-			Map<Integer, String> categories = get_all_categories();
-			java.util.Collection<String> c = categories.values();
-			String[] cat_array = c.toArray(new String[0]);
+	public static Integer[] get_category_local_values() {
+			Map<Integer, Integer> categories = get_all_categories();
+			java.util.Collection<Integer> c = categories.values();
+			Integer[] cat_array = c.toArray(new Integer[0]);
       return cat_array;
 	}
 
@@ -375,9 +373,8 @@ public final class Request_utils {
 		* unchanged from the client.
 		* @return an integer array of the applicable categories
 		*/
-	public static Integer[] parse_categories_string(String categories_str) {
-    
-		Map<Integer,String> all_categories = get_all_categories();
+	public static Integer[] parse_categories_string(String categories_str, Localization loc) {
+		Map<Integer,Integer> all_categories = get_all_categories();
     
     //guard clauses
     if (all_categories == null) {return new Integer[0];}
@@ -386,8 +383,9 @@ public final class Request_utils {
 
 		String lower_case_categories_str = categories_str.toLowerCase();
 		ArrayList<Integer> selected_categories = new ArrayList<Integer>();
-		for (Integer i : all_categories.keySet()) {
-    	String c = Business_logic.get_category_localized(i);
+		for (Integer i : all_categories.values()) {
+    	String c = loc.get(i,"").toLowerCase();
+			System.err.println(c);
 			if (lower_case_categories_str.contains(c)) {
 				selected_categories.add(i);
 			}
@@ -719,6 +717,26 @@ public final class Request_utils {
 			this.id = id;
 		}
 	
+	}
+
+
+	/**
+		* acts as a simple lookup table between the status
+		* value and the index into localized values
+		* Since there are so few statuses, probably no harm.  If
+		* the paradigm changes so there are lots of statuses, change this paradigm.
+		*/
+	public static int get_status_localization_value(int status) {
+		switch(status) {
+			case 1:
+				return 76; //open
+			case 2:
+				return 77; //closed
+			case 3:
+				return 78; //taken
+			default:
+				return -1;
+		}
 	}
 
 }

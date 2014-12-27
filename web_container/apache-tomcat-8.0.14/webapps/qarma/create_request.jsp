@@ -41,7 +41,7 @@
 			//parse out the categories from a string the client gave us
 			c = request.getParameter("categories");
 			
-			Integer[] cat = Request_utils.parse_categories_string(c);
+			Integer[] cat = Request_utils.parse_categories_string(c, loc );
 			
 			if (cat.length == 0) {
 				validation_error |= true;
@@ -93,9 +93,9 @@
 
 			<div id='available-categories'>
 				<%
-					String[] categories = Request_utils.get_str_array_categories();
-					for(String category : categories) { %>
-					<%=category%>,
+					Integer[] local_cat_values = Request_utils.get_category_local_values();
+					for(Integer val : local_cat_values) { %>
+					<%=loc.get(val,"")%>,
 				<%}%>
 			</div>
       <button type="submit"><%=loc.get(14,"Create Request")%></button>
