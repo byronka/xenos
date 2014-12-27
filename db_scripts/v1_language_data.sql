@@ -74,7 +74,7 @@ VALUES
 (65, 'Logged out', 'FrenchLogged out', 'SpanishLogged out'),
 (66, 'You have successfully logged out', 'FrenchYou have successfully logged out', 'SpanishYou have successfully logged out'),
 (67, 'Security problem', 'FrenchSecurity problem', 'SpanishSecurity problem'),
-(68, 'You have successfully logged out', 'FrenchYour browser did not send us the proper credentials.', 'SpanishYour browser did not send us the proper credentials.'),
+(68, 'Your browser did not send us the proper credentials.', 'FrenchYour browser did not send us the proper credentials.', 'SpanishYour browser did not send us the proper credentials.'),
 (69, 'Thanks for registering!', 'FrenchThanks for registering!', 'SpanishThanks for registering!'),
 (70, 'You are awesome! thanks so much for entering your name!', 'FrenchYou are awesome! thanks so much for entering your name!', 'SpanishYou are awesome! thanks so much for entering your name!'),
 (71, 'math', 'Frenchmath', 'Spanishmath'),
@@ -84,5 +84,7 @@ VALUES
 (75, 'English', 'FrenchEnglish', 'SpanishEnglish'),
 (76, 'open', 'Frenchopen', 'Spanishopen'),
 (77, 'closed', 'Frenchclosed', 'Spanishclosed'),
-(78, 'taken', 'Frenchtaken', 'Spanishtaken')
+(78, 'taken', 'Frenchtaken', 'Spanishtaken'),
+(79, 'Rank', 'FrenchRank', 'SpanishRank'),
+(80, 'User', 'FrenchUser', 'SpanishUser')
 -- (99999, '', 'French', 'Spanish')
