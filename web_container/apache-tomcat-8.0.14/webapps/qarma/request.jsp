@@ -42,11 +42,16 @@
 <body>
 	<%@include file="includes/header.jsp" %>
 	<p><%=loc.get(23,"Description")%>: <%=r.descriptionSafe()%>
-	<p><%=loc.get(24,"Status")%>: <%=r.get_status()%>
+	<p><%=loc.get(24,"Status")%>: 
+		<%=loc.get(Request_utils.get_status_localization_value(r.status),"")%>
 	<p><%=loc.get(25,"Date")%>: <%=r.datetime%>
 	<p><%=loc.get(26,"Points")%>: <%=r.points%>
 	<p><%=loc.get(27,"Title")%>: <%=r.titleSafe()%>
-	<p><%=loc.get(28,"Categories")%>: <%=r.get_categories_string()%>
+	<p><%=loc.get(28,"Categories")%>: 
+			<%for (Integer c : r.get_categories()) {%>
+				<span class="category"><%=loc.get(c,"")%> </span>
+			<%}%>
+	</p>
 	<%
 	if (show_delete_info) {%>
 

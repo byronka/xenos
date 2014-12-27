@@ -5,9 +5,12 @@
 %>
 <html>
 	<head><title><%=loc.get(69,"Thanks for registering!")%></title></head>
+	<link rel="stylesheet" href="thanks.css">
 <body>
-
-	<h3><%=loc.get(70,"You are awesome! thanks so much for entering your name!")%></h3>
-	<p><a href="login.jsp"><%=loc.get(42,"login")%></a></p>
+	<div class="trademark">Qarma</div>
+	<nav class="cl-effect-1">
+		<p><%=loc.get(70,"You are awesome! thanks so much for entering your name!")%></p>
+		<p><a href="index.jsp"><%=loc.get(42,"Login")%></a></p>
+	</nav>
 </body>
 </html>
