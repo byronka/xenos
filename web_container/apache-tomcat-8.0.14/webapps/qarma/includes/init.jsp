@@ -5,7 +5,7 @@
 	//Note that these objects below will thus be available to most pages.
   int user_id = com.renomad.qarma.Security.check_if_allowed(request);
   if (user_id <= 0) { 
-  	response.sendRedirect("login.jsp"); 
+  	response.sendRedirect("sorry.jsp"); 
   	return;
   }
   Localization loc  = new Localization(user_id, request.getLocale());

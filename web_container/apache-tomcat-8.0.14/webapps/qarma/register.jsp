@@ -66,34 +66,44 @@
 %>
 <html>
 	<head><title><%=loc.get(58,"Account Creation")%></title></head>
+	<link rel="stylesheet" href="register.css">
 <body>
-<h2>
-	<%=loc.get(59,"Create a new account")%>
-</h2>
-  <form id="enter_name_form" action="register.jsp" method="post">
-		<div><%=user_creation_error_msg%></div>
-    <p>
-		<%=loc.get(60,"First Name")%>:
-			<input value="<%=first_name%>" name="first_name" type="text" />
-			<span><%=first_name_error_msg %></span>
-		</p>
-		<p>
-		<%=loc.get(61,"Last Name")%>:
-			<input value="<%=last_name%>" name="last_name" type="text" />
-			<span><%=last_name_error_msg %></span>
-    </p>
-    <p>
-		<%=loc.get(62,"Email")%>:
-			<input value="<%=email%>" name="email" type="text" />
-			<span><%=email_error_msg %></span>
-    </p>
-    <p>
-		<%=loc.get(63,"Password")%>:
-			<input value="<%=password%>" name="password" type="password" />
-			<span><%=password_error_msg %></span>
-    </p>
+	<div class="trademark">Qarma</div>
+	<div class="register">
+		<form id="enter_name_form" action="register.jsp" method="post">
 
-		<button form="enter_name_form" ><%=loc.get(64,"Create my new user!")%></button>
-  </form>
+			<div class="error"><%=user_creation_error_msg%></div>
+
+			<div class="first-name">
+				<div class="label"><%=loc.get(60,"First Name")%>:</div>
+				<input value="<%=first_name%>" name="first_name" type="text" />
+				<span class="error"><%=first_name_error_msg %></span>
+			</div>
+
+			<div class="last-name">
+			  <div class="label"><%=loc.get(61,"Last Name")%>:</div> 
+				<input value="<%=last_name%>" name="last_name" type="text" />
+				<span class="error"><%=last_name_error_msg %></span>
+			</div>
+
+			<div class="email">
+				<div class="label"><%=loc.get(62,"Email")%>:</div> 
+				<input value="<%=email%>" name="email" type="text" />
+				<span class="error"><%=email_error_msg %></span>
+			</div>
+
+			<div class="password">
+				<div class="label"><%=loc.get(63,"Password")%>:</div> 
+				<input value="<%=password%>" name="password" type="password" />
+				<span class="error"><%=password_error_msg %></span>
+			</div>
+
+			<button form="enter_name_form" >
+				<%=loc.get(64,"Create my new user!")%>
+			</button>
+
+		</form>
+
+	</div>
 </body>
 </html>
