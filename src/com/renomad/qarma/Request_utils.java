@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import com.renomad.qarma.Database_access;
+import com.renomad.qarma.Request;
+import com.renomad.qarma.Others_Request;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Connection;
@@ -149,14 +151,17 @@ public final class Request_utils {
   }
 
 
+
   /**
-    * Gets all the requests for the user.
+    * Gets information necessary for display on the dashboard,
+		* about requests that are not the currently logged-in user's.
     * 
 		* @param user_id the id of a given user
-    * @return an array of Requests that were *not* made by that user
+    * @return an array of Others_Requests that were *not* made 
+		* by that user, or an empty array of Others_Requests if failure or none.
     */
-  public static Request[] get_all_requests_except_for_user(int user_id) {
-    String sqlText = "SELECT * FROM request WHERE requesting_user_id <> ?";
+  public static Others_Request[] get_all_requests_except_for_user(int user_id) {
+		String sqlText = "SELECT r.request_id, r.datetime, r.description, r.status, r.points, r.title, u.rank, r.requesting_user_id FROM request r JOIN user u ON u.user_id = r.requesting_user_id WHERE requesting_user_id <> ?";
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
@@ -165,11 +170,11 @@ public final class Request_utils {
       pstmt.setInt( 1, user_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return new Request[0];
+				return new Others_Request[0];
       }
 
 			//keep adding rows of data while there is more data
-      ArrayList<Request> requests = new ArrayList<Request>();
+      ArrayList<Others_Request> requests = new ArrayList<Others_Request>();
       while(resultSet.next()) {
         int rid = resultSet.getInt("request_id");
         String dt = resultSet.getString("datetime");
@@ -178,17 +183,20 @@ public final class Request_utils {
         int s = resultSet.getInt("status");
         String t = resultSet.getNString("title");
         int ru = resultSet.getInt("requesting_user_id");
-        Request request = new Request(rid,dt,d,p,s,t,ru);
+        int ra = resultSet.getInt("rank");
+				Integer[] categories = get_categories_for_request(rid);
+
+        Others_Request request = new Others_Request(t,dt,d,s,ra,p,rid,ru,categories);
         requests.add(request);
       }
 
       //convert arraylist to array
-      Request[] array_of_requests = 
-        requests.toArray(new Request[requests.size()]);
+      Others_Request[] array_of_requests = 
+        requests.toArray(new Others_Request[requests.size()]);
       return array_of_requests;
 		} catch (SQLException ex) {
 			Database_access.handle_sql_exception(ex);
-			return null;
+			return new Others_Request[0];
     } finally {
       Database_access.close_statement(pstmt);
     }

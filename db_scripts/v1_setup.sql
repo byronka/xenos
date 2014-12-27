@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS
 		language int unsigned NULL,
 		is_logged_in BOOL, 
 		last_time_logged_in DATETIME,
-		last_ip_logged_in VARCHAR(40)
+		last_ip_logged_in VARCHAR(40),
+		rank INT NOT NULL DEFAULT 50
   );
 
 ---DELIMITER---
