@@ -68,7 +68,7 @@
 	<head><title><%=loc.get(58,"Account Creation")%></title></head>
 	<link rel="stylesheet" href="register.css">
 <body>
-	<div class="trademark">Qarma</div>
+	<div class="trademark cl-effect-1"><a href="index.jsp">Qarma</a></div>
 	<div class="register">
 		<form id="enter_name_form" action="register.jsp" method="post">
 
