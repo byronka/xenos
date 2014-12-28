@@ -2,6 +2,9 @@
 <div>
 	<style>
 
+body {
+	background-color:#526589;
+}
 
 .search {
 	position: absolute;
@@ -24,12 +27,22 @@ div.user-displayname {
 	left: 20px;
 }
 
+div.spacer {
+	height: 60px;
+}
+
 section.header {
+
 	background-color: #5f2d1d;
 	color: white;
 	border: 1px solid grey;
 	height: 60px;
-	position: relative;
+	position: fixed;
+	top:0px;
+	left: 0px;
+	right: 0px;
+	width: 100%;
+	z-index: 1;
 }
 
 div.trademark {
@@ -96,6 +109,7 @@ nav a:focus {
 	transform: translateX(0px);
 }
 </style>
+<div class="spacer" />
 <section class="header">
 	<nav class="cl-effect-1">
 		<a class="trademark" href="dashboard.jsp">Qarma</a>
