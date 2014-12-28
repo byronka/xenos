@@ -14,7 +14,7 @@ qarma.run = function() {
 //stars using the unicode character for white and black stars.
 //5 stars total.
 qarma.convert_rank_to_stars = function() {
-	var elements = document.getElementsByClassName('rank-value');
+	var elements = document.getElementsByClassName('rank value');
 
 	for (var i = 0; i < elements.length; i++) {
 		var rank = +elements[i].innerHTML;

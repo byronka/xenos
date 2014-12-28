@@ -20,7 +20,7 @@
     Request_utils.get_requests_for_user(user_id);
   for (Request r : my_requests) {
 %>
-	<div class="request">
+	<div class="request mine">
 		<a href="request.jsp?request=<%=r.request_id %>"> <%=r.titleSafe()%> </a>
 		<a 
 			class="button" 
@@ -39,7 +39,7 @@
     Request_utils.get_all_requests_except_for_user(user_id);
   for (Others_Request r : others_requests) {
 %>
-	<div class="others-single-request">
+	<div class="others request">
 		<a href="request.jsp?request=<%=r.request_id %>">
 			<%=r.titleSafe()%> 
 		</a>
@@ -53,36 +53,41 @@
 		<ul>
 			<li class="points">
 				<span class="label"><%=loc.get(4, "Points")%>:</span>
-				<%=r.points%>
+				<span class="value"><%=r.points%></span>
 			</li>
 			<li class="rank">
 				<span class="label"><%=loc.get(79, "Rank")%>:</span>
-				<span class='rank-value' title="<%=r.rank%> percent"><%=r.rank%></span>
+				<span class='rank value' title="<%=r.rank%> percent"><%=r.rank%></span>
 			</li>
 			<li class="description">
-				<span class="label"><%=loc.get(10, "Description")%>:</span>
-				<%=r.descriptionSafe()%>
+				<div class="desc container">
+					<div class="label"><%=loc.get(10, "Description")%>:</div>
+					<div class="value description"><%=r.descriptionSafe()%></div>
+				</div>
 			</li>
 			<li class="status">
 				<span class="label"><%=loc.get(24, "Status")%>:</span>
-				<%=loc.get(Request_utils.get_status_localization_value(r.status),"")%>
+				<span class="value"><%=loc.get(Request_utils.get_status_localization_value(r.status),"")%></span>
 			</li>
 			<li class="datetime">
 				<span class="label"><%=loc.get(25, "Date")%>:</span>
-				<%=r.datetime%>
+				<span class="value"><%=r.datetime%></span>
 			</li>
 			<li class="requesting-user-id">
 				<span class="label"><%=loc.get(80, "User")%>:</span>
 				<%
 					User ru = User_utils.get_user(r.requesting_user_id);
 				%>
-			<span><%=ru.first_nameSafe()%> <%=ru.last_nameSafe()%></span>
+			<span class="value"><%=ru.first_nameSafe()%> <%=ru.last_nameSafe()%></span>
 			</li>
 			<li>
 				<span class="label"><%=loc.get(13, "Categories")%>:</span>
-			<%for (Integer c : r.get_categories()) {%>
-				<span class="category"><%=loc.get(c,"")%> </span>
-			<%}%>
+
+				<span class="value">
+					<%for (Integer c : r.get_categories()) {%>
+						<%=loc.get(c,"")%> 
+					<%}%>               
+				</span>
 			</li>
 		</ul>
 	</div>

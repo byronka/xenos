@@ -38,24 +38,36 @@ div.request {
 	-webkit-border-radius: 10px 10px 10px 10px;
 	border-radius: 10px 10px 10px 10px;
 	padding: 10px;
-	border: 1px solid white;
+	border: 2px solid white;
 	background-color: grey;
 	margin: 10px;
-	height: 20px;
 	position:relative;
 }
 
-
-div.others-single-request {
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border-radius: 10px 10px 10px 10px;
-	padding: 10px;
-	border: 1px solid white;
-	background-color: grey;
-	margin: 10px;
-	position: relative;
+div.request.mine {
+	height: 20px;
 }
 
+li span.value {
+
+	color: #25221B;
+}
+
+li span.label {
+	font-weight: 600;
+}
+
+div.desc.container {
+  background: black;
+	color: white;
+	border: 1px solid blue;
+	padding: 15px;
+}
+
+div.desc.container .label {
+	font-weight: 800;
+	margin-bottom: 5px;
+}
 
 li.points .label {
 	display: none;
