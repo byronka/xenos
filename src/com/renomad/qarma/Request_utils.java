@@ -152,16 +152,31 @@ public final class Request_utils {
   }
 
 
+	public class Search_Object {
+
+		String first_date;
+		String last_date;
+		String title_string;
+		Integer[] categories;
+		Integer[] statuses;
+
+	}
 
   /**
     * Gets information necessary for display on the dashboard,
 		* about requests that are not the currently logged-in user's.
     * 
 		* @param user_id the id of a given user
+		* @param search_object an object that holds all the ways to search
+		* the requests.  Things like, dates, categories, titles, etc.
+		* @param page This method is used to display requests, and we
+		* include paging functionality - splitting the response into
+		* pages of data.  Which page are we on?
+		* @param page_size the number of requests to show per page.
     * @return an array of Others_Requests that were *not* made 
 		* by that user, or an empty array of Others_Requests if failure or none.
     */
-  public static Others_Request[] get_all_requests_except_for_user(int user_id) {
+  public static Others_Request[] get_others_requests(int user_id, SearchObject search_object, int page, int page_size) {
 		String sqlText = "SELECT r.request_id, r.datetime, r.description, r.status, r.points, r.title, u.rank, r.requesting_user_id FROM request r JOIN user u ON u.user_id = r.requesting_user_id WHERE requesting_user_id <> ?";
 		PreparedStatement pstmt = null;
     try {
