@@ -9,5 +9,5 @@
   	return;
   }
   Localization loc  = new Localization(user_id, request.getLocale());
-  User user = User_utils.get_user_displayname(user_id);
+  User user = User_utils.get_user(user_id);
 %>

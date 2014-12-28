@@ -2,6 +2,7 @@
 <html>                                 
 	<head>
 		<link rel="stylesheet" href="dashboard.css" >
+		<script src="dashboard.js"></script>
 		<title><%=loc.get(16,"The dashboard")%></title>
 	</head>
 
@@ -21,9 +22,8 @@
 %>
 	<div class="request">
 		<a href="request.jsp?request=<%=r.request_id %>"> <%=r.titleSafe()%> </a>
-		<span class="points"><%=r.points%></span>
 		<a 
-			class="delete-button" 
+			class="button" 
 			href="request.jsp?request=<%=r.request_id%>&delete=true">
 			<%=loc.get(21,"Delete")%>
 		</a>
@@ -39,13 +39,13 @@
     Request_utils.get_all_requests_except_for_user(user_id);
   for (Others_Request r : others_requests) {
 %>
-	<div class="request">
+	<div class="others-single-request">
 		<a href="request.jsp?request=<%=r.request_id %>">
 			<%=r.titleSafe()%> 
 		</a>
-		<span>
+		<span class="handle-button-span">
 			<a 
-				class="handle-button" 
+				class="button" 
 				href="request.jsp?request=<%=r.request_id%>&service=true"> 
 				<%=loc.get(20, "Handle")%> 
 			</a>
@@ -57,7 +57,7 @@
 			</li>
 			<li class="rank">
 				<span class="label"><%=loc.get(79, "Rank")%>:</span>
-				<%=r.rank%>
+				<span class='rank-value' title="<%=r.rank%> percent"><%=r.rank%></span>
 			</li>
 			<li class="description">
 				<span class="label"><%=loc.get(10, "Description")%>:</span>
@@ -73,7 +73,10 @@
 			</li>
 			<li class="requesting-user-id">
 				<span class="label"><%=loc.get(80, "User")%>:</span>
-				<%=r.requesting_user_id%>
+				<%
+					User ru = User_utils.get_user(r.requesting_user_id);
+				%>
+			<span><%=ru.first_nameSafe()%> <%=ru.last_nameSafe()%></span>
 			</li>
 			<li>
 				<span class="label"><%=loc.get(13, "Categories")%>:</span>

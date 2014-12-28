@@ -82,12 +82,12 @@ public final class User_utils {
 
   
   /** *
-   * gets a name for display from the user table
+   * gets a user object
    *  
     * @return a User object filled with first name, last name, email, and points, or
 		* null if not found.
     */
-  public static User get_user_displayname(int user_id) {
+  public static User get_user(int user_id) {
     String sqlText = "SELECT first_name,last_name,email,points FROM user WHERE user_id = ?;";
 		PreparedStatement pstmt = null;
     try {

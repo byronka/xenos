@@ -5,7 +5,7 @@
 	//it just checks the user cookie to see if we are good to go.  It doesn't use
 	//username and password.
   int user_id = Security.check_if_allowed(request);
-	if (user_id > 0) { response.sendRedirect("dashboard.jsp"); }
+	if (user_id > 0) { response.sendRedirect("dashboard.jsp");return; }
 
 	//set up an object to localize text
   Localization loc  = new Localization(request.getLocale());
