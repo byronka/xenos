@@ -1,4 +1,15 @@
 <%@include file="includes/init.jsp" %>
+<%@ page import="com.renomad.qarma.Request_utils" %>
+<%@ page import="com.renomad.qarma.Request" %>
+<%@ page import="com.renomad.qarma.Utils" %>
+<%@ page import="com.renomad.qarma.Others_Request" %>
+<%
+
+	String qs = request.getQueryString();
+	Map<String,String> params = Utils.parse_qs(qs);
+	String search_term = params.get("search");
+
+%>
 <html>                                 
 	<head>
 		<link rel="stylesheet" href="dashboard.css" >
@@ -6,10 +17,6 @@
 		<title><%=loc.get(16,"The dashboard")%></title>
 	</head>
 
-<%@ page import="com.renomad.qarma.Request_utils" %>
-<%@ page import="com.renomad.qarma.Request" %>
-<%@ page import="com.renomad.qarma.Utils" %>
-<%@ page import="com.renomad.qarma.Others_Request" %>
 
 <body>
 <%@include file="includes/header.jsp" %>
@@ -21,7 +28,8 @@
   for (Request r : my_requests) {
 %>
 	<div class="request mine">
-		<a href="request.jsp?request=<%=r.request_id %>"> <%=r.titleSafe()%> </a>
+		<a href="request.jsp?request=<%=r.request_id %>"> 
+			<%=r.titleSafe()%> </a>
 		<a 
 			class="button" 
 			href="request.jsp?request=<%=r.request_id%>&delete=true">
@@ -36,7 +44,8 @@
 <div class="others-requests">
 <%
   Others_Request[] others_requests = 
-    Request_utils.get_all_requests_except_for_user(user_id);
+		Request_utils
+			.get_others_requests(user_id, search_term,page,page_size);
   for (Others_Request r : others_requests) {
 %>
 	<div class="others request">
@@ -57,7 +66,11 @@
 			</li>
 			<li class="rank">
 				<span class="label"><%=loc.get(79, "Rank")%>:</span>
-				<span class='rank value' title="<%=r.rank%> percent"><%=r.rank%></span>
+				<span 
+					class='rank value' 
+					title="<%=r.rank%> percent">
+						<%=r.rank%>
+				</span>
 			</li>
 			<li class="description">
 				<div class="desc container">
@@ -67,7 +80,11 @@
 			</li>
 			<li class="status">
 				<span class="label"><%=loc.get(24, "Status")%>:</span>
-				<span class="value"><%=loc.get(Request_utils.get_status_localization_value(r.status),"")%></span>
+				<span 
+					class="value">
+					<%int status_val = Request_utils.
+						get_status_localization_value(r.status %>);
+					<%=loc.get(status_val,"")%></span>
 			</li>
 			<li class="datetime">
 				<span class="label"><%=loc.get(25, "Date")%>:</span>
@@ -78,7 +95,8 @@
 				<%
 					User ru = User_utils.get_user(r.requesting_user_id);
 				%>
-			<span class="value"><%=ru.first_nameSafe()%> <%=ru.last_nameSafe()%></span>
+				<span class="value">
+					<%=ru.first_nameSafe()%> <%=ru.last_nameSafe()%></span>
 			</li>
 			<li>
 				<span class="label"><%=loc.get(13, "Categories")%>:</span>
