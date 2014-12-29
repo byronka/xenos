@@ -86,5 +86,6 @@ VALUES
 (77, 'closed', 'Frenchclosed', 'Spanishclosed'),
 (78, 'taken', 'Frenchtaken', 'Spanishtaken'),
 (79, 'Rank', 'FrenchRank', 'SpanishRank'),
-(80, 'User', 'FrenchUser', 'SpanishUser')
+(80, 'User', 'FrenchUser', 'SpanishUser'),
+(81, 'Advanced search', 'FrenchAdvanced search', 'SpanishAdvanced search')
 -- (99999, '', 'French', 'Spanish')

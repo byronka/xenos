@@ -3,6 +3,17 @@ body {
 	background-color:#526589;
 }
 
+a.advanced.search {
+	position: absolute;
+	top: 35px;
+	right: 10px;
+	display: inline-block;
+	outline: none;
+	color:white;
+	text-decoration: none;
+	text-shadow: 0 0 1px rgba(255,255,255,0.3);
+}
+
 .search {
 	position: absolute;
 	top: 5px;

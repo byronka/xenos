@@ -18,5 +18,6 @@
 	<span>(<%=user.emailSafe()%>) </span>
 	<span><%=user.points%> <%=loc.get(11, "points")%></span>
 	</div>
+	<a class="advanced search" href="advanced_search.jsp">Advanced search</a>
 </section>
 </div>

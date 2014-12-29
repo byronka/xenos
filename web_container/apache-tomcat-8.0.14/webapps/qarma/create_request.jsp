@@ -63,7 +63,6 @@
 
   <body>
 	<%@include file="includes/header.jsp" %>
-    <h2>Create a Request!</h2>
     <form method="POST" action="create_request.jsp">
 			<div><%=not_enough_points_error_msg %></div>
 			<p><%=loc.get(10,"Description")%>: 
