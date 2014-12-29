@@ -1,6 +1,6 @@
 If you have already set up everything, just type:
 
-  ant -q run-initial
+  ant run-initial
 
 
 

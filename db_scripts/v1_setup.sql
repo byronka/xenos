@@ -78,19 +78,6 @@ request (
 );
 
 
----DELIMITER---
--- create the tables to store categories and assign them to requests.
-
-CREATE TABLE IF NOT EXISTS 
-request_category ( 
-  request_category_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	request_category_value VARCHAR(20),
-	localization_value INT NOT NULL,
-  FOREIGN KEY FK_localization_value (localization_value )
-    REFERENCES localization_lookup (local_id)
-    ON DELETE CASCADE
-)
-
 
 ---DELIMITER---
 -- here, we set up a table to correlate categories to a given
@@ -151,3 +138,17 @@ localization_lookup (
 	French NVARCHAR(1000),
 	Spanish NVARCHAR(1000)
 )
+
+---DELIMITER---
+-- create the tables to store categories and assign them to requests.
+
+CREATE TABLE IF NOT EXISTS 
+request_category ( 
+  request_category_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	request_category_value VARCHAR(20),
+	localization_value INT NOT NULL,
+  FOREIGN KEY FK_localization_value (localization_value )
+    REFERENCES localization_lookup (local_id)
+    ON DELETE CASCADE
+)
+
