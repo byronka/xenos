@@ -18,7 +18,7 @@ public final class Utils {
     * is null or empty.
 		* @return true if null or empty string
     */
-  public static boolean null_or_empty_string_validation(String value) {
+  public static boolean is_null_or_empty(String value) {
     return value == null || value.equals("");
   }
   

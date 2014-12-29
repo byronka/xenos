@@ -72,8 +72,6 @@ public final class Security {
     * @return the user id if the password is correct for that email.
     */
   public static int check_login(String email, String password) {
-    Utils.null_or_empty_string_validation(email);
-    Utils.null_or_empty_string_validation(password);
     String sqlText = "SELECT password,user_id FROM user WHERE email = ?";
 		PreparedStatement pstmt = null;
     try {

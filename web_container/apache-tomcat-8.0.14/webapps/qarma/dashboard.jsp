@@ -43,9 +43,16 @@
 </h2>
 <div class="others-requests">
 <%
+	Request_utils.Search_Object so = 
+		new Request_utils.Search_Object(
+			first_date,
+			last_date,
+			title_string,
+			categories,
+			statuses);
   Others_Request[] others_requests = 
 		Request_utils
-			.get_others_requests(user_id, search_term,page,page_size);
+			.get_others_requests(user_id, so ,page,page_size);
   for (Others_Request r : others_requests) {
 %>
 	<div class="others request">

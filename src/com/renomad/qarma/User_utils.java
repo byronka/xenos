@@ -122,10 +122,10 @@ public final class User_utils {
   public static boolean put_user(
 			String first_name, String last_name, String email, String password) {
 			boolean is_bad = false;
-      is_bad |= Utils.null_or_empty_string_validation(first_name);
-      is_bad |= Utils.null_or_empty_string_validation(last_name);
-      is_bad |= Utils.null_or_empty_string_validation(email);
-      is_bad |= Utils.null_or_empty_string_validation(password);
+      is_bad |= Utils.is_null_or_empty(first_name);
+      is_bad |= Utils.is_null_or_empty(last_name);
+      is_bad |= Utils.is_null_or_empty(email);
+      is_bad |= Utils.is_null_or_empty(password);
 			if (is_bad) {
 				return false;
 			}

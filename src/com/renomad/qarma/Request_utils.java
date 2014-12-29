@@ -154,11 +154,24 @@ public final class Request_utils {
 
 	public class Search_Object {
 
-		String first_date;
-		String last_date;
-		String title_string;
-		Integer[] categories;
-		Integer[] statuses;
+		public String first_date;
+		public String last_date;
+		public String title_string;
+		public String categories;
+		public String statuses;
+
+		public Search_Object(
+				String first_date, 
+				String last_date,
+				String title_string,
+				String categories,
+				String statuses) {
+			this.first_date = first_date;
+			this.last_date = last_date;
+			this.title_string = title_string;
+			this.categories = categories;
+			this.statuses = statuses;
+		}
 
 	}
 
@@ -176,14 +189,56 @@ public final class Request_utils {
     * @return an array of Others_Requests that were *not* made 
 		* by that user, or an empty array of Others_Requests if failure or none.
     */
-  public static Others_Request[] get_others_requests(int user_id, SearchObject search_object, int page, int page_size) {
-		String sqlText = "SELECT r.request_id, r.datetime, r.description, r.status, r.points, r.title, u.rank, r.requesting_user_id FROM request r JOIN user u ON u.user_id = r.requesting_user_id WHERE requesting_user_id <> ?";
+  public static Others_Request[] get_others_requests(
+			int user_id, 
+			SearchObject search_object, 
+			int page, 
+			int page_size) {
+		StringBuilder sqlText = new StringBuilder("SELECT r.request_id, r.datetime, r.description, r.status, r.points, r.title, u.rank, r.requesting_user_id FROM request r JOIN user u ON u.user_id = r.requesting_user_id WHERE requesting_user_id <> ?");
+
+
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = Database_access.prepare_statement(
 					conn, sqlText);     
-      pstmt.setInt( 1, user_id);
+
+			int param_index = 1;
+      pstmt.setInt( param_index, user_id);
+
+			//adding in search clauses
+			if () {
+				sqlText.append(" AND r.datetime > ? ");
+				param_index++;
+				pstmt.setString( param_index, so.first_date);
+			}
+
+			if () {
+				sqlText.append(" AND r.datetime < ? ");
+				param_index++;
+				pstmt.setString( param_index, so.last_date);
+			}
+
+			if () {
+				sqlText.append(" AND r.title LIKE '%?%' ");
+				param_index++;
+				pstmt.setString( param_index, so.title_string);
+			}
+
+			if () {
+				sqlText.append(" AND FIGURE ME OUT!!!");
+				param_index++;
+				pstmt.setString( param_index, so.categories);
+			}
+
+			if () {
+				sqlText.append(" AND FIGURE ME OUT!!!");
+				param_index++;
+				pstmt.setString( param_index, so.statuses);
+			}
+
+			//done with search clauses
+
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
 				return new Others_Request[0];
