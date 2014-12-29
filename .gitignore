@@ -1,6 +1,4 @@
 build
-web_container/apache-tomcat-8.0.14/logs/
-web_container/apache-tomcat-8.0.14/work/
 web_container/apache-tomcat-8.0.14/webapps/qarma/WEB-INF/classes
 web_container/apache-tomcat-8.0.14/webapps/qarma_javadocs
 web_container/apache-tomcat-8.0.14/webapps/lint
