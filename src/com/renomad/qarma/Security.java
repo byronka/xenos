@@ -166,8 +166,8 @@ public final class Security {
     if (c == null) {
       return -1;
     }
-    int user_id = Utils.parse_int(c.getValue());
-    if (user_id == Integer.MIN_VALUE) { return -1; }
+    Integer user_id = Utils.parse_int(c.getValue());
+    if (user_id == null) { return -1; }
     if (user_id < 0) {
       System.err.println("error: user id was " + user_id + 
           " in user_is_logged_in()");

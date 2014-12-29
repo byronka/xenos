@@ -166,3 +166,11 @@ I set up Tomcat to work exclusively on SSL, following the instructions at:
 http://tomcat.apache.org/tomcat-6.0-doc/ssl-howto.html#Configuration
 
 I have made a copy of that file here, at ssl-howto-tomcat.txt
+
+
+
+Troubleshooting
+===============
+
+1) If you see this kind of text on your screen, it means localization is failing somehow:
+out_of_index: 18

@@ -32,8 +32,8 @@
 
 			//extract useful information from what the client sent us
 			p = request.getParameter("points");
-			int points = Utils.parse_int(p);
-			if (points == Integer.MIN_VALUE) { 
+			Integer points = Utils.parse_int(p);
+			if (points == null) { 
 				validation_error |= true;
 				p_error_msg = loc.get(7,"Couldn't parse points");
 			}

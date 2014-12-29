@@ -6,8 +6,14 @@
 <%
 
 	String qs = request.getQueryString();
-	Map<String,String> params = Utils.parse_qs(qs);
+
+	java.util.Map<String,String> params = Utils.parse_qs(qs);
 	String search_term = params.get("search");
+
+	Integer which_page = Utils.parse_int(params.get("page"));
+	Integer page_size = Utils.parse_int(params.get("page_size"));
+	if (which_page == null) {which_page = 0;}
+	if (page_size == null) {page_size = 10;}
 
 %>
 <html>                                 
@@ -44,15 +50,10 @@
 <div class="others-requests">
 <%
 	Request_utils.Search_Object so = 
-		new Request_utils.Search_Object(
-			first_date,
-			last_date,
-			title_string,
-			categories,
-			statuses);
+		new Request_utils.Search_Object( "", "", search_term, "", "");
   Others_Request[] others_requests = 
 		Request_utils
-			.get_others_requests(user_id, so ,page,page_size);
+			.get_others_requests(user_id, so , which_page, page_size);
   for (Others_Request r : others_requests) {
 %>
 	<div class="others request">
@@ -90,7 +91,7 @@
 				<span 
 					class="value">
 					<%int status_val = Request_utils.
-						get_status_localization_value(r.status %>);
+						get_status_localization_value(r.status); %>
 					<%=loc.get(status_val,"")%></span>
 			</li>
 			<li class="datetime">

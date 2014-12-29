@@ -152,7 +152,7 @@ public final class Request_utils {
   }
 
 
-	public class Search_Object {
+	public static class Search_Object {
 
 		public String first_date;
 		public String last_date;
@@ -191,53 +191,82 @@ public final class Request_utils {
     */
   public static Others_Request[] get_others_requests(
 			int user_id, 
-			SearchObject search_object, 
+			Search_Object so, 
 			int page, 
 			int page_size) {
-		StringBuilder sqlText = new StringBuilder("SELECT r.request_id, r.datetime, r.description, r.status, r.points, r.title, u.rank, r.requesting_user_id FROM request r JOIN user u ON u.user_id = r.requesting_user_id WHERE requesting_user_id <> ?");
+		StringBuilder sqlText = new StringBuilder("SELECT r.request_id, r.datetime, r.description, r.status, r.points, r.title, u.rank, r.requesting_user_id FROM request r JOIN user u ON u.user_id = r.requesting_user_id WHERE requesting_user_id <> ? ");
 
+			//adding in search clauses
+			if (!Utils.is_null_or_empty(so.first_date)) {
+				sqlText.append(" AND r.datetime > ? ");
+			}
+
+			if (!Utils.is_null_or_empty(so.last_date)) {
+				sqlText.append(" AND r.datetime < ? ");
+			}
+
+			if (!Utils.is_null_or_empty(so.title_string)) {
+				sqlText.append(" AND r.title LIKE CONCAT('%', ?, '%') ");
+			}
+
+			if (!Utils.is_null_or_empty(so.categories)) {
+				sqlText.append(" AND FIGURE ME OUT!!1 ");
+			}
+
+			if (!Utils.is_null_or_empty(so.statuses)) {
+				sqlText.append(" AND FIGURE ME OUT!!1 ");
+			}
+
+			//done with search clauses
+
+			sqlText.append(" LIMIT ?,?");
 
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
-			pstmt = Database_access.prepare_statement(
-					conn, sqlText);     
+			pstmt = Database_access.prepare_statement(conn, sqlText.toString());     
 
 			int param_index = 1;
       pstmt.setInt( param_index, user_id);
 
-			//adding in search clauses
-			if () {
-				sqlText.append(" AND r.datetime > ? ");
+			//adding in search clauses, just like above.  If you think of a better way
+			// to do this, I'm all ears - BK 12/28/2014
+			if (!Utils.is_null_or_empty(so.first_date)) {
 				param_index++;
 				pstmt.setString( param_index, so.first_date);
 			}
 
-			if () {
-				sqlText.append(" AND r.datetime < ? ");
+			if (!Utils.is_null_or_empty(so.last_date)) {
 				param_index++;
 				pstmt.setString( param_index, so.last_date);
 			}
 
-			if () {
-				sqlText.append(" AND r.title LIKE '%?%' ");
+			if (!Utils.is_null_or_empty(so.title_string)) {
 				param_index++;
 				pstmt.setString( param_index, so.title_string);
 			}
 
-			if () {
-				sqlText.append(" AND FIGURE ME OUT!!!");
+			if (!Utils.is_null_or_empty(so.categories)) {
 				param_index++;
 				pstmt.setString( param_index, so.categories);
 			}
 
-			if () {
-				sqlText.append(" AND FIGURE ME OUT!!!");
+			if (!Utils.is_null_or_empty(so.statuses)) {
 				param_index++;
 				pstmt.setString( param_index, so.statuses);
 			}
 
 			//done with search clauses
+
+			//set up the paging
+			int start = page * page_size;
+			int end = page * page_size + page_size;
+			param_index++;
+			pstmt.setInt(param_index, start);
+			param_index++;
+			pstmt.setInt(param_index, end);
+
+			//paging ends
 
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -648,6 +677,8 @@ public final class Request_utils {
       Database_access.close_statement(pstmt);
     }
 	}
+
+
 
 
   /**

@@ -43,9 +43,11 @@ public final class Utils {
 		* gets all the parameters from a query string
 		* @param qs a query string from a url string
 		* @return a map of params to values, as strings.  It is
-		* incumbent upon you to convert strings as needed.
+		* incumbent upon you to convert strings as needed. if qs
+		* is null or empty, we return an empty map.
 		*/
 	public static Map<String, String> parse_qs(String qs) {
+		if (is_null_or_empty(qs)) {return new HashMap<String,String>();}
 		String[] params = qs.split("&");
 		if (params.length == 0) {
 			return null;
@@ -62,17 +64,17 @@ public final class Utils {
 	}
 
 
-  public static int parse_int(String s) {
-    int val;
-    try
-    {
-         val = Integer.parseInt(s);
-    }
-    catch (Exception ex)
-    {
-         // bad data - set to sentinel
-         val = Integer.MIN_VALUE;
-    }
-    return val;
-  }
+  /**
+		* gets an integer from the value, avoiding boilerplate.
+		* @param int a potential int
+		* @return an Integer, or null if failed parsing.
+    */
+  public static Integer parse_int(String my_int) {
+			try {
+				Integer value = Integer.valueOf(my_int);
+				return value;
+			} catch (Exception ex) {
+				return null;
+			}
+		}
 }
