@@ -66,7 +66,7 @@ public final class Utils {
 
   /**
 		* gets an integer from the value, avoiding boilerplate.
-		* @param int a potential int
+		* @param my_int a potential int
 		* @return an Integer, or null if failed parsing.
     */
   public static Integer parse_int(String my_int) {

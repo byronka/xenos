@@ -24,7 +24,8 @@ public class Localization {
 	
 	/**
 		* creates a localization object used to get local language values. 
-		* @param client_locale the client's locale.  We'll use this to get their preferred language.
+		* @param client_locale the client's locale.  
+		* We'll use this to get their preferred language.
 		*/
 	public Localization(Locale client_locale) {
 		this(-1, client_locale);
@@ -33,7 +34,8 @@ public class Localization {
 	/**
 		* creates a localization object used to get local language values.
 		* @param user_id the id of the logged-in user, to see if they have set
-		* @param client_locale the client's locale.  We'll use this to get their preferred language.
+		* @param client_locale the client's locale.  
+		* We'll use this to get their preferred language.
 		* a language preference
 		*/
 	public Localization(int user_id, Locale client_locale) {

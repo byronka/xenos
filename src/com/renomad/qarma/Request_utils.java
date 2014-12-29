@@ -180,7 +180,7 @@ public final class Request_utils {
 		* about requests that are not the currently logged-in user's.
     * 
 		* @param user_id the id of a given user
-		* @param search_object an object that holds all the ways to search
+		* @param so an object that holds all the ways to search
 		* the requests.  Things like, dates, categories, titles, etc.
 		* @param page This method is used to display requests, and we
 		* include paging functionality - splitting the response into
