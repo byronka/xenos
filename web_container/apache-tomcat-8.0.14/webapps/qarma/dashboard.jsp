@@ -119,5 +119,30 @@
 	</div>
 <% } %>
 </div>
+<form method="GET" action="dashboard.jsp">
+	<span>Page</span>
+	<select name="page">
+		<%for (int i = 0; i < 4; i++) {
+		if (which_page == i) {%>
+				<option value="<%=i%>" selected="true"><%=i+1%></option>
+			<% } else {%>
+				<option value="<%=i%>"><%=i+1%></option>
+			<%	}
+			}%>
+	</select>
+	<span>Page size:</span>
+	<select name="page_size">
+		<%
+		int[] sizes = {10,20,50};
+		for (int i = 0; i < sizes.length; i++) {
+		if (page_size == sizes[i]) {%>
+				<option selected="true"><%=sizes[i]%></option>
+			<% } else {%>
+				<option ><%=sizes[i]%></option>
+			<%	}
+			}%>
+	</select>
+	<button><%=loc.get(1, "search")%></button></span>
+</form>
 </body>
 </html>
