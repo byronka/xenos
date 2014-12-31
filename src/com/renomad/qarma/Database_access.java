@@ -7,6 +7,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
+/**
+	* This class provides general utilities for access the database.
+	*/
 public final class Database_access {
 
 	private Database_access () {

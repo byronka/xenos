@@ -152,25 +152,42 @@ public final class Request_utils {
   }
 
 
+	/**
+		* An object used to hold the values
+		* necessary for advanced search.  Immutable.
+		*/
 	public static class Search_Object {
 
-		public String first_date;
-		public String last_date;
-		public String title_string;
-		public String categories;
-		public String statuses;
+		/**
+			* if searching in a date range, this is
+			* the first date.
+			*/
+		public final String first_date;
+
+		/**
+			* if searching in a date range, this is
+			* the last date.
+			*/
+		public final String last_date;
+
+		public final String title;
+		public final String categories;
+		public final String statuses;
+		public final String points;
 
 		public Search_Object(
 				String first_date, 
 				String last_date,
-				String title_string,
+				String title,
 				String categories,
-				String statuses) {
+				String statuses,
+				String points) {
 			this.first_date = first_date;
 			this.last_date = last_date;
-			this.title_string = title_string;
+			this.title = title;
 			this.categories = categories;
 			this.statuses = statuses;
+			this.points = points;
 		}
 
 	}
@@ -205,7 +222,7 @@ public final class Request_utils {
 				sqlText.append(" AND r.datetime < ? ");
 			}
 
-			if (!Utils.is_null_or_empty(so.title_string)) {
+			if (!Utils.is_null_or_empty(so.title)) {
 				sqlText.append(" AND r.title LIKE CONCAT('%', ?, '%') ");
 			}
 
@@ -241,9 +258,9 @@ public final class Request_utils {
 				pstmt.setString( param_index, so.last_date);
 			}
 
-			if (!Utils.is_null_or_empty(so.title_string)) {
+			if (!Utils.is_null_or_empty(so.title)) {
 				param_index++;
-				pstmt.setString( param_index, so.title_string);
+				pstmt.setString( param_index, so.title);
 			}
 
 			if (!Utils.is_null_or_empty(so.categories)) {
@@ -807,10 +824,21 @@ public final class Request_utils {
 		* a type solely used to set the response from putting a request
 		*/
 	public static class Request_response { 
+
+		/**
+			* an enum demarcating the general status
+			* of a response from making a request.
+			* This gets included in Request_response
+			* to allow filtering.
+			*/
 		public enum Stat {
 			LACK_POINTS, OK , ERROR
 		}
 		public final Stat s;
+
+		/**
+			* the id of the newly-created request.
+			*/
 		public final int id;
 
 		public Request_response(Stat s, int id) {

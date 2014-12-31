@@ -12,7 +12,7 @@ public class Others_Request extends Request {
 	/**
 		* rank is the rank of the user who created the request.
 		*/
-	public int rank;
+	public final int rank;
 
 	public Others_Request(
 			String title, String date, String desc, int status,

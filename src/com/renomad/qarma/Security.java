@@ -11,6 +11,10 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+/**
+	* Security holds methods necessary for authentication
+	* and other similar items.
+	*/
 public final class Security {
 
 	private Security () {

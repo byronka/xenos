@@ -17,7 +17,7 @@ public class Request {
 	public final int status;
 	public final String title;
 	public final int requesting_user_id;
-	private Integer[] categories;
+	private final Integer[] categories;
 
 	/**
 		* This constructor is probably used for sending a new
