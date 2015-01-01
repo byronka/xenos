@@ -247,7 +247,8 @@ public final class Request_utils {
       pstmt.setInt( param_index, user_id);
 
 			//adding in search clauses, just like above.  If you think of a better way
-			// to do this, I'm all ears - BK 12/28/2014
+			// to do this, I'm all ears - BK 12/28/2014.  But it cannot be so complex
+			//as to make it a moot point.  See git commit e3cd6c43c1379575dd3ae6c5f05965ceecce4ee5
 			if (!Utils.is_null_or_empty(so.first_date)) {
 				param_index++;
 				pstmt.setString( param_index, so.first_date);
