@@ -19,6 +19,49 @@ public final class User_utils {
 	}
 
 	/**
+		* gets an array of user ids by names of users.
+		* @param an array of user usernames
+		* @return an arraylist of user ids instead of the names, or null
+		* if failure or none found.
+		*/
+	public static ArrayList<Integer> get_user_ids_by_names(String[] usernames) {
+
+		//go defensive!
+		if (usernames.length == 0) {return new Integer[0];}
+
+		StringBuilder sb = new StringBuilder(usernames[0]); //add the first name
+		for(String usr : usernames) {
+			sb.append(",").append(usr);
+		}
+		String delimited_string_usernames = sb.toString();
+
+    String sqlText = "SELECT user_id FROM user WHERE user_id IN (?)";
+		PreparedStatement pstmt = null;
+    try {
+			Connection conn = Database_access.get_a_connection();
+			pstmt = Database_access.prepare_statement(
+					conn, sqlText);     
+			pstmt.setInt( 1, usernames);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return null;
+      }
+
+			ArrayList<Integer> user_ids = new ArrayList<Integer>();
+      while(resultSet.next()) {	
+				user_ids.add(resultSet.getInt("user_id"));
+			}
+      return user_ids;
+		} catch (SQLException ex) {
+			Database_access.handle_sql_exception(ex);
+			return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+	}
+
+
+	/**
 		* gets the points for a given user.
 		* @param user_id the id for the user
 		* @return the number of points that user has, or -1 if SQL failure.

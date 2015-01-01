@@ -63,49 +63,6 @@ public final class Request_utils {
 	}
 
 
-	/**
-		* gets an array of request categories for a given request as localization values
-		*
-		* @param request_id the id of the request to check categories
-		* @return an array of Integers representing the localization values
-		*  or null if failure.
-		*/
-	public static Integer[] get_categories_for_request(int request_id) {
-    String sqlText = 
-			"SELECT rc.localization_value "+
-				"FROM request_to_category rtc "+
-				"JOIN request_category rc ON rc.request_category_id = rtc.request_category_id "+
-				"WHERE rtc.request_id = ?;";
-		PreparedStatement pstmt = null;
-    try {
-			Connection conn = Database_access.get_a_connection();
-			pstmt = Database_access.prepare_statement(
-					conn, sqlText);     
-      pstmt.setInt( 1, request_id);
-      ResultSet resultSet = pstmt.executeQuery();
-      if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return new Integer[0];
-      }
-
-			//keep adding rows of data while there is more data
-      ArrayList<Integer> categories = new ArrayList<Integer>();
-      while(resultSet.next()) {
-        int lv = resultSet.getInt("localization_value");
-        categories.add(lv);
-      }
-
-      //convert arraylist to array
-      Integer[] array_of_categories = 
-        categories.toArray(new Integer[categories.size()]);
-      return array_of_categories;
-		} catch (SQLException ex) {
-			Database_access.handle_sql_exception(ex);
-			return null;
-    } finally {
-      Database_access.close_statement(pstmt);
-    }
-	}
-
   /**
     * Gets a specific Request 
     * 
@@ -117,8 +74,11 @@ public final class Request_utils {
     String sqlText = 
       "SELECT request_id, datetime,description,points,"+
 			"status,title,requesting_user_id "+
-			"FROM request "+
-			"WHERE request_id = ?";
+			"GROUP_CONCAT(rc.localization_value SEPARATOR ',') AS categories "+
+			"FROM request r"+
+			"JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
+			"JOIN request_category rc ON rc.request_category_id = rtc.request_category_id "+
+			"WHERE request_id = ? ";
 
 		PreparedStatement pstmt = null;
     try {
@@ -139,7 +99,8 @@ public final class Request_utils {
 			int s = resultSet.getInt("status");
 			String t = resultSet.getNString("title");
 			int ru = resultSet.getInt("requesting_user_id");
-			Integer[] categories = get_categories_for_request(request_id);
+			String ca = resultSet.getString("categories");
+			Integer[] categories = parse_string_to_int_array(ca);
 			Request request = new Request(rid,dt,d,p,s,t,ru,categories);
 
       return request;
@@ -171,25 +132,60 @@ public final class Request_utils {
 		public final String last_date;
 
 		public final String title;
-		public final String categories;
-		public final String statuses;
-		public final String points;
+		private final Integer[] categories;
+		private final Integer[] statuses;
+		private final Integer[] user_ids;
+		public final int points;
 
 		public Search_Object(
 				String first_date, 
 				String last_date,
 				String title,
-				String categories,
-				String statuses,
-				String points) {
+				Integer[] categories,
+				Integer[] statuses,
+				int points,
+				Integer[] user_ids) {
 			this.first_date = first_date;
 			this.last_date = last_date;
 			this.title = title;
 			this.categories = categories;
 			this.statuses = statuses;
 			this.points = points;
+			this.user_ids = user_ids;
 		}
 
+		public Integer[] get_statuses() {
+			Integer[] c = Arrays.copyOf(categories, categories.length);
+			return c;
+		}
+
+		public Integer[] get_user_ids() {
+			Integer[] c = Arrays.copyOf(categories, categories.length);
+			return c;
+		}
+
+		public Integer[] get_categories() {
+			Integer[] c = Arrays.copyOf(categories, categories.length);
+			return c;
+		}
+
+	}
+	
+
+	/**
+		* a helper method to convert integer arrays to strings
+		* delimited by commas, like going from [1,2,3] to "1,2,3"
+		*/
+	private String int_array_to_string(Integer[] arr) {
+
+		if (arr.length == 0) return "";
+
+		StringBuilder s = new StringBuilder();
+		s.append(arr[0].toString());
+		for(int i = 1; i < arr.length;i++) {
+			s.append(",").append(arr[i].toString());
+		}
+		return s.toString();
 	}
 
   /**
@@ -211,67 +207,99 @@ public final class Request_utils {
 			Search_Object so, 
 			int page, 
 			int page_size) {
-		StringBuilder sqlText = new StringBuilder("SELECT r.request_id, r.datetime, r.description, r.status, r.points, r.title, u.rank, r.requesting_user_id FROM request r JOIN user u ON u.user_id = r.requesting_user_id WHERE requesting_user_id <> ? ");
 
 			//adding in search clauses
-			if (!Utils.is_null_or_empty(so.first_date)) {
-				sqlText.append(" AND r.datetime > ? ");
-			}
+		  //first we convert our integer arrays to comma-delimited strings
+			String categories = int_array_to_string(so.get_categories);
+			String statuses = int_array_to_string(so.get_statuses);
+			String user_ids = int_array_to_string(so.get_user_ids);
 
-			if (!Utils.is_null_or_empty(so.last_date)) {
-				sqlText.append(" AND r.datetime < ? ");
-			}
-
-			if (!Utils.is_null_or_empty(so.title)) {
-				sqlText.append(" AND r.title LIKE CONCAT('%', ?, '%') ");
-			}
-
-			if (!Utils.is_null_or_empty(so.categories)) {
-				sqlText.append(" AND FIGURE ME OUT!!1 ");
-			}
-
-			if (!Utils.is_null_or_empty(so.statuses)) {
-				sqlText.append(" AND FIGURE ME OUT!!1 ");
-			}
+			//now we apply predicates, but only if they apply.
+			String d1  = !Utils.is_null_or_empty(so.first_date) ? 
+				sqlText.append(" AND r.datetime > ? ") : "";
+			String d2  = !Utils.is_null_or_empty(so.last_date) ?
+			 	sqlText.append(" AND r.datetime < ? ") : "";
+			String ti  = !Utils.is_null_or_empty(so.title) ?
+			 	sqlText.append(" AND r.title LIKE CONCAT('%', ?, '%') ") : "";
+			String ca  = !Utils.is_null_or_empty(categories) ?
+			 	sqlText.append(" AND categories in (?)") : "";
+			String uids  = !Utils.is_null_or_empty(user_ids) ?
+			 	sqlText.append(" AND user_ids in (?) ") : "";
+			String pts  = !Utils.is_null_or_empty(so.points) ?
+			 	sqlText.append(" AND r.points = ? ") : "";
+			String sta  = !Utils.is_null_or_empty(statuses) ?
+			 	sqlText.append(" AND statuses in (?) ") : "";
 
 			//done with search clauses
 
-			sqlText.append(" LIMIT ?,?");
+		String sqlText = 
+				String.format(
+						"SELECT r.request_id, "+
+							"r.datetime, "+
+							"r.description, "+
+							"r.status, "+
+							"r.points, "+
+							"r.title, "+
+							"u.rank, "+
+							"r.requesting_user_id "+
+							"GROUP_CONCAT(rc.localization_value SEPARATOR ',') AS categories "+
+						"FROM request r "+
+						"JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
+						"JOIN request_category rc ON rc.request_category_id = rtc.request_category_id "+
+						"JOIN user u ON u.user_id = r.requesting_user_id "+
+						"WHERE requesting_user_id <> ? "+
+						"%s %s %s %s %s %s %s "+ //we add in a bunch of search clauses here, where applicable.
+						"GROUP BY r.request_id "+
+						"LIMIT ?,? "+ 					//paging happens here.
+						"SORT BY id ASC " 			//sorting happens here.
+						, d1,d2,ti,ca,uids,pts,sta);
+
 
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
-			pstmt = Database_access.prepare_statement(conn, sqlText.toString());     
+			pstmt = Database_access.prepare_statement(conn, sqlText);     
 
 			int param_index = 1;
       pstmt.setInt( param_index, user_id);
 
-			//adding in search clauses, just like above.  If you think of a better way
+			//adding in search clauses, mirror of above.  If you think of a better way
 			// to do this, I'm all ears - BK 12/28/2014.  But it cannot be so complex
-			//as to make it a moot point.  See git commit e3cd6c43c1379575dd3ae6c5f05965ceecce4ee5
-			if (!Utils.is_null_or_empty(so.first_date)) {
+			//as to make it a moot point.  See git commit e3cd6c43c1379575dd3ae6c5f05965ceecce4ee5 where
+			//I tried building something and it didn't pay for itself.
+			if (d1.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.first_date);
 			}
 
-			if (!Utils.is_null_or_empty(so.last_date)) {
+			if (d2.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.last_date);
 			}
 
-			if (!Utils.is_null_or_empty(so.title)) {
+			if (ti.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.title);
 			}
 
-			if (!Utils.is_null_or_empty(so.categories)) {
+			if (ca.length() > 0) {
 				param_index++;
-				pstmt.setString( param_index, so.categories);
+				pstmt.setString( param_index, categories);
 			}
 
-			if (!Utils.is_null_or_empty(so.statuses)) {
+			if (uids.length() > 0) {
 				param_index++;
-				pstmt.setString( param_index, so.statuses);
+				pstmt.setString( param_index, user_ids);
+			}
+
+			if (uids.length() > 0) {
+				param_index++;
+				pstmt.setString( param_index, so.points.toString());
+			}
+
+			if (sta.length() > 0) {
+				param_index++;
+				pstmt.setString( param_index, statuses);
 			}
 
 			//done with search clauses
@@ -302,7 +330,8 @@ public final class Request_utils {
         String t = resultSet.getNString("title");
         int ru = resultSet.getInt("requesting_user_id");
         int ra = resultSet.getInt("rank");
-				Integer[] categories = get_categories_for_request(rid);
+				String ca = resultSet.getString("categories");
+				Integer[] categories = parse_string_to_int_array(ca);
 
         Others_Request request = new Others_Request(t,dt,d,s,ra,p,rid,ru,categories);
         requests.add(request);
@@ -322,6 +351,25 @@ public final class Request_utils {
 
 		
 
+	/**
+		* This will take a string of numerals separated by commas
+		* and return an Integer array of those.
+		* for example, given "1,2,3" it will return an array having
+		* [1,2,3]
+		* @return an Integer array, or an empty Integer array if no
+		* string numbers found.
+		*/
+	private Integer[] parse_string_to_int_array(String value) {
+		if (value.length() > 0) {
+			String[] numerals = value.split(",");
+			Integer[] return_array = new Integer[numerals.length];
+			for (int i = 0; i < numerals.length; i++) {
+      	return_array[i] = Integer.parseInt(numerals[i]);
+			}
+			return return_array;
+		}
+		return new Integer[0];
+	}
 
   /**
     * Gets all the requests for the user.
