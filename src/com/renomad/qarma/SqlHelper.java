@@ -50,12 +50,33 @@ public class SqlHelper {
 		*/
 	public final String rendered_sql;
 
+
+
+
 	/**
-		* this property will contain the fields in the order necessary 
+		* a class to hold the index, name, and value of things we
+		* will tie to places within the SQL string.
+		*/
+	internal static class TokenValue {
+
+  	public final Integer arg_index;
+		public final String token_name;
+		public final Object value;
+
+		public TokenValue(Integer arg_index, String token_name, Object value) {
+			this.arg_index = arg_index;
+			this.token_name = token_name;
+			this.value = value;
+		}
+
+	}
+
+	/**
+		* this property will contain the objects in the order necessary 
 		* to tie to the SQL parameters - the question marks that appear
 		* in the text.
 		*/
-	public final ArrayList<Integer, String> fields_in_param_order;
+	public final ArrayList<TokenValue> objects_in_param_order;
 
 
 
@@ -69,7 +90,7 @@ public class SqlHelper {
 		* @param sql a sql string which includes tokens for the parameters.
 		* For example, you might write,
 		* SELECT * FROM user WHERE user_id = :user_id: AND 
-		* is_logged_in = :is_logged_in:
+		* is_logged_in = :is_logged_in: 
 		*
 		* The format is as follows - first a colon, then the name of
 		* a public field in the object passed-in, then a final colon.
@@ -87,28 +108,26 @@ public class SqlHelper {
 		* public final String blah
 		* public final int bleh
 		*
+		*<p>
+		* Example: new SqlHelper("SELECT * FROM blah WHERE x = :what: AND y = :who: AND z = :whodat:", what, who, whodat);
+	  *</p>
+		*
+		* also note that the object passed in must be Objects - no primitives allowed!
 		*/
-	public SqlHelper(String sql, Object object) { 
-		fields_in_param_order = new HashMap<Integer, String>();
-		this.rendered_sql = generate(sql, object);
+	public SqlHelper(String sql, Object... objects) { 
+		objects_in_param_order = new ArrayList<TokenValue>();
+		this.rendered_sql = generate(sql, objects);
 	}
+                                                                                             
 
 	/**
-		* Here we do two things: read the sql string given us by the 
-		* user and tie that to the public fields in the object.
-		* @param sql the sql string with named parameters given us by the user
-		* @object an object having public immutable fields which we will use
-		*  to tie to the tokens in the sql string.
+		*get the public final objects from the object using reflection.
+		* @param an object to search for public final objects.
+		* @return a list of objects found, or an empty list if none found.
 		*/
-	private String generate(String sql, Object object) {
+	private List<Object> get_public_final_objects(Object object) {
 
-		//Initialize some stuff we'll use later.
-		//we'll collect our public final fields here.
-	 	ArrayList<Field> public_final_fields = new ArrayList<Field>(); 
-
-
-    //get the public final fields from the object using reflection.
-
+	 	ArrayList<Object> object_candidates = new ArrayList<Object>(); 
 		Class class = object.getClass();               //get the object's class
 		Field[] fields = class.getDeclaredFields();    //get its fields
 
@@ -123,31 +142,75 @@ public class SqlHelper {
 			if (foundMods & Modifier.PUBLIC == Modifier.PUBLIC &&
 				 	foundMods & Modifier.FINAL == Mofidier.FINAL)  { 
 				//at this point, we know we're dealing with a public final field.		
-				//so we add it to our bag o' fields.
-				public_final_fields.add(f);
+				//so we add it to our bag o' objects.
+				Object o = f.get(f)
+				object_candidates.add(o);
+			}
+		}
+		return object_candidates;
+	}
+
+
+
+
+	/**
+		* Here we do two things: read the sql string given us by the 
+		* user and tie that to the public fields in the object.
+		* @param sql the sql string with named parameters given us by the user
+		* @object an object having public immutable fields which we will use
+		*  to tie to the tokens in the sql string.
+		*/
+	private String generate(String sql, Object[] objects) {
+
+		//Initialize some stuff we'll use later.
+		//we'll collect objects for potential matching here.
+	 	Map<String, Object> object_candidates = new HashMap<String,Object>(); 
+
+		//go through our objects and collect all the things we might tie to tokens.
+		for (int i = 0; i < objects.length; i++) {
+			//let's get an object on the lab table and see what it's made of.
+			//If it's an Integer, Boolean, or String, add it to the object array.
+			//Otherwise, we delve deeper to get inner public/final fields.
+			Object o = objects[i];
+			Class<?> c = o.getClass();
+			var isIntBoolDoubleOrString = 
+							c == Class<Integer> || 
+							c == Class<Boolean> || 
+							c == Class<Double> || 
+							c == Class<String>;
+			if (isIntBoolDoubleOrString)
+				c.getType
+       	object_candidates.put(o.getName, o);
+			} else {
+				List<Object> p_f_objects = get_public_final_objects(o)
+      	object_candidates.addAll(p_f_objects);
 			}
 		}
 
-		//by this point we have all the public and final fields from the object.
+		//by this point we have all the stuff we need from all the objects.
 		//moving on...
 
-		//regular expression here is a colon, 
-		//followed by one or more word characters,
-		//followed by a colon. 
-		//There is a capture group to get the inner text of the token.
-		Pattern p = Pattern.compile(":(\\w+?):"); 
+		//regular expression details: 
+		//find a string surrounded by single colons. If we find the string and
+		//colons, we have a capture group allowing us to obtain that inner string.
+		Pattern p = Pattern.compile(":(\\w+?):");
 		Matcher m = p.matcher(sql);
-
 
 		//Look for matches of this pattern, 
 		//and get the text in the token.  We can start
-		//incrementing our counter for parameters too.
+		//incrementing our counter for parameters.
 		int param_counter = 0;
 		while(m.find()) {
-			String next_token = m.group(); //get the next token
+
+			String next_token = m.group(1); //get the inner string if exists
+
+			//let's be defensive.
+			if (next_token == null) { 
+				continue;
+			}
       
-			//look for the field with this name.
-			for (Field field : public_final_fields) {
+			//look for the object with the name equal to the text we found.
+			for (Object o : object_candidates) {
       	String name = field.getName();
 				if (name == next_token) {
         	//if we get here it means we found a match between
@@ -155,11 +218,21 @@ public class SqlHelper {
 					//the information we need to store is the index of the parameter,
 					//and the field.
 					fields_in_param_order.add(param_counter, field);
+					matched_token = true;
 				}
 			}
-		}
+
+			//increment the counter as we move to the next match
+			param_counter++;
+
+		} //while loop ends.
+
+
 		//at this point we've done all our matching.  Let's do a 
-		//quick search-and-replace to make all our token into question marks.
+		//quick search-and-replace to make all our tokens into question marks.
+		//it's ok if we replace a question mark with a question mark, who cares.
+		//this will allow simpler code, and we want the ability to send in a string
+		//containing both special tokens and question marks.
 		return m.replaceAll("?");
 	}
 
