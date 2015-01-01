@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 
 /**
-	* This class provides general utilities for access the database.
+	* This class provides general utilities for access to the database.
 	*/
 public final class Database_access {
 
