@@ -1,6 +1,7 @@
 package com.renomad.qarma;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import com.renomad.qarma.Database_access;
@@ -132,19 +133,33 @@ public final class Request_utils {
 		public final String last_date;
 
 		public final String title;
-		private final Integer[] categories;
-		private final Integer[] statuses;
-		private final Integer[] user_ids;
-		public final int points;
+
+		/**
+			* categories as an array of numbers, delimited by commas
+			*/
+		public final String categories;
+
+		/**
+			* statuses as an array of numbers, delimited by commas
+			*/           
+		public final String statuses;
+
+		/**
+			* user ids as an array of numbers, delimited by commas
+			*/
+		public final String user_ids;
+
+
+		public final String points;
 
 		public Search_Object(
 				String first_date, 
 				String last_date,
 				String title,
-				Integer[] categories,
-				Integer[] statuses,
-				int points,
-				Integer[] user_ids) {
+				String categories,
+				String statuses,
+				String points,
+				String user_ids) {
 			this.first_date = first_date;
 			this.last_date = last_date;
 			this.title = title;
@@ -154,39 +169,9 @@ public final class Request_utils {
 			this.user_ids = user_ids;
 		}
 
-		public Integer[] get_statuses() {
-			Integer[] c = Arrays.copyOf(categories, categories.length);
-			return c;
-		}
-
-		public Integer[] get_user_ids() {
-			Integer[] c = Arrays.copyOf(categories, categories.length);
-			return c;
-		}
-
-		public Integer[] get_categories() {
-			Integer[] c = Arrays.copyOf(categories, categories.length);
-			return c;
-		}
-
 	}
 	
 
-	/**
-		* a helper method to convert integer arrays to strings
-		* delimited by commas, like going from [1,2,3] to "1,2,3"
-		*/
-	private String int_array_to_string(Integer[] arr) {
-
-		if (arr.length == 0) return "";
-
-		StringBuilder s = new StringBuilder();
-		s.append(arr[0].toString());
-		for(int i = 1; i < arr.length;i++) {
-			s.append(",").append(arr[i].toString());
-		}
-		return s.toString();
-	}
 
   /**
     * Gets information necessary for display on the dashboard,
@@ -208,27 +193,29 @@ public final class Request_utils {
 			int page, 
 			int page_size) {
 
-			//adding in search clauses
-		  //first we convert our integer arrays to comma-delimited strings
-			String categories = int_array_to_string(so.get_categories);
-			String statuses = int_array_to_string(so.get_statuses);
-			String user_ids = int_array_to_string(so.get_user_ids);
 
-			//now we apply predicates, but only if they apply.
+			//add predicates, but only if they apply.
 			String d1  = !Utils.is_null_or_empty(so.first_date) ? 
-				sqlText.append(" AND r.datetime > ? ") : "";
+				" AND r.datetime > ? " 
+				: "";
 			String d2  = !Utils.is_null_or_empty(so.last_date) ?
-			 	sqlText.append(" AND r.datetime < ? ") : "";
+			 	" AND r.datetime < ? " 
+				: "";
 			String ti  = !Utils.is_null_or_empty(so.title) ?
-			 	sqlText.append(" AND r.title LIKE CONCAT('%', ?, '%') ") : "";
-			String ca  = !Utils.is_null_or_empty(categories) ?
-			 	sqlText.append(" AND categories in (?)") : "";
-			String uids  = !Utils.is_null_or_empty(user_ids) ?
-			 	sqlText.append(" AND user_ids in (?) ") : "";
+			 	" AND r.title LIKE CONCAT('%', ?, '%' ) " 
+				: "";
+			String ca  = !Utils.is_null_or_empty(so.categories) ?
+			 	" AND categories in (?)" 
+				: "";
+			String uids  = !Utils.is_null_or_empty(so.user_ids) ?
+			 	" AND user_ids in (?) " 
+				: "";
 			String pts  = !Utils.is_null_or_empty(so.points) ?
-			 	sqlText.append(" AND r.points = ? ") : "";
-			String sta  = !Utils.is_null_or_empty(statuses) ?
-			 	sqlText.append(" AND statuses in (?) ") : "";
+			 	" AND r.points = ? " 
+				: "";
+			String sta  = !Utils.is_null_or_empty(so.statuses) ?
+			 	" AND statuses in (?) " 
+				: "";
 
 			//done with search clauses
 
@@ -241,7 +228,7 @@ public final class Request_utils {
 							"r.points, "+
 							"r.title, "+
 							"u.rank, "+
-							"r.requesting_user_id "+
+							"r.requesting_user_id, "+
 							"GROUP_CONCAT(rc.localization_value SEPARATOR ',') AS categories "+
 						"FROM request r "+
 						"JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
@@ -250,9 +237,11 @@ public final class Request_utils {
 						"WHERE requesting_user_id <> ? "+
 						"%s %s %s %s %s %s %s "+ //we add in a bunch of search clauses here, where applicable.
 						"GROUP BY r.request_id "+
-						"LIMIT ?,? "+ 					//paging happens here.
-						"SORT BY id ASC " 			//sorting happens here.
+						"ORDER BY r.request_id ASC " +			//sorting happens here.
+						"LIMIT ?,? " 					//paging happens here.
 						, d1,d2,ti,ca,uids,pts,sta);
+		System.err.println("sqltext is");
+		System.err.println(sqlText);
 
 
 		PreparedStatement pstmt = null;
@@ -284,22 +273,22 @@ public final class Request_utils {
 
 			if (ca.length() > 0) {
 				param_index++;
-				pstmt.setString( param_index, categories);
+				pstmt.setString( param_index, so.categories);
 			}
 
 			if (uids.length() > 0) {
 				param_index++;
-				pstmt.setString( param_index, user_ids);
+				pstmt.setString( param_index, so.user_ids);
 			}
 
 			if (uids.length() > 0) {
 				param_index++;
-				pstmt.setString( param_index, so.points.toString());
+				pstmt.setString( param_index, String.valueOf(so.points));
 			}
 
 			if (sta.length() > 0) {
 				param_index++;
-				pstmt.setString( param_index, statuses);
+				pstmt.setString( param_index, so.statuses);
 			}
 
 			//done with search clauses
@@ -330,10 +319,10 @@ public final class Request_utils {
         String t = resultSet.getNString("title");
         int ru = resultSet.getInt("requesting_user_id");
         int ra = resultSet.getInt("rank");
-				String ca = resultSet.getString("categories");
-				Integer[] categories = parse_string_to_int_array(ca);
+				String cats = resultSet.getString("categories");
+				Integer[] cat_array = parse_string_to_int_array(ca);
 
-        Others_Request request = new Others_Request(t,dt,d,s,ra,p,rid,ru,categories);
+        Others_Request request = new Others_Request(t,dt,d,s,ra,p,rid,ru,cat_array);
         requests.add(request);
       }
 
@@ -359,7 +348,7 @@ public final class Request_utils {
 		* @return an Integer array, or an empty Integer array if no
 		* string numbers found.
 		*/
-	private Integer[] parse_string_to_int_array(String value) {
+	private static Integer[] parse_string_to_int_array(String value) {
 		if (value.length() > 0) {
 			String[] numerals = value.split(",");
 			Integer[] return_array = new Integer[numerals.length];

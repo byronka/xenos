@@ -5,7 +5,7 @@
  ------------*/
 
 INSERT INTO user
-(first_name, last_name, email, password, is_logged_in, last_time_logged_in, last_ip_logged_in, points)
+(first_name, last_name, email, password, is_logged_in, last_time_logged_in, last_ip_logged_in, points, username)
 VALUES
 ("byron","katz","bk@coolnet", "password",1,"2014-11-11","198.24.24.26", 100, "bk"),
 ("<script>alert('dude')</script>","<script>alert('boy')</script>","dude", "password",1,"2014-11-11","198.24.24.26", 100,"wow"),

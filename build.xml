@@ -70,7 +70,7 @@
     <antcall target="clean-db-and-classes" />
     <antcall target="build-schema" />
     <antcall target="build-sample-data" />
-	<antcall target="build-language-data" />
+		<antcall target="build-language-data" />
     <antcall target="run" />
   </target>
 

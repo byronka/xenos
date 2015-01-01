@@ -3,6 +3,7 @@ package com.renomad.qarma;
 
 import com.renomad.qarma.Database_access;
 import com.renomad.qarma.Utils;
+import java.util.ArrayList;
 
 import java.sql.SQLException;
 import java.sql.ResultSet;
@@ -20,28 +21,31 @@ public final class User_utils {
 
 	/**
 		* gets an array of user ids by names of users.
-		* @param an array of user usernames
+		* @param usernames an array of user usernames
 		* @return an arraylist of user ids instead of the names, or null
 		* if failure or none found.
 		*/
-	public static ArrayList<Integer> get_user_ids_by_names(String[] usernames) {
+	public static ArrayList<Integer> 
+		get_user_ids_by_names(String[] usernames) {
 
 		//go defensive!
-		if (usernames.length == 0) {return new Integer[0];}
+		if (usernames.length == 0) {return null;}
 
-		StringBuilder sb = new StringBuilder(usernames[0]); //add the first name
+		StringBuilder sb = new StringBuilder();
+		//add the first name
+		sb.append("\"").append(usernames[0]).append("\"");
 		for(String usr : usernames) {
-			sb.append(",").append(usr);
+			sb.append(",").append("\"").append(usr).append("\"");
 		}
 		String delimited_string_usernames = sb.toString();
 
-    String sqlText = "SELECT user_id FROM user WHERE user_id IN (?)";
+    String sqlText = "SELECT user_id FROM user WHERE username IN (?)";
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = Database_access.prepare_statement(
 					conn, sqlText);     
-			pstmt.setInt( 1, usernames);
+			pstmt.setNString( 1, delimited_string_usernames);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;

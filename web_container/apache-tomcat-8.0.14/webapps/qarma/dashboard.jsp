@@ -50,7 +50,7 @@
 <div class="others-requests">
 <%
 	Request_utils.Search_Object so = 
-		new Request_utils.Search_Object( "", "", search_term, "", "");
+		new Request_utils.Search_Object( "", "", "", "", "", "", "");
   Others_Request[] others_requests = 
 		Request_utils
 			.get_others_requests(user_id, so , which_page, page_size);

@@ -22,6 +22,23 @@ public final class Utils {
     return value == null || value.equals("");
   }
   
+
+	/**
+		* a helper method to convert integer arrays to strings
+		* delimited by commas, like going from [1,2,3] to "1,2,3"
+		*/
+	private static String int_array_to_string(Integer[] arr) {
+
+		if (arr.length == 0) return "";
+
+		StringBuilder s = new StringBuilder();
+		s.append(arr[0].toString());
+		for(int i = 1; i < arr.length;i++) {
+			s.append(",").append(arr[i].toString());
+		}
+		return s.toString();
+	}
+
   
   /**
    * Safe render is crucial to displaying text that came from the outside,
