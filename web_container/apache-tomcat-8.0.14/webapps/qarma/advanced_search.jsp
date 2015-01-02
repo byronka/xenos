@@ -23,12 +23,19 @@ String user_error_msg = "";
 boolean validation_error = false;
 
 //these guys don't require validation.
-title = request.getParameter("title");
-points = request.getParameter("points");
+if ((title = request.getParameter("title")) == null) {
+	title = "";
+}
+
+if ((points = request.getParameter("points")) == null) {
+	points = "";
+}
 
 
 //parse out the statuses from a string the client gave us
-statuses = request.getParameter("statuses");
+if ((statuses = request.getParameter("statuses")) == null) {
+	statuses = "";
+}
 
 //split the statuses string on one or more whitespace or one 
 //or more non-word chars.
@@ -46,10 +53,13 @@ if (status_array.length == 0 && statuses.length() > 0) {
 
 
 //parse out the categories from a string the client gave us
-category = request.getParameter("categories");
+if ((category = request.getParameter("categories")) == null) {
+	category = "";
+}
 
 Integer[] cat_array = 
 	Request_utils.parse_categories_string(category, loc );
+String categories = Utils.int_array_to_string(cat_array);
 
 if (cat_array.length == 0 && category.length() > 0) {
 	validation_error |= true;
@@ -58,7 +68,9 @@ if (cat_array.length == 0 && category.length() > 0) {
 
 
 //parse out the first date
-first_date = request.getParameter("first_date");
+if ((first_date = request.getParameter("first_date")) == null) {
+	first_date = "";
+}
 
 String converted_first_date = 
 	Utils.convert_value_to_date(first_date);
@@ -71,7 +83,9 @@ if (converted_first_date.equals("")) {
 
 
 //parse out the last date
-last_date = request.getParameter("last_date");
+if ((last_date = request.getParameter("last_date")) == null) {
+	last_date = "";
+}
 
 String converted_last_date = Utils.convert_value_to_date(last_date);
 
@@ -83,7 +97,9 @@ if (converted_last_date.equals("")) {
 
 
 //parse out the user
-users = request.getParameter("users");
+if ((users = request.getParameter("users")) == null) {
+	users = "";
+}
 
 //split the users string on one or more whitespace or one 
 //or more non-word chars.
@@ -98,10 +114,8 @@ if ((user_ids == null || user_ids.length == 0) &&
 	user_error_msg = loc.get(85,"No users found in string");
 }
 
-if (!validation_error) {
-	//first date, last date, title, points, category, users, statuses
-	dashboard_string = 
-		String.format(
+if (!validation_error && request.getMethod().equals("POST")) {
+	String dashboard_string = String.format(
 			"dashboard.jsp?fd=%s&ld=%s&ti=%s&pts=%s&cat=%s&us=%s&sta=%s",
 			 first_date,last_date,title,points,categories,users,statuses );
 	response.sendRedirect(dashboard_string);
@@ -120,16 +134,19 @@ if (!validation_error) {
 		<p>
 			<%=loc.get(25,"Date")%>: 
 			<input type="text" name="first_date" value="<%=first_date%>" /> 
+			<span><%=fd_error_msg%></span>
 		</p>
 
 		<p>
 			<%=loc.get(25,"Date")%>: 
-			<input type="text" name="last_date" value="<%=last_dat%>" /> 
+			<input type="text" name="last_date" value="<%=last_date%>" /> 
+			<span><%=ld_error_msg%></span>
 		</p>
 
 		<p>
 			<%=loc.get(24,"Status")%>: 
 			<input type="text" name="statuses" value="<%=statuses%>" /> 
+			<span><%=stat_error_msg%></span>
 		</p>
 
 		<p>
@@ -138,14 +155,16 @@ if (!validation_error) {
 		</p>
 
 		<p>
-		<%=loc.get(80,"User")%>: 
-		<input type="text" name="users" value="<%=users%>" />
+			<%=loc.get(80,"User")%>: 
+			<input type="text" name="users" value="<%=users%>" />
+			<span><%=user_error_msg%></span>
 		</p>
 
 
 		<p>
-		<%=loc.get(13,"Categories")%>: 
-		<input type="text" name="categories" value="<%=category%>" />
+			<%=loc.get(13,"Categories")%>: 
+			<input type="text" name="categories" value="<%=category%>" />
+			<span><%=cat_error_msg%></span>
 		</p>
 
 

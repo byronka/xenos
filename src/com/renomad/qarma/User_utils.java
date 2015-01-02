@@ -23,10 +23,10 @@ public final class User_utils {
 	/**
 		* gets an array of user ids by names of users.
 		* @param usernames an array of user usernames
-		* @return an arraylist of user ids instead of the names, or null
+		* @return an array of user ids instead of the names, or null
 		* if failure or none found.
 		*/
-	public static ArrayList<Integer> 
+	public static Integer[]
 		get_user_ids_by_names(String[] usernames) {
 
 		//go defensive!
@@ -56,7 +56,7 @@ public final class User_utils {
       while(resultSet.next()) {	
 				user_ids.add(resultSet.getInt("user_id"));
 			}
-      return user_ids;
+			return user_ids.toArray(new Integer[user_ids.size()]);
 		} catch (SQLException ex) {
 			Database_access.handle_sql_exception(ex);
 			return null;

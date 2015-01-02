@@ -27,7 +27,7 @@ public final class Utils {
 		* a helper method to convert integer arrays to strings
 		* delimited by commas, like going from [1,2,3] to "1,2,3"
 		*/
-	private static String int_array_to_string(Integer[] arr) {
+	public static String int_array_to_string(Integer[] arr) {
 
 		if (arr.length == 0) return "";
 
@@ -39,6 +39,16 @@ public final class Utils {
 		return s.toString();
 	}
 
+
+	/**
+		* this helper method takes a variety of date-like
+		* strings and converts them into a form fit for
+		* use with mysql.
+		*/
+	public static String convert_value_to_date(String date) {
+		//hardcoded for now.  TODO make this real.
+		return "2014-12-18 21:22:42.0";
+	}
   
   /**
    * Safe render is crucial to displaying text that came from the outside,

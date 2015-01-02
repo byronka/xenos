@@ -31,7 +31,7 @@ public final class Request_utils {
 		* @param loc the localization object
 		* @return an array of ints of statuses that were found amongst the words.
 		*/
-	public Integer[] parse_statuses_string(String[] stats, Localization loc) {
+	public static Integer[] parse_statuses_string(String[] stats, Localization loc) {
 		//get all the localized statuses
 		//compare those with stats
 		//return the id's of statuses that were found.
@@ -257,8 +257,6 @@ public final class Request_utils {
 						"ORDER BY r.request_id ASC " +			//sorting happens here.
 						"LIMIT ?,? " 					//paging happens here.
 						, d1,d2,ti,ca,uids,pts,sta);
-		System.err.println("sqltext is");
-		System.err.println(sqlText);
 
 
 		PreparedStatement pstmt = null;
