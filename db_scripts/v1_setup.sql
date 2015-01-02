@@ -79,40 +79,6 @@ request (
 );
 
 
-
----DELIMITER---
--- here, we set up a table to correlate categories to a given
--- request.
-
-CREATE TABLE IF NOT EXISTS 
-request_to_category ( 
-	request_id INT NOT NULL,
-  request_category_id INT NOT NULL,
-  FOREIGN KEY FK_request_id_request_id (request_id) 
-    REFERENCES request (request_id) 
-    ON DELETE CASCADE,
-  FOREIGN KEY FK_request_category_id_request_category_id (request_category_id)
-    REFERENCES request_category (request_category_id)
-    ON DELETE CASCADE
-)
-
----DELIMITER---
--- create a table of meesages for requests
-
-CREATE TABLE IF NOT EXISTS 
-request_message ( 
-  request_id INT NOT NULL,
-	message NVARCHAR(10000),
-	timestamp datetime,
-	user_id INT NOT NULL,
-  FOREIGN KEY FK_request_id (request_id)
-	REFERENCES request (request_id)
-	ON DELETE CASCADE,
-  FOREIGN KEY FK_user_id (user_id)
-	REFERENCES user (user_id)
-	ON DELETE CASCADE
-)
-
 ---DELIMITER---
 -- create a table of known languages
 
@@ -147,9 +113,41 @@ CREATE TABLE IF NOT EXISTS
 request_category ( 
   request_category_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	request_category_value VARCHAR(20),
-	localization_value INT NOT NULL,
-  FOREIGN KEY FK_localization_value (localization_value )
-    REFERENCES localization_lookup (local_id)
+	localization_value INT NOT NULL DEFAULT -1
+)
+
+---DELIMITER---
+-- here, we set up a table to correlate categories to a given
+-- request.
+
+CREATE TABLE IF NOT EXISTS 
+request_to_category ( 
+	request_id INT NOT NULL,
+  request_category_id INT NOT NULL,
+  FOREIGN KEY FK_request_id_request_id (request_id) 
+    REFERENCES request (request_id) 
+    ON DELETE CASCADE,
+  FOREIGN KEY FK_request_category_id_request_category_id (request_category_id)
+    REFERENCES request_category (request_category_id)
     ON DELETE CASCADE
 )
+
+---DELIMITER---
+-- create a table of meesages for requests
+
+CREATE TABLE IF NOT EXISTS 
+request_message ( 
+  request_id INT NOT NULL,
+	message NVARCHAR(10000),
+	timestamp datetime,
+	user_id INT NOT NULL,
+  FOREIGN KEY FK_request_id (request_id)
+	REFERENCES request (request_id)
+	ON DELETE CASCADE,
+  FOREIGN KEY FK_user_id (user_id)
+	REFERENCES user (user_id)
+	ON DELETE CASCADE
+)
+
+
 

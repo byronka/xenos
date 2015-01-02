@@ -1,3 +1,7 @@
+SET FOREIGN_KEY_CHECKS=0;
+
+---DELIMITER---
+
 /*------------
  
      users
@@ -82,3 +86,7 @@ VALUES
 (2,"byron: What we could do is to do something or other","2014-12-18 21:22:46",1 ),
 (2,"dan: what do you think about this then?","2014-12-18 21:22:47",2 )
 
+
+---DELIMITER---
+
+SET FOREIGN_KEY_CHECKS=1;
