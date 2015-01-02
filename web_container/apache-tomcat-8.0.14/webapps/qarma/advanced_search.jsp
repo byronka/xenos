@@ -20,7 +20,7 @@ String fd_error_msg = ""; //first date
 String ld_error_msg = ""; //last date
 String user_error_msg = ""; 
 
-bool validation_error = false;
+boolean validation_error = false;
 
 //these guys don't require validation.
 title = request.getParameter("title");
@@ -30,8 +30,12 @@ points = request.getParameter("points");
 //parse out the statuses from a string the client gave us
 statuses = request.getParameter("statuses");
 
+//split the statuses string on one or more whitespace or one 
+//or more non-word chars.
+String[] split_statuses = statuses.split("\\s+?|\\W+?"); 
+
 Integer[] status_array = Request_utils
-	.parse_statuses_string(statuses, loc );
+	.parse_statuses_string(split_statuses, loc );
 
 if (status_array.length == 0 && statuses.length() > 0) { 
 	//if there were no statuses found, but they entered something...

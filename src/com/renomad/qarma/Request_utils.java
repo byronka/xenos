@@ -73,13 +73,13 @@ public final class Request_utils {
   public static Request get_a_request(int request_id) {
 		
     String sqlText = 
-      "SELECT request_id, datetime,description,points,"+
-			"status,title,requesting_user_id "+
+      "SELECT r.request_id, r.datetime, r.description, r.points,"+
+			"r.status, r.title, r.requesting_user_id, "+
 			"GROUP_CONCAT(rc.localization_value SEPARATOR ',') AS categories "+
-			"FROM request r"+
+			"FROM request r "+
 			"JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
 			"JOIN request_category rc ON rc.request_category_id = rtc.request_category_id "+
-			"WHERE request_id = ? ";
+			"WHERE r.request_id = ? ";
 
 		PreparedStatement pstmt = null;
     try {
@@ -320,7 +320,7 @@ public final class Request_utils {
         int ru = resultSet.getInt("requesting_user_id");
         int ra = resultSet.getInt("rank");
 				String cats = resultSet.getString("categories");
-				Integer[] cat_array = parse_string_to_int_array(ca);
+				Integer[] cat_array = parse_string_to_int_array(cats);
 
         Others_Request request = new Others_Request(t,dt,d,s,ra,p,rid,ru,cat_array);
         requests.add(request);

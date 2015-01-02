@@ -20,6 +20,21 @@ public final class User_utils {
 	}
 
 	/**
+		* given an array of words, we'll look up the local words
+		* for statuses and see if any match.  If so, we'll return those
+		* as an array of ints.
+		* @param stats the words we'll compare to see if they are localized statuses
+		* @param loc the localization object
+		* @return an array of ints of statuses that were found amongst the words.
+		*/
+	public Integer[] parse_statuses_string(String[] stats, Localization loc) {
+		//get all the localized statuses
+		//compare those with stats
+		//return the id's of statuses that were found.
+		return new Integer[0];
+	}
+
+	/**
 		* gets an array of user ids by names of users.
 		* @param usernames an array of user usernames
 		* @return an arraylist of user ids instead of the names, or null
