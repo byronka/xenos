@@ -138,16 +138,11 @@ public final class Request_utils {
 	public static class Search_Object {
 
 		/**
-			* if searching in a date range, this is
-			* the first date.
+      * date can be a single date, a range of dates, or more.
+      * we have to implement functionality to determine which is which.
+      * for now, as a first stab, we'll just do single date. BK 1/3/2014
 			*/
-		public final String first_date;
-
-		/**
-			* if searching in a date range, this is
-			* the last date.
-			*/
-		public final String last_date;
+		public final String date;
 
 		public final String title;
 
@@ -170,15 +165,13 @@ public final class Request_utils {
 		public final String points;
 
 		public Search_Object(
-				String first_date, 
-				String last_date,
+				String date,
 				String title,
 				String categories,
 				String statuses,
 				String points,
 				String user_ids) {
-			this.first_date = first_date;
-			this.last_date = last_date;
+			this.date = date;
 			this.title = title;
 			this.categories = categories;
 			this.statuses = statuses;
@@ -212,25 +205,22 @@ public final class Request_utils {
 
 
 			//add predicates, but only if they apply.
-			String d1  = !Utils.is_null_or_empty(so.first_date) ? 
+			String date_sql  = !Utils.is_null_or_empty(so.date) ? 
 				" AND r.datetime > ? " 
 				: "";
-			String d2  = !Utils.is_null_or_empty(so.last_date) ?
-			 	" AND r.datetime < ? " 
-				: "";
-			String ti  = !Utils.is_null_or_empty(so.title) ?
+			String title_sql  = !Utils.is_null_or_empty(so.title) ?
 			 	" AND r.title LIKE CONCAT('%', ?, '%' ) " 
 				: "";
-			String ca  = !Utils.is_null_or_empty(so.categories) ?
+			String categories_sql  = !Utils.is_null_or_empty(so.categories) ?
 			 	" AND categories in (?)" 
 				: "";
-			String uids  = !Utils.is_null_or_empty(so.user_ids) ?
+			String users_sql  = !Utils.is_null_or_empty(so.user_ids) ?
 			 	" AND user_ids in (?) " 
 				: "";
-			String pts  = !Utils.is_null_or_empty(so.points) ?
+			String points_sql  = !Utils.is_null_or_empty(so.points) ?
 			 	" AND r.points = ? " 
 				: "";
-			String sta  = !Utils.is_null_or_empty(so.statuses) ?
+			String status_sql  = !Utils.is_null_or_empty(so.statuses) ?
 			 	" AND statuses in (?) " 
 				: "";
 
@@ -252,58 +242,63 @@ public final class Request_utils {
 						"JOIN request_category rc ON rc.request_category_id = rtc.request_category_id "+
 						"JOIN user u ON u.user_id = r.requesting_user_id "+
 						"WHERE requesting_user_id <> ? "+
-						"%s %s %s %s %s %s %s "+ //we add in a bunch of search clauses here, where applicable.
+						"%s %s %s %s %s %s "+ //we add in a bunch of search clauses here, where applicable.
 						"GROUP BY r.request_id "+
 						"ORDER BY r.request_id ASC " +			//sorting happens here.
 						"LIMIT ?,? " 					//paging happens here.
-						, d1,d2,ti,ca,uids,pts,sta);
+						, date_sql,title_sql,categories_sql,users_sql,points_sql,status_sql);
 
 
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
+      System.err.println("sql text is ");
+      System.err.println(sqlText);
 			pstmt = Database_access.prepare_statement(conn, sqlText);     
+      System.err.println("parameters are ");
 
 			int param_index = 1;
       pstmt.setInt( param_index, user_id);
+      System.err.printf("param %d: %s\n", param_index, user_id);
 
 			//adding in search clauses, mirror of above.  If you think of a better way
 			// to do this, I'm all ears - BK 12/28/2014.  But it cannot be so complex
 			//as to make it a moot point.  See git commit e3cd6c43c1379575dd3ae6c5f05965ceecce4ee5 where
 			//I tried building something and it didn't pay for itself.
-			if (d1.length() > 0) {
+			if (date_sql.length() > 0) {
 				param_index++;
-				pstmt.setString( param_index, so.first_date);
+				pstmt.setString( param_index, so.date);
+      System.err.printf("param %d: %s\n", param_index, so.date);
 			}
 
-			if (d2.length() > 0) {
-				param_index++;
-				pstmt.setString( param_index, so.last_date);
-			}
-
-			if (ti.length() > 0) {
+			if (title_sql.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.title);
+      System.err.printf("param %d: %s\n", param_index, so.title);
 			}
 
-			if (ca.length() > 0) {
+			if (categories_sql.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.categories);
+      System.err.printf("param %d: %s\n", param_index, so.categories);
 			}
 
-			if (uids.length() > 0) {
+			if (users_sql.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.user_ids);
+      System.err.printf("param %d: %s\n", param_index, so.user_ids);
 			}
 
-			if (uids.length() > 0) {
+			if (points_sql.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, String.valueOf(so.points));
+      System.err.printf("param %d: %s\n", param_index, so.points);
 			}
 
-			if (sta.length() > 0) {
+			if (status_sql.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.statuses);
+      System.err.printf("param %d: %s\n", param_index, so.statuses);
 			}
 
 			//done with search clauses
@@ -313,8 +308,10 @@ public final class Request_utils {
 			int end = page * page_size + page_size;
 			param_index++;
 			pstmt.setInt(param_index, start);
+      System.err.printf("param %d: %s\n", param_index, start);
 			param_index++;
 			pstmt.setInt(param_index, end);
+      System.err.printf("param %d: %s\n", param_index, end);
 
 			//paging ends
 

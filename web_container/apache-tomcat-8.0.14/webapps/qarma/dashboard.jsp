@@ -8,7 +8,12 @@
 	String qs = request.getQueryString();
 
 	java.util.Map<String,String> params = Utils.parse_qs(qs);
-	String search_term = params.get("search");
+	String srch_date = params.get("da"); //date
+	String srch_ti = params.get("ti"); //title
+	String srch_pts = params.get("pts"); //points
+	String srch_cat = params.get("cat"); //categories
+	String srch_us = params.get("us"); //user
+	String srch_sta = params.get("sta"); //status
 
 	Integer which_page = Utils.parse_int(params.get("page"));
 	Integer page_size = Utils.parse_int(params.get("page_size"));
@@ -51,7 +56,7 @@
 <div class="others-requests">
 <%
 	Request_utils.Search_Object so = 
-		new Request_utils.Search_Object( "", "", "", "", "", "", "");
+		new Request_utils.Search_Object( srch_date, srch_ti, srch_cat, srch_sta, srch_pts, srch_us);
   Others_Request[] others_requests = 
 		Request_utils
 			.get_others_requests(user_id, so , which_page, page_size);

@@ -11,14 +11,12 @@ String category = "";
 String statuses = "";
 String title = "";
 String points = "";
-String first_date = "";
-String last_date = "";
+String date = "";
 String users = "";
 
 String stat_error_msg = "";
 String cat_error_msg = "";
-String fd_error_msg = ""; //first date
-String ld_error_msg = ""; //last date
+String da_error_msg = ""; //date
 String user_error_msg = ""; 
 
 boolean validation_error = false;
@@ -68,31 +66,17 @@ if (cat_array.length == 0 && category.length() > 0) {
 }
 
 
-//parse out the first date
-if ((first_date = request.getParameter("first_date")) == null) {
-	first_date = "";
+//parse out the date
+if ((date = request.getParameter("date")) == null) {
+	date = "";
 }
 
-String converted_first_date = 
-	Utils.convert_value_to_date(first_date);
+String converted_date = 
+	Utils.convert_value_to_date(date);
 
-if (converted_first_date.equals("")) {
+if (converted_date.equals("")) {
 	validation_error |= true;
-	fd_error_msg = loc.get(83,"Invalid first date");
-}
-
-
-
-//parse out the last date
-if ((last_date = request.getParameter("last_date")) == null) {
-	last_date = "";
-}
-
-String converted_last_date = Utils.convert_value_to_date(last_date);
-
-if (converted_last_date.equals("")) {
-	validation_error |= true;
-	ld_error_msg = loc.get(84,"Invalid last date");
+	da_error_msg = loc.get(83,"Invalid date");
 }
 
 
@@ -118,7 +102,7 @@ if ((user_ids == null || user_ids.length == 0) &&
 if (!validation_error && request.getMethod().equals("POST")) {
 	String dashboard_string = String.format(
 			"dashboard.jsp?fd=%s&ld=%s&ti=%s&pts=%s&cat=%s&us=%s&sta=%s",
-			 first_date,last_date,title,points,categories,users,statuses );
+			 date,title,points,categories,users,statuses );
 	response.sendRedirect(dashboard_string);
 	return;
 }
@@ -134,7 +118,7 @@ if (!validation_error && request.getMethod().equals("POST")) {
 
 		<p>
 			<%=loc.get(25,"Date")%>: 
-			<input type="text" name="first_date" value="<%=first_date%>" /> 
+			<input type="text" name="date" value="<%=date%>" /> 
 			<span><%=fd_error_msg%></span>
 		</p>
 

@@ -89,7 +89,7 @@ VALUES
 (80, 'User', 'FrenchUser', 'SpanishUser'),
 (81, 'Advanced search', 'FrenchAdvanced search', 'SpanishAdvanced search'),
 (82, 'No statuses found in string', 'FrenchNo statuses found in string', 'SpanishNo statuses found in string'),
-(83, 'Invalid first date', 'FrenchInvalid first date', 'SpanishInvalid first date'),
-(84, 'Invalid last date', 'FrenchInvalid last date', 'SpanishInvalid last date'),
+(83, 'Invalid date', 'FrenchInvalid date', 'SpanishInvalid date'),
+(84, 'EMPTY-NOTUSED', 'EMPTY-NOTUSED', 'EMPTY-NOTUSED'),
 (85, 'No users found in string', 'FrenchNo users found in string', 'SpanishNo users found in string')
 -- (99999, '', 'French', 'Spanish')
