@@ -252,14 +252,10 @@ public final class Request_utils {
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
-      System.err.println("sql text is ");
-      System.err.println(sqlText);
 			pstmt = Database_access.prepare_statement(conn, sqlText);     
-      System.err.println("parameters are ");
 
 			int param_index = 1;
       pstmt.setInt( param_index, user_id);
-      System.err.printf("param %d: %s\n", param_index, user_id);
 
 			//adding in search clauses, mirror of above.  If you think of a better way
 			// to do this, I'm all ears - BK 12/28/2014.  But it cannot be so complex
@@ -268,37 +264,31 @@ public final class Request_utils {
 			if (date_sql.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.date);
-      System.err.printf("param %d: %s\n", param_index, so.date);
 			}
 
 			if (title_sql.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.title);
-      System.err.printf("param %d: %s\n", param_index, so.title);
 			}
 
 			if (categories_sql.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.categories);
-      System.err.printf("param %d: %s\n", param_index, so.categories);
 			}
 
 			if (users_sql.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.user_ids);
-      System.err.printf("param %d: %s\n", param_index, so.user_ids);
 			}
 
 			if (points_sql.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, String.valueOf(so.points));
-      System.err.printf("param %d: %s\n", param_index, so.points);
 			}
 
 			if (status_sql.length() > 0) {
 				param_index++;
 				pstmt.setString( param_index, so.statuses);
-      System.err.printf("param %d: %s\n", param_index, so.statuses);
 			}
 
 			//done with search clauses
@@ -308,10 +298,8 @@ public final class Request_utils {
 			int end = page * page_size + page_size;
 			param_index++;
 			pstmt.setInt(param_index, start);
-      System.err.printf("param %d: %s\n", param_index, start);
 			param_index++;
 			pstmt.setInt(param_index, end);
-      System.err.printf("param %d: %s\n", param_index, end);
 
 			//paging ends
 

@@ -76,15 +76,4 @@ public class Request_tests {
 		assertEquals(100, refunded_points);
 	}
 
-	@Test
-  public void performance_test_on_get_others_requests() {
-		Request_utils.Search_Object so = 
-			new Request_utils.Search_Object( "", "", "", "", "", "");
-		for (int i = 0; i < 1000; i++) {
-			Request_utils
-				.get_others_requests(1, so , 1, 100);
-		}
-
-	}
-
 }
