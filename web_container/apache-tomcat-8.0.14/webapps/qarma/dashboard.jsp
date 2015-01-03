@@ -16,6 +16,7 @@
 	if (page_size == null) {page_size = 10;}
 
 %>
+<!DOCTYPE html>
 <html>                                 
 	<head>
 		<link rel="stylesheet" href="dashboard.css" >

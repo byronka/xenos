@@ -1,4 +1,5 @@
 <%@include file="includes/init.jsp" %>
+<!DOCTYPE html>
 <html>                                 
   <head><title><%=loc.get(81, "Advanced search")%></title></head>
 
