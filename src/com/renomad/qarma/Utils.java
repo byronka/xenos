@@ -42,6 +42,10 @@ public final class Utils {
 	}
 
 
+	public static boolean is_valid_date(String date) {
+    return get_date_search_query(date).length() > 0;
+  }
+
 	/**
     * We'll just check to see that the string entered is valid per our specs.
     * formats allowed:   (explanation in parens)
@@ -53,20 +57,21 @@ public final class Utils {
     * the 0:00:00.0000 point of the first day to the 23:59:59:9999 point
     * of the last day.
 		*/
-	public static boolean is_valid_date(String date) {
+  public static String get_date_search_query(String date) {
     //a proper date will look like:
     // 2014-12-18
     // or 0000 to 9999, dash, 0 to 12, number varying between 1 and 31
 
+    String return_sql_string = "";
     String date_ex = "([0-9]{4}-[0-9]{2}-[0-9]{2})"; //a basic date regular expression.
 
     //either
     // a) date range, blah - blah     
     //      blah being there 0 or 1 times, followed by exactly
-    //      one space, then dash, then exactly one space, then blah again.
+    //      no space, then dash, then exactly no space, then blah again.
     // or
     // b) a single date, no spaces.
-    String full_expression = String.format("%s{0,1} (-) %s{0,1}|%s", date_ex, date_ex, date_ex); 
+    String full_expression = String.format("%s{0,1}(-)%s{0,1}|%s", date_ex, date_ex, date_ex); 
 
     //with the capture groups I've set up, if group 3 is non-null, then it's a single date.
     //otherwise, if group 1 and 2 are non-null, then it's a range
@@ -76,14 +81,14 @@ public final class Utils {
 
     //first check - did we find anything?
     if (m.find()) { // we only look once.
-      String a = m.group(1);
-      String b = m.group(2);
-      String c = m.group(3);
-      String d = m.group(4);
-      boolean first_date_in_range = is_good_value(a);
-      boolean dash = !Utils.is_null_or_empty(b);
-      boolean last_date_in_range = is_good_value(c);
-      boolean single_date = is_good_value(d);
+      String fd_string = m.group(1);
+      String dash_string = m.group(2);
+      String ld_string = m.group(3);
+      String single_date_string = m.group(4);
+      boolean first_date_in_range = is_good_value(fd_string);
+      boolean dash = !Utils.is_null_or_empty(dash_string);
+      boolean last_date_in_range = is_good_value(ld_string);
+      boolean single_date = is_good_value(single_date_string);
 
 
       int count_true = 0;
@@ -91,28 +96,32 @@ public final class Utils {
       boolean case_A = !dash && single_date;
       if (case_A) {
         count_true++;
+        return_sql_string = String.format("AND r.datetime BETWEEN '%s 00:00:00' AND '%s 23:59:59.999' ",single_date_string, single_date_string);
       }
       boolean case_B = dash && !single_date && first_date_in_range && last_date_in_range;
       if (case_B) {
         count_true++;
+        return_sql_string = String.format("AND r.datetime > '%s 00:00:00' AND r.datetime < '%s 23:59:59.999' ",fd_string, ld_string);
       }
       boolean case_C = dash && !single_date && first_date_in_range && !last_date_in_range;
       if (case_C) {
         count_true++;
+        return_sql_string = String.format("AND r.datetime > '%s 00:00:00' ",fd_string);
       }
       boolean case_D = dash && !single_date && !first_date_in_range && last_date_in_range;
       if (case_D) {
         count_true++;
+        return_sql_string = String.format("AND r.datetime < '%s 23:59:59.999' ",ld_string);
       }
 
       //second check - make sure one and *only one* case is true
       if (count_true == 1) {
-        return true;
+        return return_sql_string;
       }
     }
 
     //if we got here, we didn't meet the precise criteria.
-    return false;
+    return "";
 	}
 
 //                        Yearly calendar:

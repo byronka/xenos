@@ -206,7 +206,7 @@ public final class Request_utils {
 
 			//add predicates, but only if they apply.
 			String date_sql  = !Utils.is_null_or_empty(so.date) ? 
-				" AND r.datetime > ? " 
+        Utils.get_date_search_query(so.date)
 				: "";
 			String title_sql  = !Utils.is_null_or_empty(so.title) ?
 			 	" AND r.title LIKE CONCAT('%', ?, '%' ) " 
@@ -261,10 +261,6 @@ public final class Request_utils {
 			// to do this, I'm all ears - BK 12/28/2014.  But it cannot be so complex
 			//as to make it a moot point.  See git commit e3cd6c43c1379575dd3ae6c5f05965ceecce4ee5 where
 			//I tried building something and it didn't pay for itself.
-			if (date_sql.length() > 0) {
-				param_index++;
-				pstmt.setString( param_index, so.date);
-			}
 
 			if (title_sql.length() > 0) {
 				param_index++;
@@ -539,7 +535,6 @@ public final class Request_utils {
 		ArrayList<Integer> selected_categories = new ArrayList<Integer>();
 		for (Integer i : all_categories.values()) {
     	String c = loc.get(i,"").toLowerCase();
-			System.err.println(c);
 			if (lower_case_categories_str.contains(c)) {
 				selected_categories.add(i);
 			}
