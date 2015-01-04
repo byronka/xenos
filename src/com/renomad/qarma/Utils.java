@@ -63,7 +63,7 @@ public final class Utils {
     // or 0000 to 9999, dash, 0 to 12, number varying between 1 and 31
 
     String return_sql_string = "";
-    String date_ex = "([0-9]{4}-[0-9]{2}-[0-9]{2})"; //a basic date regular expression.
+    String date_ex = "([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})"; //a basic date regular expression.
 
     //either
     // a) date range, blah - blah     
