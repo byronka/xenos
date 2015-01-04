@@ -215,7 +215,7 @@ public final class Request_utils {
 			 	" AND categories in (?)" 
 				: "";
 			String users_sql  = !Utils.is_null_or_empty(so.user_ids) ?
-			 	" AND user_ids in (?) " 
+			 	" AND r.requesting_user_id in (?) " 
 				: "";
 			String points_sql  = !Utils.is_null_or_empty(so.points) ?
 			 	" AND r.points = ? " 

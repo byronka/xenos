@@ -35,6 +35,7 @@ public final class User_utils {
 		StringBuilder sb = new StringBuilder();
 		//add the first name
 		sb.append("\"").append(usernames[0]).append("\"");
+    //add subsequent names
 		for(String usr : usernames) {
 			sb.append(",").append("\"").append(usr).append("\"");
 		}

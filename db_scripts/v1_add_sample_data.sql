@@ -12,8 +12,8 @@ INSERT INTO user
 (first_name, last_name, email, password, is_logged_in, last_time_logged_in, last_ip_logged_in, points, username)
 VALUES
 ("byron","katz","bk@coolnet", "password",1,"2014-11-11","198.24.24.26", 100, "bk"),
-("<script>alert('dude')</script>","<script>alert('boy')</script>","dude", "password",1,"2014-11-11","198.24.24.26", 100,"wow"),
-("dan","simone","ds@coolnet", "password",1,"2014-11-11","198.24.24.27", 100,"ds")
+("dan","simone","ds@coolnet", "password",1,"2014-11-11","198.24.24.27", 100,"ds"),
+("<script>alert('dude')</script>","<script>alert('boy')</script>","dude", "password",1,"2014-11-11","198.24.24.26", 100,"wow")
 
 ---DELIMITER---
 
@@ -37,7 +37,7 @@ VALUES
 ("2014-9-18 21:22:42", "<script>alert('homework is bad')</script>", 15, 1, "<script>alert('I hate homework')</script>", 2),
 ("2012-1-8 5:44:00", "Do stuff, I don't care, just do it", 15, 1, "do stuff", 2),
 ("2010-2-24 2:13:20", "This is not the end of the end, nor is it the beginning of the end.  It is the end of the beginning", 15, 1, "This is the title", 2),
-("2014-3-8 18:45:02", "Get me some illegal narcotics, ship them safely to my home", 15, 1, "get drugs", 2),
+("2014-3-8 18:45:02", "Get me some illegal narcotics, ship them safely to my home", 15, 1, "get drugs", 3),
 ("2010-7-27 21:22:42", "description goes here", 15, 1, "homework A", 2),
 ("2011-6-20 21:22:42", "description goes here", 15, 1, "homework B", 2),
 ("2012-5-27 23:22:42", "description goes here", 15, 1, "homework C", 2),
