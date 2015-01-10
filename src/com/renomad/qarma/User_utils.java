@@ -137,7 +137,7 @@ public final class User_utils {
 		* null if not found.
     */
   public static User get_user(int user_id) {
-    String sqlText = "SELECT first_name,last_name,email,points FROM user WHERE user_id = ?;";
+    String sqlText = "SELECT first_name,last_name,username,points FROM user WHERE user_id = ?;";
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
@@ -152,9 +152,9 @@ public final class User_utils {
       resultSet.next(); //move to the first set of results.
       String first_name = resultSet.getString("first_name");
       String last_name = resultSet.getString("last_name");
-      String email = resultSet.getString("email");
+      String username = resultSet.getString("username");
       int points = resultSet.getInt("points");
-      return new User(first_name, last_name, email, "", points);
+      return new User(first_name, last_name, username, "", points);
 		} catch (SQLException ex) {
 			Database_access.handle_sql_exception(ex);
 			return null;
@@ -169,16 +169,16 @@ public final class User_utils {
 		* @return true if successful
     */
   public static boolean put_user(
-			String first_name, String last_name, String email, String password) {
+			String first_name, String last_name, String username, String password) {
 			boolean is_bad = false;
       is_bad |= Utils.is_null_or_empty(first_name);
       is_bad |= Utils.is_null_or_empty(last_name);
-      is_bad |= Utils.is_null_or_empty(email);
+      is_bad |= Utils.is_null_or_empty(username);
       is_bad |= Utils.is_null_or_empty(password);
 			if (is_bad) {
 				return false;
 			}
-			User u = new User(first_name, last_name, email, password, 100);
+			User u = new User(first_name, last_name, username, password, 100);
 			return put_user(u);
   }
 
@@ -187,7 +187,7 @@ public final class User_utils {
 
 		// 1. set the sql
       String sqlText = 
-        "INSERT INTO user (first_name, last_name, email, password, points) " +
+        "INSERT INTO user (first_name, last_name, username, password, points) " +
         "VALUES (?, ?, ?, ?, ?)";
 		// 2. set up values we'll need outside the try
 		boolean result = false;
@@ -200,7 +200,7 @@ public final class User_utils {
 			// 4. set values into the statement
       pstmt.setString( 1, user.first_name);
       pstmt.setString( 2, user.last_name);
-      pstmt.setString( 3, user.email);
+      pstmt.setString( 3, user.username);
       pstmt.setString( 4, user.password);
       pstmt.setInt( 5, user.points);
 			// 5. execute a statement

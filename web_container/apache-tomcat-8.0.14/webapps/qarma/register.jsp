@@ -14,14 +14,14 @@
 	//get the values straight from the client
 	String first_name = "";
 	String last_name = "";
-	String email = "";
+	String username = "";
 	String password = "";
 	boolean validation_error = false;
 
 	//we'll put error messages here if validation errors occur
 	String first_name_error_msg = "";  //empty first name
 	String last_name_error_msg = "";  //empty last name
-	String email_error_msg = "";  //empty email
+	String username_error_msg = "";  //empty username
 	String password_error_msg = "";  //empty password
 	String user_creation_error_msg = ""; //couldn't register
 
@@ -41,9 +41,9 @@
 			validation_error |= true;
 		}
 
-    email = request.getParameter("email");
-		if (email.length() == 0) {
-			email_error_msg = loc.get(55,"Please enter an email");
+    username = request.getParameter("username");
+		if (username.length() == 0) {
+			username_error_msg = loc.get(55,"Please enter a username");
 			validation_error |= true;
 		}
 
@@ -55,7 +55,7 @@
 
 		if (!validation_error) {
 		boolean succeed = User_utils.put_user(
-			first_name, last_name, email, password);
+			first_name, last_name, username, password);
 			if (succeed) {
 				response.sendRedirect("thanks.jsp");
 			} else {
@@ -86,10 +86,10 @@
 				<span class="error"><%=last_name_error_msg %></span>
 			</div>
 
-			<div class="email">
-				<div class="label"><%=loc.get(62,"Email")%>:</div> 
-				<input value="<%=email%>" name="email" type="text" />
-				<span class="error"><%=email_error_msg %></span>
+			<div class="username">
+				<div class="label"><%=loc.get(51 ,"username")%>:</div> 
+				<input value="<%=username%>" name="username" type="text" />
+				<span class="error"><%=username_error_msg %></span>
 			</div>
 
 			<div class="password">

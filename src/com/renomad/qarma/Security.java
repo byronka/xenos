@@ -76,7 +76,7 @@ public final class Security {
     * @return the user id if the password is correct for that email.
     */
   public static int check_login(String email, String password) {
-    String sqlText = "SELECT password,user_id FROM user WHERE email = ?";
+    String sqlText = "SELECT password,user_id FROM user WHERE username = ?";
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();

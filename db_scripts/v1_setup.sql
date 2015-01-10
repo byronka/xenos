@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS
 		last_time_logged_in DATETIME,
 		last_ip_logged_in VARCHAR(40),
 		rank INT NOT NULL DEFAULT 50,
-		username NVARCHAR(50)
+		username NVARCHAR(50) UNIQUE
   );
 
 ---DELIMITER---

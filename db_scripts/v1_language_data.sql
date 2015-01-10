@@ -61,7 +61,7 @@ VALUES
 (52, 'Password', 'FrenchPassword', 'SpanishPassword'),
 (53, 'Please enter a first name', 'FrenchPlease enter a first name', 'SpanishPlease enter a first name'),
 (54, 'Please enter a last name', 'FrenchPlease enter a last name', 'SpanishPlease enter a last name'),
-(55, 'Please enter an email', 'FrenchPlease enter an email', 'SpanishPlease enter an email'),
+(55, 'Please enter a username', 'FrenchPlease enter a username', 'SpaishPlease enter a username'),
 (56, 'Please enter a password', 'FrenchPlease enter a password', 'SpanishPlease enter a password'),
 (57, 'That user already exists', 'FrenchThat user already exists', 'SpanishThat user already exists'),
 (58, 'Account Creation', 'FrenchAccount Creation', 'SpanishAccount Creation'),
