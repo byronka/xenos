@@ -16,9 +16,7 @@
 	String srch_sta = params.get("sta"); //status
 
 	Integer which_page = Utils.parse_int(params.get("page"));
-	Integer page_size = Utils.parse_int(params.get("page_size"));
 	if (which_page == null) {which_page = 0;}
-	if (page_size == null) {page_size = 10;}
 
 %>
 <!DOCTYPE html>
@@ -59,7 +57,7 @@
 		new Request_utils.Search_Object( srch_date, srch_ti, srch_cat, srch_sta, srch_pts, srch_us);
   Others_Request[] others_requests = 
 		Request_utils
-			.get_others_requests(user_id, so , which_page, page_size);
+			.get_others_requests(user_id, so , which_page);
   for (Others_Request r : others_requests) {
 %>
 	<div class="others request">
@@ -133,18 +131,6 @@
 				<option value="<%=i%>" selected="true"><%=i+1%></option>
 			<% } else {%>
 				<option value="<%=i%>"><%=i+1%></option>
-			<%	}
-			}%>
-	</select>
-	<span>Page size:</span>
-	<select name="page_size">
-		<%
-		int[] sizes = {10,20,50};
-		for (int i = 0; i < sizes.length; i++) {
-		if (page_size == sizes[i]) {%>
-				<option selected="true"><%=sizes[i]%></option>
-			<% } else {%>
-				<option ><%=sizes[i]%></option>
 			<%	}
 			}%>
 	</select>

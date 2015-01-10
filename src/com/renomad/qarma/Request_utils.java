@@ -40,7 +40,7 @@ public final class Request_utils {
 
 
 	/**
-		* returns a Map of localization values
+		* returns a Map of localization values for the categories
 		* indexed by database id.
 		* @return Map of Integers, indexed by id, or null if nothing in db.
 		*/
@@ -180,7 +180,210 @@ public final class Request_utils {
 		}
 
 	}
-	
+
+
+  /**
+    * takes the primary sql text and adds in the search clauses.
+    * @param so the search object, which contains the text needed to add search clauses
+    * @param sql_text the basic sql text, which we'll augment with search clauses
+    * @return a sql string including searches.
+    */
+  private static String add_advanced_search_clauses(String sql_text, Search_Object so) {
+    
+    String date_sql  = !Utils.is_null_or_empty(so.date) ? 
+      Utils.get_date_search_query(so.date)
+      : "";
+
+    String title_sql  = !Utils.is_null_or_empty(so.title) ?
+      " AND r.title LIKE CONCAT('%', ?, '%' ) " 
+      : "";
+
+    String categories_sql  = !Utils.is_null_or_empty(so.categories) ?
+      " AND categories in (?)" 
+      : "";
+
+    String users_sql  = !Utils.is_null_or_empty(so.user_ids) ?
+      " AND r.requesting_user_id in (?) " 
+      : "";
+
+    String points_sql  = !Utils.is_null_or_empty(so.points) ?
+      " AND r.points = ? " 
+      : "";
+
+    String status_sql  = !Utils.is_null_or_empty(so.statuses) ?
+      " AND statuses in (?) " 
+      : "";
+
+
+    //order matters here, go look at the sql coming in.
+    //Order:
+    //1. searching by date
+    //2. searching by title
+    //3. searching by categories
+    //4. searching by users
+    //5. searching by points
+    //6. searching by status
+    String modified_text = String.format(sql_text, date_sql,title_sql,categories_sql,users_sql,points_sql,status_sql);
+    return modified_text;
+  }
+
+
+  /**
+    * set up the sql for getting dashboard information, and add search clauses
+    */
+  private static String set_primary_sql_for_dashboard(Search_Object so) {
+
+		String sqlText = 
+          "SELECT r.request_id, "+
+            "r.datetime, "+
+            "r.description, "+
+            "r.status, "+
+            "r.points, "+
+            "r.title, "+
+            "u.rank, "+
+            "r.requesting_user_id, "+
+            "GROUP_CONCAT(rc.localization_value SEPARATOR ',') AS categories "+
+          "FROM request r "+
+          "JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
+          "JOIN request_category rc ON rc.request_category_id = rtc.request_category_id "+
+          "JOIN user u ON u.user_id = r.requesting_user_id "+
+          "WHERE requesting_user_id <> ? "+
+          "%s %s %s %s %s %s "+ //we add in a bunch of search clauses here, where applicable.
+          "GROUP BY r.request_id "+
+          "ORDER BY r.request_id ASC " +			//sorting happens here.
+          "LIMIT ?,? "; 					//paging happens here.
+
+      String modified_sql = add_advanced_search_clauses(sqlText, so);
+      return modified_sql;
+  }
+
+
+  /**
+    * Here, we add values to the sql query in the proper order
+    * to make advanced search work.
+    * @return the current parameter index.
+    */
+  private static int add_search_clause_params(
+      PreparedStatement pstmt, 
+      int user_id, 
+      Search_Object so) throws SQLException {
+
+      int param_index = 1;
+      pstmt.setInt( param_index, user_id);
+
+      //adding in search clauses, in same order we inserted them in
+      //the sql text in add_advanced_search_clauses().  If you think
+      //of a better way to do this, I'm all ears - BK 12/28/2014.  But
+      //it cannot be so complex as to make it a moot point.  See git
+      //commit e3cd6c43c1379575dd3ae6c5f05965ceecce4ee5 where I tried
+      //building something and it didn't pay for itself.
+
+    boolean has_date  = !Utils.is_null_or_empty(so.date);
+    boolean has_title  = !Utils.is_null_or_empty(so.title);
+    boolean has_categories  = !Utils.is_null_or_empty(so.categories);
+    boolean has_users  = !Utils.is_null_or_empty(so.user_ids);
+    boolean has_points  = !Utils.is_null_or_empty(so.points);
+    boolean has_status  = !Utils.is_null_or_empty(so.statuses);
+
+    //1. searching by date - parameter is set in
+    //add_advanced_search_clauses()
+
+    //2. searching by title
+			if (has_title) {
+				param_index++;
+				pstmt.setString( param_index, so.title);
+			}
+
+    //3. searching by categories
+			if (has_categories) {
+				param_index++;
+				pstmt.setString( param_index, so.categories);
+			}
+
+    //4. searching by users
+			if (has_users) {
+				param_index++;
+				pstmt.setString( param_index, so.user_ids);
+			}
+
+    //5. searching by points
+			if (has_points) {
+				param_index++;
+				pstmt.setString( param_index, String.valueOf(so.points));
+			}
+
+    //6. searching by status
+			if (has_status) {
+				param_index++;
+				pstmt.setString( param_index, so.statuses);
+			}
+
+      return param_index;
+  }
+
+
+  /**
+    * adds paging to the query used to display requests to users on
+    * the dashboard.
+    * @param pstmt the prepared statement - the sql we are assembling
+    * to do the request.
+    * @param page the page of results we want, for example, perhaps we
+    * want page 8 of 12 pages.
+    * @param param_index the index of the parameter.  This refers to
+    * the syntax for sql statements with preparedStatements.  Every
+    * place where we get a value from the client, we want to be sure
+    * it goes in safely to the SQL, preventing a SQL injection.  The
+    * easy way to do this is by using prepared statement and have a
+    * question mark where the value from the client goes, and then we
+    * have to reference each question mark by number, in order of the
+    * text.
+    */
+  private static void
+    set_up_paging_for_others_requests (
+        PreparedStatement pstmt, 
+        int page,
+        int param_index) throws SQLException {
+			//set up the paging
+      //we are going to make page size constant.  In lieu of expecting
+      //users to have a lot of data on a page, they will be given
+      //excellent search capability.
+      final int PAGE_SIZE = 10;
+
+			int start = page * PAGE_SIZE;
+			int end = (page * PAGE_SIZE) + PAGE_SIZE;
+			param_index++;
+			pstmt.setInt(param_index, start);
+			param_index++;
+			pstmt.setInt(param_index, end);
+
+    }
+
+
+  /**
+    * Run through getting the results of the query to see
+    * other users' requests
+    */
+  private static ArrayList<Others_Request> 
+    get_results_of_others_requests(ResultSet resultSet) throws SQLException {
+			//keep adding rows of data while there is more data
+      ArrayList<Others_Request> requests = new ArrayList<Others_Request>();
+      while(resultSet.next()) {
+        int rid = resultSet.getInt("request_id");
+        String dt = resultSet.getString("datetime");
+        String d = resultSet.getNString("description");
+        int p = resultSet.getInt("points");
+        int s = resultSet.getInt("status");
+        String t = resultSet.getNString("title");
+        int ru = resultSet.getInt("requesting_user_id");
+        int ra = resultSet.getInt("rank");
+				String cats = resultSet.getString("categories");
+				Integer[] cat_array = parse_string_to_int_array(cats);
+
+        Others_Request request = new Others_Request(t,dt,d,s,ra,p,rid,ru,cat_array);
+        requests.add(request);
+      }
+      return requests;
+  }
 
 
   /**
@@ -200,127 +403,25 @@ public final class Request_utils {
   public static Others_Request[] get_others_requests(
 			int user_id, 
 			Search_Object so, 
-			int page, 
-			int page_size) {
+			int page) {
 
-
-			//add predicates, but only if they apply.
-			String date_sql  = !Utils.is_null_or_empty(so.date) ? 
-        Utils.get_date_search_query(so.date)
-				: "";
-			String title_sql  = !Utils.is_null_or_empty(so.title) ?
-			 	" AND r.title LIKE CONCAT('%', ?, '%' ) " 
-				: "";
-			String categories_sql  = !Utils.is_null_or_empty(so.categories) ?
-			 	" AND categories in (?)" 
-				: "";
-			String users_sql  = !Utils.is_null_or_empty(so.user_ids) ?
-			 	" AND r.requesting_user_id in (?) " 
-				: "";
-			String points_sql  = !Utils.is_null_or_empty(so.points) ?
-			 	" AND r.points = ? " 
-				: "";
-			String status_sql  = !Utils.is_null_or_empty(so.statuses) ?
-			 	" AND statuses in (?) " 
-				: "";
-
-			//done with search clauses
-
-		String sqlText = 
-				String.format(
-						"SELECT r.request_id, "+
-							"r.datetime, "+
-							"r.description, "+
-							"r.status, "+
-							"r.points, "+
-							"r.title, "+
-							"u.rank, "+
-							"r.requesting_user_id, "+
-							"GROUP_CONCAT(rc.localization_value SEPARATOR ',') AS categories "+
-						"FROM request r "+
-						"JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
-						"JOIN request_category rc ON rc.request_category_id = rtc.request_category_id "+
-						"JOIN user u ON u.user_id = r.requesting_user_id "+
-						"WHERE requesting_user_id <> ? "+
-						"%s %s %s %s %s %s "+ //we add in a bunch of search clauses here, where applicable.
-						"GROUP BY r.request_id "+
-						"ORDER BY r.request_id ASC " +			//sorting happens here.
-						"LIMIT ?,? " 					//paging happens here.
-						, date_sql,title_sql,categories_sql,users_sql,points_sql,status_sql);
-
+    String sqlText = set_primary_sql_for_dashboard(so);
 
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = Database_access.prepare_statement(conn, sqlText);     
 
-			int param_index = 1;
-      pstmt.setInt( param_index, user_id);
-
-			//adding in search clauses, mirror of above.  If you think of a better way
-			// to do this, I'm all ears - BK 12/28/2014.  But it cannot be so complex
-			//as to make it a moot point.  See git commit e3cd6c43c1379575dd3ae6c5f05965ceecce4ee5 where
-			//I tried building something and it didn't pay for itself.
-
-			if (title_sql.length() > 0) {
-				param_index++;
-				pstmt.setString( param_index, so.title);
-			}
-
-			if (categories_sql.length() > 0) {
-				param_index++;
-				pstmt.setString( param_index, so.categories);
-			}
-
-			if (users_sql.length() > 0) {
-				param_index++;
-				pstmt.setString( param_index, so.user_ids);
-			}
-
-			if (points_sql.length() > 0) {
-				param_index++;
-				pstmt.setString( param_index, String.valueOf(so.points));
-			}
-
-			if (status_sql.length() > 0) {
-				param_index++;
-				pstmt.setString( param_index, so.statuses);
-			}
-
-			//done with search clauses
-
-			//set up the paging
-			int start = page * page_size;
-			int end = page * page_size + page_size;
-			param_index++;
-			pstmt.setInt(param_index, start);
-			param_index++;
-			pstmt.setInt(param_index, end);
-
-			//paging ends
+      int param_index = add_search_clause_params(pstmt, user_id, so);
+      set_up_paging_for_others_requests(pstmt, page, param_index);
 
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
 				return new Others_Request[0];
       }
 
-			//keep adding rows of data while there is more data
-      ArrayList<Others_Request> requests = new ArrayList<Others_Request>();
-      while(resultSet.next()) {
-        int rid = resultSet.getInt("request_id");
-        String dt = resultSet.getString("datetime");
-        String d = resultSet.getNString("description");
-        int p = resultSet.getInt("points");
-        int s = resultSet.getInt("status");
-        String t = resultSet.getNString("title");
-        int ru = resultSet.getInt("requesting_user_id");
-        int ra = resultSet.getInt("rank");
-				String cats = resultSet.getString("categories");
-				Integer[] cat_array = parse_string_to_int_array(cats);
-
-        Others_Request request = new Others_Request(t,dt,d,s,ra,p,rid,ru,cat_array);
-        requests.add(request);
-      }
+      ArrayList<Others_Request> requests = 
+        get_results_of_others_requests(resultSet);
 
       //convert arraylist to array
       Others_Request[] array_of_requests = 
