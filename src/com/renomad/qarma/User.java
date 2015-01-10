@@ -9,37 +9,17 @@ package com.renomad.qarma;
 	*/
 public class User {
 
-	public final String first_name;
-	public final String last_name;
 	public final String username;
 	public final String password;
 	public final int points;
 
 	public User (
-			String first_name, 
-			String last_name, String username, String password, int points) {
-		this.first_name = first_name;
-		this.last_name = last_name;
+			String username, String password, int points) {
 		this.username = username;
 		this.password = password;
 		this.points = points;
 	}
 	
-	/**
-	 * A html-cleaned version of first_name
-	 * @return html-cleaned text
-	 */
-	public String first_nameSafe() {
-		return Utils.safe_render(first_name);
-	}
-	
-	/**
-	 * A html-cleaned version of last_name
-	 * @return html-cleaned text
-	 */
-	public String last_nameSafe() {
-		return Utils.safe_render(last_name);
-	}
 	
 	/**
 	 * A html-cleaned version of username

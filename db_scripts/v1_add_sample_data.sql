@@ -9,11 +9,12 @@ SET FOREIGN_KEY_CHECKS=0;
  ------------*/
 
 INSERT INTO user
-(first_name, last_name, email, password, is_logged_in, last_time_logged_in, last_ip_logged_in, points, username)
+(username, email, password, is_logged_in, last_time_logged_in, last_ip_logged_in, points)
 VALUES
-("byron","katz","bk@coolnet", "password",1,"2014-11-11","198.24.24.26", 100, "bk"),
-("dan","simone","ds@coolnet", "password",1,"2014-11-11","198.24.24.27", 100,"ds"),
-("<script>alert('dude')</script>","<script>alert('boy')</script>","dude", "password",1,"2014-11-11","198.24.24.26", 100,"wow")
+("bk","bk@coolnet", "password",1,"2014-11-11","198.24.24.26", 100),
+("ds","ds@coolnet", "password",1,"2014-11-11","198.24.24.27", 100),
+("<script>alert('wow')</script>","<script>alert('dude')</script>", "password",1,"2014-11-11","198.24.24.26", 100)
+
 
 ---DELIMITER---
 
@@ -24,8 +25,6 @@ VALUES
 
  ------------*/
 
-
----DELIMITER---
 
 INSERT INTO request 
 (datetime, description, points, status, title, requesting_user_id) 

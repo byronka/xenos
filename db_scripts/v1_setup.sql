@@ -24,8 +24,7 @@ CALL set_version(1);
 CREATE TABLE IF NOT EXISTS 
   user (
     user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-    first_name NVARCHAR(100),
-    last_name NVARCHAR(100),
+		username NVARCHAR(50) UNIQUE,
     email NVARCHAR(200) UNIQUE, 
     password NVARCHAR(100),
 		points int unsigned,
@@ -33,9 +32,28 @@ CREATE TABLE IF NOT EXISTS
 		is_logged_in BOOL, 
 		last_time_logged_in DATETIME,
 		last_ip_logged_in VARCHAR(40),
-		rank INT NOT NULL DEFAULT 50,
-		username NVARCHAR(50) UNIQUE
+		rank INT NOT NULL DEFAULT 50
   );
+
+---DELIMITER---
+
+-- create a trigger to cause an error condition if someone tries
+-- adding a username that is a string that equates to an email.
+-- we want uniqueness of usernames, emails, and also usernames are
+-- not allowed to match existing emails in other users.
+
+CREATE TRIGGER trg_error_if_username_matches_other_user_email BEFORE INSERT ON user
+FOR EACH ROW
+BEGIN
+    DECLARE msg VARCHAR(255);
+    SET @username_exists_as_email := (SELECT COUNT(*) FROM user WHERE NEW.username = user.email);
+    
+    IF (@username_exists_as_email > 0) THEN
+        SET msg = CONCAT('username matches existing email during insert: ', NEW.username );
+        signal sqlstate '45000' set message_text = msg;
+    END IF;
+
+END
 
 ---DELIMITER---
 

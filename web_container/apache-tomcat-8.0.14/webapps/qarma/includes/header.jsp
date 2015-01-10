@@ -13,7 +13,8 @@
 			<button><%=loc.get(1, "search")%></button></span>
 	</form>
 	<div class="user-displayname">
-	<span><%=user.first_nameSafe()%> <%=user.last_nameSafe()%> (<%=user.usernameSafe()%>) <%=user.points%> <%=loc.get(11, "points")%></span>
+    <span id="username"><%=user.usernameSafe()%></span>
+    <span id="points"><%=user.points%> <%=loc.get(11, "points")%></span>
 	</div>
 	<a class="advanced search" href="advanced_search.jsp">Advanced search</a>
 </section>

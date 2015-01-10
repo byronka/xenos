@@ -23,7 +23,7 @@ public class Utils_tests {
     assertTrue(Utils.is_valid_date("2001-01-01 - 2002-01-02"));
     assertTrue(Utils.is_valid_date("2001-01-01"));
     assertTrue(Utils.is_valid_date("2001-01-01 - "));
-    assertTrue(Utils.is_valid_date(" - 2002-01-02"));
+    assertTrue(Utils.is_valid_date("-2002-01-02"));
   }
 
 

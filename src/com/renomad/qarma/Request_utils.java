@@ -446,7 +446,7 @@ public final class Request_utils {
 		* string numbers found.
 		*/
 	private static Integer[] parse_string_to_int_array(String value) {
-		if (value.length() > 0) {
+		if (!Utils.is_null_or_empty(value)) {
 			String[] numerals = value.split(",");
 			Integer[] return_array = new Integer[numerals.length];
 			for (int i = 0; i < numerals.length; i++) {

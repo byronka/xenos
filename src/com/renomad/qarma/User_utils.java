@@ -21,8 +21,8 @@ public final class User_utils {
 
 
 	/**
-		* gets an array of user ids by names of users.
-		* @param usernames an array of user usernames
+    * gets an array of user ids by names of users. used in searching
+    * requests by users.  @param usernames an array of user usernames
 		* @return an array of user ids instead of the names, or null
 		* if failure or none found.
 		*/
@@ -133,11 +133,11 @@ public final class User_utils {
   /** *
    * gets a user object
    *  
-    * @return a User object filled with first name, last name, email, and points, or
+    * @return a User object filled with username and points, or
 		* null if not found.
     */
   public static User get_user(int user_id) {
-    String sqlText = "SELECT first_name,last_name,username,points FROM user WHERE user_id = ?;";
+    String sqlText = "SELECT username,points FROM user WHERE user_id = ?;";
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
@@ -150,11 +150,9 @@ public final class User_utils {
       }
 
       resultSet.next(); //move to the first set of results.
-      String first_name = resultSet.getString("first_name");
-      String last_name = resultSet.getString("last_name");
       String username = resultSet.getString("username");
       int points = resultSet.getInt("points");
-      return new User(first_name, last_name, username, "", points);
+      return new User(username, "", points);
 		} catch (SQLException ex) {
 			Database_access.handle_sql_exception(ex);
 			return null;
@@ -165,30 +163,42 @@ public final class User_utils {
   
 
   /**
-    * adds a user.  if successful, returns true
+    * adds a user.  Will check that values were entered for required
+    * fields, and if so, will create the user.  Note that at that
+    * point, the database has constraints which might cause failure
+    * still.  See put_user's overload.
 		* @return true if successful
     */
-  public static boolean put_user(
-			String first_name, String last_name, String username, String password) {
+  public static boolean put_user(String username, String password) {
 			boolean is_bad = false;
-      is_bad |= Utils.is_null_or_empty(first_name);
-      is_bad |= Utils.is_null_or_empty(last_name);
+
+      //just check non-empty.  Later we do deeper checks.
       is_bad |= Utils.is_null_or_empty(username);
       is_bad |= Utils.is_null_or_empty(password);
 			if (is_bad) {
 				return false;
 			}
-			User u = new User(first_name, last_name, username, password, 100);
+			User u = new User(username, password, 100);
 			return put_user(u);
   }
 
 
+  /**
+    * This overload of put_user stores the new user's values into the
+    * database, but beware!  There are constraints set up in the
+    * database that prevent corrupt data.  Like, for example, you
+    * should not be allowed to have duplicate emails or usernames in
+    * the database.  Further, you should not be able to have a
+    * username the same as an email address.
+    * @return true if successful, false if failure or any constraints
+    * violated (like, uniqueness of username or email, for example)
+    */
   private static boolean put_user(User user) {
 
 		// 1. set the sql
       String sqlText = 
-        "INSERT INTO user (first_name, last_name, username, password, points) " +
-        "VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO user (username, password, points) " +
+        "VALUES (?, ?, ?)";
 		// 2. set up values we'll need outside the try
 		boolean result = false;
 		PreparedStatement pstmt = null;
@@ -198,11 +208,9 @@ public final class User_utils {
 			pstmt = Database_access.prepare_statement(
 					conn, sqlText);     
 			// 4. set values into the statement
-      pstmt.setString( 1, user.first_name);
-      pstmt.setString( 2, user.last_name);
-      pstmt.setString( 3, user.username);
-      pstmt.setString( 4, user.password);
-      pstmt.setInt( 5, user.points);
+      pstmt.setString( 1, user.username);
+      pstmt.setString( 2, user.password);
+      pstmt.setInt( 3, user.points);
 			// 5. execute a statement
       result = Database_access.execute_update(pstmt) > 0;
 			// 10. cleanup and exceptions

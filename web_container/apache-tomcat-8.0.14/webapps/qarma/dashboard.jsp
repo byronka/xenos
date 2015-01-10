@@ -107,8 +107,7 @@
 				<%
 					User ru = User_utils.get_user(r.requesting_user_id);
 				%>
-				<span class="value">
-					<%=ru.first_nameSafe()%> <%=ru.last_nameSafe()%></span>
+				<span class="value"> <%=ru.usernameSafe()%></span>
 			</li>
 			<li>
 				<span class="label"><%=loc.get(13, "Categories")%>:</span>
