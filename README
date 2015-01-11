@@ -23,7 +23,7 @@ If you have already set up everything, just type:
 =================
 
 OpenJdk 1.7
-MySQL 5
+MySQL 5.5
 Linux
 
 
@@ -40,10 +40,7 @@ Installing MySQL
 ----------------
 
 For CentOS:
-sudo yum install mysql-server              #install it
-sudo /sbin/service mysqld start            #start it
-sudo /usr/bin/mysql_secure_installation    #set password
-sudo chkconfig mysqld on                   #set to run on startup
+read the info at http://dev.mysql.com/doc/mysql-repo-excerpt/5.6/en/linux-installation-yum-repo.html
 
 For Ubuntu:
 sudo apt-get install mysql-server         #install it
