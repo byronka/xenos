@@ -690,10 +690,10 @@ public final class Request_utils {
 
   /**
     * Adds a request into the request table
-    * @return an int greater than 0 identifying the new request, or
-    *  an int below 0 indicating failure.
+    * @return a request_response either indicating the new request id,
+    *  or an int below 0 indicating failure and an error type.
     */
-  private static int
+  private static Request_response
     insert_into_request_table(Connection c, Request r, String sql) {
 
     PreparedStatement req_pstmt = null;
@@ -718,15 +718,20 @@ public final class Request_utils {
           "Error(2):Transaction is being rolled back for request_id: " +
           result);
 				c.rollback();
-        return result;
+        return new Request_response(Request_response.Stat.ERROR, -1);
 			}
       req_pstmt.close();
     } catch (SQLException ex) {
+      //look for the error from the trigger to check points
+      if (ex.getMessage()
+          .contains("user lacks points to make this request")) {
+        return new Request_response(Request_response.Stat.LACK_POINTS, -1);
+      }
       Database_access.handle_sql_exception(ex, req_pstmt);
-      return -1;
+      return new Request_response(Request_response.Stat.ERROR, -1);
     }
 
-    return result;
+    return new Request_response(Request_response.Stat.OK, result);
   }
 
 
@@ -747,7 +752,6 @@ public final class Request_utils {
       cat_pstmt = Database_access.prepare_statement(c, sql);
       for (int i = 0; i < r.get_categories().length; i++ ) {
         int category_id = r.get_categories()[i];
-        System.err.printf("Inserting %d at index %d\n",category_id, 2*i+2);
         cat_pstmt.setInt( 2*i+1, result);
         cat_pstmt.setInt( 2*i+2, category_id);
       }
@@ -824,27 +828,36 @@ public final class Request_utils {
     //immediately return a response indicating error and halt
     //execution here.
 
-    // A) Insert the request
-    int result = 
-      insert_into_request_table(conn, request, update_request_sql);
-    if (result <= 0) {
-      return new Request_response(Request_response.Stat.ERROR, -1);
-    }
+    int result = -1; //this will hold the newly inserted request id
 
     Request_response response = null;
+
+    // A) Insert the request
+    response = 
+      insert_into_request_table(conn, request, update_request_sql);
+    if (response.status != Request_response.Stat.OK) {
+      Database_access.close_connection(conn);
+      return response;
+    } else {
+      result = response.id;
+    }
+
 
     // B) Update the categories
     response = update_categories_for_request(
         conn, update_categories_sql, result, request);
     if (response != null) {
+      Database_access.close_connection(conn);
       return response;
     }
 
     // C) Deduct points from user
     response = deduct_user_points(conn, update_points_sql, request);
     if (response != null) {
+      Database_access.close_connection(conn);
       return response;
     }
+
 
     //if we got to this point, we saw no errors along the way.
     try {
@@ -1057,7 +1070,7 @@ public final class Request_utils {
 		public enum Stat {
 			LACK_POINTS, OK , ERROR
 		}
-		public final Stat s;
+		public final Stat status;
 
 		/**
 			* the id of the newly-created request.
@@ -1065,7 +1078,7 @@ public final class Request_utils {
 		public final int id;
 
 		public Request_response(Stat s, int id) {
-			this.s = s;
+			this.status = s;
 			this.id = id;
 		}
 	

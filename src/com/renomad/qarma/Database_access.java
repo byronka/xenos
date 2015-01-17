@@ -24,7 +24,7 @@ public final class Database_access {
 		try {
 			Connection conn = stmt.getConnection();
 			if (conn != null) {
-				System.err.print("Transaction is being rolled back");
+				System.err.println("Transaction is being rolled back");
 				conn.rollback();
 			}
 		} catch(SQLException excep) {
@@ -175,13 +175,28 @@ public final class Database_access {
         c = s.getConnection();
         s.close();
       }
-			if (c != null && !c.isClosed()) {
-        c.close();
-			}
+
+      close_connection(c);
+
 		} catch (SQLException ex) {
 			handle_sql_exception(ex);
 		}
 	}
+
+
+  /**
+    * closes a connection if it exists, relieving need for boilerplate
+    */
+  public static void close_connection(Connection c) {
+    try {
+      if (c != null && !c.isClosed()) {
+        c.close();
+      }
+    } catch (SQLException ex) {
+      handle_sql_exception(ex);
+    }
+  }
+
 
 
 }

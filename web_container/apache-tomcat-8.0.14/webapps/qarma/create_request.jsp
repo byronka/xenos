@@ -51,7 +51,7 @@
 			if (!validation_error) {
 				Request_utils.Request_response result = 
 					Request_utils.put_request(user_id, de, points, t, cat);
-				if (result.s == Request_utils.Request_response.Stat.LACK_POINTS) {
+				if (result.status == Request_utils.Request_response.Stat.LACK_POINTS) {
 					not_enough_points_error_msg = 
 						loc.get(9,"You don't have enough points to make this request!");
 				} else {
