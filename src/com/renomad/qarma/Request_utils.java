@@ -1,7 +1,6 @@
 package com.renomad.qarma;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import com.renomad.qarma.Database_access;
@@ -296,7 +295,6 @@ public final class Request_utils {
       //commit e3cd6c43c1379575dd3ae6c5f05965ceecce4ee5 where I tried
       //building something and it didn't pay for itself.
 
-    boolean has_date  = !Utils.is_null_or_empty(so.date);
     boolean has_title  = !Utils.is_null_or_empty(so.title);
     boolean has_categories  = !Utils.is_null_or_empty(so.categories);
     boolean has_users  = !Utils.is_null_or_empty(so.user_ids);

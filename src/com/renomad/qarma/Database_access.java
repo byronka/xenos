@@ -43,7 +43,7 @@ public final class Database_access {
     System.err.println("SQLState: " + ex.getSQLState());
     System.err.println("VendorError: " + ex.getErrorCode());
     System.err.println("Stacktrace: ");
-    Thread.currentThread().dumpStack();
+    Thread.dumpStack();
   }
 
 	/**
