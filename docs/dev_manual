@@ -169,8 +169,24 @@ I have made a copy of that file here, at ssl-howto-tomcat.txt
 
 
 
+
+SQL standards
+===============
+1) Only add triggers for error conditions.
+2) Don't cascade triggers.  We don't want impossible-to-comprehend events.
+3) Try to keep most SQL inside the java code with prepared statements,
+  unless there is a mighty good reason to do so. 
+4) Describe what your SQL is meant to do, and why.
+5) Try to simplify your SQL code.
+
+
+
+
+
 Troubleshooting
 ===============
 
 1) If you see this kind of text on your screen, it means localization is failing somehow:
 out_of_index: 18
+
+

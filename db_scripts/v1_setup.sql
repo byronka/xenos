@@ -98,6 +98,35 @@ request (
 
 
 ---DELIMITER---
+
+-- create a trigger to cause an error condition if someone tries
+-- inserting a request with a user who does not have enough points
+-- to make the request.
+
+CREATE TRIGGER trg_error_if_user_lacks_points_for_rqst 
+BEFORE INSERT ON request
+FOR EACH ROW
+BEGIN
+    DECLARE msg VARCHAR(255);
+    SET @user_points := 
+      (
+        SELECT points 
+        FROM user 
+        WHERE NEW.requesting_user_id = user.user_id
+      );
+    
+    IF (@user_points < NEW.points) THEN
+        SET msg = CONCAT('user lacks points to make this request: ', 
+          NEW.requesting_user_id );
+        signal sqlstate '45001' set message_text = msg;
+    END IF;
+
+END
+
+
+---DELIMITER---
+
+
 -- create a table of known languages
 
 CREATE TABLE IF NOT EXISTS 

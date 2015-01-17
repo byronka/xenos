@@ -657,10 +657,10 @@ public final class Request_utils {
 
 		String lower_case_categories_str = categories_str.toLowerCase();
 		ArrayList<Integer> selected_categories = new ArrayList<Integer>();
-		for (Integer i : all_categories.values()) {
-    	String c = loc.get(i,"").toLowerCase();
+		for (Map.Entry<Integer,Integer> i : all_categories.entrySet()) {
+    	String c = loc.get(i.getValue(),"").toLowerCase();
 			if (lower_case_categories_str.contains(c)) {
-				selected_categories.add(i);
+				selected_categories.add(i.getKey());
 			}
 		}
     Integer[] my_array = 
@@ -670,141 +670,197 @@ public final class Request_utils {
 
 
   /**
-    * adds a Request to the database
-		* @param request a request object
-		* @return the id of the new request. -1 if not successful.  also an
-		* enum that designates the error if one exists, like lacking points
+    * This assembles the sql statement to insert categories
+    * into the request_to_category table when we create a request.
     */
-  private static Request_response put_request(Request request) {
+  private static String assemble_categories_sql(Request r) {
+    StringBuilder sb = new StringBuilder("");
+    sb.append("INSERT into request_to_category ")
+      .append("(request_id,request_category_id) ")
+      .append("VALUES (?, ?)"); 
 
-		// 1. set the sql
-		String update_request_sql = 
-			"INSERT into request (description, datetime, points, " + 
-			"status, title, requesting_user_id) VALUES (?, now(), ?, ?, ?, ?)"; 
+    for (int i = 1; i < r.get_categories().length; i++) {
+      sb.append(",(?, ?)");
+    }
 
-     //assembling dynamic SQL to add categories
-		StringBuilder sb = new StringBuilder("");
-			sb.append("INSERT into request_to_category ")
-			.append("(request_id,request_category_id) ")
-			.append("VALUES (?, ?)"); 
-		for (int i = 1; i < request.get_categories().length; i++) {
-		 sb.append(",(?, ?)");
-		}
-		String update_categories_sql = sb.toString();
+    String update_categories_sql = sb.toString();
+    return update_categories_sql;
+  }
 
-		String check_points_sql = 
-      "SELECT points FROM user WHERE user_id = ?";
-		String update_points_sql = 
-      "UPDATE user SET points = points - ? WHERE user_id = ?";
 
-		// 2. set up values we'll need outside the try 
-		int result = -1; //default to a guard value that indicates failure
-		PreparedStatement req_pstmt = null;
-		PreparedStatement cat_pstmt = null;
-		PreparedStatement ck_points_pstmt = null;
-		PreparedStatement up_points_pstmt = null;
-		Connection conn = null;
-	
-		try {
-			// 3. get the connection and set up a statement
-			conn = Database_access.get_a_connection();
-			conn.setAutoCommit(false);
-      req_pstmt  = Database_access.prepare_statement(
-					conn, update_request_sql);
-      cat_pstmt  = Database_access.prepare_statement(
-					conn, update_categories_sql);
-      ck_points_pstmt  = conn.prepareStatement(check_points_sql);
-      up_points_pstmt  = Database_access.prepare_statement(
-					conn, update_points_sql);
+  /**
+    * Adds a request into the request table
+    * @return an int greater than 0 identifying the new request, or
+    *  an int below 0 indicating failure.
+    */
+  private static int
+    insert_into_request_table(Connection c, Request r, String sql) {
 
-			// execute a statement to check points for user
-			ck_points_pstmt.setInt( 1, request.requesting_user_id);
-      ResultSet resultSet = ck_points_pstmt.executeQuery();
+    PreparedStatement req_pstmt = null;
+    int result = -1;
 
-			// check that we got results
-      if (Database_access.resultset_is_null_or_empty(resultSet)) {
-				System.err.println(
-						"Error(1): Transaction is being rolled back "+
-						"for request_id: " + result);
-				conn.rollback();
-        return new Request_response(Request_response.Stat.ERROR, -1);
-      }
+    try {
+      req_pstmt = Database_access.prepare_statement(c, sql);
 
-			//get those points
-      resultSet.next();
-			int points = resultSet.getInt("points");
+      //set values for adding request
+      req_pstmt.setString(1, r.description);
+      req_pstmt.setInt( 2, r.points);
+      req_pstmt.setInt( 3, r.status);
+      req_pstmt.setString( 4, r.title);
+      req_pstmt.setInt( 5, r.requesting_user_id);
 
-			//if the user doesn't have enough points for making this request.
-			if (points < request.points) {
-				conn.rollback();
-        return new Request_response(Request_response.Stat.LACK_POINTS, -1);
-			}
-
-			// 4. set values into the statement
-			//set values for adding request
-			req_pstmt.setString(1, request.description);
-			req_pstmt.setInt( 2, request.points);
-			req_pstmt.setInt( 3, request.status);
-			req_pstmt.setString( 4, request.title);
-			req_pstmt.setInt( 5, request.requesting_user_id);
-
-			// 5. execute a statement
-			//execute one of the updates
-			result = Database_access.execute_update(req_pstmt);
-
-			// 6. check results of statement, if good, continue 
-			// if bad, rollback
+      result = Database_access.execute_update(req_pstmt);
+			// 6. check results of statement, if good, continue, if bad, rollback
 			//if we get a -1 for our id, the request insert didn't go through.  
 			//so rollback.
 			if (result < 0) {
 				System.err.println(
           "Error(2):Transaction is being rolled back for request_id: " +
           result);
-				conn.rollback();
-        return new Request_response(Request_response.Stat.ERROR, -1);
+				c.rollback();
+        return result;
 			}
+      req_pstmt.close();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex, req_pstmt);
+      return -1;
+    }
 
-			// 7. set values for next statement 
-			//set values for adding categories
-			for (int i = 0; i < request.get_categories().length; i++ ) {
-				int category_id = request.get_categories()[i];
+    return result;
+  }
+
+
+  /**
+    * Adds to the request_to_category table for a new request
+    * @param result the id of the newly-created request.  we'll use
+    *  this for setting the categories properly.
+    * @param sql the sql we'll use to add categories.  Dynamically created
+    * @return null if successful, Request_response otherwise.
+    */
+  private static Request_response 
+    update_categories_for_request(
+        Connection c, String sql, int result, Request r) {
+
+    PreparedStatement cat_pstmt = null;
+
+    try {
+      cat_pstmt = Database_access.prepare_statement(c, sql);
+      for (int i = 0; i < r.get_categories().length; i++ ) {
+        int category_id = r.get_categories()[i];
         System.err.printf("Inserting %d at index %d\n",category_id, 2*i+2);
-				cat_pstmt.setInt( 2*i+1, result);
-				cat_pstmt.setInt( 2*i+2, category_id);
-			}
+        cat_pstmt.setInt( 2*i+1, result);
+        cat_pstmt.setInt( 2*i+2, category_id);
+      }
+      Database_access.execute_update(cat_pstmt);
+      cat_pstmt.close();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex, cat_pstmt);
+      return new Request_response(Request_response.Stat.ERROR, -1);
+    } 
+    return null;
+  }
 
-			// 8. run next statement 
-			Database_access.execute_update(cat_pstmt);
-			
-			// 9. set values for updating points.
-			up_points_pstmt.setInt(1, request.points);
-			up_points_pstmt.setInt(2, request.requesting_user_id);
 
-			// 10. update the points
+  /**
+    * Deducts points from the user.  Note there is a trigger to check
+    * the user has the required points, so if we get to this point
+    * we're good. Trigger is: trg_error_if_user_lacks_points_for_rqst
+    * @return null if successful, Request_response otherwise.
+    */
+  private static Request_response 
+    deduct_user_points(Connection c, String sql, Request r) {
+
+    PreparedStatement up_points_pstmt = null;
+
+    try {
+      up_points_pstmt = Database_access.prepare_statement(c, sql);
+
+			up_points_pstmt.setInt(1, r.points);
+			up_points_pstmt.setInt(2, r.requesting_user_id);
+
 			Database_access.execute_update(up_points_pstmt);
 
-			// 11. commit 
-			conn.commit();
+      up_points_pstmt.close();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex, up_points_pstmt);
+      return new Request_response(Request_response.Stat.ERROR, -1);
+    }
+    return null;
+  }
 
-			// 12. cleanup and exceptions
+
+  /**
+    * adds a Request to the database.  This is a bit complex because
+    * we have to do multiple things to do this right:
+    * We have to make sure the user has enough points for the request
+    * (checking the user's points is handled in a trigger, see
+    *  trg_error_if_user_lacks_points_for_rqst in v1_setup.sql)
+    * We have to add the request
+    * We have to add to the request_to_categories table
+    * We have to deduct points from the user
+    * If anything goes wrong, everything needs to roll back
+		* @param request a request object
+		* @return the id of the new request. -1 if not successful.  also an
+		* enum that designates the error if one exists, like lacking points
+    */
+  private static Request_response put_request(Request request) {
+
+		String update_request_sql = 
+			"INSERT into request (description, datetime, points, " + 
+			"status, title, requesting_user_id) VALUES (?, now(), ?, ?, ?, ?)"; 
+    String update_categories_sql = assemble_categories_sql(request);
+		String update_points_sql = 
+      "UPDATE user SET points = points - ? WHERE user_id = ?";
+
+		Connection conn = null;
+		try {
+			conn = Database_access.get_a_connection();
+			conn.setAutoCommit(false);
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+    }
+
+    //If any of the following, A, B, or C, fail, then we want to
+    //immediately return a response indicating error and halt
+    //execution here.
+
+    // A) Insert the request
+    int result = 
+      insert_into_request_table(conn, request, update_request_sql);
+    if (result <= 0) {
+      return new Request_response(Request_response.Stat.ERROR, -1);
+    }
+
+    Request_response response = null;
+
+    // B) Update the categories
+    response = update_categories_for_request(
+        conn, update_categories_sql, result, request);
+    if (response != null) {
+      return response;
+    }
+
+    // C) Deduct points from user
+    response = deduct_user_points(conn, update_points_sql, request);
+    if (response != null) {
+      return response;
+    }
+
+    //if we got to this point, we saw no errors along the way.
+    try {
+      conn.commit();
 		} catch (SQLException ex) {
-			Database_access.handle_sql_exception(ex,up_points_pstmt);
-			Database_access.handle_sql_exception(ex,ck_points_pstmt);
-			Database_access.handle_sql_exception(ex,cat_pstmt);
-			Database_access.handle_sql_exception(ex,req_pstmt);
+			Database_access.handle_sql_exception(ex);
 		} finally {
 			if (conn != null) {
 				try {
-					conn.setAutoCommit(true);
+					conn.close();
 				} catch (SQLException ex) {
 					Database_access.handle_sql_exception(ex);
 				}
 			}
-			Database_access.close_statement(req_pstmt);
-			Database_access.close_statement(cat_pstmt);
-			Database_access.close_statement(ck_points_pstmt);
-			Database_access.close_statement(up_points_pstmt);
 		}
+    //indicate all is well, along with the new id
     return new Request_response(Request_response.Stat.OK, result);
   }
 
