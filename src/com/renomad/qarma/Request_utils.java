@@ -27,11 +27,14 @@ public final class Request_utils {
 		* given an array of words, we'll look up the local words
 		* for statuses and see if any match.  If so, we'll return those
 		* as an array of ints.
-		* @param stats the words we'll compare to see if they are localized statuses
+		* @param stats the words we'll compare to see if 
+    *  they are localized statuses
 		* @param loc the localization object
-		* @return an array of ints of statuses that were found amongst the words.
+		* @return an array of ints of statuses that were 
+    *  found amongst the words.
 		*/
-	public static Integer[] parse_statuses_string(String[] stats, Localization loc) {
+	public static Integer[] 
+    parse_statuses_string(String[] stats, Localization loc) {
 		//get all the localized statuses
 		//compare those with stats
 		//return the id's of statuses that were found.
@@ -47,7 +50,8 @@ public final class Request_utils {
 	public static Map<Integer, Integer> get_all_categories() {
 		// 1. set the sql
     String sqlText = 
-			"SELECT request_category_id, localization_value FROM request_category; ";
+			"SELECT request_category_id, localization_value "+
+      "FROM request_category; ";
 		// 2. set up values we'll need outside the try
 		PreparedStatement pstmt = null;
     try {
@@ -95,7 +99,8 @@ public final class Request_utils {
 			"GROUP_CONCAT(rc.localization_value SEPARATOR ',') AS categories "+
 			"FROM request r "+
 			"JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
-			"JOIN request_category rc ON rc.request_category_id = rtc.request_category_id "+
+			"JOIN request_category rc "+
+        "ON rc.request_category_id = rtc.request_category_id "+
 			"WHERE r.request_id = ? ";
 
 		PreparedStatement pstmt = null;
@@ -184,11 +189,14 @@ public final class Request_utils {
 
   /**
     * takes the primary sql text and adds in the search clauses.
-    * @param so the search object, which contains the text needed to add search clauses
-    * @param sql_text the basic sql text, which we'll augment with search clauses
+    * @param so the search object, which contains the 
+    *  text needed to add search clauses
+    * @param sql_text the basic sql text, which we'll 
+    *  augment with search clauses
     * @return a sql string including searches.
     */
-  private static String add_advanced_search_clauses(String sql_text, Search_Object so) {
+  private static String 
+    add_advanced_search_clauses(String sql_text, Search_Object so) {
     
     String date_sql  = !Utils.is_null_or_empty(so.date) ? 
       Utils.get_date_search_query(so.date)
@@ -223,13 +231,21 @@ public final class Request_utils {
     //4. searching by users
     //5. searching by points
     //6. searching by status
-    String modified_text = String.format(sql_text, date_sql,title_sql,categories_sql,users_sql,points_sql,status_sql);
+    String modified_text = 
+      String.format(sql_text, 
+          date_sql,
+          title_sql,
+          categories_sql,
+          users_sql,
+          points_sql,
+          status_sql);
     return modified_text;
   }
 
 
   /**
-    * set up the sql for getting dashboard information, and add search clauses
+    * set up the sql for getting dashboard information, 
+    *  and add search clauses
     */
   private static String set_primary_sql_for_dashboard(Search_Object so) {
 
@@ -242,13 +258,15 @@ public final class Request_utils {
             "r.title, "+
             "u.rank, "+
             "r.requesting_user_id, "+
-            "GROUP_CONCAT(rc.localization_value SEPARATOR ',') AS categories "+
+            "GROUP_CONCAT(rc.localization_value SEPARATOR ',') "+
+            "AS categories "+
           "FROM request r "+
           "JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
-          "JOIN request_category rc ON rc.request_category_id = rtc.request_category_id "+
+          "JOIN request_category rc "+
+            "ON rc.request_category_id = rtc.request_category_id "+
           "JOIN user u ON u.user_id = r.requesting_user_id "+
           "WHERE requesting_user_id <> ? "+
-          "%s %s %s %s %s %s "+ //we add in a bunch of search clauses here, where applicable.
+          "%s %s %s %s %s %s "+ // <-- search clauses
           "GROUP BY r.request_id "+
           "ORDER BY r.request_id ASC " +			//sorting happens here.
           "LIMIT ?,? "; 					//paging happens here.
@@ -379,7 +397,8 @@ public final class Request_utils {
 				String cats = resultSet.getString("categories");
 				Integer[] cat_array = parse_string_to_int_array(cats);
 
-        Others_Request request = new Others_Request(t,dt,d,s,ra,p,rid,ru,cat_array);
+        Others_Request request = 
+          new Others_Request(t,dt,d,s,ra,p,rid,ru,cat_array);
         requests.add(request);
       }
       return requests;
@@ -398,7 +417,8 @@ public final class Request_utils {
 		* pages of data.  Which page are we on?
 		* @param page_size the number of requests to show per page.
     * @return an array of Others_Requests that were *not* made 
-		* by that user, or an empty array of Others_Requests if failure or none.
+    * by that user, or an empty array of Others_Requests if failure or
+    * none.
     */
   public static Others_Request[] get_others_requests(
 			int user_id, 
@@ -515,7 +535,8 @@ public final class Request_utils {
 	public static boolean delete_request(int id, int deleting_user_id) {
 		// 1. set the sql
 		String get_points_in_request_sql = 
-			"SELECT points, requesting_user_id FROM request WHERE request_id = ?";
+			"SELECT points, requesting_user_id "+
+      "FROM request WHERE request_id = ?";
 		String delete_request_sql = 
 			"DELETE FROM request WHERE request_id = ?";
 		String update_points_sql = 
@@ -603,8 +624,9 @@ public final class Request_utils {
 	/**
 		* gets all the request categories that exist as an
 		* array of their localization values, as Integers.
-		* @return a Integer array of all categories' localization values, useful
-		* for calling to the localization mechanism.  See com.renomad.qarma.Localization
+    * @return a Integer array of all categories' localization values,
+    * useful for calling to the localization mechanism.  See
+    * com.renomad.qarma.Localization
 		*/
 	public static Integer[] get_category_local_values() {
 			Map<Integer, Integer> categories = get_all_categories();
@@ -624,7 +646,8 @@ public final class Request_utils {
 		* unchanged from the client.
 		* @return an integer array of the applicable categories
 		*/
-	public static Integer[] parse_categories_string(String categories_str, Localization loc) {
+	public static Integer[] 
+    parse_categories_string(String categories_str, Localization loc) {
 		Map<Integer,Integer> all_categories = get_all_categories();
     
     //guard clauses
@@ -669,8 +692,10 @@ public final class Request_utils {
 		}
 		String update_categories_sql = sb.toString();
 
-		String check_points_sql = "SELECT points FROM user WHERE user_id = ?";
-		String update_points_sql = "UPDATE user SET points = points - ? WHERE user_id = ?";
+		String check_points_sql = 
+      "SELECT points FROM user WHERE user_id = ?";
+		String update_points_sql = 
+      "UPDATE user SET points = points - ? WHERE user_id = ?";
 
 		// 2. set up values we'll need outside the try 
 		int result = -1; //default to a guard value that indicates failure
@@ -681,7 +706,6 @@ public final class Request_utils {
 		Connection conn = null;
 	
 		try {
-			//get the connection and set to not auto-commit.  Prepare the statements
 			// 3. get the connection and set up a statement
 			conn = Database_access.get_a_connection();
 			conn.setAutoCommit(false);
@@ -734,7 +758,8 @@ public final class Request_utils {
 			//so rollback.
 			if (result < 0) {
 				System.err.println(
-						"Error(2):Transaction is being rolled back for request_id: " + result);
+          "Error(2):Transaction is being rolled back for request_id: " +
+          result);
 				conn.rollback();
         return new Request_response(Request_response.Stat.ERROR, -1);
 			}
@@ -743,6 +768,7 @@ public final class Request_utils {
 			//set values for adding categories
 			for (int i = 0; i < request.get_categories().length; i++ ) {
 				int category_id = request.get_categories()[i];
+        System.err.printf("Inserting %d at index %d\n",category_id, 2*i+2);
 				cat_pstmt.setInt( 2*i+1, result);
 				cat_pstmt.setInt( 2*i+2, category_id);
 			}
@@ -762,7 +788,10 @@ public final class Request_utils {
 
 			// 12. cleanup and exceptions
 		} catch (SQLException ex) {
-			Database_access.handle_sql_exception(ex);
+			Database_access.handle_sql_exception(ex,up_points_pstmt);
+			Database_access.handle_sql_exception(ex,ck_points_pstmt);
+			Database_access.handle_sql_exception(ex,cat_pstmt);
+			Database_access.handle_sql_exception(ex,req_pstmt);
 		} finally {
 			if (conn != null) {
 				try {
@@ -787,7 +816,8 @@ public final class Request_utils {
 	public static Request_status[] get_request_statuses() {
 		// 1. set the sql
     String sqlText = 
-      "SELECT request_status_id, request_status_value FROM request_status;";
+      "SELECT request_status_id, request_status_value "+
+      "FROM request_status;";
 
 		// 2. set up values we'll need outside the try
 		PreparedStatement pstmt = null;
@@ -846,7 +876,8 @@ public final class Request_utils {
 			try {
 				id = Integer.parseInt(Utils.parse_qs(qs).get("request"));
 			} catch (Exception ex) {
-				System.err.println("Error(6): couldn't parse int from querystring " + qs);
+				System.err.println(
+            "Error(6): couldn't parse int from querystring " + qs);
 				System.err.println(ex);
 				return null;
 			}
@@ -862,7 +893,8 @@ public final class Request_utils {
 		* @param user_id the user creating the message
 		* @return true if successful
 		*/
-	public static boolean set_message(String msg, int request_id, int user_id) {
+	public static boolean 
+    set_message(String msg, int request_id, int user_id) {
 
 		// 1. set the sql
       String sqlText = 
@@ -906,7 +938,8 @@ public final class Request_utils {
 		* or empty array if failure.
 		*/
 	public static String[] get_messages(int request_id) {
-    String sqlText = "SELECT message FROM request_message WHERE request_id = ?";
+    String sqlText = 
+      "SELECT message FROM request_message WHERE request_id = ?";
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
@@ -939,8 +972,8 @@ public final class Request_utils {
 
 	
 	/**
-		* HTML safely gets all the messages (correspondence between users) for a request.
-		* @param request_id the key for the messages
+    * HTML safely gets all the messages (correspondence between users)
+    * for a request.  @param request_id the key for the messages
 		* @return a HTML-safe array of messages for this request, 
 		* or empty array if failure.
 		*/
@@ -986,8 +1019,9 @@ public final class Request_utils {
 	/**
 		* acts as a simple lookup table between the status
 		* value and the index into localized values
-		* Since there are so few statuses, probably no harm.  If
-		* the paradigm changes so there are lots of statuses, change this paradigm.
+    * Since there are so few statuses, probably no harm.  If the
+    * paradigm changes so there are lots of statuses, change this
+    * paradigm.
 		*/
 	public static int get_status_localization_value(int status) {
 		switch(status) {

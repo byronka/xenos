@@ -55,6 +55,9 @@ public class Request {
 		this.categories       =  categories;
 	}
 
+  /**
+    * Returns a copy of the categories array
+    */
 	public Integer[] get_categories() {
 		Integer[] c = Arrays.copyOf(categories, categories.length);
 		return c;
