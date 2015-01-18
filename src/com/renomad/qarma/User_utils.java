@@ -36,11 +36,13 @@ public final class User_utils {
     StringBuilder sb = new StringBuilder();
     //add the first name
     
+    //the replaceAll here is to prevent SQL injection.
     sb.append("'")
     .append(usernames[0].replaceAll("'", ""))
     .append("'");
     
     //add subsequent names
+    //the replaceAll here is to prevent SQL injection.
     for(int i = 1; i < usernames.length; i++) {
       sb.append(",")
       .append("'")
