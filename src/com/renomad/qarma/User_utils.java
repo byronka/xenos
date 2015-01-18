@@ -22,10 +22,11 @@ public final class User_utils {
 
 	/**
     * gets an array of user ids by names of users. used in searching
-    * requests by users.  @param usernames an array of user usernames
-		* @return an array of user ids instead of the names, or null
-		* if failure or none found.
-		*/
+    * requests by users.  
+    * @param usernames an array of user usernames
+	* @return an array of user ids instead of the names, or null
+	* if failure or none found.
+	*/
 	public static Integer[]
 		get_user_ids_by_names(String[] usernames) {
 
@@ -34,20 +35,28 @@ public final class User_utils {
 
 		StringBuilder sb = new StringBuilder();
 		//add the first name
-		sb.append("\"").append(usernames[0]).append("\"");
+		
+		sb.append("'")
+		.append(usernames[0].replaceAll("'", ""))
+		.append("'");
+		
     //add subsequent names
-		for(String usr : usernames) {
-			sb.append(",").append("\"").append(usr).append("\"");
+		for(int i = 1; i < usernames.length; i++) {
+			sb.append(",")
+			.append("'")
+			.append(usernames[i].replaceAll("'", ""))
+			.append("'");
 		}
 		String delimited_string_usernames = sb.toString();
 
-    String sqlText = "SELECT user_id FROM user WHERE username IN (?)";
+    String sqlText = 
+    		String.format("SELECT user_id FROM user WHERE username IN (%s)", 
+    				delimited_string_usernames);
 		PreparedStatement pstmt = null;
     try {
 			Connection conn = Database_access.get_a_connection();
 			pstmt = Database_access.prepare_statement(
 					conn, sqlText);     
-			pstmt.setNString( 1, delimited_string_usernames);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
