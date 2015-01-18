@@ -1,4 +1,4 @@
-<project name="Qarma" >
+<project name="Xenos" >
 
   <!-- Note: it is important that this file, build.xml, remain
        at the top of the directory, as it refers to directories
@@ -24,15 +24,15 @@
 
 	<!-- Javadocs -->
   <property name="docs.dir" 
-		value="${tomcat.webapps.dir}/qarma_javadocs" />
+		value="${tomcat.webapps.dir}/xenos_javadocs" />
   <property name="lint.output.dir" 
 		value="${tomcat.webapps.dir}/lint" />
 
 	<!-- Connection strings -->
 	<property name="conn.str.with.db"
-		value="CONNECTION_STRING_WITH_DB=jdbc:mysql://localhost/qarma_database?user=qarmauser&amp;password=password1" />
+		value="CONNECTION_STRING_WITH_DB=jdbc:mysql://localhost/xenos_database?user=xenosuser&amp;password=password1" />
 	<property name="conn.str.without.db"
-		value="CONNECTION_STRING_WITHOUT_DB=jdbc:mysql://localhost/?user=qarmauser&amp;password=password1" />
+		value="CONNECTION_STRING_WITHOUT_DB=jdbc:mysql://localhost/?user=xenosuser&amp;password=password1" />
 
 	<!-- static code analysis -->
 	<property name="lint4j.dist.dir"
@@ -82,7 +82,7 @@
     <antcall target="compile" />
     <antcall target="install" />
     <antcall target="tomcat-restart" />
-    <echo message="Qarma is ready at https://localhost:8443/qarma"/>
+    <echo message="Xenos is ready at https://localhost:8443/xenos"/>
   </target>
 
 
@@ -155,7 +155,7 @@
     description="deletes the db schema, and ALL DATA!">
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
-      classname="com.renomad.qarma.schema.Delete_db_schema" 
+      classname="com.renomad.xenos.schema.Delete_db_schema" 
       fork="true" >
 			<jvmarg value="-D${conn.str.without.db}" />
 			<jvmarg value="-D${conn.str.with.db}" />
@@ -195,7 +195,7 @@
   -->
   <target name="install"
     description="move files into web container">
-    <copy todir="${tomcat.webapps.dir}qarma/WEB-INF/classes" >
+    <copy todir="${tomcat.webapps.dir}xenos/WEB-INF/classes" >
       <!-- Note: **/* will include all sub-directories. -->
       <fileset dir="build/classes" includes="**/*" />
     </copy>
@@ -220,7 +220,7 @@
     description="builds the db schema.  see comments in build.xml">
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
-      classname="com.renomad.qarma.schema.Build_db_schema" 
+      classname="com.renomad.xenos.schema.Build_db_schema" 
       fork="true" >
 			<jvmarg value="-D${conn.str.with.db}" />
 			<jvmarg value="-D${conn.str.without.db}" />
@@ -237,7 +237,7 @@
     description="adds sample data to the database for testing">
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
-      classname="com.renomad.qarma.schema.Add_sample_data_to_db"
+      classname="com.renomad.xenos.schema.Add_sample_data_to_db"
       fork="true" >
 			<jvmarg value="-D${conn.str.with.db}" />
 			<jvmarg value="-D${conn.str.without.db}" />
@@ -252,7 +252,7 @@
     description="adds localized language data">
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
-      classname="com.renomad.qarma.schema.Add_language_data_to_db"
+      classname="com.renomad.xenos.schema.Add_language_data_to_db"
       fork="true" >
 			<jvmarg value="-D${conn.str.with.db}" />
 			<jvmarg value="-D${conn.str.without.db}" />
@@ -270,7 +270,7 @@
 	<!-- Creates Javadoc -->
 	<target name="docs" depends="compile"
     description="builds the javadocs">
-		<javadoc packagenames="com.renomad.qarma" sourcepath="${src.dir}" destdir="${docs.dir}">
+		<javadoc packagenames="com.renomad.xenos" sourcepath="${src.dir}" destdir="${docs.dir}">
 			<!-- Define which files / directory should get included, we include all -->
 			<fileset dir="${src.dir}">
 				<include name="**" />
@@ -313,8 +313,8 @@
 				${tomcat.lib.dir}servlet-api.jar" />
 		</classpath>
 		<formatter type="plain" usefile="false"/>
-		<test name="com.renomad.qarma.tests.Request_tests"/>
-		<test name="com.renomad.qarma.tests.Utils_tests"/>
+		<test name="com.renomad.xenos.tests.Request_tests"/>
+		<test name="com.renomad.xenos.tests.Utils_tests"/>
 	</junit>
 	</target>
 
