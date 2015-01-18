@@ -6,47 +6,47 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
-	* Utils holds utilities that apply across many situations
-	*/
+  * Utils holds utilities that apply across many situations
+  */
 public final class Utils {
 
-	private Utils () {
-		//we don't want anyone instantiating this
-		//do nothing.
-	}
+  private Utils () {
+    //we don't want anyone instantiating this
+    //do nothing.
+  }
 
   /**
     * helps with boilerplate for validation of whether input
     * is null or empty.
-		* @return true if null or empty string
+    * @return true if null or empty string
     */
   public static boolean is_null_or_empty(String value) {
     return value == null || value.equals("");
   }
   
 
-	/**
-		* a helper method to convert integer arrays to strings
-		* delimited by commas, like going from [1,2,3] to "1,2,3"
-		*/
-	public static String int_array_to_string(Integer[] arr) {
+  /**
+    * a helper method to convert integer arrays to strings
+    * delimited by commas, like going from [1,2,3] to "1,2,3"
+    */
+  public static String int_array_to_string(Integer[] arr) {
 
-		if (arr.length == 0) return "";
+    if (arr.length == 0) return "";
 
-		StringBuilder s = new StringBuilder();
-		s.append(arr[0].toString());
-		for(int i = 1; i < arr.length;i++) {
-			s.append(",").append(arr[i].toString());
-		}
-		return s.toString();
-	}
+    StringBuilder s = new StringBuilder();
+    s.append(arr[0].toString());
+    for(int i = 1; i < arr.length;i++) {
+      s.append(",").append(arr[i].toString());
+    }
+    return s.toString();
+  }
 
 
-	public static boolean is_valid_date(String date) {
+  public static boolean is_valid_date(String date) {
     return get_date_search_query(date).length() > 0;
   }
 
-	/**
+  /**
     * We'll just check to see that the string entered is valid per our specs.
     * formats allowed:   (explanation in parens)
     * A) date            (a single date) ex: 2014-12-18
@@ -56,7 +56,7 @@ public final class Utils {
     * Note that dates are inclusive.  the date range above would be from
     * the 0:00:00.0000 point of the first day to the 23:59:59:9999 point
     * of the last day.
-		*/
+    */
   public static String get_date_search_query(String date) {
     //a proper date will look like:
     // 2014-12-18
@@ -122,7 +122,7 @@ public final class Utils {
 
     //if we got here, we didn't meet the precise criteria.
     return "";
-	}
+  }
 
 //                        Yearly calendar:
 //                        ================
@@ -238,46 +238,46 @@ public final class Utils {
    * @return a string safe for display in a browser.
    */
   public static String safe_render(String s) {
-	  return s.replaceAll("<", "&lt;")
-			  .replaceAll(">", "&gt;");
+    return s.replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
   }
 
-	/**
-		* gets all the parameters from a query string
-		* @param qs a query string from a url string
-		* @return a map of params to values, as strings.  It is
-		* incumbent upon you to convert strings as needed. if qs
-		* is null or empty, we return an empty map.
-		*/
-	public static Map<String, String> parse_qs(String qs) {
-		if (is_null_or_empty(qs)) {return new HashMap<String,String>();}
-		String[] params = qs.split("&");
-		if (params.length == 0) {
-			return null;
-		}
-		Map<String,String> values = new HashMap<String,String>();
-		for (String p : params) {
-			String[] items = p.split("=");
-			if (items.length != 2) {
-				continue;
-			}
-			values.put(items[0], items[1]);
-		}
-		return values;
-	}
+  /**
+    * gets all the parameters from a query string
+    * @param qs a query string from a url string
+    * @return a map of params to values, as strings.  It is
+    * incumbent upon you to convert strings as needed. if qs
+    * is null or empty, we return an empty map.
+    */
+  public static Map<String, String> parse_qs(String qs) {
+    if (is_null_or_empty(qs)) {return new HashMap<String,String>();}
+    String[] params = qs.split("&");
+    if (params.length == 0) {
+      return null;
+    }
+    Map<String,String> values = new HashMap<String,String>();
+    for (String p : params) {
+      String[] items = p.split("=");
+      if (items.length != 2) {
+        continue;
+      }
+      values.put(items[0], items[1]);
+    }
+    return values;
+  }
 
 
   /**
-		* gets an integer from the value, avoiding boilerplate.
-		* @param my_int a potential int
-		* @return an Integer, or null if failed parsing.
+    * gets an integer from the value, avoiding boilerplate.
+    * @param my_int a potential int
+    * @return an Integer, or null if failed parsing.
     */
   public static Integer parse_int(String my_int) {
-			try {
-				Integer value = Integer.valueOf(my_int);
-				return value;
-			} catch (Exception ex) {
-				return null;
-			}
-		}
+      try {
+        Integer value = Integer.valueOf(my_int);
+        return value;
+      } catch (Exception ex) {
+        return null;
+      }
+    }
 }

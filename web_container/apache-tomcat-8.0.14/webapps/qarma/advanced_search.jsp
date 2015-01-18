@@ -108,55 +108,55 @@ if (request.getMethod().equals("POST")) {
     return;
   }
 }
-	
+  
 %>
 
   <body>
-	<%@include file="includes/header.jsp" %>
+  <%@include file="includes/header.jsp" %>
     <form method="POST" action="advanced_search.jsp">
-			<p><%=loc.get(12,"Title")%>: 
-			<input type="text" name="title" value="<%=title%>"/> 
-			</p>
+      <p><%=loc.get(12,"Title")%>: 
+      <input type="text" name="title" value="<%=title%>"/> 
+      </p>
 
-		<p>
-			<%=loc.get(25,"Date")%>: 
-			<input type="text" name="date" value="<%=date%>" /> 
-			<span><%=da_error_msg%></span>
-		</p>
+    <p>
+      <%=loc.get(25,"Date")%>: 
+      <input type="text" name="date" value="<%=date%>" /> 
+      <span><%=da_error_msg%></span>
+    </p>
 
-		<p>
-			<%=loc.get(24,"Status")%>: 
-			<input type="text" name="statuses" value="<%=statuses%>" /> 
-			<span><%=stat_error_msg%></span>
-		</p>
+    <p>
+      <%=loc.get(24,"Status")%>: 
+      <input type="text" name="statuses" value="<%=statuses%>" /> 
+      <span><%=stat_error_msg%></span>
+    </p>
 
-		<p>
-		<%=loc.get(11,"Points")%>: 
-		<input type="text" name="points" value="<%=points%>" />
-		</p>
+    <p>
+    <%=loc.get(11,"Points")%>: 
+    <input type="text" name="points" value="<%=points%>" />
+    </p>
 
-		<p>
-			<%=loc.get(80,"User")%>: 
-			<input type="text" name="users" value="<%=users%>" />
-			<span><%=user_error_msg%></span>
-		</p>
-
-
-		<p>
-			<%=loc.get(13,"Categories")%>: 
-			<input type="text" name="categories" value="<%=category%>" />
-			<span><%=cat_error_msg%></span>
-		</p>
+    <p>
+      <%=loc.get(80,"User")%>: 
+      <input type="text" name="users" value="<%=users%>" />
+      <span><%=user_error_msg%></span>
+    </p>
 
 
+    <p>
+      <%=loc.get(13,"Categories")%>: 
+      <input type="text" name="categories" value="<%=category%>" />
+      <span><%=cat_error_msg%></span>
+    </p>
 
-			<div id='available-categories'>
-				<%
-					Integer[] local_cat_values = Request_utils.get_category_local_values();
-					for(Integer val : local_cat_values) { %>
-					<%=loc.get(val,"")%>,
-				<%}%>
-			</div>
+
+
+      <div id='available-categories'>
+        <%
+          Integer[] local_cat_values = Request_utils.get_category_local_values();
+          for(Integer val : local_cat_values) { %>
+          <%=loc.get(val,"")%>,
+        <%}%>
+      </div>
       <button type="submit"><%=loc.get(1,"Search")%></button>
     </form>
   </body>

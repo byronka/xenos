@@ -12,15 +12,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 /**
-	* Security holds methods necessary for authentication
-	* and other similar items.
-	*/
+  * Security holds methods necessary for authentication
+  * and other similar items.
+  */
 public final class Security {
 
-	private Security () {
-		//we don't want anyone instantiating this
-		//do nothing.
-	}
+  private Security () {
+    //we don't want anyone instantiating this
+    //do nothing.
+  }
 
   /**
     * Checks the database, given the user id, whether that
@@ -28,10 +28,10 @@ public final class Security {
     */
   public static boolean user_is_logged_in(int user_id) {
     String sqlText = "SELECT is_logged_in FROM user WHERE user_id = ?";
-		PreparedStatement pstmt = null;
+    PreparedStatement pstmt = null;
     try {
-			Connection conn = Database_access.get_a_connection();
-			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      Connection conn = Database_access.get_a_connection();
+      pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
       pstmt.setInt( 1, user_id);
       ResultSet resultSet = pstmt.executeQuery();
 
@@ -41,9 +41,9 @@ public final class Security {
 
       resultSet.next(); //move to the first set of results.
       return resultSet.getBoolean("is_logged_in");
-		} catch (SQLException ex) {
-			Database_access.handle_sql_exception(ex);
-			return false;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
     } finally {
       Database_access.close_statement(pstmt);
     }
@@ -56,17 +56,17 @@ public final class Security {
     */
   public static boolean set_user_not_logged_in(int user_id) {
     String sqlText = "UPDATE user SET is_logged_in = false;";
-		PreparedStatement pstmt = null;
+    PreparedStatement pstmt = null;
     try {
-			Connection conn = Database_access.get_a_connection();
-			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
-		} catch (SQLException ex) {
-			Database_access.handle_sql_exception(ex);
-			return false; //if a failure occurred.
+      Connection conn = Database_access.get_a_connection();
+      pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false; //if a failure occurred.
     } finally {
       Database_access.close_statement(pstmt);
     }
-		return true;
+    return true;
   }
 
 
@@ -77,10 +77,10 @@ public final class Security {
     */
   public static int check_login(String email, String password) {
     String sqlText = "SELECT password,user_id FROM user WHERE username = ?";
-		PreparedStatement pstmt = null;
+    PreparedStatement pstmt = null;
     try {
-			Connection conn = Database_access.get_a_connection();
-			pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      Connection conn = Database_access.get_a_connection();
+      pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
       pstmt.setString( 1, email);
       ResultSet resultSet = pstmt.executeQuery();
 
@@ -94,9 +94,9 @@ public final class Security {
         return resultSet.getInt("user_id"); //success!
       }
       return 0; //password was bad - return user "0"
-		} catch (SQLException ex) {
-			Database_access.handle_sql_exception(ex);
-			return 0;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return 0;
     } finally {
       Database_access.close_statement(pstmt);
     }
@@ -116,10 +116,10 @@ public final class Security {
 
       if (user_id < 0) {
         System.err.println("error: user id was " + 
-						user_id + " in register_details_on_user_login");
+            user_id + " in register_details_on_user_login");
         return;
       }
-			String ip_address = ip;
+      String ip_address = ip;
       if (ip_address == null || ip_address.length() == 0) {
         ip = "error: no ip in request";
       }
@@ -130,15 +130,15 @@ public final class Security {
         "last_ip_logged_in = ? " + 
         "WHERE user_id = ?";
 
-			PreparedStatement pstmt = null;
-			try {
-				Connection conn = Database_access.get_a_connection();
-				pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      PreparedStatement pstmt = null;
+      try {
+        Connection conn = Database_access.get_a_connection();
+        pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
         pstmt.setString( 1, ip);
         pstmt.setInt( 2, user_id);
         Database_access.execute_update(pstmt);
-			} catch (SQLException ex) {
-				Database_access.handle_sql_exception(ex);
+      } catch (SQLException ex) {
+        Database_access.handle_sql_exception(ex);
       } finally {
         Database_access.close_statement(pstmt);
       }
@@ -175,7 +175,7 @@ public final class Security {
     if (user_id < 0) {
       System.err.println("error: user id was " + user_id + 
           " in user_is_logged_in()");
-			return -1;
+      return -1;
     }
     boolean is_logged_in = user_is_logged_in(user_id);
     if (is_logged_in) {
@@ -184,13 +184,13 @@ public final class Security {
     return -1; //-1 means not allowed or failure.
   }
 
-	/**
-		* given all the cookies the client sent us, 
-		* find the one that belongs to us. It will have a name
-		* of "qarma_cookie"
-		* @param all_cookies a string array of all the cookies for this domain.
-		* @return the one cookie we want.
-		*/
+  /**
+    * given all the cookies the client sent us, 
+    * find the one that belongs to us. It will have a name
+    * of "qarma_cookie"
+    * @param all_cookies a string array of all the cookies for this domain.
+    * @return the one cookie we want.
+    */
   private static Cookie find_security_cookie(Cookie[] all_cookies) {
     if (all_cookies == null) {
       return null;
