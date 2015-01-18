@@ -50,7 +50,7 @@ VALUES
 (41, 'Error deleting request', 'FrenchError deleting request', 'SpanishError deleting request'),
 (42, 'Login', 'FrenchLogin', 'SpanishLogin'),
 (43, 'Register', 'FrenchRegister', 'SpanishRegister'),
-(44, 'Welcome to Qarma!', 'FrenchWelcome to Qarma!', 'SpanishWelcome to Qarma!'),
+(44, 'Welcome to Xenos!', 'FrenchWelcome to Xenos!', 'SpanishWelcome to Xenos!'),
 (45, 'Successfully logged out', 'FrenchSuccessfully logged out', 'SpanishSuccessfully logged out'),
 (46, 'General Error', 'FrenchGeneral Error', 'SpanishGeneral Error'),
 (47, 'Please enter a password', 'FrenchPlease enter a password', 'SpanishPlease enter a password'),

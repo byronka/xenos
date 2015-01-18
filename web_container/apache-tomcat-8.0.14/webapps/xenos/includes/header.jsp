@@ -4,7 +4,7 @@
   <div class="spacer" ></div>
 <section class="header">
   <nav class="cl-effect-1">
-    <a class="trademark" href="dashboard.jsp">Qarma</a>
+    <a class="trademark" href="dashboard.jsp">Xenos</a>
     <a href="create_request.jsp" ><%=loc.get(2, "Create Request")%></a>
     <a href="logout.jsp" ><%=loc.get(3, "Logout")%></a>
   </nav>
