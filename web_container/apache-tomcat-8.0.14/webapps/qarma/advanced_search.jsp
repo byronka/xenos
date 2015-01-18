@@ -91,10 +91,10 @@ if (request.getMethod().equals("POST")) {
   //or more non-word chars.
   String[] split_user_names = users.split("\\s+?|\\W+?"); 
 
-  Integer[] user_ids = User_utils
+  String user_ids = User_utils
     .get_user_ids_by_names(split_user_names);
 
-  if ((user_ids == null || user_ids.length == 0) && 
+  if ((user_ids == null || user_ids.equals("")) && 
       users.length() > 0) {
     validation_error |= true;
     user_error_msg = loc.get(85,"No users found in string");
@@ -103,7 +103,7 @@ if (request.getMethod().equals("POST")) {
   if(!validation_error) {
     String dashboard_string = String.format(
         "dashboard.jsp?da=%s&ti=%s&pts=%s&cat=%s&us=%s&sta=%s",
-         date,title,points,categories,users,statuses );
+         date,title,points,categories,user_ids,statuses );
     response.sendRedirect(dashboard_string);
     return;
   }

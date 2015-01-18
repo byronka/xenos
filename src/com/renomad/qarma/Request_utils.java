@@ -185,6 +185,35 @@ public final class Request_utils {
 
   }
 
+  /**
+    * dynamic assembly of users search, necessary to be safe,
+    * to avoid SQL injection
+    * the way this works is that we split the text by comma, and then
+    * try parsing the pieces.  If anything isn't a number, our utility
+    * returns null.  So if they try to attack, the parser will return
+    * null which does nothing. Seems safe.
+    * @param user_ids a string of user ids, delimited by commas
+    * @return a sql string safely assembled, or empty string if given
+    *  junk input.
+    */
+  private static String generate_user_search_clause(String user_ids) {
+    StringBuilder sb = new StringBuilder();
+    String[] ids = user_ids.split(",");
+    if (ids.length == 0) {
+      return "";
+    }
+    sb.append(Utils.parse_int(ids[0])); //if it isn't parsed, we get null
+
+    for (int i = 1; i < ids.length; i++) {
+      sb
+        .append(",")
+        .append(Utils.parse_int(ids[i])); //if it isn't parsed, we get null
+    }
+    String clause = 
+      String.format(" AND r.requesting_user_id in (%s) ", sb.toString());
+    return clause;
+  }
+
 
   /**
     * takes the primary sql text and adds in the search clauses.
@@ -209,8 +238,12 @@ public final class Request_utils {
       " AND categories in (?)" 
       : "";
 
+    //this one's a little tricky.  To use WHERE IN, it's painful to
+    // use parameters with prepared statements.  Easier (and fairly
+    // safe) to just create the whole clause, since we're dealing with
+    // numbers. 
     String users_sql  = !Utils.is_null_or_empty(so.user_ids) ?
-      " AND r.requesting_user_id in (?) " 
+      generate_user_search_clause(so.user_ids)
       : "";
 
     String points_sql  = !Utils.is_null_or_empty(so.points) ?
@@ -224,10 +257,10 @@ public final class Request_utils {
 
     //order matters here, go look at the sql coming in.
     //Order:
-    //1. searching by date
+    //1. searching by date - no param used
     //2. searching by title
     //3. searching by categories
-    //4. searching by users
+    //4. searching by users - no param used
     //5. searching by points
     //6. searching by status
     String modified_text = 
@@ -316,11 +349,8 @@ public final class Request_utils {
         pstmt.setString( param_index, so.categories);
       }
 
-    //4. searching by users
-      if (has_users) {
-        param_index++;
-        pstmt.setString( param_index, so.user_ids);
-      }
+    //4. searching by users - parameter is set in
+    //add_advanced_search_clauses
 
     //5. searching by points
       if (has_points) {

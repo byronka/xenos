@@ -24,10 +24,10 @@ public final class User_utils {
     * gets an array of user ids by names of users. used in searching
     * requests by users.  
     * @param usernames an array of user usernames
-  * @return an array of user ids instead of the names, or null
-  * if failure or none found.
-  */
-  public static Integer[]
+    * @return a string representing an array of user ids instead of the
+    *   names, or null if failure or none found.
+    */
+  public static String
     get_user_ids_by_names(String[] usernames) {
 
     //go defensive!
@@ -62,11 +62,17 @@ public final class User_utils {
         return null;
       }
 
-      ArrayList<Integer> user_ids = new ArrayList<Integer>();
+      StringBuilder user_ids_sb = new StringBuilder();
+      resultSet.next();
+      user_ids_sb.append(resultSet.getInt("user_id"));
+
       while(resultSet.next()) {  
-        user_ids.add(resultSet.getInt("user_id"));
+        user_ids_sb
+          .append(",")
+          .append(resultSet.getInt("user_id"));
       }
-      return user_ids.toArray(new Integer[user_ids.size()]);
+
+      return user_ids_sb.toString();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return null;
