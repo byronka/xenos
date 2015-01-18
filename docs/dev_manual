@@ -182,6 +182,28 @@ SQL standards
 
 
 
+Git events
+==========
+When you commit in Git, you are committing to your local repo - only
+your local system.  When you 'push', you send your local repo to the
+main repo, on prime.renomad.com on the 'git' account.  In turn, that
+account sends out an email to interested parties about the push, and
+then sends to a backup account on git@ssh.renomad.com, which in turn
+gets backed-up to a sd card once a month.
+
+Git commit standards
+====================
+When you make a commit, it's important to know what task it relates
+to.  There is a hook which requires syntax similar to the following:
+
+BK-#123- here is the message blah blah blah
+
+the syntax is: two to three initials (uppercase), a dash, a hash
+symbol, from 1 to 7 digits, a dash, and then whatever you want.
+
+The number should be the same as the issue number in YouTrack.
+
+
 
 Troubleshooting
 ===============
