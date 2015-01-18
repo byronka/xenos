@@ -2,8 +2,8 @@
 <html>                                 
   <head><title><%=loc.get(15, "Create a request")%></title></head>
 
-<%@ page import="com.renomad.qarma.Request_utils" %>
-<%@ page import="com.renomad.qarma.Utils" %>
+<%@ page import="com.renomad.xenos.Request_utils" %>
+<%@ page import="com.renomad.xenos.Utils" %>
   <% 
     //get the values straight from the client
     String de = "";

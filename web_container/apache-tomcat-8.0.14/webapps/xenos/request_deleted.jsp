@@ -2,8 +2,8 @@
 <html>
 <head><title><%=loc.get(31, "Request has been deleted")%></title></head>
 
-<%@ page import="com.renomad.qarma.Utils" %>
-<%@ page import="com.renomad.qarma.Request" %>
+<%@ page import="com.renomad.xenos.Utils" %>
+<%@ page import="com.renomad.xenos.Request" %>
 <%
   String qs = request.getQueryString();
   int request_id = 

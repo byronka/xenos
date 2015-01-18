@@ -1,4 +1,4 @@
-package com.renomad.qarma.tests;
+package com.renomad.xenos.tests;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -8,11 +8,11 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
-import com.renomad.qarma.Request;
-import com.renomad.qarma.Request_utils;
-import com.renomad.qarma.User_utils;
-import com.renomad.qarma.Request_status;
-import com.renomad.qarma.Database_access;
+import com.renomad.xenos.Request;
+import com.renomad.xenos.Request_utils;
+import com.renomad.xenos.User_utils;
+import com.renomad.xenos.Request_status;
+import com.renomad.xenos.Database_access;
 
 public class Request_tests {
 

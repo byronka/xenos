@@ -1,4 +1,4 @@
-package com.renomad.qarma;
+package com.renomad.xenos;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
@@ -8,14 +8,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.renomad.qarma.Database_access;
+import com.renomad.xenos.Database_access;
 
 
 /**
  * This class acts to get localization data from the database and store
  * that in an object that stays resident throughout the runtime of the app.
  * That is, it gets our text in various languages (French, English, etc.) 
- * like "welcome to Qarma" and puts that into a multi-dimensional array, 
+ * like "welcome to Xenos" and puts that into a multi-dimensional array, 
  * called words_array.  That array is then available to the entire app through
  * some methods in this class.  It is non-writable, so no concern over
  * multi-threading issues.
@@ -36,7 +36,7 @@ public class Text implements javax.servlet.ServletContextListener {
   private static String[][] words_array;
 
   /**
-   * This method gets called only once - when Qarma is started.  It fills an
+   * This method gets called only once - when Xenos is started.  It fills an
    * array with all the localizations found in the database.  This way, localizing words
    * is damn fast.
    */

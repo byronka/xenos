@@ -1,7 +1,7 @@
-package com.renomad.qarma;
+package com.renomad.xenos;
 
-import com.renomad.qarma.User_utils;
-import com.renomad.qarma.Text;
+import com.renomad.xenos.User_utils;
+import com.renomad.xenos.Text;
 import java.util.Locale;
 
   /**

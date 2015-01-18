@@ -1,9 +1,9 @@
-package com.renomad.qarma;
+package com.renomad.xenos;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import com.renomad.qarma.Database_access;
-import com.renomad.qarma.Utils;
+import com.renomad.xenos.Database_access;
+import com.renomad.xenos.Utils;
 
 import java.sql.Statement;
 import java.sql.SQLException;
@@ -187,7 +187,7 @@ public final class Security {
   /**
     * given all the cookies the client sent us, 
     * find the one that belongs to us. It will have a name
-    * of "qarma_cookie"
+    * of "xenos_cookie"
     * @param all_cookies a string array of all the cookies for this domain.
     * @return the one cookie we want.
     */
@@ -196,7 +196,7 @@ public final class Security {
       return null;
     }
     for (Cookie cookie : all_cookies) {
-      if (cookie.getName().equals("qarma_cookie")) {
+      if (cookie.getName().equals("xenos_cookie")) {
         return cookie;
       }
     }

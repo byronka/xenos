@@ -1,8 +1,8 @@
-package com.renomad.qarma;
+package com.renomad.xenos;
 
 
-import com.renomad.qarma.Database_access;
-import com.renomad.qarma.Utils;
+import com.renomad.xenos.Database_access;
+import com.renomad.xenos.Utils;
 import java.util.ArrayList;
 
 import java.sql.SQLException;

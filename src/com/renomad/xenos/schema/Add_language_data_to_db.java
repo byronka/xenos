@@ -1,6 +1,6 @@
-package com.renomad.qarma.schema;
+package com.renomad.xenos.schema;
 
-import com.renomad.qarma.schema.Build_db_schema;
+import com.renomad.xenos.schema.Build_db_schema;
 
 public final class Add_language_data_to_db {
 

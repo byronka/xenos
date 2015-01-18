@@ -1,6 +1,6 @@
-<%@ page import="com.renomad.qarma.Security" %>
-<%@ page import="com.renomad.qarma.User_utils" %>
-<%@ page import="com.renomad.qarma.Localization" %>
+<%@ page import="com.renomad.xenos.Security" %>
+<%@ page import="com.renomad.xenos.User_utils" %>
+<%@ page import="com.renomad.xenos.Localization" %>
 <%
   //check if they are already logged in.  If so, just skip to
   //dashboard.  it just checks the user cookie to see if we are good
@@ -49,7 +49,7 @@
   <head><title><%=loc.get(58,"Account Creation")%></title></head>
   <link rel="stylesheet" href="register.css">
 <body>
-  <div class="trademark cl-effect-1"><a href="index.jsp">Qarma</a></div>
+  <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
   <div class="register">
     <form id="enter_name_form" action="register.jsp" method="post">
 

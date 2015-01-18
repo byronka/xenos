@@ -37,10 +37,10 @@
 		<!-- type: The fully qualified Java class name expected by the web
 		application when it performs a lookup for this resource. -->
 
-	<Resource name="jdbc/qarma_db" auth="Container"
+	<Resource name="jdbc/xenos_db" auth="Container"
 		type="javax.sql.DataSource" maxActive="100" maxIdle="30"
-		maxWait="10000" username="qarmauser" password="password1"
+		maxWait="10000" username="xenosuser" password="password1"
 		driverClassName="com.mysql.jdbc.Driver"
-		url="jdbc:mysql://localhost/qarma_database" />
+		url="jdbc:mysql://localhost/xenos_database" />
 
 </Context>

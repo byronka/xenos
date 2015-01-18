@@ -1,5 +1,5 @@
-<%@ page import="com.renomad.qarma.Security" %>
-<%@ page import="com.renomad.qarma.Localization" %>
+<%@ page import="com.renomad.xenos.Security" %>
+<%@ page import="com.renomad.xenos.Localization" %>
 <%
   //check if they are already logged in.  If so, just skip to dashboard.
   //it just checks the user cookie to see if we are good to go.  It doesn't use
@@ -40,7 +40,7 @@
       String ip_address = request.getRemoteAddr();
       Security.register_user(uid, ip_address);
       response.addCookie(
-        new Cookie("qarma_cookie", Integer.toString(uid)));
+        new Cookie("xenos_cookie", Integer.toString(uid)));
       response.sendRedirect("dashboard.jsp");
     } else {
       login_error_msg = loc.get(49,"Invalid username / password combination");
@@ -52,7 +52,7 @@
   <head><title><%=loc.get(50,"Login page")%></title></head>
   <link rel="stylesheet" href="login.css" />
   <body>
-    <div class="trademark">Qarma</div>
+    <div class="trademark">Xenos</div>
     <div class="signin">
       <form method="POST" action="login.jsp">
       <div><%=login_error_msg%></div>

@@ -1,19 +1,19 @@
 document.onreadystatechange = function () {
   if (document.readyState === 'complete') {
-    qarma.run();
+    xenos.run();
   }
 }
 
-var qarma = {};
+var xenos = {};
 
-qarma.run = function() {
- qarma.convert_rank_to_stars();
+xenos.run = function() {
+ xenos.convert_rank_to_stars();
 };
 
 //Finds each of the rank elements and converts the numeral to
 //stars using the unicode character for white and black stars.
 //5 stars total.
-qarma.convert_rank_to_stars = function() {
+xenos.convert_rank_to_stars = function() {
   var elements = document.getElementsByClassName('rank value');
 
   for (var i = 0; i < elements.length; i++) {

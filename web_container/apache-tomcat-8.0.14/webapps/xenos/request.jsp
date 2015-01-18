@@ -2,8 +2,8 @@
 <html>
 <head><title><%=loc.get(22,"Request Details")%></title></head>
 
-<%@ page import="com.renomad.qarma.Request_utils" %>
-<%@ page import="com.renomad.qarma.Request" %>
+<%@ page import="com.renomad.xenos.Request_utils" %>
+<%@ page import="com.renomad.xenos.Request" %>
 <%
   String qs = request.getQueryString();
   Request r = Request_utils.parse_querystring_and_get_request(qs);

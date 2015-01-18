@@ -1,15 +1,15 @@
-<%@ page import="com.renomad.qarma.Localization" %>
+<%@ page import="com.renomad.xenos.Localization" %>
 <%
   //set up an object to localize text
   Localization loc  = new Localization(request.getLocale());
 %>
 <html>
 <head>
-  <title><%=loc.get(44,"Welcome to Qarma!")%></title>
+  <title><%=loc.get(44,"Welcome to Xenos!")%></title>
   <link rel="stylesheet" href="index.css" >
 </head>
 <body>
-  <div class="trademark">Qarma</div>
+  <div class="trademark">Xenos</div>
   <div class="actions">
     <section>
     <nav class="cl-effect-1">

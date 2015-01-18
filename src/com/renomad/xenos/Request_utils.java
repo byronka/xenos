@@ -1,11 +1,11 @@
-package com.renomad.qarma;
+package com.renomad.xenos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import com.renomad.qarma.Database_access;
-import com.renomad.qarma.Request;
-import com.renomad.qarma.Others_Request;
+import com.renomad.xenos.Database_access;
+import com.renomad.xenos.Request;
+import com.renomad.xenos.Others_Request;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Connection;
@@ -654,7 +654,7 @@ public final class Request_utils {
     * array of their localization values, as Integers.
     * @return a Integer array of all categories' localization values,
     * useful for calling to the localization mechanism.  See
-    * com.renomad.qarma.Localization
+    * com.renomad.xenos.Localization
     */
   public static Integer[] get_category_local_values() {
       Map<Integer, Integer> categories = get_all_categories();

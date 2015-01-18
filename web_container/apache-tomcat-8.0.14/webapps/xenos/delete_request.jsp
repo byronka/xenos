@@ -1,8 +1,8 @@
 <%@include file="includes/init.jsp" %>
 
-<%@ page import="com.renomad.qarma.Request_utils" %>
-<%@ page import="com.renomad.qarma.Request" %>
-<%@ page import="com.renomad.qarma.Utils" %>
+<%@ page import="com.renomad.xenos.Request_utils" %>
+<%@ page import="com.renomad.xenos.Request" %>
+<%@ page import="com.renomad.xenos.Utils" %>
 <%
   String qs = request.getQueryString();
   int request_id = 

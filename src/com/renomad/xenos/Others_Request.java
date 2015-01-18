@@ -1,6 +1,6 @@
-package com.renomad.qarma;
+package com.renomad.xenos;
 
-import com.renomad.qarma.Request;
+import com.renomad.xenos.Request;
 
 /**
   * a class used to display a succinct summary of other users' Requests

@@ -3,8 +3,8 @@
 <html>                                 
   <head><title><%=loc.get(81, "Advanced search")%></title></head>
 
-<%@ page import="com.renomad.qarma.Request_utils" %>
-<%@ page import="com.renomad.qarma.Utils" %>
+<%@ page import="com.renomad.xenos.Request_utils" %>
+<%@ page import="com.renomad.xenos.Utils" %>
 <%
 
 String category = "";

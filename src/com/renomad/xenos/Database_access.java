@@ -1,4 +1,4 @@
-package com.renomad.qarma;
+package com.renomad.xenos;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -115,7 +115,7 @@ public final class Database_access {
         new javax.naming.InitialContext();
       javax.naming.Context envContext  = 
         (javax.naming.Context)initContext.lookup("java:/comp/env");
-      ds = (javax.sql.DataSource)envContext.lookup("jdbc/qarma_db");
+      ds = (javax.sql.DataSource)envContext.lookup("jdbc/xenos_db");
     } catch (javax.naming.NamingException e) {
       System.err.println("a naming exception occurred.  details: ");
       System.err.println(e);

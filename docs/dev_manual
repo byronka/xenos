@@ -6,7 +6,7 @@ Contents:
 =========
 Programming suggestions
 Utilities
-Setting up Eclipse as a IDE for Qarma
+Setting up Eclipse as a IDE for Xenos
 Localization
 Safe Rendering of Client-provided values
 
@@ -48,9 +48,9 @@ and Emacs for quick navigation.  In Vim, you can press ctrl+[ to visit
 the definition of a given method, and ctrl+T to return.
 
 To create this index, run the program
-  $QARMA_HOME/utils/run_ctags.sh
+  $XENOS_HOME/utils/run_ctags.sh
 
-This will create a file called "tags" in your $QARMA_HOME directory,
+This will create a file called "tags" in your $XENOS_HOME directory,
 which will be around 25 megabytes or larger.
 
 Using that file with Vim requires Vim to know about it.  You can do
@@ -88,30 +88,30 @@ the output will be found at http://localhost:8080/lint/
 
 
 
-Setting up Eclipse as a IDE for Qarma
+Setting up Eclipse as a IDE for Xenos
 =====================================
 
 Base Project - 
 * Start Eclipse
 * Press Ctrl+N (if you changed your keybindings, go to File -> New -> Other
 * Click on "Java Project from Existing Ant Buildfile" and click Next
-* Click on Browse and search for the build.xml at the top of the Qarma directory
+* Click on Browse and search for the build.xml at the top of the Xenos directory
 * The pane below should be filled with '<> "javac" task found in target "compile"'
 * Don't check "link to the buildfile in the file system" as this will cause any build changes in Eclipse to be written to build.xml.  However, if you want to experiment or you know what you're doing, feel free.  The anticipated convention in building is to use the IDE for help with writing the code, but use the command line to build.
-* continue through and you will have a new Qarma project in Eclipse.  Congrats!
+* continue through and you will have a new Xenos project in Eclipse.  Congrats!
 
 db scripts and JSP files - 
-1) right click on the newly created Qarma project and select from the context menu: New -> Other
+1) right click on the newly created Xenos project and select from the context menu: New -> Other
 * Under general, select "Folder" and click next.
-* Select Qarma as the parent directory
+* Select Xenos as the parent directory
 * Click the Advanced button
 * Click the "Link to alternate location (Linked Folder)" radio button
 * Click Browse.
 * Find the db_scripts directory, where the SQL scripts are held.
 * Continue through, and you'll have db_scripts as a folder in your project.
-* Repeat from step 1 to add the directory for the web files, which is in $CATALINA_HOME/webapps/qarma
+* Repeat from step 1 to add the directory for the web files, which is in $CATALINA_HOME/webapps/xenos
 
-You should now have access to all the files needed for Qarma development in Eclipse.  Unless you have a strong reason for doing so, use the ant commands for major functionalities, e.g. building, cleaning, etc.
+You should now have access to all the files needed for Xenos development in Eclipse.  Unless you have a strong reason for doing so, use the ant commands for major functionalities, e.g. building, cleaning, etc.
 
 
 
@@ -119,7 +119,7 @@ You should now have access to all the files needed for Qarma development in Ecli
 
 Localization
 ============
-The localization mechanism is fairly simple.  All the words that come from Qarma
+The localization mechanism is fairly simple.  All the words that come from Xenos
 system, that is, the non-user-editable words, need to exist for multiple
 languages.  That way we can roll this out across the world.  To do that, I made
 a very minimalistic localization tool.  When Tomcat first starts up the app, it
@@ -152,7 +152,7 @@ we must be constantly vigilant to not allow any unaltered text through.
 
 Viewing the database values
 ===========================
-Qarma stores its values in a schema named qarma-database.
+Xenos stores its values in a schema named xenos-database.
 There are a variety of tables, they are often self-explanatory, but more clues
 can often be found by reviewing the scripts in db_scripts/
 
