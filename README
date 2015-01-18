@@ -48,7 +48,7 @@ sudo netstat -tap | grep mysql            #check if running
 sudo service mysql restart                #start if necessary
 
 
-Now, set up a user, qarmauser and a password of password1
+Now, set up a user, xenosuser and a password of password1
 
 First, use the mysql program to connect to the server as the 
 MySQL root user:
@@ -59,10 +59,10 @@ If you have assigned a password to the root account, you will also
 need to supply a --password or -p option, 
 
 Second, use the mysql command to add our user:
-mysql> CREATE USER 'qarmauser'@'localhost' IDENTIFIED BY 'password1';
-mysql> GRANT ALL PRIVILEGES ON *.* TO 'qarmauser'@'localhost'WITH GRANT OPTION;
-mysql> CREATE USER 'qarmauser'@'%' IDENTIFIED BY 'password1';
-mysql> GRANT ALL PRIVILEGES ON *.* TO 'qarmauser'@'%' WITH GRANT OPTION;
+mysql> CREATE USER 'xenosuser'@'localhost' IDENTIFIED BY 'password1';
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'xenosuser'@'localhost'WITH GRANT OPTION;
+mysql> CREATE USER 'xenosuser'@'%' IDENTIFIED BY 'password1';
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'xenosuser'@'%' WITH GRANT OPTION;
 
 
 
@@ -81,8 +81,8 @@ JAVA_HOME is the tricky one, since the other two are in this directory!
 If you already know the values for JAVA_HOME, ANT_HOME, and CATALINA_HOME,
 just set them.  They may be as follows:
 
-ANT_HOME=$LOCATION_OF_QARMA_FOLDER/ant/apache-ant-1.9.4
-CATALINA_HOME=$LOCATION_OF_QARMA_FOLDER/web_container/apache-tomcat-8.0.14
+ANT_HOME=$LOCATION_OF_XENOS_FOLDER/ant/apache-ant-1.9.4
+CATALINA_HOME=$LOCATION_OF_XENOS_FOLDER/web_container/apache-tomcat-8.0.14
 
 For Ubuntu:
 JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
@@ -130,5 +130,5 @@ src/ - source files of the project Compiled code will be placed in the build
 utils/ - some utilities helpful for development.
 
 web_container/ - contains documents and binaries for the web container,
-  Tomcat.  Also contains the qarma web application and its client files.
+  Tomcat.  Also contains the xenos web application and its client files.
 
