@@ -9,6 +9,13 @@ Utilities
 Setting up Eclipse as a IDE for Xenos
 Localization
 Safe Rendering of Client-provided values
+Viewing the database values
+Running Tomcat in SSL
+SQL standards
+Git events
+Git commit standards
+Version number
+Troubleshooting
 
 
 
@@ -202,6 +209,17 @@ the syntax is: two to three initials (uppercase), a dash, a hash
 symbol, from 1 to 7 digits, a dash, and then whatever you want.
 
 The number should be the same as the issue number in YouTrack.
+
+
+
+Version number
+==============
+The version number of Xenos is configured in the database in the
+config table.  There is a stored procedure, "set_version", which takes
+an integer and sets the value to the table.  This version number is
+only to be incremented upon a release.
+
+
 
 
 
