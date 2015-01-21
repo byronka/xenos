@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
   * this class consists of methods that act upon Requests
@@ -214,6 +216,26 @@ public final class Request_utils {
     return clause;
   }
 
+  /**
+    * Generates a search clause based on input:
+    * case A) points   Just a single value, that is all we look for
+    * case B) points-points     a range of values
+    * case C) -points           anything up to points
+    * case D) points-           from points up
+    */
+  private static String generate_points_search_clause(String points) {
+
+    String points = "[0-9]{1,4}"; 
+    //fyi: look up meaning of caret and dollar sign in reg ex.
+    String case_A = "^("+points+")$";
+    String case_B = "^("+points+")-("+points+"$";
+    String case_C = "^-("+points+")$";
+    String case_D = "^("+points+")-$";
+
+    Pattern p = Pattern.compile(full_expression);
+    Matcher m = p.matcher(date);
+      " AND r.points = ? " 
+  }
 
   /**
     * takes the primary sql text and adds in the search clauses.
@@ -247,7 +269,7 @@ public final class Request_utils {
       : "";
 
     String points_sql  = !Utils.is_null_or_empty(so.points) ?
-      " AND r.points = ? " 
+      generate_points_search_clause(so.points)
       : "";
 
     String status_sql  = !Utils.is_null_or_empty(so.statuses) ?
