@@ -48,6 +48,7 @@ Utilities
 
 Exuberant Ctags -
 -----------------
+
 use of the program "exuberant ctags" can make navigation of the code
 base faster.  That program creates an index of symbols used in the code;
 method names, variables, classes, and so on.  It provides this to Vim
@@ -69,13 +70,17 @@ this by adding the following to your vimrc file:
 first in its current directory, then in its parent directory, and so
 on recursively up to containing directory ~/Projects.)
 
+
 Lint4J - 
 -----------------
+
 A lint program that does static analysis on the code to find any problems.
 http://www.jutils.com
 
+
 PMD - 
 ------
+
 A static code analysis program.  Very thorough, but many false
 positives.  In particular, it is coded with the assumption that OOP is
 the one true path.  In contrast, OOP should be considered one possible
@@ -83,8 +88,10 @@ solution to problems, not the only solution.  Again, lots of false
 positives.
 http://pmd.sourceforge.net/
 
+
 FindBugs -
 ----------
+
 A static code analysis program.
 http://findbugs.sourceforge.net/
 
@@ -95,6 +102,9 @@ the output will be found at http://localhost:8080/lint/
 
 
 
+
+
+
 Setting up Eclipse as a IDE for Xenos
 =====================================
 
@@ -102,13 +112,21 @@ Base Project -
 * Start Eclipse
 * Press Ctrl+N (if you changed your keybindings, go to File -> New -> Other
 * Click on "Java Project from Existing Ant Buildfile" and click Next
-* Click on Browse and search for the build.xml at the top of the Xenos directory
-* The pane below should be filled with '<> "javac" task found in target "compile"'
-* Don't check "link to the buildfile in the file system" as this will cause any build changes in Eclipse to be written to build.xml.  However, if you want to experiment or you know what you're doing, feel free.  The anticipated convention in building is to use the IDE for help with writing the code, but use the command line to build.
-* continue through and you will have a new Xenos project in Eclipse.  Congrats!
+* Click on Browse and search for the build.xml at the top of the Xenos
+  directory
+* The pane below should be filled with '<> "javac" task found in
+  target "compile"'
+* Don't check "link to the buildfile in the file system" as this will
+  cause any build changes in Eclipse to be written to build.xml.
+  However, if you want to experiment or you know what you're doing, feel
+  free.  The anticipated convention in building is to use the IDE for
+  help with writing the code, but use the command line to build.  *
+  continue through and you will have a new Xenos project in Eclipse.
+* Congrats!
 
 db scripts and JSP files - 
-1) right click on the newly created Xenos project and select from the context menu: New -> Other
+1) right click on the newly created Xenos project and select from the
+  context menu: New -> Other
 * Under general, select "Folder" and click next.
 * Select Xenos as the parent directory
 * Click the Advanced button
@@ -116,9 +134,12 @@ db scripts and JSP files -
 * Click Browse.
 * Find the db_scripts directory, where the SQL scripts are held.
 * Continue through, and you'll have db_scripts as a folder in your project.
-* Repeat from step 1 to add the directory for the web files, which is in $CATALINA_HOME/webapps/xenos
+* Repeat from step 1 to add the directory for the web files, which is in
+  $CATALINA_HOME/webapps/xenos
 
-You should now have access to all the files needed for Xenos development in Eclipse.  Unless you have a strong reason for doing so, use the ant commands for major functionalities, e.g. building, cleaning, etc.
+You should now have access to all the files needed for Xenos development in
+Eclipse.  Unless you have a strong reason for doing so, use the ant
+commands for major functionalities, e.g. building, cleaning, etc.
 
 
 
@@ -126,16 +147,18 @@ You should now have access to all the files needed for Xenos development in Ecli
 
 Localization
 ============
-The localization mechanism is fairly simple.  All the words that come from Xenos
-system, that is, the non-user-editable words, need to exist for multiple
-languages.  That way we can roll this out across the world.  To do that, I made
-a very minimalistic localization tool.  When Tomcat first starts up the app, it
-pulls from the database all the values in the localization_lookup table. This
-contains words and phrases in English, along with translations in French and
-Spanish.  It stores all those values into a static value that remains in memory.
-Succinctly, all the localization values sit, unchanging, in memory.  Whenever
-a page needs values, it runs the command Localization.get(), along with the
-index of the value it needs and the phrase it needs localized.  
+
+The localization mechanism is fairly simple.  All the words that come from
+Xenos system, that is, the non-user-editable words, need to exist for
+multiple languages.  That way we can roll this out across the world.  To do
+that, I made a very minimalistic localization tool.  When Tomcat first
+starts up the app, it pulls from the database all the values in the
+localization_lookup table. This contains words and phrases in English,
+along with translations in French and Spanish.  It stores all those values
+into a static value that remains in memory.  Succinctly, all the
+localization values sit, unchanging, in memory.  Whenever a page needs
+values, it runs the command Localization.get(), along with the index of the
+value it needs and the phrase it needs localized.  
 
 
 
@@ -143,42 +166,49 @@ index of the value it needs and the phrase it needs localized.
 
 Safe Rendering of Client-provided values
 ========================================
-One of the problems web apps have is that users will occasionally enter html
-values for input.  Sometimes this is by accident, sometimes malicious.  Either
-way, it is crucial that we not allow the browser to see that text as valid
-html markup.  If it were to do so, then a user could enter their name as
-something like <script>alert(1)</script> and when the server sent that to the
-browser, it would parse that and run the code inside.  Yuck.  So to prevent that
-problem, we "clean" the text.  That is, all the greater-than and less-than symbols ,> or <, we convert to &gt; and &lt;
 
-The browser knows how to render that, and we are safe.  However, as time goes on
-we must be constantly vigilant to not allow any unaltered text through.
+One of the problems web apps have is that users will occasionally
+enter html values for input.  Sometimes this is by accident, sometimes
+malicious.  Either way, it is crucial that we not allow the browser to
+see that text as valid html markup.  If it were to do so, then a user
+could enter their name as something like <script>alert(1)</script> and
+when the server sent that to the browser, it would parse that and run
+the code inside.  Yuck.  So to prevent that problem, we "clean" the
+text.  That is, all the greater-than and less-than symbols ,> or <, we
+convert to &gt; and &lt;
+
+The browser knows how to render that, and we are safe.  However, as
+time goes on we must be constantly vigilant to not allow any unaltered
+text through.
 
 
 
 
 Viewing the database values
 ===========================
-Xenos stores its values in a schema named xenos-database.
-There are a variety of tables, they are often self-explanatory, but more clues
-can often be found by reviewing the scripts in db_scripts/
+
+Xenos stores its values in a schema named xenos-database.  There are a
+variety of tables, they are often self-explanatory, but more clues can
+often be found by reviewing the scripts in db_scripts/
 
 
 
 
 Running Tomcat in SSL
 =====================
+
 I set up Tomcat to work exclusively on SSL, following the instructions at:
 
 http://tomcat.apache.org/tomcat-6.0-doc/ssl-howto.html#Configuration
 
-I have made a copy of that file here, at ssl-howto-tomcat.txt
+I have made a copy of that file in this directory, at ssl-howto-tomcat.txt
 
 
 
 
 SQL standards
 ===============
+
 1) Only add triggers for error conditions.
 2) Don't cascade triggers.  We don't want impossible-to-comprehend events.
 3) Try to keep most SQL inside the java code with prepared statements,
@@ -191,6 +221,7 @@ SQL standards
 
 Git events
 ==========
+
 When you commit in Git, you are committing to your local repo - only
 your local system.  When you 'push', you send your local repo to the
 main repo, on prime.renomad.com on the 'git' account.  In turn, that
@@ -198,8 +229,12 @@ account sends out an email to interested parties about the push, and
 then sends to a backup account on git@ssh.renomad.com, which in turn
 gets backed-up to a sd card once a month.
 
+
+
+
 Git commit standards
 ====================
+
 When you make a commit, it's important to know what task it relates
 to.  There is a hook which requires syntax similar to the following:
 
@@ -214,6 +249,7 @@ The number should be the same as the issue number in YouTrack.
 
 Version number
 ==============
+
 The version number of Xenos is configured in the database in the
 config table.  There is a stored procedure, "set_version", which takes
 an integer and sets the value to the table.  This version number is
@@ -226,7 +262,9 @@ only to be incremented upon a release.
 Troubleshooting
 ===============
 
-1) If you see this kind of text on your screen, it means localization is failing somehow:
+1) If you see this kind of text on your screen, it means localization
+is failing somehow:
+
 out_of_index: 18
 
 
