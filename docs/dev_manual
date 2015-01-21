@@ -244,6 +244,8 @@ the syntax is: two to three initials (uppercase), a dash, a hash
 symbol, from 1 to 7 digits, a dash, and then whatever you want.
 
 The number should be the same as the issue number in YouTrack.
+However, if you are committing something not tracked in YouTrack, use
+0 as the number.
 
 
 
