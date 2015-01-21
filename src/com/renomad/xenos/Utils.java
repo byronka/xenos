@@ -51,9 +51,9 @@ public final class Utils {
     * specs.  
     * formats allowed:   (explanation in parens)
     * A) date            (a single date) ex: 2014-12-18
-    * B) date - date     (a date range) ex: 2014-12-18 - 2014-12-22
-    * C) date -          (a date range, starting at date, ending forever)
-    * D) - date          (a date range, starting in the past, 
+    * B) date-date       (a date range) ex: 2014-12-18-2014-12-22
+    * C) date-           (a date range, starting at date, ending forever)
+    * D) -date           (a date range, starting in the past, 
     *                                               ending at date)
     * Note that dates are inclusive.  the date range above would be from
     * the 0:00:00.0000 point of the first day to the 23:59:59:9999 point
