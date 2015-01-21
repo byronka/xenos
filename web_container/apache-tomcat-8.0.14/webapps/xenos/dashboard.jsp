@@ -54,10 +54,16 @@
 <div class="others-requests">
 <%
   Request_utils.Search_Object so = 
-    new Request_utils.Search_Object( srch_date, srch_ti, srch_cat, srch_sta, srch_pts, srch_us);
+    new Request_utils.Search_Object(  srch_date, 
+                                      srch_ti, 
+                                      srch_cat, 
+                                      srch_sta, 
+                                      srch_pts, 
+                                      srch_us);
   Others_Request[] others_requests = 
-    Request_utils
-      .get_others_requests(user_id, so , which_page);
+    Request_utils.get_others_requests(user_id, 
+                                      so , 
+                                      which_page);
   for (Others_Request r : others_requests) {
 %>
   <div class="others request">
