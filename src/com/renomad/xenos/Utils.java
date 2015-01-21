@@ -47,12 +47,14 @@ public final class Utils {
   }
 
   /**
-    * We'll just check to see that the string entered is valid per our specs.
+    * We'll just check to see that the string entered is valid per our
+    * specs.  
     * formats allowed:   (explanation in parens)
     * A) date            (a single date) ex: 2014-12-18
     * B) date - date     (a date range) ex: 2014-12-18 - 2014-12-22
     * C) date -          (a date range, starting at date, ending forever)
-    * D) - date          (a date range, starting in the past, ending at date)
+    * D) - date          (a date range, starting in the past, 
+    *                                               ending at date)
     * Note that dates are inclusive.  the date range above would be from
     * the 0:00:00.0000 point of the first day to the 23:59:59:9999 point
     * of the last day.
@@ -63,18 +65,21 @@ public final class Utils {
     // or 0000 to 9999, dash, 0 to 12, number varying between 1 and 31
 
     String return_sql_string = "";
-    String date_ex = "([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})"; //a basic date regular expression.
+    //a basic date regular expression.
+    String date_ex = "([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})"; 
 
     //either
-    // a) date range, blah - blah     
+    // a) date range, blah-blah     
     //      blah being there 0 or 1 times, followed by exactly
     //      no space, then dash, then exactly no space, then blah again.
     // or
     // b) a single date, no spaces.
-    String full_expression = String.format("%s{0,1}(-)%s{0,1}|%s", date_ex, date_ex, date_ex); 
+    String full_expression = 
+      String.format("%s{0,1}(-)%s{0,1}|%s", date_ex, date_ex, date_ex); 
 
-    //with the capture groups I've set up, if group 3 is non-null, then it's a single date.
-    //otherwise, if group 1 and 2 are non-null, then it's a range
+    //with the capture groups I've set up, if group 3 is non-null, then
+    //it's a single date.  otherwise, if group 1 and 2 are non-null, then
+    //it's a range
 
     Pattern p = Pattern.compile(full_expression);
     Matcher m = p.matcher(date);
@@ -96,22 +101,44 @@ public final class Utils {
       boolean case_A = !dash && single_date;
       if (case_A) {
         count_true++;
-        return_sql_string = String.format("AND r.datetime BETWEEN '%s 00:00:00' AND '%s 23:59:59.999' ",single_date_string, single_date_string);
+        return_sql_string = 
+          String.format(
+              "AND r.datetime BETWEEN '%s 00:00:00' AND "+
+              "'%s 23:59:59.999' ",single_date_string, single_date_string);
       }
-      boolean case_B = dash && !single_date && first_date_in_range && last_date_in_range;
+
+      boolean case_B = dash &&
+                      !single_date &&
+                      first_date_in_range && last_date_in_range;
       if (case_B) {
         count_true++;
-        return_sql_string = String.format("AND r.datetime > '%s 00:00:00' AND r.datetime < '%s 23:59:59.999' ",fd_string, ld_string);
+        return_sql_string = 
+          String.format(
+              "AND r.datetime > '%s 00:00:00' AND "+
+              "r.datetime < '%s 23:59:59.999' ",fd_string, ld_string);
       }
-      boolean case_C = dash && !single_date && first_date_in_range && !last_date_in_range;
+
+      boolean case_C = dash &&
+        !single_date &&
+        first_date_in_range && !last_date_in_range;
+
       if (case_C) {
         count_true++;
-        return_sql_string = String.format("AND r.datetime > '%s 00:00:00' ",fd_string);
+        return_sql_string = 
+          String.format(
+              "AND r.datetime > '%s 00:00:00' ",fd_string);
       }
-      boolean case_D = dash && !single_date && !first_date_in_range && last_date_in_range;
+
+      boolean case_D = dash && 
+        !single_date && 
+        !first_date_in_range && 
+        last_date_in_range;
+
       if (case_D) {
         count_true++;
-        return_sql_string = String.format("AND r.datetime < '%s 23:59:59.999' ",ld_string);
+        return_sql_string = 
+          String.format(
+              "AND r.datetime < '%s 23:59:59.999' ",ld_string);
       }
 
       //second check - make sure one and *only one* case is true
@@ -197,7 +224,8 @@ public final class Utils {
           return false;
         }
         
-     // Months with 31 days: Ja(1), Mar(3), May(5), Jul(7), Aug(8), Oct(10), Dec (12)
+     // Months with 31 days: Ja(1), Mar(3), May(5), Jul(7), Aug(8),
+     // Oct(10), Dec (12)
      // Months with 30 days: Apr(4), Jun(6), Sept(9), Nov(11)
      // Months with 28 days: Feb(2)
      // see year calendar above.
@@ -229,11 +257,11 @@ public final class Utils {
   /**
    * Safe render is crucial to displaying text that came from the outside,
    * Like from a user or third party app.  This is to protect against some
-   * security vulnerabilities.  Specifically, like those where the user maliciously
-   * writes their name as &lt;script&gt;alert(1)&lt;/script&gt;
+   * security vulnerabilities.  Specifically, like those where the user
+   * maliciously writes their name as &lt;script&gt;alert(1)&lt;/script&gt;
    * This makes things safe by taking the important, special characters for
-   * less-than and greater-than and making them their equivalent codes.
-   * The browsers will know how to render this.
+   * less-than and greater-than and making them their equivalent codes.  The
+   * browsers will know how to render this.
    * @param s the string from the database
    * @return a string safe for display in a browser.
    */
