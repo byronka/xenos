@@ -197,7 +197,7 @@ public final class Utils {
     * @param date a date value such as "2013-11-27"
     */
   private static boolean is_good_value(String date) {
-    if (Utils.is_null_or_empty(date)) { 
+    if (is_null_or_empty(date)) { 
       return false;
     }
 

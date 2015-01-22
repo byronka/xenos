@@ -204,12 +204,20 @@ public final class Request_utils {
     if (ids.length == 0) {
       return "";
     }
-    sb.append(Utils.parse_int(ids[0])); //if it isn't parsed, we get null
+
+    Integer first_value = Utils.parse_int(ids[0]);
+    if (first_value == null) {
+      return "";
+    }
+    sb.append(first_value);
 
     for (int i = 1; i < ids.length; i++) {
-      sb
-        .append(",")
-        .append(Utils.parse_int(ids[i])); //if it isn't parsed, we get null
+      sb.append(",");
+      Integer further_value = Utils.parse_int(ids[i]);
+      if (further_value == null) {
+        return ""; //if we ever get bad data, immediately return empty
+      }
+      sb.append(further_value); 
     }
     String clause = 
       String.format(" AND r.requesting_user_id in (%s) ", sb.toString());
@@ -218,23 +226,77 @@ public final class Request_utils {
 
   /**
     * Generates a search clause based on input:
-    * case A) points   Just a single value, that is all we look for
-    * case B) points-points     a range of values
-    * case C) -points           anything up to points
-    * case D) points-           from points up
+    * case A) points            Just a single value, "points"
+    * case B) points-points     a range of values, "points" to "points"
+    * case C) -points           anything up to "points"
+    * case D) points-           from "points" up
     */
   private static String generate_points_search_clause(String points) {
 
-    String points = "[0-9]{1,4}"; 
+    String points_txt = "[0-9]{1,4}"; 
     //fyi: look up meaning of caret and dollar sign in reg ex.
-    String case_A = "^("+points+")$";
-    String case_B = "^("+points+")-("+points+"$";
-    String case_C = "^-("+points+")$";
-    String case_D = "^("+points+")-$";
+    String case_A = "^("+points_txt+")$";
+    String case_B = "^("+points_txt+")-("+points_txt+")$";
+    String case_C = "^-("+points_txt+")$";
+    String case_D = "^("+points_txt+")-$";
 
-    Pattern p = Pattern.compile(full_expression);
-    Matcher m = p.matcher(date);
-      " AND r.points = ? " 
+    Pattern p_case_A = Pattern.compile(case_A);
+    Pattern p_case_B = Pattern.compile(case_B);
+    Pattern p_case_C = Pattern.compile(case_C);
+    Pattern p_case_D = Pattern.compile(case_D);
+
+    Matcher m_case_A = p_case_A.matcher(points);
+    Matcher m_case_B = p_case_B.matcher(points);
+    Matcher m_case_C = p_case_C.matcher(points);
+    Matcher m_case_D = p_case_D.matcher(points);
+
+    String clause = "";
+
+    int count_of_cases = 0; //there should only be zero or one match.
+
+    if (m_case_A.find()) { // we only look once.
+      String p = m_case_A.group(1);
+      if (!Utils.is_null_or_empty(p)) {
+        clause = "AND r.points = " + p;
+      }
+      count_of_cases++;
+    }
+
+    if (m_case_B.find()) {
+      String min_points = m_case_B.group(1);
+      String max_points = m_case_B.group(2);
+      if (!Utils.is_null_or_empty(min_points) && 
+          !Utils.is_null_or_empty(max_points)) {
+        clause = "AND r.points >= " + min_points +
+                " AND r.points <= " + max_points;
+      }
+      count_of_cases++;
+    }
+
+    if (m_case_C.find()) {
+      String p = m_case_C.group(1);
+      if (!Utils.is_null_or_empty(p)) {
+        clause = "AND r.points <= " + p;
+      }
+      count_of_cases++;
+    }
+
+    if (m_case_D.find()) {
+      String p = m_case_D.group(1);
+      if (!Utils.is_null_or_empty(p)) {
+        clause = "AND r.points >= " + p;
+      }
+      count_of_cases++;
+    }
+
+    if (count_of_cases > 1) {
+      System.err.println(
+          "error: matching cases in points greater than 1");
+      return "";
+    }
+
+    return clause;
+
   }
 
   /**
@@ -264,7 +326,7 @@ public final class Request_utils {
     // use parameters with prepared statements.  Easier (and fairly
     // safe) to just create the whole clause, since we're dealing with
     // numbers. 
-    String users_sql  = !Utils.is_null_or_empty(so.user_ids) ?
+    String users_sql = !Utils.is_null_or_empty(so.user_ids) ?
       generate_user_search_clause(so.user_ids)
       : "";
 
@@ -374,11 +436,8 @@ public final class Request_utils {
     //4. searching by users - parameter is set in
     //add_advanced_search_clauses
 
-    //5. searching by points
-      if (has_points) {
-        param_index++;
-        pstmt.setString( param_index, String.valueOf(so.points));
-      }
+    //4. searching by points - parameter is set in
+    //add_advanced_search_clauses
 
     //6. searching by status
       if (has_status) {
