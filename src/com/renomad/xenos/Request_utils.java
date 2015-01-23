@@ -1135,7 +1135,7 @@ public final class Request_utils {
       "INSERT INTO request_message "+
       "(message, request_id, user_id, timestamp)"+
       "SELECT DISTINCT "+
-        "CONCAT(u.first_name,' says:', ?), ?, u.user_id, now() "+
+        "CONCAT(u.username,' says:', ?), ?, u.user_id, now() "+
       "FROM user u "+
       "JOIN request_message rm ON rm.user_id = u.user_id "+
       "WHERE u.user_id = ? LIMIT 1";
