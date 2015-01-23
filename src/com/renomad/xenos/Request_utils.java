@@ -46,7 +46,8 @@ public final class Request_utils {
   /**
     * returns a Map of localization values for the categories
     * indexed by database id.
-    * @return Map of Integers, indexed by id, or null if nothing in db.
+    * @return Map of Integers, indexed by id, or null if nothing in db. The
+    *   key is the id, the value is the localization value.
     */
   public static Map<Integer, Integer> get_all_categories() {
     // 1. set the sql
@@ -766,10 +767,10 @@ public final class Request_utils {
 
     String lower_case_categories_str = categories_str.toLowerCase();
     ArrayList<Integer> selected_categories = new ArrayList<Integer>();
-    for (Map.Entry<Integer,Integer> i : all_categories.entrySet()) {
-      String c = loc.get(i.getValue(),"").toLowerCase();
+    for (Integer i : all_categories.values()) {
+      String c = loc.get(i,"").toLowerCase();
       if (lower_case_categories_str.contains(c)) {
-        selected_categories.add(i.getKey());
+        selected_categories.add(i);
       }
     }
     Integer[] my_array = 
@@ -845,6 +846,60 @@ public final class Request_utils {
 
 
   /**
+    * Given a bunch of localization values (72, 73) get their
+    * equivalent category ids (1, 2, etc).
+    * @param l_cats categories as localzation values
+    * @return an array of Integers as id's of categories
+    */
+  private static Integer[]           
+    convert_localization_values_to_cat_ids(Integer[] l_cats) {
+
+    Map<Integer,Integer> all_categories = get_all_categories();
+
+    //by flipping, now we can hand in the localization value as a key
+    //and get back the id of the category.
+    Map<Integer,Integer> flipped_cats = 
+      flip_cat_keys_and_values(all_categories);
+
+    Integer[] id_cats = 
+      new Integer[l_cats.length]; //create a new array of same size
+
+    //we'll step through the localization values given 
+    //and one-by-one convert them.
+    for (int i = 0; i < l_cats.length; i++) {
+      id_cats[i] = flipped_cats.get(l_cats[i]);
+    }
+    return id_cats;
+  }
+
+
+  /**
+    * This will flip the keys and values of a category 
+    * Map<Integer,Integer>.
+    * It is required that the values in the set are discrete.  That is,
+    * the values cannot have duplicates.  This is used in rare situations, 
+    * like for example where we are getting categories given localzation
+    * values
+    * @param map a map collection
+    * @return a map collection with keys and values flipped, or null if
+    * failure.
+    */
+  private static Map<Integer,Integer> 
+    flip_cat_keys_and_values(Map<Integer,Integer> map) {
+    Map<Integer,Integer> flipped_set = new HashMap<Integer,Integer>();
+    try {
+      for (Map.Entry<Integer,Integer> entry : map.entrySet()) {
+        flipped_set.put(entry.getValue(),entry.getKey());
+      }
+    } catch (Exception e) {
+      System.err.println("error: flipping keys and values failed");
+      return null;
+    }
+    return flipped_set;
+  }
+
+
+  /**
     * Adds to the request_to_category table for a new request
     * @param result the id of the newly-created request.  we'll use
     *  this for setting the categories properly.
@@ -856,11 +911,12 @@ public final class Request_utils {
         Connection c, String sql, int result, Request r) {
 
     PreparedStatement cat_pstmt = null;
-
+    Integer[] cats = 
+      convert_localization_values_to_cat_ids(r.get_categories());
     try {
       cat_pstmt = Database_access.prepare_statement(c, sql);
-      for (int i = 0; i < r.get_categories().length; i++ ) {
-        int category_id = r.get_categories()[i];
+      for (int i = 0; i < cats.length; i++ ) {
+        int category_id = cats[i];
         cat_pstmt.setInt( 2*i+1, result);
         cat_pstmt.setInt( 2*i+2, category_id);
       }
