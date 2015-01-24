@@ -132,3 +132,5 @@ utils/ - some utilities helpful for development.
 web_container/ - contains documents and binaries for the web container,
   Tomcat.  Also contains the xenos web application and its client files.
 
+test_scripts/ - contains lynx scripts for integration testing.  For
+  more info, see the dev manual in docs

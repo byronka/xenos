@@ -47,8 +47,7 @@ public class Request_tests {
     String desc = "desc";
     int points = 100; 
     String title = "title"; 
-    Integer[] categories = {1,2};
-    Integer[] localized_categories = {71,72}; //when we get values from db, they are localized.
+    Integer[] categories = {71,72};
 
     //act
     // this will cause user 1 to issue a 100 point request.  we will
@@ -58,7 +57,6 @@ public class Request_tests {
         user_id, desc, points, title, categories);
 
     //assert
-    System.out.println("response id is " + response.id);
     Request r2 = Request_utils.get_a_request(response.id);
     assertTrue(r2.datetime.length() > 0);
     assertEquals(desc, r2.description);
@@ -66,7 +64,7 @@ public class Request_tests {
     assertEquals(1, r2.status); //always starts OPEN
     assertEquals(title, r2.title);
     assertEquals(user_id, r2.requesting_user_id);
-    assertArrayEquals(localized_categories, r2.get_categories());
+    assertArrayEquals(categories, r2.get_categories());
 
     //cleanup
     Request_utils.delete_request(response.id, user_id);

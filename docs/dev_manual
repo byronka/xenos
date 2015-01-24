@@ -15,6 +15,7 @@ SQL standards
 Git events
 Git commit standards
 Version number
+Testing
 Troubleshooting
 
 
@@ -256,6 +257,33 @@ The version number of Xenos is configured in the database in the
 config table.  There is a stored procedure, "set_version", which takes
 an integer and sets the value to the table.  This version number is
 only to be incremented upon a release.
+
+
+
+
+Testing
+=======
+
+To create test scripts for integrated testing using Lynx, you can use
+a command like the following:
+
+lynx -cmd_log=FILENAME http://localhost:8080/xenos
+
+and to run that script, type:
+
+lynx -cmd_script=FILENAME http://localhost:8080/xenos
+
+Awesomely, it will record every keystroke, including those for saying,
+"Yes, I would like to always accept cookies" and things like quitting
+Lynx.  In other words, EVERY keystroke.
+
+The major benefit of these integration tests is they move freakishly
+fast, can go through any use case you can imagine in the system, and
+then you can look through logs to see anything that went wrong and fix
+it.  Great for running before a commit.
+
+When creating a new script, always end the script with quitting, so we
+can have a bunch of tests run in different files.
 
 
 
