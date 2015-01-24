@@ -114,11 +114,26 @@ if (request.getMethod().equals("POST")) {
   <body>
   <%@include file="includes/header.jsp" %>
     <form method="POST" action="advanced_search.jsp">
-      <p><%=loc.get(12,"Title")%>: 
+      <p>
+      <div class="help-text">
+        enter words to search in a title
+      </div>
+      <%=loc.get(12,"Title")%>: 
       <input type="text" name="title" value="<%=title%>"/> 
       </p>
 
     <p>
+      <div class="help-text">
+        To use date search: enter a date in one of the following
+        formats:
+        <p> A) date            (a single date) ex: 2014-12-18</p>
+        <p>B) date-date       (a date range) ex:
+        2014-12-18-2014-12-22</p>
+        <p>C) date-           (a date range, starting at date, ending
+        forever)</p>
+        <p>D) -date           (a date range, starting in the past,
+        </p>
+      </div>
       <%=loc.get(25,"Date")%>: 
       <input type="text" name="date" value="<%=date%>" /> 
       <span><%=da_error_msg%></span>
@@ -131,11 +146,20 @@ if (request.getMethod().equals("POST")) {
     </p>
 
     <p>
+    <div class="help-text">
+      <p> case A) points            Just a single value, "points"</p>
+      <p> case B) points-points     a range of values, "points" to "points" </p>
+      <p> case C) -points           anything up to "points"</p>
+      <p> case D) points-           from "points" up</p>
+    </div>
     <%=loc.get(11,"Points")%>: 
     <input type="text" name="points" value="<%=points%>" />
     </p>
 
     <p>
+    <div class="help-text">
+      enter one or more usernames separated by spaces
+    </div>
       <%=loc.get(80,"User")%>: 
       <input type="text" name="users" value="<%=users%>" />
       <span><%=user_error_msg%></span>
@@ -143,6 +167,9 @@ if (request.getMethod().equals("POST")) {
 
 
     <p>
+    <div class="help-text">
+      enter one or more categories separated by spaces
+    </div>
       <%=loc.get(13,"Categories")%>: 
       <input type="text" name="categories" value="<%=category%>" />
       <span><%=cat_error_msg%></span>
