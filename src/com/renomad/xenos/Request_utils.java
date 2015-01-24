@@ -1206,22 +1206,6 @@ public final class Request_utils {
 
   
   /**
-    * HTML safely gets all the messages (correspondence between users)
-    * for a request.  @param request_id the key for the messages
-    * @return a HTML-safe array of messages for this request, 
-    * or empty array if failure.
-    */
-  public static String[] get_messagesSafe(int request_id) {
-    String[] messages = get_messages(request_id);
-    String[] clean_messages = new String[messages.length];
-    for (int i = 0; i < messages.length; i++) {
-      clean_messages[i] = Utils.safe_render(messages[i]);
-    }
-    return clean_messages;
-  }
-
-
-  /**
     * a type solely used to set the response from putting a request
     */
   public static class Request_response { 

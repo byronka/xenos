@@ -21,12 +21,4 @@ public class User {
   }
   
   
-  /**
-   * A html-cleaned version of username
-   * @return html-cleaned text
-   */
-  public String usernameSafe() {
-    return Utils.safe_render(username);
-  }
-  
 }

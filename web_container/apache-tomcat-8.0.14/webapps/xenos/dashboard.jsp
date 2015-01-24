@@ -39,7 +39,7 @@
 %>
   <div class="request mine">
     <a href="request.jsp?request=<%=r.request_id %>"> 
-      <%=r.titleSafe()%> </a>
+      <%=Utils.safe_render(r.title)%> </a>
     <a 
       class="button" 
       href="request.jsp?request=<%=r.request_id%>&delete=true">
@@ -68,7 +68,7 @@
 %>
   <div class="others request">
     <a href="request.jsp?request=<%=r.request_id %>">
-      <%=r.titleSafe()%> 
+      <%=Utils.safe_render(r.title)%> 
     </a>
     <span class="handle-button-span">
       <a 
@@ -93,7 +93,7 @@
       <li class="description">
         <div class="desc container">
           <div class="label"><%=loc.get(10, "Description")%>:</div>
-          <div class="value description"><%=r.descriptionSafe()%></div>
+          <div class="value description"><%=Utils.safe_render(r.description)%></div>
         </div>
       </li>
       <li class="status">
@@ -113,7 +113,7 @@
         <%
           User ru = User_utils.get_user(r.requesting_user_id);
         %>
-        <span class="value"> <%=ru.usernameSafe()%></span>
+        <span class="value"> <%=Utils.safe_render(ru.username)%></span>
       </li>
       <li>
         <span class="label"><%=loc.get(13, "Categories")%>:</span>

@@ -41,12 +41,12 @@
 %>
 <body>
   <%@include file="includes/header.jsp" %>
-  <p><%=loc.get(23,"Description")%>: <%=r.descriptionSafe()%>
+  <p><%=loc.get(23,"Description")%>: <%=Utils.safe_render(r.description)%>
   <p><%=loc.get(24,"Status")%>: 
     <%=loc.get(Request_utils.get_status_localization_value(r.status),"")%>
   <p><%=loc.get(25,"Date")%>: <%=r.datetime%>
   <p><%=loc.get(26,"Points")%>: <%=r.points%>
-  <p><%=loc.get(27,"Title")%>: <%=r.titleSafe()%>
+  <p><%=loc.get(27,"Title")%>: <%=Utils.safe_render(r.title)%>
   <p><%=loc.get(28,"Categories")%>: 
       <%for (Integer c : r.get_categories()) {%>
         <span class="category"><%=loc.get(c,"")%> </span>
@@ -74,10 +74,10 @@
       </a>
 
       <%}
-      String[] messages = Request_utils.get_messagesSafe(r.request_id);
+      String[] messages = Request_utils.get_messages(r.request_id);
        for (String m : messages) { %>
 
-      <p><%=m%></p>
+      <p><%=Utils.safe_render(m)%></p>
 
       <%} if (show_message_input) { %>
     <form method="POST" action="request.jsp?request=<%=r.request_id%>&service=true">

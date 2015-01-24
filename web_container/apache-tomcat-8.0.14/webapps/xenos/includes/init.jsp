@@ -1,5 +1,6 @@
 <%@ page import="com.renomad.xenos.Localization" %>
 <%@ page import="com.renomad.xenos.User_utils" %>
+<%@ page import="com.renomad.xenos.Utils" %>
 <%@ page import="com.renomad.xenos.User" %>
 <% 
   //Note that these objects below will thus be available to most pages.
