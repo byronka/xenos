@@ -5,6 +5,7 @@ transition into a new project.  That is what this document is for.
 Contents:
 =========
 Programming suggestions
+General conventions
 Utilities
 Setting up Eclipse as a IDE for Xenos
 Localization
@@ -40,6 +41,25 @@ developed thus far:
   end, the text goes into the same input field and gets posted as though
   the user had manually input it.
 * Validation code happens in the JSP file.  
+
+
+
+
+
+General conventions
+==================
+
+We do not allow warnings to propagate in our system.  If something is
+throwing a warning, you correct it.  We believe in the theory of
+broken windows and don't let sloppiness creep into our system.  It's a
+constant fight against entropy.
+
+Likewise, if you see error or warning messages in the logs, you
+correct that.  It's not ok to allow those to continue just because the
+system seems to be working.  We want a very high signal to noise
+ratio.
+
+
 
 
 

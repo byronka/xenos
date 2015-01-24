@@ -525,7 +525,6 @@ public final class Request_utils {
     * @param page This method is used to display requests, and we
     * include paging functionality - splitting the response into
     * pages of data.  Which page are we on?
-    * @param page_size the number of requests to show per page.
     * @return an array of Others_Requests that were *not* made 
     * by that user, or an empty array of Others_Requests if failure or
     * none.
