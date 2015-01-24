@@ -330,9 +330,11 @@ fast, can go through any use case you can imagine in the system, and
 then you can look through logs to see anything that went wrong and fix
 it.  Great for running before a commit.
 
-When creating a new script, always end the script with quitting, so we
-can have a bunch of tests run in different files.
-
+Consider whether the script is the kind that should quit when it's done,
+or should not.  These scripts are not entirely intended to run without
+supervision - they are a way of quickly smoke testing the product, and
+having human supervision is accepable for some of the broad use cases.
+You may want to have the script finish on some page for human review.
 
 
 
