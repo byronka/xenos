@@ -25,7 +25,7 @@ public final class User_utils {
     * requests by users.  
     * @param usernames an array of user usernames
     * @return a string representing an array of user ids instead of the
-    *   names, or null if failure or none found.
+    *   names, or empty string if failure or none found.
     */
   public static String
     get_user_ids_by_names(String[] usernames) {
@@ -61,7 +61,7 @@ public final class User_utils {
           conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return null;
+        return "";
       }
 
       StringBuilder user_ids_sb = new StringBuilder();
@@ -77,7 +77,7 @@ public final class User_utils {
       return user_ids_sb.toString();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
-      return null;
+      return "";
     } finally {
       Database_access.close_statement(pstmt);
     }
