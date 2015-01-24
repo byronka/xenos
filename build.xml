@@ -83,6 +83,7 @@
     <antcall target="install" />
     <antcall target="tomcat-restart" />
     <echo message="Xenos is ready at https://localhost:8443/xenos"/>
+    <echo message="or (non-ssl) at http://localhost:8080/xenos"/>
   </target>
 
 
