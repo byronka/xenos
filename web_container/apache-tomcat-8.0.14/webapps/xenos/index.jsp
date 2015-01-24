@@ -7,6 +7,7 @@
 <html>
 <head>
   <title><%=loc.get(44,"Welcome to Xenos!")%></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="index.css" >
 </head>
 <body>

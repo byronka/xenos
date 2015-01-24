@@ -47,7 +47,10 @@
 %>
 <!DOCTYPE html>
 <html>
-  <head><title><%=loc.get(58,"Account Creation")%></title></head>
+  <head>
+  <title><%=loc.get(58,"Account Creation")%></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
   <link rel="stylesheet" href="register.css">
 <body>
   <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
