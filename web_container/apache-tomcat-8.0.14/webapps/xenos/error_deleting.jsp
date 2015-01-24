@@ -1,4 +1,5 @@
 <%@include file="includes/init.jsp" %>
+<!DOCTYPE html>
 <html>                                 
   <head><title><%=loc.get(41, "Error deleting Request")%></title></head>
 

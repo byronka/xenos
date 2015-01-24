@@ -1,11 +1,10 @@
-
-body {
-  background-color:#526589;
+div.header-container {
+  height: 65px;
 }
 
-a.advanced.search {
+div.header-container a.advanced.search {
   position: absolute;
-  top: 35px;
+  top: 40px;
   right: 10px;
   display: inline-block;
   outline: none;
@@ -14,37 +13,37 @@ a.advanced.search {
   text-shadow: 0 0 1px rgba(255,255,255,0.3);
 }
 
-.search {
+div.header-container .search {
   position: absolute;
   top: 5px;
   right: 10px;
 }
 
-form.search input {
-  height:30px;
+div.header-container form.search input {
+  height:20px;
 }
 
-form.search button {
+div.header-container form.search button {
   height: 30px;
 }
 
-div.user-displayname {
+div.header-container div.user-displayname {
   position: relative;
   clear: left;
-  top: 10px;
+  top: 13px;
   left: 20px;
 }
 
-div.spacer {
-  height: 60px;
+div.header-container div.spacer {
+  height: 40px;
 }
 
-section.header {
+div.header-container section.header {
 
   background-color: #5f2d1d;
   color: white;
   border: 1px solid grey;
-  height: 60px;
+  height: 65px;
   position: fixed;
   top:0px;
   left: 0px;
@@ -53,7 +52,7 @@ section.header {
   z-index: 1;
 }
 
-div.trademark {
+div.header-container div.trademark {
   text-shadow:6px 7px 4px rgba(34,87,73,0.5);
   font-weight:bold;
   color:white;
@@ -65,7 +64,7 @@ div.trademark {
   position: absolute;
 }
 
-nav a {
+div.header-container nav a {
   position: relative;
   display: inline-block;
   outline: none;
@@ -76,14 +75,14 @@ nav a {
 }
 
 
-nav a:hover,
-nav a:focus {
+div.header-container nav a:hover,
+div.header-container nav a:focus {
   outline: none;
 }
 
 /* Effect 1: Brackets */
-.cl-effect-1 a::before,
-.cl-effect-1 a::after {
+div.header-container .cl-effect-1 a::before,
+div.header-container .cl-effect-1 a::after {
   display: inline-block;
   opacity: 0;
   -webkit-transition: -webkit-transform 0.3s, opacity 0.2s;
@@ -91,7 +90,7 @@ nav a:focus {
   transition: transform 0.3s, opacity 0.2s;
 }
 
-.cl-effect-1 a::before {
+div.header-container .cl-effect-1 a::before {
   margin-right: 10px;
   content: '[';
   -webkit-transform: translateX(20px);
@@ -99,7 +98,7 @@ nav a:focus {
   transform: translateX(20px);
 }
 
-.cl-effect-1 a::after {
+div.header-container .cl-effect-1 a::after {
   margin-left: 10px;
   content: ']';
   -webkit-transform: translateX(-20px);
@@ -107,10 +106,10 @@ nav a:focus {
   transform: translateX(-20px);
 }
 
-.cl-effect-1 a:hover::before,
-.cl-effect-1 a:hover::after,
-.cl-effect-1 a:focus::before,
-.cl-effect-1 a:focus::after {
+div.header-container .cl-effect-1 a:hover::before,
+div.header-container .cl-effect-1 a:hover::after,
+div.header-container .cl-effect-1 a:focus::before,
+div.header-container .cl-effect-1 a:focus::after {
   opacity: 1;
   -webkit-transform: translateX(0px);
   -moz-transform: translateX(0px);

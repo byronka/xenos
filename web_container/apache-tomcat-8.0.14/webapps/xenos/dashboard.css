@@ -1,12 +1,9 @@
-* {
+div.dashboard-container {
   padding: 0;
-  border: 0;
   font-family: garamond;
-}
-
-body {
   background-color: #5f2d1d;
 }
+
 
 h2.my-requests-header {
   margin-left: auto;

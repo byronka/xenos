@@ -1,4 +1,5 @@
 <%@include file="includes/header.jsp" %>
+<!DOCTYPE html>
 <html>
 <head><title>Handle a request</title></head>
 

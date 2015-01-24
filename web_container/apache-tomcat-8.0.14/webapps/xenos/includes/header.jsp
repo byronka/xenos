@@ -1,5 +1,5 @@
 
-<div>
+<div class="header-container">
   <link rel="stylesheet" type="text/css" href="includes/header.css">
   <div class="spacer" ></div>
 <section class="header">

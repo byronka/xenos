@@ -48,6 +48,7 @@
   }
 
 %>
+<!DOCTYPE html>
 <html>
   <head><title><%=loc.get(50,"Login page")%></title></head>
   <link rel="stylesheet" href="login.css" />

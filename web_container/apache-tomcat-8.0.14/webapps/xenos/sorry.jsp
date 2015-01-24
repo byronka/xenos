@@ -3,6 +3,7 @@
   //set up an object to localize text
   Localization loc  = new Localization(request.getLocale());
 %>
+<!DOCTYPE html>
 <html>                                 
   <head><title><%=loc.get(67,"Security problem")%></title></head>
   <link rel="stylesheet" href="sorry.css">

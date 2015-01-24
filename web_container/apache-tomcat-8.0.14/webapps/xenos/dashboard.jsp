@@ -30,6 +30,7 @@
 
 <body>
 <%@include file="includes/header.jsp" %>
+<div class="dashboard-container">
 <h2 class="my-requests-header"><%=loc.get(18, "Your requests")%>:</h2>
 <div class="my-requests">
 <%
@@ -128,6 +129,7 @@
   </div>
 <% } %>
 </div>
+
 <form method="GET" action="dashboard.jsp">
   <span>Page</span>
   <select name="page">
@@ -140,6 +142,8 @@
       }%>
   </select>
   <button><%=loc.get(1, "search")%></button></span>
+
+</div>
 </form>
 </body>
 </html>

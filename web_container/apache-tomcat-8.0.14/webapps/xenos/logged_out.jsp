@@ -3,6 +3,7 @@
   //set up an object to localize text
   Localization loc  = new Localization(request.getLocale());
 %>
+<!DOCTYPE html>
 <html>
 <head>
   <title><%=loc.get(65,"Logged out")%></title>

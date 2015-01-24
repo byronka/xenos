@@ -45,6 +45,7 @@
     }
   }
 %>
+<!DOCTYPE html>
 <html>
   <head><title><%=loc.get(58,"Account Creation")%></title></head>
   <link rel="stylesheet" href="register.css">
