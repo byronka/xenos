@@ -2,6 +2,10 @@ div.dashboard-container {
   padding: 0;
   font-family: garamond;
   background-color: #5f2d1d;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 50px;
 }
 
 
