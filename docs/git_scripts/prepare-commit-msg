@@ -1,0 +1,3 @@
+#!/bin/sh
+echo "#Use syntax like this when starting your message:" >> $1
+echo "#    BK-#123-  " >> $1

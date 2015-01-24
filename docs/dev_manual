@@ -286,6 +286,16 @@ The number should be the same as the issue number in YouTrack.
 However, if you are committing something not tracked in YouTrack, use
 0 as the number.
 
+The scripts necessary to enforce this on the client side are located
+in the git_scripts folder, in the same folder as this document.  Move
+those scripts into $XENOS_HOME/.git/hooks/ by doing this:
+
+cp $XENOS_HOME/docs/git_scripts/* $XENOS_HOME/.git/hooks/
+
+and then make those scripts runnable:
+
+chmod u+x $XENOS_HOME/.git/hooks/*
+
 
 
 Version number
