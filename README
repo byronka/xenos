@@ -106,9 +106,19 @@ CATALINA_HOME should point to the Tomcat directory.  The Tomcat
 
 
 
+========================
+3) Git setup
+========================
+
+Read the information in the dev manual about setting up git client 
+hooks.  You'll need that if you want to avoid getting nasty error messages
+when you push to the central repository.  See Git commit standards.
+
+
+
 
 ====================================
-3) Directories and files at the top:
+4) Directories and files at the top:
 ====================================
 
 build/ - where the built work goes.  Won't exist until you build.
