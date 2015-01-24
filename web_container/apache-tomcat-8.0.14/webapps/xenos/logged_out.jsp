@@ -7,6 +7,7 @@
 <html>
 <head>
   <title><%=loc.get(65,"Logged out")%></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="logged_out.css">
 </head>
 <body>

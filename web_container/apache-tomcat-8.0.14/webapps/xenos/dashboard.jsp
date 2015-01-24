@@ -33,7 +33,7 @@
 <%@include file="includes/header.jsp" %>
 <div class="dashboard-container">
 <h2 class="my-requests-header"><%=loc.get(18, "Your requests")%>:</h2>
-<div class="my-requests">
+<div class="requests mine">
 <%
   Request[] my_requests = 
     Request_utils.get_requests_for_user(user_id);
@@ -53,7 +53,7 @@
 <h2 class="others-requests-header">
   <%=loc.get(19, "Other's requests")%>:
 </h2>
-<div class="others-requests">
+<div class="requests others">
 <%
   Request_utils.Search_Object so = 
     new Request_utils.Search_Object(  srch_date, 

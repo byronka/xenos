@@ -50,8 +50,11 @@
 %>
 <!DOCTYPE html>
 <html>
-  <head><title><%=loc.get(50,"Login page")%></title></head>
-  <link rel="stylesheet" href="login.css" />
+	<head>
+		<title><%=loc.get(50,"Login page")%></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="login.css" />
+	</head>
   <body>
     <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
     <div class="signin">

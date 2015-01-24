@@ -5,8 +5,11 @@
 %>
 <!DOCTYPE html>
 <html>                                 
-  <head><title><%=loc.get(67,"Security problem")%></title></head>
-  <link rel="stylesheet" href="sorry.css">
+	<head>
+		<title><%=loc.get(67,"Security problem")%></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="sorry.css">
+	</head>
 <body>
   <div class="trademark">Xenos</div>
   <nav class="cl-effect-1">

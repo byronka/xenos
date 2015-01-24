@@ -1,7 +1,10 @@
 <%@include file="includes/init.jsp" %>
 <!DOCTYPE html>
 <html>                                 
-  <head><title><%=loc.get(15, "Create a request")%></title></head>
+	<head>
+		<title><%=loc.get(15, "Create a request")%></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
 
 <%@ page import="com.renomad.xenos.Request_utils" %>
 <%@ page import="com.renomad.xenos.Utils" %>

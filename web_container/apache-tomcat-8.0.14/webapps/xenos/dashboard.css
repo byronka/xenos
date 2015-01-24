@@ -12,20 +12,23 @@ div.dashboard-container {
 h2.my-requests-header {
   margin-left: auto;
   margin-right: auto;
-  width: 400px;
+  min-width: 300px;
+  max-width: 400px;
   color:white;
 }
 
-div.my-requests {
+div.requests {
   margin-left: auto;
   margin-right: auto;
-  width: 400px;
+  min-width: 300px;
+  max-width: 400px;
 }
 
 h2.others-requests-header {
   margin-left: auto;
   margin-right: auto;
-  width: 400px;
+  min-width: 300px;
+  max-width: 400px;
   color:white;
 }
 
