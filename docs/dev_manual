@@ -12,6 +12,7 @@ Safe Rendering of Client-provided values
 Viewing the database values
 Running Tomcat in SSL
 SQL standards
+Git branches
 Git events
 Git commit standards
 Version number
@@ -216,6 +217,23 @@ SQL standards
   unless there is a mighty good reason to do so. 
 4) Describe what your SQL is meant to do, and why.
 5) Try to simplify your SQL code.
+
+
+
+
+Git branches
+============
+
+The convention we want to follow here is to create a branch if the
+feature is going to require multiple commits to finish.  If it's a
+tiny thing (one commit) you can just add that to the master branch
+directly.  Use the following convention for the branch names:
+
+initials/branchName
+
+for example:
+
+bk/Adding_documentation
 
 
 
