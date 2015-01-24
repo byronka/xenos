@@ -22,10 +22,12 @@ public final class Database_access {
     */
   public static void handle_sql_exception(SQLException ex, Statement stmt) {
     try {
-      Connection conn = stmt.getConnection();
-      if (conn != null) {
-        System.err.println("Transaction is being rolled back");
-        conn.rollback();
+      if (stmt != null) {
+        Connection conn = stmt.getConnection();
+        if (conn != null) {
+          System.err.println("Transaction is being rolled back");
+          conn.rollback();
+        }
       }
     } catch(SQLException excep) {
       handle_sql_exception(excep); //inner exception

@@ -52,7 +52,7 @@ public class Request {
     this.status           =  status;
     this.title            =  title;
     this.requesting_user_id  =  requesting_user_id;
-    this.categories       =  categories;
+    this.categories       =  Arrays.copyOf(categories, categories.length);
   }
 
   /**

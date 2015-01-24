@@ -53,18 +53,22 @@ public class Text implements javax.servlet.ServletContextListener {
       
       ResultSet resultSet_count = pstmt_get_count.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet_count)) {
-        System.err.println("Error (7): null resultset when getting count of localized values");
+        System.err.println(
+            "Error (7): null resultset when getting count of "+
+            "localized values");
       }
       resultSet_count.next(); // move to the first set of results.
       int max = resultSet_count.getInt("maximum");
-      //create an array with a size equal to the value of the largest id, plus 1.  That way we can
+      //create an array with a size equal to the value of 
+      //the largest id, plus 1.  That way we can
       //fit all our words in by id.
       int languages_num = 3;
       words_array  = new String[max+1][languages_num];
       
       ResultSet resultSet_words = pstmt_get_words.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet_words)) {
-        System.err.println("Error (8): null resultset when pulling localized values");
+        System.err.println(
+            "Error (8): null resultset when pulling localized values");
       }
 
       while (resultSet_words.next()) {
