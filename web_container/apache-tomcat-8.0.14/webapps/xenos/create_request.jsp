@@ -64,40 +64,43 @@
   <body>
   <%@include file="includes/header.jsp" %>
     <form method="POST" action="create_request.jsp">
-      <div><%=not_enough_points_error_msg %></div>
+
       <p><%=loc.get(10,"Description")%>: 
         <input 
           type="text" 
           name="description" 
           value="<%=de%>"/> 
-      <span><%=desc_error_msg%></span>
+        <span><%=desc_error_msg%></span>
       </p>
 
-    <p>
-      <%=loc.get(11,"Points")%>: 
-      <input type="text" name="points" value="<%=p%>"/> 
-      <span><%=p_error_msg%></span>
-    </p>
+      <p>
+        <div><%=not_enough_points_error_msg %></div>
+        <%=loc.get(11,"Points")%>: 
+        <input type="text" name="points" value="<%=p%>"/> 
+        <span><%=p_error_msg%></span>
+      </p>
 
-    <p>
-      <%=loc.get(12,"Title")%>: <input type="text" name="title" value="<%=t%>"/> 
-      <span><%=title_error_msg%></span>
-    </p>
+      <p>
+        <%=loc.get(12,"Title")%>: <input type="text" name="title" value="<%=t%>"/> 
+        <span><%=title_error_msg%></span>
+      </p>
 
-    <p>
-    <%=loc.get(13,"Categories")%>: 
-    <input type="text" name="categories" value="<%=c%>"/>
-    <span><%=cat_error_msg%></span>
-    </p>
+      <p>
+        <%=loc.get(13,"Categories")%>: 
+        <input type="text" name="categories" value="<%=c%>"/>
+        <span><%=cat_error_msg%></span>
+      </p>
 
       <div id='available-categories'>
         <%
-          Integer[] local_cat_values = Request_utils.get_category_local_values();
-          for(Integer val : local_cat_values) { %>
-          <%=loc.get(val,"")%>,
+        Integer[] local_cat_values = Request_utils.get_category_local_values();
+        for(Integer val : local_cat_values) { %>
+        <%=loc.get(val,"")%>,
         <%}%>
       </div>
+
       <button type="submit"><%=loc.get(14,"Create Request")%></button>
+
     </form>
   </body>
 </html>
