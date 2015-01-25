@@ -57,20 +57,41 @@ VALUES
 ("2014-3-27 00:00:01", "description goes here", 15, 1, "homework R", 2);
 
 
----DELIMITER---
--- now we put our enums into the request_category table.
--- these are intentionally in all-caps to emphasize they are not
--- supposed to go straight to the client.  They must be localized first.
--- this should be easy to expand later.
-INSERT INTO request_category (request_category_value, localization_value )
-VALUES('MATH',71),('PHYSICS',72),('ECONOMICS',73),('HISTORY',74),('ENGLISH',75);
-
 
 
 ---DELIMITER---
 -- Here we set up all the requests to have some categories.
 INSERT INTO request_to_category (request_id, request_category_id)
-VALUES(1,1),(1,3),(1,4),(2,1),(3,1),(3,2),(4,4),(5,2),(6,1),(7,4),(8,5),(9,5),(10,2),(11,2),(12,2),(13,2),(14,2),(15,2),(16,2),(17,2),(18,2),(19,2),(20,2),(21,2),(22,2),(23,2),(24,2),(25,2),(26,2);
+VALUES
+(1,71),
+(1,73),
+(1,74),
+(2,71),
+(3,71),
+(3,72),
+(4,74),
+(5,72),
+(6,71),
+(7,74),
+(8,75),
+(9,75),
+(10,72),
+(11,72),
+(12,72),
+(13,72),
+(14,72),
+(15,72),
+(16,72),
+(17,72),
+(18,72),
+(19,72),
+(20,72),
+(21,72),
+(22,72),
+(23,72),
+(24,72),
+(25,72),
+(26,72);
 
 
 

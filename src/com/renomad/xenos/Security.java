@@ -81,7 +81,7 @@ public final class Security {
     try {
       Connection conn = Database_access.get_a_connection();
       pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
-      pstmt.setString( 1, email);
+      pstmt.setNString( 1, email);
       ResultSet resultSet = pstmt.executeQuery();
 
       if(Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -126,7 +126,7 @@ public final class Security {
 
       String sqlText = 
         "UPDATE user " + 
-        "SET is_logged_in = 1, last_time_logged_in = NOW(), " + 
+        "SET is_logged_in = 1, last_time_logged_in = UTC_TIMESTAMP(), " + 
         "last_ip_logged_in = ? " + 
         "WHERE user_id = ?";
 

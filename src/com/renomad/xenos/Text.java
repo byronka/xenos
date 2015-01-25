@@ -74,9 +74,9 @@ public class Text implements javax.servlet.ServletContextListener {
       while (resultSet_words.next()) {
         String[] words = new String[3];
         int id = resultSet_words.getInt("local_id");
-        words[0] = resultSet_words.getString("English");
-        words[1] = resultSet_words.getString("French");
-        words[2] = resultSet_words.getString("Spanish");
+        words[0] = resultSet_words.getNString("English");
+        words[1] = resultSet_words.getNString("French");
+        words[2] = resultSet_words.getNString("Spanish");
         words_array[id] = words;
       }
       

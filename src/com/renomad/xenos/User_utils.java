@@ -167,7 +167,7 @@ public final class User_utils {
       }
 
       resultSet.next(); //move to the first set of results.
-      String username = resultSet.getString("username");
+      String username = resultSet.getNString("username");
       int points = resultSet.getInt("points");
       return new User(username, "", points);
     } catch (SQLException ex) {
@@ -225,8 +225,8 @@ public final class User_utils {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       // 4. set values into the statement
-      pstmt.setString( 1, user.username);
-      pstmt.setString( 2, user.password);
+      pstmt.setNString( 1, user.username);
+      pstmt.setNString( 2, user.password);
       pstmt.setInt( 3, user.points);
       // 5. execute a statement
       result = Database_access.execute_update(pstmt) > 0;

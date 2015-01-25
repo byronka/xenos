@@ -5,6 +5,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 /**
   * Utils holds utilities that apply across many situations
   */
@@ -14,6 +19,37 @@ public final class Utils {
     //we don't want anyone instantiating this
     //do nothing.
   }
+
+
+  /**
+    * Will add an audit record
+    * @param action_id the id of the action performed (e.g. 1 for create)
+    *  see the database table "audit_actions" for available options.
+    * @param user_id the id of the user causing the action
+    * @param target_id the id of the target, usually a request.
+    * @return true if successful at creating the audit, false otherwise.
+    */
+  public static boolean 
+    create_audit(int action_id, int user_id, int target_id, String notes) {
+    String sqlText = String.format(
+      "INSERT INTO audit "+
+      "(datetime, audit_action_id, user_id, target_id, notes) "+
+      "VALUES (UTC_TIMESTAMP(), %d, %d, %d, ?)", 
+      action_id, user_id, target_id);
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(conn, sqlText);     
+      pstmt.setNString(1, notes);
+      return Database_access.execute_update(pstmt) > 0;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
 
   /**
     * helps with boilerplate for validation of whether input

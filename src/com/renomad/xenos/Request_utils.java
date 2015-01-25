@@ -3,6 +3,7 @@ package com.renomad.xenos;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import com.renomad.xenos.Database_access;
 import com.renomad.xenos.Request;
 import com.renomad.xenos.Others_Request;
@@ -44,15 +45,14 @@ public final class Request_utils {
 
 
   /**
-    * returns a Map of localization values for the categories
-    * indexed by database id.
-    * @return Map of Integers, indexed by id, or null if nothing in db. The
-    *   key is the id, the value is the localization value.
+    * returns a list of localization values for the categories
+    * @return List of Integers representing localization values 
+    *   for categories, or null if nothing in db. The
     */
-  public static Map<Integer, Integer> get_all_categories() {
+  public static ArrayList<Integer> get_all_categories() {
     // 1. set the sql
     String sqlText = 
-      "SELECT request_category_id, localization_value "+
+      "SELECT category_id, request_category_value "+
       "FROM request_category; ";
     // 2. set up values we'll need outside the try
     PreparedStatement pstmt = null;
@@ -70,11 +70,10 @@ public final class Request_utils {
 
       // 6. get values from database and convert to an object
       //keep adding rows of data while there is more data
-      Map<Integer, Integer> categories = new HashMap<Integer,Integer>();
+      ArrayList<Integer> categories = new ArrayList<Integer>();
       while(resultSet.next()) {
-        int rcid = resultSet.getInt("request_category_id");
-        int localval = resultSet.getInt("localization_value");
-        categories.put(rcid, localval); 
+        int rcid = resultSet.getInt("category_id");
+        categories.add(rcid); 
       }
 
       return categories;
@@ -98,11 +97,11 @@ public final class Request_utils {
     String sqlText = 
       "SELECT r.request_id, r.datetime, r.description, r.points,"+
       "r.status, r.title, r.requesting_user_id, "+
-      "GROUP_CONCAT(rc.localization_value SEPARATOR ',') AS categories "+
+      "GROUP_CONCAT(rc.category_id SEPARATOR ',') AS categories "+
       "FROM request r "+
       "JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
       "JOIN request_category rc "+
-        "ON rc.request_category_id = rtc.request_category_id "+
+        "ON rc.category_id = rtc.request_category_id "+
       "WHERE r.request_id = ? ";
 
     PreparedStatement pstmt = null;
@@ -375,12 +374,12 @@ public final class Request_utils {
             "r.title, "+
             "u.rank, "+
             "r.requesting_user_id, "+
-            "GROUP_CONCAT(rc.localization_value SEPARATOR ',') "+
+            "GROUP_CONCAT(rc.category_id SEPARATOR ',') "+
             "AS categories "+
           "FROM request r "+
           "JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
           "JOIN request_category rc "+
-            "ON rc.request_category_id = rtc.request_category_id "+
+            "ON rc.category_id = rtc.request_category_id "+
           "JOIN user u ON u.user_id = r.requesting_user_id "+
           "WHERE requesting_user_id <> ? "+
           "%s %s %s %s %s %s "+ // <-- search clauses
@@ -425,10 +424,11 @@ public final class Request_utils {
     //2. searching by title
       if (has_title) {
         param_index++;
-        pstmt.setString( param_index, so.title);
+        pstmt.setNString( param_index, so.title);
       }
 
     //3. searching by categories
+      //TODO - BK - make this a search by ints
       if (has_categories) {
         param_index++;
         pstmt.setString( param_index, so.categories);
@@ -441,6 +441,7 @@ public final class Request_utils {
     //add_advanced_search_clauses
 
     //6. searching by status
+      //TODO - BK - make this a search by ints
       if (has_status) {
         param_index++;
         pstmt.setString( param_index, so.statuses);
@@ -637,11 +638,11 @@ public final class Request_utils {
 
   /**
     * deletes a request.
-    * @param id the id of the request to delete
+    * @param request_id the id of the request to delete
     * @param deleting_user_id the id of the user making the request
     * @return true if successful
     */
-  public static boolean delete_request(int id, int deleting_user_id) {
+  public static boolean delete_request(int request_id, int deleting_user_id) {
     // 1. set the sql
     String get_points_in_request_sql = 
       "SELECT points, requesting_user_id "+
@@ -662,7 +663,7 @@ public final class Request_utils {
 
       //get the points on the request
       get_pts_pstmt  = conn.prepareStatement(get_points_in_request_sql);
-      get_pts_pstmt.setInt(1, id); 
+      get_pts_pstmt.setInt(1, request_id); 
       ResultSet resultSet = get_pts_pstmt.executeQuery();
       // check that we got results
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -688,7 +689,7 @@ public final class Request_utils {
       //delete the request
       del_pstmt = Database_access
         .prepare_statement(conn, delete_request_sql);
-      del_pstmt.setInt(1, id); 
+      del_pstmt.setInt(1, request_id); 
       Database_access.execute_update(del_pstmt);
 
       up_pts_pstmt = Database_access
@@ -696,6 +697,7 @@ public final class Request_utils {
       up_pts_pstmt.setInt(1,points); 
       up_pts_pstmt.setInt(2,user_id); 
       Database_access.execute_update(up_pts_pstmt);
+      Utils.create_audit(2, deleting_user_id, request_id, "");
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return false;
@@ -706,6 +708,7 @@ public final class Request_utils {
     }
     return true;
   }
+
 
   /**
     * given all the data to add a request, does so.
@@ -738,9 +741,8 @@ public final class Request_utils {
     * com.renomad.xenos.Localization
     */
   public static Integer[] get_category_local_values() {
-      Map<Integer, Integer> categories = get_all_categories();
-      java.util.Collection<Integer> c = categories.values();
-      Integer[] cat_array = c.toArray(new Integer[0]);
+      List<Integer> c = get_all_categories();
+      Integer[] cat_array = c.toArray(new Integer[c.size()]);
       return cat_array;
   }
 
@@ -757,7 +759,7 @@ public final class Request_utils {
     */
   public static Integer[] 
     parse_categories_string(String categories_str, Localization loc) {
-    Map<Integer,Integer> all_categories = get_all_categories();
+    List<Integer> all_categories = get_all_categories();
     
     //guard clauses
     if (all_categories == null) {return new Integer[0];}
@@ -766,7 +768,7 @@ public final class Request_utils {
 
     String lower_case_categories_str = categories_str.toLowerCase();
     ArrayList<Integer> selected_categories = new ArrayList<Integer>();
-    for (Integer i : all_categories.values()) {
+    for (Integer i : all_categories) {
       String c = loc.get(i,"").toLowerCase();
       if (lower_case_categories_str.contains(c)) {
         selected_categories.add(i);
@@ -812,10 +814,10 @@ public final class Request_utils {
       req_pstmt = Database_access.prepare_statement(c, sql);
 
       //set values for adding request
-      req_pstmt.setString(1, r.description);
+      req_pstmt.setNString(1, r.description);
       req_pstmt.setInt( 2, r.points);
       req_pstmt.setInt( 3, r.status);
-      req_pstmt.setString( 4, r.title);
+      req_pstmt.setNString( 4, r.title);
       req_pstmt.setInt( 5, r.requesting_user_id);
 
       result = Database_access.execute_update(req_pstmt);
@@ -845,60 +847,6 @@ public final class Request_utils {
 
 
   /**
-    * Given a bunch of localization values (72, 73) get their
-    * equivalent category ids (1, 2, etc).
-    * @param l_cats categories as localzation values
-    * @return an array of Integers as id's of categories
-    */
-  private static Integer[]           
-    convert_localization_values_to_cat_ids(Integer[] l_cats) {
-
-    Map<Integer,Integer> all_categories = get_all_categories();
-
-    //by flipping, now we can hand in the localization value as a key
-    //and get back the id of the category.
-    Map<Integer,Integer> flipped_cats = 
-      flip_cat_keys_and_values(all_categories);
-
-    Integer[] id_cats = 
-      new Integer[l_cats.length]; //create a new array of same size
-
-    //we'll step through the localization values given 
-    //and one-by-one convert them.
-    for (int i = 0; i < l_cats.length; i++) {
-      id_cats[i] = flipped_cats.get(l_cats[i]);
-    }
-    return id_cats;
-  }
-
-
-  /**
-    * This will flip the keys and values of a category 
-    * Map<Integer,Integer>.
-    * It is required that the values in the set are discrete.  That is,
-    * the values cannot have duplicates.  This is used in rare situations, 
-    * like for example where we are getting categories given localzation
-    * values
-    * @param map a map collection
-    * @return a map collection with keys and values flipped, or null if
-    * failure.
-    */
-  private static Map<Integer,Integer> 
-    flip_cat_keys_and_values(Map<Integer,Integer> map) {
-    Map<Integer,Integer> flipped_set = new HashMap<Integer,Integer>();
-    try {
-      for (Map.Entry<Integer,Integer> entry : map.entrySet()) {
-        flipped_set.put(entry.getValue(),entry.getKey());
-      }
-    } catch (Exception e) {
-      System.err.println("error: flipping keys and values failed");
-      return null;
-    }
-    return flipped_set;
-  }
-
-
-  /**
     * Adds to the request_to_category table for a new request
     * @param result the id of the newly-created request.  we'll use
     *  this for setting the categories properly.
@@ -910,8 +858,7 @@ public final class Request_utils {
         Connection c, String sql, int result, Request r) {
 
     PreparedStatement cat_pstmt = null;
-    Integer[] cats = 
-      convert_localization_values_to_cat_ids(r.get_categories());
+    Integer[] cats = r.get_categories();
     try {
       cat_pstmt = Database_access.prepare_statement(c, sql);
       for (int i = 0; i < cats.length; i++ ) {
@@ -975,7 +922,8 @@ public final class Request_utils {
 
     String update_request_sql = 
       "INSERT into request (description, datetime, points, " + 
-      "status, title, requesting_user_id) VALUES (?, now(), ?, ?, ?, ?)"; 
+      "status, title, requesting_user_id) "+
+      "VALUES (?, UTC_TIMESTAMP(), ?, ?, ?, ?)"; 
     String update_categories_sql = assemble_categories_sql(request);
     String update_points_sql = 
       "UPDATE user SET points = points - ? WHERE user_id = ?";
@@ -992,7 +940,7 @@ public final class Request_utils {
     //immediately return a response indicating error and halt
     //execution here.
 
-    int result = -1; //this will hold the newly inserted request id
+    int request_id = -1; //this will hold the newly inserted request id
 
     Request_response response = null;
 
@@ -1003,13 +951,13 @@ public final class Request_utils {
       Database_access.close_connection(conn);
       return response;
     } else {
-      result = response.id;
+      request_id = response.id;
     }
 
 
     // B) Update the categories
     response = update_categories_for_request(
-        conn, update_categories_sql, result, request);
+        conn, update_categories_sql, request_id, request);
     if (response != null) {
       Database_access.close_connection(conn);
       return response;
@@ -1022,10 +970,10 @@ public final class Request_utils {
       return response;
     }
 
-
     //if we got to this point, we saw no errors along the way.
     try {
       conn.commit();
+      Utils.create_audit(1, request.requesting_user_id, request_id, "");
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
     } finally {
@@ -1038,7 +986,7 @@ public final class Request_utils {
       }
     }
     //indicate all is well, along with the new id
-    return new Request_response(Request_response.Stat.OK, result);
+    return new Request_response(Request_response.Stat.OK, request_id);
   }
 
 
@@ -1134,7 +1082,7 @@ public final class Request_utils {
       "INSERT INTO request_message "+
       "(message, request_id, user_id, timestamp)"+
       "SELECT DISTINCT "+
-        "CONCAT(u.username,' says:', ?), ?, u.user_id, now() "+
+        "CONCAT(u.username,' says:', ?), ?, u.user_id, UTC_TIMESTAMP() "+
       "FROM user u "+
       "JOIN request_message rm ON rm.user_id = u.user_id "+
       "WHERE u.user_id = ? LIMIT 1";
@@ -1148,7 +1096,7 @@ public final class Request_utils {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       // 4. set values into the statement
-      pstmt.setString( 1, msg );
+      pstmt.setNString( 1, msg );
       pstmt.setInt( 2, request_id);
       pstmt.setInt( 3, user_id);
       // 5. execute a statement
@@ -1187,7 +1135,7 @@ public final class Request_utils {
       //keep adding rows of data while there is more data
       ArrayList<String> messages = new ArrayList<String>();
       while(resultSet.next()) {
-        String msg = resultSet.getString("message");
+        String msg = resultSet.getNString("message");
         messages.add(msg);
       }
 

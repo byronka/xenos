@@ -22,17 +22,22 @@ Troubleshooting
 
 
 
+
+
+
+
+
 Programming suggestions
 =======================
 
 The overarching technique employed in the construction thus far has
 been simplicity.  
 
-I have avoided the use of frameworks, abstractions, and patterns
+We have avoided the use of frameworks, abstractions, and patterns
 wherever possible.  Some of the conventions that have organically
 developed thus far:
 * All business logic happens server-side.
-* Niceties for ui may be implemented in JavaScript, but code must be
+* Niceties for UI may be implemented in JavaScript, but code must be
   engineered to work without needing it.  For example, the code for
   setting categories on a request.  That code will show the categories
   and will allow the user to type them in, if JavaScript is not
@@ -41,6 +46,10 @@ developed thus far:
   end, the text goes into the same input field and gets posted as though
   the user had manually input it.
 * Validation code happens in the JSP file.  
+
+
+
+
 
 
 
@@ -58,6 +67,13 @@ Likewise, if you see error or warning messages in the logs, you
 correct that.  It's not ok to allow those to continue just because the
 system seems to be working.  We want a very high signal to noise
 ratio.
+
+If you put a "TODO" into the codebase, expect to have it resolved
+within a month tops, preferably a day.  We will need refactoring days
+and stories to resolve those so they don't accumulate.
+
+
+
 
 
 
@@ -127,6 +143,10 @@ the output will be found at http://localhost:8080/lint/
 
 
 
+
+
+
+
 Setting up Eclipse as a IDE for Xenos
 =====================================
 
@@ -167,20 +187,34 @@ commands for major functionalities, e.g. building, cleaning, etc.
 
 
 
+
+
+
+
+
+
+
 Localization
 ============
 
 The localization mechanism is fairly simple.  All the words that come from
 Xenos system, that is, the non-user-editable words, need to exist for
 multiple languages.  That way we can roll this out across the world.  To do
-that, I made a very minimalistic localization tool.  When Tomcat first
+that, there exists a very minimalistic localization tool.  When Tomcat first
 starts up the app, it pulls from the database all the values in the
 localization_lookup table. This contains words and phrases in English,
-along with translations in French and Spanish.  It stores all those values
+along with translations in other languages.  It stores all those values
 into a static value that remains in memory.  Succinctly, all the
 localization values sit, unchanging, in memory.  Whenever a page needs
 values, it runs the command Localization.get(), along with the index of the
 value it needs and the phrase it needs localized.  
+
+
+
+
+
+
+
 
 
 
@@ -195,7 +229,7 @@ malicious.  Either way, it is crucial that we not allow the browser to
 see that text as valid html markup.  If it were to do so, then a user
 could enter their name as something like <script>alert(1)</script> and
 when the server sent that to the browser, it would parse that and run
-the code inside.  Yuck.  So to prevent that problem, we "clean" the
+the code inside.  (Yuck!).  So to prevent that problem, we "clean" the
 text.  That is, all the greater-than and less-than symbols ,> or <, we
 convert to &gt; and &lt;
 
@@ -206,12 +240,27 @@ text through.
 
 
 
+
+
+
+
+
+
+
+
 Viewing the database values
 ===========================
 
-Xenos stores its values in a schema named xenos-database.  There are a
-variety of tables, they are often self-explanatory, but more clues can
+Xenos stores its values in a schema named xenos_database.  There are a
+variety of tables, they are mostly self-explanatory, but more clues can
 often be found by reviewing the scripts in db_scripts/
+
+
+
+
+
+
+
 
 
 
@@ -219,11 +268,21 @@ often be found by reviewing the scripts in db_scripts/
 Running Tomcat in SSL
 =====================
 
-I set up Tomcat to work exclusively on SSL, following the instructions at:
+Tomcat is set to work on SSL, following the instructions at:
 
 http://tomcat.apache.org/tomcat-6.0-doc/ssl-howto.html#Configuration
 
-I have made a copy of that file in this directory, at ssl-howto-tomcat.txt
+There is a copy of that file in this directory, at ssl-howto-tomcat.txt
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -237,6 +296,16 @@ SQL standards
   unless there is a mighty good reason to do so. 
 4) Describe what your SQL is meant to do, and why.
 5) Try to simplify your SQL code.
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -258,6 +327,22 @@ bk/Adding_documentation
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Git events
 ==========
 
@@ -267,6 +352,18 @@ main repo, on prime.renomad.com on the 'git' account.  In turn, that
 account sends out an email to interested parties about the push, and
 then sends to a backup account on git@ssh.renomad.com, which in turn
 gets backed-up to a sd card once a month.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -298,6 +395,17 @@ chmod u+x $XENOS_HOME/.git/hooks/*
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 Version number
 ==============
 
@@ -305,6 +413,17 @@ The version number of Xenos is configured in the database in the
 config table.  There is a stored procedure, "set_version", which takes
 an integer and sets the value to the table.  This version number is
 only to be incremented upon a release.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -335,6 +454,13 @@ or should not.  These scripts are not entirely intended to run without
 supervision - they are a way of quickly smoke testing the product, and
 having human supervision is accepable for some of the broad use cases.
 You may want to have the script finish on some page for human review.
+
+
+
+
+
+
+
 
 
 

@@ -13,8 +13,8 @@
 CREATE PROCEDURE set_version
 (IN version INT) 
 BEGIN 
-	UPDATE config set config_value = version
-	WHERE config_item = 'db_version';
+  UPDATE config set config_value = version
+  WHERE config_item = 'db_version';
 END
 
 ---DELIMITER---
@@ -30,15 +30,15 @@ CALL set_version(1);
 CREATE TABLE IF NOT EXISTS 
   user (
     user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-		username NVARCHAR(50) UNIQUE,
+    username NVARCHAR(50) UNIQUE,
     email NVARCHAR(200) UNIQUE, 
     password NVARCHAR(100),
-		points int unsigned,
-		language int unsigned NULL,
-		is_logged_in BOOL, 
-		last_time_logged_in DATETIME,
-		last_ip_logged_in VARCHAR(40),
-		rank INT NOT NULL DEFAULT 50
+    points int unsigned,
+    language int unsigned NULL,
+    is_logged_in BOOL, 
+    last_time_logged_in DATETIME,
+    last_ip_logged_in VARCHAR(40),
+    rank INT NOT NULL DEFAULT 50
   );
 
 ---DELIMITER---
@@ -146,7 +146,7 @@ END
 CREATE TABLE IF NOT EXISTS 
 languages ( 
   language_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	language_name	NVARCHAR(30)
+  language_name NVARCHAR(30)
 )
 
 ---DELIMITER---
@@ -162,9 +162,9 @@ VALUES('English'),('French'),('Spanish')
 CREATE TABLE IF NOT EXISTS 
 localization_lookup ( 
   local_id INT NOT NULL PRIMARY KEY,
-	English NVARCHAR(1000),
-	French NVARCHAR(1000),
-	Spanish NVARCHAR(1000)
+  English NVARCHAR(1000),
+  French NVARCHAR(1000),
+  Spanish NVARCHAR(1000)
 )
 
 ---DELIMITER---
@@ -172,10 +172,23 @@ localization_lookup (
 
 CREATE TABLE IF NOT EXISTS 
 request_category ( 
-  request_category_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	request_category_value VARCHAR(20),
-	localization_value INT NOT NULL DEFAULT -1
+  category_id INT NOT NULL PRIMARY KEY, -- a localization value
+  request_category_value VARCHAR(20)
 )
+
+---DELIMITER---
+-- now we put our enums into the request_category table.
+-- these are intentionally in all-caps to emphasize they are not
+-- supposed to go straight to the client.  They must be localized first.
+-- this should be easy to expand later.
+
+INSERT INTO request_category (category_id, request_category_value)
+VALUES
+(71, 'MATH'),
+(72,'PHYSICS'),
+(73,'ECONOMICS'),
+(74,'HISTORY'),
+(75,'ENGLISH');
 
 ---DELIMITER---
 -- here, we set up a table to correlate categories to a given
@@ -183,14 +196,14 @@ request_category (
 
 CREATE TABLE IF NOT EXISTS 
 request_to_category ( 
-	request_id INT NOT NULL,
+  request_id INT NOT NULL,
   request_category_id INT NOT NULL,
-  FOREIGN KEY FK_request_id_request_id (request_id) 
+  FOREIGN KEY FK_request_id (request_id) 
     REFERENCES request (request_id) 
     ON DELETE CASCADE,
   FOREIGN KEY 
-    FK_request_category_id_request_category_id (request_category_id)
-    REFERENCES request_category (request_category_id)
+    FK_request_category_id (request_category_id)
+    REFERENCES request_category (category_id)
     ON DELETE CASCADE
 )
 
@@ -200,16 +213,58 @@ request_to_category (
 CREATE TABLE IF NOT EXISTS 
 request_message ( 
   request_id INT NOT NULL,
-	message NVARCHAR(10000),
-	timestamp datetime,
-	user_id INT NOT NULL,
+  message NVARCHAR(10000),
+  timestamp datetime,
+  user_id INT NOT NULL,
   FOREIGN KEY FK_request_id (request_id)
-	REFERENCES request (request_id)
-	ON DELETE CASCADE,
+  REFERENCES request (request_id)
+  ON DELETE CASCADE,
   FOREIGN KEY FK_user_id (user_id)
-	REFERENCES user (user_id)
-	ON DELETE CASCADE
+  REFERENCES user (user_id)
+  ON DELETE CASCADE
 )
 
 
 
+---DELIMITER---
+
+-- create some audit actions.  these are the things we are going to 
+-- track the users doing.
+
+CREATE TABLE IF NOT EXISTS
+audit_actions (
+  action_id INT NOT NULL PRIMARY KEY,
+  action VARCHAR(255)
+)
+
+---DELIMITER---
+
+INSERT INTO audit_actions (action_id,action)
+VALUES
+(1,'User created a request'),
+(2,'User deleted a request'),
+(3,'User handled a request')
+
+
+---DELIMITER---
+
+-- the audit table will store the various actions taken by users.  
+-- for example,
+-- if a user deletes a request, then a row will be added here with
+-- that user's id, the request's id as "target_id", and the
+-- id of the action that took place, with a timestamp.
+
+-- there is no purpose to having an id that I can think, so I'll just
+-- set this to be keyed by timestamp.
+
+-- Given that this is just the timestamp plus 3 ints, the total size
+-- should be tiny.
+
+CREATE TABLE IF NOT EXISTS
+audit (
+  datetime DATETIME NOT NULL,
+  audit_action_id TINYINT UNSIGNED NOT NULL,
+  user_id INT, 
+  target_id INT, -- this is the thing manipulated, e.g. the request.
+  notes NVARCHAR(50) -- we'll store some relevant info here
+)
