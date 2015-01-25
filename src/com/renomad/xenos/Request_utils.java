@@ -102,7 +102,7 @@ public final class Request_utils {
       "JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
       "JOIN request_category rc "+
         "ON rc.category_id = rtc.request_category_id "+
-      "WHERE r.request_id = ? ";
+      "WHERE r.request_id = ? GROUP BY request_id";
 
     PreparedStatement pstmt = null;
     try {

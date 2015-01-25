@@ -300,8 +300,12 @@ public final class Utils {
    * @return a string safe for display in a browser.
    */
   public static String safe_render(String s) {
-    return s.replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;");
+    if (is_null_or_empty(s)) {
+      return s;
+    } else {
+      return s.replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;");
+    }
   }
 
   /**

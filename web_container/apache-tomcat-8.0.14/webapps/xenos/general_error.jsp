@@ -7,7 +7,7 @@
 <%@ page import="com.renomad.xenos.Request" %>
 <body>
 
-<h2><%=loc.get(46,"General error")</h2>
+<h2><%=loc.get(46,"General error")%></h2>
 <p><a href="dashboard.jsp"><%=loc.get(35,"Dashboard")%></a></p>
 
 </body>

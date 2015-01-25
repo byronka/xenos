@@ -1,0 +1,35 @@
+
+
+                                 HTTP Status 500 - java.lang.NullPointerException
+
+   type Exception report
+
+   message java.lang.NullPointerException
+
+   description The server encountered an internal error that prevented it from fulfilling this request.
+
+   exception
+org.apache.jasper.JasperException: java.lang.NullPointerException
+        org.apache.jasper.servlet.JspServletWrapper.handleJspException(JspServletWrapper.java:549)
+        org.apache.jasper.servlet.JspServletWrapper.service(JspServletWrapper.java:470)
+        org.apache.jasper.servlet.JspServlet.serviceJspFile(JspServlet.java:396)
+        org.apache.jasper.servlet.JspServlet.service(JspServlet.java:340)
+        javax.servlet.http.HttpServlet.service(HttpServlet.java:725)
+        org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+
+   root cause
+java.lang.NullPointerException
+        com.renomad.xenos.Utils.safe_render(Utils.java:303)
+        org.apache.jsp.request_jsp._jspService(request_jsp.java:183)
+        org.apache.jasper.runtime.HttpJspBase.service(HttpJspBase.java:70)
+        javax.servlet.http.HttpServlet.service(HttpServlet.java:725)
+        org.apache.jasper.servlet.JspServletWrapper.service(JspServletWrapper.java:432)
+        org.apache.jasper.servlet.JspServlet.serviceJspFile(JspServlet.java:396)
+        org.apache.jasper.servlet.JspServlet.service(JspServlet.java:340)
+        javax.servlet.http.HttpServlet.service(HttpServlet.java:725)
+        org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+
+   note The full stack trace of the root cause is available in the Apache Tomcat/8.0.14 logs.
+     _____________________________________________________________________________________________________
+
+  Apache Tomcat/8.0.14
