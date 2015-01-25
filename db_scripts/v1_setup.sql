@@ -33,13 +33,24 @@ CREATE TABLE IF NOT EXISTS
     username NVARCHAR(50) UNIQUE,
     email NVARCHAR(200) UNIQUE, 
     password NVARCHAR(100),
-    points int unsigned,
-    language int unsigned NULL,
+    points SMALLINT UNSIGNED, -- max-out at 65535 - keep them below that.
+    language TINYINT UNSIGNED NULL, -- 0 is English.
     is_logged_in BOOL, 
     last_time_logged_in DATETIME,
     last_ip_logged_in VARCHAR(40),
-    rank INT NOT NULL DEFAULT 50
+    rank TINYINT UNSIGNED NOT NULL DEFAULT 50, -- how they are ranked (like, in stars)
+    is_admin BOOL NOT NULL DEFAULT FALSE
   );
+
+---DELIMITER---
+
+-- create the system user and admin users
+INSERT INTO user (username, email, password, language, rank, is_admin)
+VALUES 
+('xenos_system',NULL,NULL,0,100, true),
+('admin_bk','byron@renomad.com','password',0,100, true),
+('admin_ds','dan@renomad.com','password',0,100, true)
+
 
 ---DELIMITER---
 
@@ -248,6 +259,19 @@ VALUES
 
 ---DELIMITER---
 
+-- This table will store notes about some audits when that is
+-- necessary.  Like for example, when we delete requests, they are
+-- actually deleted from the database, permanently.  So we can store
+-- some data about them here just before we delete them, for posterity.
+
+CREATE TABLE IF NOT EXISTS
+audit_notes (
+  notes_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  notes NVARCHAR(100)
+)
+
+---DELIMITER---
+
 -- the audit table will store the various actions taken by users.  
 -- for example,
 -- if a user deletes a request, then a row will be added here with
@@ -263,8 +287,51 @@ VALUES
 CREATE TABLE IF NOT EXISTS
 audit (
   datetime DATETIME NOT NULL,
-  audit_action_id TINYINT UNSIGNED NOT NULL,
-  user_id INT, 
+  audit_action_id TINYINT UNSIGNED NOT NULL, -- an enum of actions
+  user_id INT,  -- the user who caused the action
   target_id INT, -- this is the thing manipulated, e.g. the request.
-  notes NVARCHAR(50) -- we'll store some relevant info here
+  notes_id INT -- some notes about the action, see audit_notes
 )
+
+
+---DELIMITER---
+
+-- a procedure we will call to add the audit, to keep things tidy
+-- in the code.  We are adding to two tables at once, possibly (notes
+-- and audit) so to avoid having complexity in the java, we'll just
+-- call the stored procedure.
+
+CREATE PROCEDURE add_audit
+(
+  my_audit_action_id INT, 
+  my_user_id INT, 
+  my_target_id INT, 
+  my_notes NVARCHAR(100)
+) 
+BEGIN 
+  DECLARE the_audit_notes_id INT;
+
+  CASE
+    WHEN my_notes = "" -- if we get an empty string, don't add to notes
+  THEN 
+    INSERT INTO audit (
+      datetime, audit_action_id, user_id, target_id)
+      VALUES(
+        UTC_TIMESTAMP(), 
+        my_audit_action_id, 
+        my_user_id, 
+        my_target_id);
+  ELSE
+    INSERT INTO audit_notes (notes) VALUES(my_notes);
+    SET the_audit_notes_id = LAST_INSERT_ID();
+    INSERT INTO audit (
+      datetime, audit_action_id, user_id, target_id, notes_id)
+      VALUES(
+        UTC_TIMESTAMP(),     -- the current time and date
+        my_audit_action_id,  -- the action, e.g. create, delete, etc.
+        my_user_id,          -- the user causing the action
+        my_target_id,        -- the thing being acted upon
+        the_audit_notes_id); -- notes about the action ,like during delete
+  END CASE;
+
+END

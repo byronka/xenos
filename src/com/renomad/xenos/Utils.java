@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Connection;
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 
 /**
@@ -31,17 +32,14 @@ public final class Utils {
     */
   public static boolean 
     create_audit(int action_id, int user_id, int target_id, String notes) {
-    String sqlText = String.format(
-      "INSERT INTO audit "+
-      "(datetime, audit_action_id, user_id, target_id, notes) "+
-      "VALUES (UTC_TIMESTAMP(), %d, %d, %d, ?)", 
-      action_id, user_id, target_id);
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      pstmt = Database_access.prepare_statement(conn, sqlText);     
-      pstmt.setNString(1, notes);
-      return Database_access.execute_update(pstmt) > 0;
+      CallableStatement cs = conn.prepareCall(String.format(
+            "{call add_audit(%d,%d,%d,?)}",action_id,user_id,target_id));
+      cs.setNString(1, notes);
+      cs.executeUpdate();
+      return true;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return false;

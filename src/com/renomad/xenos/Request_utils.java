@@ -90,7 +90,7 @@ public final class Request_utils {
     * Gets a specific Request 
     * 
     * @param request_id the id of a particular Request
-    * @return a single Request
+    * @return a single Request, or null if failure
     */
   public static Request get_a_request(int request_id) {
     
@@ -643,17 +643,20 @@ public final class Request_utils {
     * @return true if successful
     */
   public static boolean delete_request(int request_id, int deleting_user_id) {
+    // 0. Get this request object in memory, we need some values
+    //    for auditing purposes and deducting points
+    Request request_to_delete = get_a_request(request_id);
+    if (request_to_delete == null) {
+      return false;
+    }
+
     // 1. set the sql
-    String get_points_in_request_sql = 
-      "SELECT points, requesting_user_id "+
-      "FROM request WHERE request_id = ?";
     String delete_request_sql = 
       "DELETE FROM request WHERE request_id = ?";
     String update_points_sql = 
       "UPDATE user SET points = points + ? WHERE user_id = ?";
 
     int result = -1; //default to a guard value that indicates failure
-    PreparedStatement get_pts_pstmt = null; //getting the points statement
     PreparedStatement del_pstmt = null; //the deletion statement
     PreparedStatement up_pts_pstmt = null; //updating the points statement
     Connection conn = null;
@@ -661,27 +664,10 @@ public final class Request_utils {
       // 3. get the connection and set up a statement
       conn = Database_access.get_a_connection();
 
-      //get the points on the request
-      get_pts_pstmt  = conn.prepareStatement(get_points_in_request_sql);
-      get_pts_pstmt.setInt(1, request_id); 
-      ResultSet resultSet = get_pts_pstmt.executeQuery();
-      // check that we got results
-      if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        System.err.println(
-            "Error(3): Transaction is being rolled back "+
-            "for request_id: " + result);
-        conn.rollback();
-        return false;
-      }
-      //get those points and the user
-      resultSet.next();
-      int points = resultSet.getInt("points");
-      int user_id = resultSet.getInt("requesting_user_id");
-
       //check if the user wanting the delete is the one who
       //created the Request.  If not, deny!
       //note: we may change this in the future to allow admin privs.
-      if (deleting_user_id != user_id) {
+      if (deleting_user_id != request_to_delete.requesting_user_id) {
         conn.rollback();
         return false;
       }
@@ -694,19 +680,67 @@ public final class Request_utils {
 
       up_pts_pstmt = Database_access
         .prepare_statement(conn, update_points_sql);
-      up_pts_pstmt.setInt(1,points); 
-      up_pts_pstmt.setInt(2,user_id); 
+      up_pts_pstmt.setInt(1,request_to_delete.points); 
+      up_pts_pstmt.setInt(2,request_to_delete.requesting_user_id); 
       Database_access.execute_update(up_pts_pstmt);
-      Utils.create_audit(2, deleting_user_id, request_id, "");
+
+      //get audit info notes
+      String my_notes = create_deletion_audit_notes(request_to_delete);
+
+      final int delete_action = 2;
+
+      Utils.create_audit(delete_action, deleting_user_id, request_id, my_notes);
+
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_statement(get_pts_pstmt);
       Database_access.close_statement(del_pstmt);
       Database_access.close_statement(up_pts_pstmt);
     }
     return true;
+  }
+
+
+  /**
+    * adds information for the audit of a deletion.  The special
+    * thing here is that since we are actually losing info ( we
+    * are really deleting this row) we want to keep some meta
+    * data for the future just in case.  So we collect some of
+    * the title, description, points, creation date, etc. as notes
+    */
+  private static String create_deletion_audit_notes(Request r) {
+
+      //description - get no more than 20 chars
+      String descr = r.description;
+      String cropped_desc = descr.length() <= 30 ? 
+        descr : 
+        descr.substring(0,30);
+
+      //title - get no more than 10 chars
+      String title = r.title;
+      String cropped_title = title.length() <= 20 ? 
+        title : 
+        title.substring(0,20);
+
+      String date_created = r.datetime.substring(0,10);
+      int points = r.points;
+
+      //get the status string, localized to English
+      final int admin_user_id = 1;
+      Localization loc  = new Localization(admin_user_id);
+      int loc_status_value = 
+         get_status_localization_value(r.status);
+      String status_string = loc.get(loc_status_value, "");
+
+      String my_notes = String.format("%s|%s|created:%s|pts:%d|st:%s", 
+          cropped_title, 
+          cropped_desc, 
+          date_created, 
+          points, 
+          status_string);
+
+      return my_notes;
   }
 
 

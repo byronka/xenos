@@ -31,6 +31,11 @@ public class Localization {
     this(-1, client_locale);
   }
 
+  public Localization(int user_id) {
+    this(user_id, null);
+  }
+
+
   /**
     * creates a localization object used to get local language values.
     * @param user_id the id of the logged-in user, to see if they have set
