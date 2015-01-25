@@ -7,6 +7,9 @@
 ---DELIMITER---
 
 -- add a procedure for setting version
+-- the version should be incremented every time 
+-- a release is sent to production.
+
 CREATE PROCEDURE set_version
 (IN version INT) 
 BEGIN 
@@ -15,8 +18,11 @@ BEGIN
 END
 
 ---DELIMITER---
--- Here we set the version of the database.  This needs to get incremented each release.
+-- Here we set the version of the database.  
+-- This needs to get incremented each release.
+
 CALL set_version(1);
+
 ---DELIMITER---
 
 -- create the user table
@@ -42,11 +48,17 @@ CREATE TABLE IF NOT EXISTS
 -- we want uniqueness of usernames, emails, and also usernames are
 -- not allowed to match existing emails in other users.
 
-CREATE TRIGGER trg_error_if_username_matches_other_user_email BEFORE INSERT ON user
+CREATE TRIGGER trg_error_if_username_matches_other_user_email 
+BEFORE INSERT ON user
 FOR EACH ROW
 BEGIN
     DECLARE msg VARCHAR(255);
-    SET @username_exists_as_email := (SELECT COUNT(*) FROM user WHERE NEW.username = user.email);
+    SET @username_exists_as_email := 
+      (
+        SELECT COUNT(*) 
+        FROM user 
+        WHERE NEW.username = user.email
+      );
     
     IF (@username_exists_as_email > 0) THEN
         SET msg = CONCAT('username matches existing email during insert: ', NEW.username );
@@ -70,6 +82,7 @@ request_status (
 
 
 ---DELIMITER---
+
 -- now we put our enums into the request_status table.
 -- these are intentionally in all-caps to emphasize they are not
 -- supposed to go straight to the client.  They must be localized first.
@@ -77,6 +90,7 @@ INSERT INTO request_status (request_status_value)
 VALUES('OPEN'),('CLOSED'),('TAKEN');
 
 ---DELIMITER---
+
 -- create_request_table
 
 CREATE TABLE IF NOT EXISTS 
@@ -174,7 +188,8 @@ request_to_category (
   FOREIGN KEY FK_request_id_request_id (request_id) 
     REFERENCES request (request_id) 
     ON DELETE CASCADE,
-  FOREIGN KEY FK_request_category_id_request_category_id (request_category_id)
+  FOREIGN KEY 
+    FK_request_category_id_request_category_id (request_category_id)
     REFERENCES request_category (request_category_id)
     ON DELETE CASCADE
 )
