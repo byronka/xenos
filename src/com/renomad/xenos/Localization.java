@@ -64,7 +64,7 @@ public class Localization {
     } else if (browser_language != null) {
       language = browser_language;
     } else {
-      language = 0; //English
+      language = 1; //English
     }
 
   }
@@ -90,9 +90,9 @@ public class Localization {
     * or null if nothing found.
     */
   private static Integer get_browser_language(Locale lo) {
-    if (is_language(lo, "en")) { return 0; } //English
-    if (is_language(lo, "fr")) { return 1; } //French
-    if (is_language(lo, "es")) { return 2; } //Spanish
+    if (is_language(lo, "en")) { return 1; } //English
+    if (is_language(lo, "fr")) { return 2; } //French
+    if (is_language(lo, "es")) { return 3; } //Spanish
     return null;
   }
 

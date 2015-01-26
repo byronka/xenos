@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS
     email NVARCHAR(200) UNIQUE, 
     password NVARCHAR(100),
     points SMALLINT UNSIGNED, -- max-out at 65535 - keep them below that.
-    language TINYINT UNSIGNED NULL, -- 0 is English.
+    language TINYINT UNSIGNED NULL, -- 1 is English.
     is_logged_in BOOL, 
     last_time_logged_in DATETIME,
     last_ip_logged_in VARCHAR(40),
@@ -47,9 +47,9 @@ CREATE TABLE IF NOT EXISTS
 -- create the system user and admin users
 INSERT INTO user (username, email, password, language, rank, is_admin)
 VALUES 
-('xenos_system',NULL,NULL,0,100, true),
-('admin_bk','byron@renomad.com','password',0,100, true),
-('admin_ds','dan@renomad.com','password',0,100, true)
+('xenos_system',NULL,NULL,1,100, true),
+('admin_bk','byron@renomad.com','password',1,100, true),
+('admin_ds','dan@renomad.com','password',1,100, true)
 
 
 ---DELIMITER---
@@ -156,15 +156,18 @@ END
 
 CREATE TABLE IF NOT EXISTS 
 languages ( 
-  language_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  language_id INT NOT NULL PRIMARY KEY,
   language_name NVARCHAR(30)
 )
 
 ---DELIMITER---
 -- add to a table of known languages
 
-INSERT INTO languages (language_name)
-VALUES('English'),('French'),('Spanish')
+INSERT INTO languages (language_id, language_name)
+VALUES
+(1,'English'),
+(2,'French'),
+(3,'Spanish')
 
 ---DELIMITER---
 -- create a lookup table for words and 
@@ -172,10 +175,10 @@ VALUES('English'),('French'),('Spanish')
 
 CREATE TABLE IF NOT EXISTS 
 localization_lookup ( 
-  local_id INT NOT NULL PRIMARY KEY,
-  English NVARCHAR(1000),
-  French NVARCHAR(1000),
-  Spanish NVARCHAR(1000)
+  local_id INT,
+  language TINYINT, 
+  text NVARCHAR(1000),
+  PRIMARY KEY (local_id, language)
 )
 
 ---DELIMITER---
