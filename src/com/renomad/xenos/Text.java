@@ -3,6 +3,8 @@ package com.renomad.xenos;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -60,6 +62,45 @@ public class Text implements javax.servlet.ServletContextListener {
 
 
   /**
+    * returns a list of mappings between locale id's ('en') and 
+    * their numeric id's in this system (1,2, etc.)
+    * @return List of Strings representing language locales or
+    * null if failure.
+    */
+  public ArrayList<String> get_language_mappings_from_db() {
+    String sqlText = 
+      "SELECT language_id, locale_id "+
+      "FROM languages ORDER BY language_id ASC; ";
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return null;
+      }
+
+      //keep adding rows of data while there is more data
+      int language_num = get_number_of_languages();
+      ArrayList<String> locales = new ArrayList<String>(language_num+1); 
+      while(resultSet.next()) {
+        String lo_id = resultSet.getString("locale_id");
+        int la_id = resultSet.getInt("language_id");
+        locales.add(la_id, lo_id); 
+      }
+      locales.trimToSize();
+
+      return locales;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
     * returns the number of localized words/phrases
     * or 0 if failure
     */
@@ -98,6 +139,18 @@ public class Text implements javax.servlet.ServletContextListener {
   private static String[][] words_array;
 
   /**
+    * This contains the mappings between the language locale text
+    * ('en') and the id we use for it (1)
+    */
+  private static ArrayList<String> language_mappings;
+
+
+  public static List<String> get_language_mappings() {
+    return new ArrayList<String>(language_mappings);
+  }
+
+
+  /**
    * This method gets called only once - when Xenos is started.  It
    * fills an array with all the localizations found in the database.
    * This way, localizing words is damn fast.
@@ -106,6 +159,7 @@ public class Text implements javax.servlet.ServletContextListener {
     //maximum number of words to localize
     int max = get_maximum_words(); 
     assemble_localized_words_array(max);
+    language_mappings = get_language_mappings_from_db();
     
   }
 

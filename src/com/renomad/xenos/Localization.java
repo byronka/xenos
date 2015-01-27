@@ -1,5 +1,6 @@
 package com.renomad.xenos;
 
+import java.util.List;
 import com.renomad.xenos.User_utils;
 import com.renomad.xenos.Text;
 import java.util.Locale;
@@ -90,11 +91,18 @@ public class Localization {
     * or null if nothing found.
     */
   private static Integer get_browser_language(Locale lo) {
-    if (is_language(lo, "en")) { return 1; } //English
-    if (is_language(lo, "fr")) { return 2; } //French
-    if (is_language(lo, "es")) { return 3; } //Spanish
+    List<String> mappings = Text.get_language_mappings();
+    for (int i = 1; i < mappings.length(); i++) {
+      if (Utils.is_null_or_empty(mappings.get(i))) {
+        continue;
+      }
+      if (is_language(lo, mappings[i])) {return i;}
+    }
     return null;
   }
+
+
+
 
   /**
     * Helper method to avoid a lot of wordy boiler plate code.

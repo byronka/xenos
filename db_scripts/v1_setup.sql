@@ -157,17 +157,20 @@ END
 CREATE TABLE IF NOT EXISTS 
 languages ( 
   language_id INT NOT NULL PRIMARY KEY,
-  language_name NVARCHAR(30)
+  language_name NVARCHAR(30),
+  locale_id VARCHAR(8) -- this is the character identifier for a language, like 'en-us'
 )
 
 ---DELIMITER---
 -- add to a table of known languages
 
-INSERT INTO languages (language_id, language_name)
+INSERT INTO languages (language_id, language_name, locale_id)
 VALUES
-(1,'English'),
-(2,'French'),
-(3,'Spanish')
+(1,'English', 'en'),
+(2,'French',  'fr'),
+(3,'Spanish', 'es'),
+(4,'Chinese', 'zh'),
+(5,'Hebrew',  'he')
 
 ---DELIMITER---
 -- create a lookup table for words and 

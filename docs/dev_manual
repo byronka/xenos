@@ -197,17 +197,22 @@ commands for major functionalities, e.g. building, cleaning, etc.
 Localization
 ============
 
-The localization mechanism is fairly simple.  All the words that come from
-Xenos system, that is, the non-user-editable words, need to exist for
-multiple languages.  That way we can roll this out across the world.  To do
-that, there exists a very minimalistic localization tool.  When Tomcat first
-starts up the app, it pulls from the database all the values in the
-localization_lookup table. This contains words and phrases in English,
-along with translations in other languages.  It stores all those values
-into a static value that remains in memory.  Succinctly, all the
-localization values sit, unchanging, in memory.  Whenever a page needs
-values, it runs the command Localization.get(), along with the index of the
-value it needs and the phrase it needs localized.  
+The localization mechanism is fairly simple.  All the words that come
+from Xenos system, that is, the non-user-editable words, need to exist
+for multiple languages.  That way we can roll this out across the
+world.  
+
+To do that, there exists a very minimalistic localization tool.  
+
+When Tomcat first starts up the app, it pulls from the database all
+the values in the localization_lookup table. This contains words and
+phrases in English, along with translations in other languages.  It
+stores all those values into a static value that remains in memory.  
+
+Succinctly, all the localization values sit, unchanging, in memory.
+Whenever a page needs values, it runs the command Localization.get(),
+along with the index of the value it needs and the phrase it needs
+localized.  
 
 
 
