@@ -338,3 +338,30 @@ BEGIN
   END CASE;
 
 END
+
+
+---DELIMITER---
+
+CREATE PROCEDURE tester
+(
+	request_id INT,
+	title NVARCHAR(255)
+) 
+BEGIN 
+	SET @get_request = 'SELECT * FROM request WHERE 1=1 ';
+
+	IF request_id > 0 THEN
+		SET @rid = request_id;
+		SET @get_request = CONCAT(@get_request, ' AND request_id = @rid ');
+	END IF;
+
+	IF title <> '' THEN
+		SET @title = title;
+		SET @get_request = CONCAT(@get_request, ' AND title = @title ');
+	END IF;
+
+	PREPARE get_request FROM @get_request;
+	EXECUTE get_request; 
+	DEALLOCATE PREPARE get_request;
+END
+
