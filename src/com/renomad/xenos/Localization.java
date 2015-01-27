@@ -1,6 +1,5 @@
 package com.renomad.xenos;
 
-import java.util.List;
 import com.renomad.xenos.User_utils;
 import com.renomad.xenos.Text;
 import java.util.Locale;
@@ -85,17 +84,15 @@ public class Localization {
 
 
   /**
-    * This method gets the language to use from the locale
+    * This method gets the id of the language to use from the locale
     * @param client_locale the localization info as sent by the browser.
     * @return an integer representing one of our languages we localize for,
     * or null if nothing found.
     */
   private static Integer get_browser_language(Locale lo) {
-    List<String> mappings = Text.get_language_mappings();
-    for (int i = 1; i < mappings.length(); i++) {
-      if (Utils.is_null_or_empty(mappings.get(i))) {
-        continue;
-      }
+    String[] mappings = Text.get_language_mappings();
+		//the languages start at 1
+    for (int i = 1; i < mappings.length; i++) {
       if (is_language(lo, mappings[i])) {return i;}
     }
     return null;
@@ -107,11 +104,15 @@ public class Localization {
   /**
     * Helper method to avoid a lot of wordy boiler plate code.
     * @param client_locale the locale for a client
-    * @param language a 2-letter language code, like en, fr, or es (English, French, Spanish)
+		* @param language a 2-letter language code, like en, fr, or es
+		* (English, French, Spanish)
     * @return true if the locale is the language indicated, false otherwise.
     */
-  private static boolean is_language(Locale client_locale, String language) {
-    return client_locale.getLanguage().equals(new Locale(language).getLanguage());
+  private static boolean 
+		is_language(Locale client_locale, String language) {
+    return client_locale
+			.getLanguage()
+			.equals(new Locale(language).getLanguage());
   }
 
 

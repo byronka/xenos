@@ -141,15 +141,20 @@ public final class Build_db_schema {
   private static void create_database() {
     //create the database
       run_sql_statement_before_db_exists(
-          "CREATE DATABASE IF NOT EXISTS xenos_database;");
+				"CREATE DATABASE xenos_database " +
+				"DEFAULT CHARACTER SET utf8 " + 
+				"COLLATE utf8_general_ci " +
+				"DEFAULT COLLATE utf8_general_ci; ");
 
     //create the config table
       run_sql_statement(
-        "CREATE TABLE config (config_item VARCHAR(200), config_value VARCHAR(200));");
+        "CREATE TABLE config "+
+				"(config_item VARCHAR(200), config_value VARCHAR(200));");
 
     //set the version to 0
       run_sql_statement(
-        "INSERT config (config_item, config_value) values ('db_version', '0');");
+        "INSERT config "+
+				"(config_item, config_value) values ('db_version', '0');");
   }
 
   /**

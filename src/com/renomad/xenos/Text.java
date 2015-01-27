@@ -3,8 +3,7 @@ package com.renomad.xenos;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -67,7 +66,7 @@ public class Text implements javax.servlet.ServletContextListener {
     * @return List of Strings representing language locales or
     * null if failure.
     */
-  public ArrayList<String> get_language_mappings_from_db() {
+  public String[] get_language_mappings_from_db() {
     String sqlText = 
       "SELECT language_id, locale_id "+
       "FROM languages ORDER BY language_id ASC; ";
@@ -82,13 +81,12 @@ public class Text implements javax.servlet.ServletContextListener {
 
       //keep adding rows of data while there is more data
       int language_num = get_number_of_languages();
-      ArrayList<String> locales = new ArrayList<String>(language_num+1); 
+      String[] locales = new String[language_num+1]; 
       while(resultSet.next()) {
         String lo_id = resultSet.getString("locale_id");
         int la_id = resultSet.getInt("language_id");
-        locales.add(la_id, lo_id); 
+        locales[la_id] = lo_id; 
       }
-      locales.trimToSize();
 
       return locales;
     } catch (SQLException ex) {
@@ -142,11 +140,15 @@ public class Text implements javax.servlet.ServletContextListener {
     * This contains the mappings between the language locale text
     * ('en') and the id we use for it (1)
     */
-  private static ArrayList<String> language_mappings;
+  private static String[] language_mappings;
 
 
-  public static List<String> get_language_mappings() {
-    return new ArrayList<String>(language_mappings);
+	/**
+		* provides a public getter for the language_mappings
+		* static array.  Returns a copy, to keep secure access.
+		*/
+  public static String[] get_language_mappings() {
+    return Arrays.copyOf(language_mappings, language_mappings.length);
   }
 
 

@@ -41,6 +41,6 @@
 		type="javax.sql.DataSource" maxActive="100" maxIdle="30"
 		maxWait="10000" username="xenosuser" password="password1"
 		driverClassName="com.mysql.jdbc.Driver"
-		url="jdbc:mysql://localhost/xenos_database" />
+		url="jdbc:mysql://localhost/xenos_database?useUnicode=yes&amp;characterEncoding=UTF-8" />
 
 </Context>

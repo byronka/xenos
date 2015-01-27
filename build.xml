@@ -30,9 +30,9 @@
 
 	<!-- Connection strings -->
 	<property name="conn.str.with.db"
-		value="CONNECTION_STRING_WITH_DB=jdbc:mysql://localhost/xenos_database?user=xenosuser&amp;password=password1" />
+		value="CONNECTION_STRING_WITH_DB=jdbc:mysql://localhost/xenos_database?user=xenosuser&amp;password=password1&amp;useUnicode=yes&amp;characterEncoding=UTF-8" />
 	<property name="conn.str.without.db"
-		value="CONNECTION_STRING_WITHOUT_DB=jdbc:mysql://localhost/?user=xenosuser&amp;password=password1" />
+		value="CONNECTION_STRING_WITHOUT_DB=jdbc:mysql://localhost/?user=xenosuser&amp;password=password1&amp;useUnicode=yes&amp;characterEncoding=UTF-8" />
 
 	<!-- static code analysis -->
 	<property name="lint4j.dist.dir"
