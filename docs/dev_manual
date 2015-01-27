@@ -292,10 +292,13 @@ SQL standards
 
 1) Only add triggers for error conditions.
 2) Don't cascade triggers.  We don't want impossible-to-comprehend events.
-3) Try to keep most SQL inside the java code with prepared statements,
-  unless there is a mighty good reason to do so. 
-4) Describe what your SQL is meant to do, and why.
-5) Try to simplify your SQL code.
+3) Describe what your SQL is meant to do, and why.
+4) Try to simplify your SQL code.
+5) A great way to make your work transparent while you are writing it
+  is to include a select statement indicating the query.  For example,
+  if you are writing a stored procedure, include near the end a SELECT
+  @query to print out the resulting SQL so you can understand what the
+  database is thinking.
 
 
 

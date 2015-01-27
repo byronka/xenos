@@ -167,7 +167,7 @@ public final class Database_access {
 
 
   /**
-    * Wrapper around PreparedStatement.close() to avoid having to
+    * Wrapper around Statement.close() to avoid having to
     * litter my code with try-catch and to close things in the proper order.
     */
   public static void close_statement(Statement s) {

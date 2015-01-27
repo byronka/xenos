@@ -8,11 +8,38 @@
   String qs = request.getQueryString();
 
   java.util.Map<String,String> params = Utils.parse_qs(qs);
-  String srch_date = params.get("da"); //date
-  String srch_ti = params.get("ti"); //title
+
+  //extract dates
+  String srch_date = params.get("da"); 
+  String srch_startdate = "";
+  String srch_enddate = "";
+  if (srch_date != null) {
+    String[] srch_dates = srch_date.split(",");
+    if (srch_dates.length > 0) {
+      srch_startdate = srch_dates[0];
+    }
+    if (srch_dates.length > 1) {
+      srch_enddate = srch_dates[1];
+    }
+  }
+
+  //extract points
+  Integer srch_minpts = null;
+  Integer srch_maxpts = null;
   String srch_pts = params.get("pts"); //points
+  if (srch_pts != null) {
+    String[] srch_pts_array = srch_pts.split(",");
+    if (srch_pts_array.length > 0) {
+      srch_minpts = Utils.parse_int(srch_pts_array[0]);
+    }
+    if (srch_pts_array.length > 1) {
+      srch_maxpts = Utils.parse_int(srch_pts_array[1]);
+    }
+  }
+
   String srch_cat = params.get("cat"); //categories
-  String srch_us = params.get("us"); //user
+  String srch_ti = params.get("ti"); //title
+  String srch_us = params.get("us"); //users
   String srch_sta = params.get("sta"); //status
 
   Integer which_page = Utils.parse_int(params.get("page"));
@@ -56,11 +83,14 @@
 <div class="requests others">
 <%
   Request_utils.Search_Object so = 
-    new Request_utils.Search_Object(  srch_date, 
+    new Request_utils.Search_Object(  
+                                      srch_startdate, 
+                                      srch_enddate, 
                                       srch_ti, 
                                       srch_cat, 
                                       srch_sta, 
-                                      srch_pts, 
+                                      srch_minpts, 
+                                      srch_maxpts, 
                                       srch_us);
   Others_Request[] others_requests = 
     Request_utils.get_others_requests(user_id, 

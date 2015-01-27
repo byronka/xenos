@@ -32,10 +32,10 @@ public final class Utils {
     */
   public static boolean 
     create_audit(int action_id, int user_id, int target_id, String notes) {
-    PreparedStatement pstmt = null;
+    CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      CallableStatement cs = conn.prepareCall(String.format(
+      cs = conn.prepareCall(String.format(
             "{call add_audit(%d,%d,%d,?)}",action_id,user_id,target_id));
       cs.setNString(1, notes);
       cs.executeUpdate();
@@ -44,7 +44,7 @@ public final class Utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_statement(pstmt);
+      Database_access.close_statement(cs);
     }
   }
 

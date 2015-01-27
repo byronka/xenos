@@ -29,7 +29,7 @@ CALL set_version(1);
 
 CREATE TABLE IF NOT EXISTS 
   user (
-    user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+    user_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
     username NVARCHAR(50) UNIQUE,
     email NVARCHAR(200) UNIQUE, 
     password NVARCHAR(100),
@@ -106,13 +106,13 @@ VALUES('OPEN'),('CLOSED'),('TAKEN');
 
 CREATE TABLE IF NOT EXISTS 
 request ( 
-  request_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  request_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   datetime DATETIME,
   description NVARCHAR(10000),
   points INT UNSIGNED,
   status INT,
   title NVARCHAR(255),
-  requesting_user_id INT NOT NULL,
+  requesting_user_id INT UNSIGNED NOT NULL,
   FOREIGN KEY FK_requesting_user_user_id (requesting_user_id) 
     REFERENCES user (user_id) 
     ON DELETE CASCADE,
@@ -186,7 +186,7 @@ localization_lookup (
 
 CREATE TABLE IF NOT EXISTS 
 request_category ( 
-  category_id INT NOT NULL PRIMARY KEY, -- a localization value
+  category_id INT UNSIGNED NOT NULL PRIMARY KEY, -- a localization value
   request_category_value VARCHAR(20)
 )
 
@@ -210,8 +210,8 @@ VALUES
 
 CREATE TABLE IF NOT EXISTS 
 request_to_category ( 
-  request_id INT NOT NULL,
-  request_category_id INT NOT NULL,
+  request_id INT UNSIGNED NOT NULL,
+  request_category_id INT UNSIGNED NOT NULL,
   FOREIGN KEY FK_request_id (request_id) 
     REFERENCES request (request_id) 
     ON DELETE CASCADE,
@@ -226,10 +226,10 @@ request_to_category (
 
 CREATE TABLE IF NOT EXISTS 
 request_message ( 
-  request_id INT NOT NULL,
+  request_id INT UNSIGNED NOT NULL,
   message NVARCHAR(10000),
   timestamp datetime,
-  user_id INT NOT NULL,
+  user_id INT UNSIGNED NOT NULL,
   FOREIGN KEY FK_request_id (request_id)
   REFERENCES request (request_id)
   ON DELETE CASCADE,
@@ -247,7 +247,7 @@ request_message (
 
 CREATE TABLE IF NOT EXISTS
 audit_actions (
-  action_id INT NOT NULL PRIMARY KEY,
+  action_id TINYINT UNSIGNED NOT NULL PRIMARY KEY,
   action VARCHAR(255)
 )
 
@@ -269,7 +269,7 @@ VALUES
 
 CREATE TABLE IF NOT EXISTS
 audit_notes (
-  notes_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  notes_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   notes NVARCHAR(100)
 )
 
@@ -291,9 +291,9 @@ CREATE TABLE IF NOT EXISTS
 audit (
   datetime DATETIME NOT NULL,
   audit_action_id TINYINT UNSIGNED NOT NULL, -- an enum of actions
-  user_id INT,  -- the user who caused the action
-  target_id INT, -- this is the thing manipulated, e.g. the request.
-  notes_id INT -- some notes about the action, see audit_notes
+  user_id INT UNSIGNED ,  -- the user who caused the action
+  target_id INT UNSIGNED, -- this is the thing manipulated, e.g. the request.
+  notes_id INT UNSIGNED -- some notes about the action, see audit_notes
 )
 
 
@@ -306,13 +306,13 @@ audit (
 
 CREATE PROCEDURE add_audit
 (
-  my_audit_action_id INT, 
-  my_user_id INT, 
-  my_target_id INT, 
+  my_audit_action_id INT UNSIGNED, 
+  my_user_id INT UNSIGNED, 
+  my_target_id INT UNSIGNED, 
   my_notes NVARCHAR(100)
 ) 
 BEGIN 
-  DECLARE the_audit_notes_id INT;
+  DECLARE the_audit_notes_id INT UNSIGNED;
 
   CASE
     WHEN my_notes = "" -- if we get an empty string, don't add to notes
@@ -342,26 +342,102 @@ END
 
 ---DELIMITER---
 
-CREATE PROCEDURE tester
+CREATE PROCEDURE get_others_requests
 (
-	request_id INT,
-	title NVARCHAR(255)
+  requesting_user_id INT UNSIGNED,
+	title NVARCHAR(255),
+  startdate VARCHAR(10),
+  enddate VARCHAR(10),
+  status VARCHAR(50), -- can be many INT's separated by commas
+  categories VARCHAR(50),
+  minpoints SMALLINT UNSIGNED,
+  maxpoints SMALLINT UNSIGNED,
+  user_id VARCHAR(50), -- can be many INT's separated by commas
+  page INT UNSIGNED
 ) 
 BEGIN 
-	SET @get_request = 'SELECT * FROM request WHERE 1=1 ';
+	SET @search_clauses = ""; -- we'll build up all our search clauses on this.
+         
+  -- searching by points
+  IF minpoints > 0 AND maxpoints > 0 THEN
+    SET @minpoints = minpoints;
+    SET @maxpoints = maxpoints;
+    SET @search_clauses = CONCAT(@search_clauses, ' AND @minpoints <= points AND points <= @maxpoints ');
+  ELSEIF minpoints > 0 THEN
+    SET @minpoints = minpoints;
+    SET @search_clauses = CONCAT(@search_clauses, ' AND @minpoints <= points ');
+  ELSEIF maxpoints > 0 THEN
+    SET @maxpoints = maxpoints;
+    SET @search_clauses = CONCAT(@search_clauses, ' AND @maxpoints >= points ');
+  END IF;
 
-	IF request_id > 0 THEN
-		SET @rid = request_id;
-		SET @get_request = CONCAT(@get_request, ' AND request_id = @rid ');
-	END IF;
+  -- searching by status
+  IF status <> '' THEN
+    SET @search_clauses = CONCAT(@search_clauses, ' AND status IN (',status,') ');
+  END IF;
 
+  -- searching by categories
+  IF categories <> '' THEN
+    SET @search_clauses = CONCAT(@search_clauses, ' AND rc.category_id IN (',categories,') ');
+  END IF;
+
+  -- searching by requesting user
+  IF user_id <> '' THEN
+    SET @search_clauses = CONCAT(@search_clauses, ' AND requesting_user_id IN (', user_id ,')');
+  END IF;
+  
+  -- searching by dates
+  IF startdate <> '' AND enddate <> '' THEN
+    SET @startdate = startdate;
+    SET @enddate = enddate;
+    SET @search_clauses = CONCAT(@search_clauses, ' AND datetime >= @startdate AND datetime <= @enddate ');
+  ELSEIF startdate <> '' THEN
+    SET @startdate = startdate;
+    SET @search_clauses = CONCAT(@search_clauses, ' AND datetime >= @startdate ');
+  ELSEIF enddate <> '' THEN
+    SET @enddate = enddate;
+    SET @search_clauses = CONCAT(@search_clauses, ' AND datetime <= @enddate ');
+  END IF;
+
+  -- searching by title
 	IF title <> '' THEN
 		SET @title = title;
-		SET @get_request = CONCAT(@get_request, ' AND title = @title ');
+		SET @search_clauses = CONCAT(@search_clauses, " AND title LIKE CONCAT('%' , @title , '%') ");
 	END IF;
 
+  -- getting the requesting user, and rows for paging
+  SET @ruid = requesting_user_id;
+
+  -- set up paging.  Right now it's always 10 or less rows on the page.
+  SET @first_row = page * 10;
+  SET @last_row = (page * 10) + 10;
+
+  -- the prime request
+  SET @get_request = 
+     CONCAT('SELECT r.request_id, 
+            r.datetime, 
+            r.description, 
+            r.status, 
+            r.points, 
+            r.title, 
+            u.rank, 
+            r.requesting_user_id, 
+            GROUP_CONCAT(rc.category_id SEPARATOR ",") 
+            AS categories 
+            FROM request r 
+            JOIN request_to_category rtc ON rtc.request_id = r.request_id 
+            JOIN request_category rc 
+              ON rc.category_id = rtc.request_category_id 
+            JOIN user u ON u.user_id = r.requesting_user_id 
+            WHERE requesting_user_id <> @ruid
+            ', @search_clauses ,'
+            GROUP BY r.request_id 
+            ORDER BY r.request_id ASC
+            LIMIT ',@first_row,',',@last_row );
+
+
+  -- prepare and execute!
 	PREPARE get_request FROM @get_request;
 	EXECUTE get_request; 
-	DEALLOCATE PREPARE get_request;
 END
 
