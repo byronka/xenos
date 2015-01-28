@@ -162,7 +162,7 @@
 </div>
 
 <form method="GET" action="dashboard.jsp">
-  <span>Page</span>
+  <span><%=loc.get(93, "Page")%></span>
   <select name="page">
     <%for (int i = 0; i < 4; i++) {
     if (which_page == i) {%>

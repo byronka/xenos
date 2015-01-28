@@ -13,13 +13,16 @@
 String category = "";
 String statuses = "";
 String title = "";
-String points = "";
-String date = "";
+String minpoints = "";
+String maxpoints = "";
+String startdate = "";
+String enddate = "";
 String users = "";
 
 String stat_error_msg = "";
 String cat_error_msg = "";
-String da_error_msg = ""; //date
+String st_da_error_msg = ""; //date
+String end_da_error_msg = ""; //date
 String user_error_msg = ""; 
 
 if (request.getMethod().equals("POST")) {
@@ -30,8 +33,11 @@ if (request.getMethod().equals("POST")) {
     title = "";
   }
 
-  if ((points = request.getParameter("points")) == null) {
-    points = "";
+  if ((minpoints = request.getParameter("minpoints")) == null) {
+    minpoints = "";
+  }
+  if ((maxpoints = request.getParameter("maxpoints")) == null) {
+    maxpoints = "";
   }
 
 
@@ -71,19 +77,25 @@ if (request.getMethod().equals("POST")) {
 
 
   //parse out the date
-  if ((date = request.getParameter("date")) == null) {
-    date = "";
+  if ((startdate = request.getParameter("startdate")) == null) {
+    startdate = "";
+  }
+  if ((enddate = request.getParameter("enddate")) == null) {
+    enddate = "";
   }
 
   //a proper date will look like:
   // 2014-12-18 21:22:42
   // or 0000 to 9999, dash, 0 to 12, number varying between 1 and 31 depending on month,space
   //, 0 to 23, colon, 0 to 59, colon, 0 to 59
-  if(date.length() > 0 && !Utils.is_valid_date(date)) {
+  if(startdate.length() > 0 && !Utils.is_valid_date(startdate)) {
     validation_error |= true;
-    da_error_msg = loc.get(83,"Invalid date");
+    st_da_error_msg = loc.get(83,"Invalid date");
   }
-
+  if(enddate.length() > 0 && !Utils.is_valid_date(enddate)) {
+    validation_error |= true;
+    end_da_error_msg = loc.get(83,"Invalid date");
+  }
 
   //parse out the user
   if ((users = request.getParameter("users")) == null) {
@@ -105,8 +117,8 @@ if (request.getMethod().equals("POST")) {
 
   if(!validation_error) {
     String dashboard_string = String.format(
-        "dashboard.jsp?da=%s&ti=%s&pts=%s&cat=%s&us=%s&sta=%s",
-         date,title,points,categories,user_ids,statuses );
+        "dashboard.jsp?da=%s,%s&ti=%s&pts=%s,%s&cat=%s&us=%s&sta=%s",
+         startdate,enddate,title,minpoints,maxpoints,categories,user_ids,statuses );
     response.sendRedirect(dashboard_string);
     return;
   }
@@ -119,27 +131,22 @@ if (request.getMethod().equals("POST")) {
     <form method="POST" action="advanced_search.jsp">
       <p>
       <div class="help-text">
-        enter words to search in a title
+        <%=loc.get(90,"Enter words to search in a title")%>
       </div>
       <%=loc.get(12,"Title")%>: 
       <input type="text" name="title" value="<%=title%>"/> 
       </p>
 
+    <b><%=loc.get(25,"Date")%></b>
     <p>
-      <div class="help-text">
-        To use date search: enter a date in one of the following
-        formats:
-        <p> A) date            (a single date) ex: 2014-12-18</p>
-        <p>B) date-date       (a date range) ex:
-        2014-12-18-2014-12-22</p>
-        <p>C) date-           (a date range, starting at date, ending
-        forever)</p>
-        <p>D) -date           (a date range, starting in the past,
-        </p>
-      </div>
-      <%=loc.get(25,"Date")%>: 
-      <input type="text" name="date" value="<%=date%>" /> 
-      <span><%=da_error_msg%></span>
+      <%=loc.get(86,"Start date")%>: 
+      <input type="text" name="startdate" value="<%=startdate%>" /> 
+      <span><%=st_da_error_msg%></span>
+    </p>
+    <p>
+      <%=loc.get(87,"End date")%>: 
+      <input type="text" name="enddate" value="<%=enddate%>" /> 
+      <span><%=end_da_error_msg%></span>
     </p>
 
     <p>
@@ -148,20 +155,20 @@ if (request.getMethod().equals("POST")) {
       <span><%=stat_error_msg%></span>
     </p>
 
+    <b><%=loc.get(11,"Points")%></b>
     <p>
-    <div class="help-text">
-      <p> case A) points            Just a single value, "points"</p>
-      <p> case B) points-points     a range of values, "points" to "points" </p>
-      <p> case C) -points           anything up to "points"</p>
-      <p> case D) points-           from "points" up</p>
-    </div>
-    <%=loc.get(11,"Points")%>: 
-    <input type="text" name="points" value="<%=points%>" />
+    <%=loc.get(88,"Minimum points")%>: 
+    <input type="text" name="minpoints" value="<%=minpoints%>" />
+    </p>
+
+    <p>
+    <%=loc.get(89,"Maximum points")%>: 
+    <input type="text" name="maxpoints" value="<%=maxpoints%>" />
     </p>
 
     <p>
     <div class="help-text">
-      enter one or more usernames separated by spaces
+      <%=loc.get(91,"Enter one or more usernames separated by spaces")%>
     </div>
       <%=loc.get(80,"User")%>: 
       <input type="text" name="users" value="<%=users%>" />
@@ -171,7 +178,7 @@ if (request.getMethod().equals("POST")) {
 
     <p>
     <div class="help-text">
-      enter one or more categories separated by spaces
+      <%=loc.get(92,"Enter one or more categories separated by spaces")%>
     </div>
       <%=loc.get(13,"Categories")%>: 
       <input type="text" name="categories" value="<%=category%>" />
