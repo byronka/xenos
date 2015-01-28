@@ -456,3 +456,50 @@ BEGIN
 	EXECUTE get_request; 
 END
 
+---DELIMITER---
+
+CREATE PROCEDURE put_request
+(
+  description NVARCHAR(10000),
+  requesting_user_id INT UNSIGNED,
+	title NVARCHAR(255),
+  points INT UNSIGNED, 
+  categories VARCHAR(50),
+  OUT new_request_id INT UNSIGNED
+) 
+BEGIN 
+  -- A) The main part - add the request to that table.
+  SET @desc = description;
+  SET @points = points;
+  SET @title = title;
+  SET @status = 1; -- requests always start 'open'
+  SET @ruid = requesting_user_id;
+	SET @insert_clause = 
+      "INSERT into request (description, datetime, points,
+       status, title, requesting_user_id)
+       VALUES (@desc, UTC_TIMESTAMP(), @points, @status, @title, @ruid)"; 
+         
+	PREPARE insert_clause FROM @insert_clause;
+	EXECUTE insert_clause; 
+  SET @new_request_id = LAST_INSERT_ID();
+
+
+  -- B) Add categories.
+  CREATE TEMPORARY TABLE CAT_IDS (id INT);
+  SET @cat_sql = CONCAT('INSERT INTO CAT_IDS (id) VALUES ',categories);
+	PREPARE cat_sql FROM @cat_sql;
+	EXECUTE cat_sql; 
+  INSERT INTO request_to_category (request_id, request_category_id)
+  SELECT @new_request_id, id FROM CAT_IDS;
+  DROP TABLE CAT_IDS;
+
+  -- C) Deduct points from the user
+  SET @update_points_sql = 
+    "UPDATE user SET points = points - @points WHERE user_id = @ruid";
+	PREPARE update_points_sql FROM @update_points_sql;
+	EXECUTE update_points_sql; 
+
+  -- D) Add an audit
+  CALL add_audit(1,@ruid,@new_request_id,'');
+END
+
