@@ -503,3 +503,30 @@ BEGIN
   CALL add_audit(1,@ruid,@new_request_id,'');
 END
 
+---DELIMITER---
+
+CREATE PROCEDURE put_message
+(
+  message NVARCHAR(10000),
+  user_id INT UNSIGNED,
+  request_id INT UNSIGNED
+) 
+BEGIN 
+  -- A) The main part - add the request to that table.
+  SET @message = message;
+  SET @user_id = user_id;
+  SET @request_id = request_id;
+
+	SET @insert_clause = 
+     "INSERT into request_message (message, request_id, user_id, timestamp)
+      SELECT 
+      CONCAT(username,' says:', @message), 
+      @request_id, 
+      user_id, 
+      UTC_TIMESTAMP()
+      FROM user WHERE user_id = @user_id";
+ 
+	PREPARE insert_clause FROM @insert_clause;
+	EXECUTE insert_clause; 
+END
+

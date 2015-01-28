@@ -630,39 +630,22 @@ public final class Request_utils {
   public static boolean 
     set_message(String msg, int request_id, int user_id) {
 
-    // 1. set the sql
-      String sqlText = 
-      "INSERT INTO request_message "+
-      "(message, request_id, user_id, timestamp)"+
-      "SELECT DISTINCT "+
-        "CONCAT(u.username,' says:', ?), ?, u.user_id, UTC_TIMESTAMP() "+
-      "FROM user u "+
-      "JOIN request_message rm ON rm.user_id = u.user_id "+
-      "WHERE u.user_id = ? LIMIT 1";
-
-    // 2. set up values we'll need outside the try
-    boolean result = false;
-    PreparedStatement pstmt = null;
+    CallableStatement cs = null;
     try {
-      // 3. get the connection and set up a statement
       Connection conn = Database_access.get_a_connection();
-      pstmt = Database_access.prepare_statement(
-          conn, sqlText);     
-      // 4. set values into the statement
-      pstmt.setNString( 1, msg );
-      pstmt.setInt( 2, request_id);
-      pstmt.setInt( 3, user_id);
-      // 5. execute a statement
-      result = Database_access.execute_update(pstmt) > 0;
-      // 10. cleanup and exceptions
-      return result;
+      // see db_scripts/v1_setup.sql get_others_requests for
+      // details on this stored procedure.
+      cs = conn.prepareCall(String.format(
+        "{call put_message(?,%d,%d)}" ,user_id, request_id));
+      cs.setNString(1, msg);
+      cs.execute();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_statement(pstmt);
+      Database_access.close_statement(cs);
     }
-
+    return true;
   }
 
   /**
