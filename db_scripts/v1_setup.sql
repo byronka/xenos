@@ -33,12 +33,12 @@ CREATE TABLE IF NOT EXISTS
     username NVARCHAR(50) UNIQUE,
     email NVARCHAR(200) UNIQUE, 
     password NVARCHAR(100),
-    points SMALLINT UNSIGNED, -- max-out at 65535 - keep them below that.
-    language TINYINT UNSIGNED NULL, -- 1 is English.
+    points INT UNSIGNED, -- max-out at 65535 - keep them below that.
+    language INT UNSIGNED NULL, -- 1 is English.
     is_logged_in BOOL, 
     last_time_logged_in DATETIME,
     last_ip_logged_in VARCHAR(40),
-    rank TINYINT UNSIGNED NOT NULL DEFAULT 50, -- how they are ranked (like, in stars)
+    rank INT UNSIGNED NOT NULL DEFAULT 50, -- how they are ranked (like, in stars)
     is_admin BOOL NOT NULL DEFAULT FALSE
   );
 
@@ -179,7 +179,7 @@ VALUES
 CREATE TABLE IF NOT EXISTS 
 localization_lookup ( 
   local_id INT,
-  language TINYINT, 
+  language INT, 
   text NVARCHAR(1000),
   PRIMARY KEY (local_id, language)
 )
@@ -250,7 +250,7 @@ request_message (
 
 CREATE TABLE IF NOT EXISTS
 audit_actions (
-  action_id TINYINT UNSIGNED NOT NULL PRIMARY KEY,
+  action_id INT UNSIGNED NOT NULL PRIMARY KEY,
   action VARCHAR(255)
 )
 
@@ -293,7 +293,7 @@ audit_notes (
 CREATE TABLE IF NOT EXISTS
 audit (
   datetime DATETIME NOT NULL,
-  audit_action_id TINYINT UNSIGNED NOT NULL, -- an enum of actions
+  audit_action_id INT UNSIGNED NOT NULL, -- an enum of actions
   user_id INT UNSIGNED ,  -- the user who caused the action
   target_id INT UNSIGNED, -- this is the thing manipulated, e.g. the request.
   notes_id INT UNSIGNED -- some notes about the action, see audit_notes
@@ -353,8 +353,8 @@ CREATE PROCEDURE get_others_requests
   enddate VARCHAR(10),
   status VARCHAR(50), -- can be many INT's separated by commas
   categories VARCHAR(50),
-  minpoints SMALLINT UNSIGNED,
-  maxpoints SMALLINT UNSIGNED,
+  minpoints INT UNSIGNED,
+  maxpoints INT UNSIGNED,
   user_id VARCHAR(50), -- can be many INT's separated by commas
   page INT UNSIGNED
 ) 
