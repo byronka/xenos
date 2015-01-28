@@ -359,53 +359,65 @@ CREATE PROCEDURE get_others_requests
   page INT UNSIGNED
 ) 
 BEGIN 
-	SET @search_clauses = ""; -- we'll build up all our search clauses on this.
+	SET @search_clauses = ""; -- all our search clauses go on this.
          
   -- searching by points
   IF minpoints > 0 AND maxpoints > 0 THEN
     SET @minpoints = minpoints;
     SET @maxpoints = maxpoints;
-    SET @search_clauses = CONCAT(@search_clauses, ' AND @minpoints <= points AND points <= @maxpoints ');
+    SET @search_clauses = 
+      CONCAT(@search_clauses, 
+        ' AND @minpoints <= points AND points <= @maxpoints ');
   ELSEIF minpoints > 0 THEN
     SET @minpoints = minpoints;
-    SET @search_clauses = CONCAT(@search_clauses, ' AND @minpoints <= points ');
+    SET @search_clauses = 
+      CONCAT(@search_clauses, ' AND @minpoints <= points ');
   ELSEIF maxpoints > 0 THEN
     SET @maxpoints = maxpoints;
-    SET @search_clauses = CONCAT(@search_clauses, ' AND @maxpoints >= points ');
+    SET @search_clauses = 
+      CONCAT(@search_clauses, ' AND @maxpoints >= points ');
   END IF;
 
   -- searching by status
   IF status <> '' THEN
-    SET @search_clauses = CONCAT(@search_clauses, ' AND status IN (',status,') ');
+    SET @search_clauses = 
+      CONCAT(@search_clauses, ' AND status IN (',status,') ');
   END IF;
 
   -- searching by categories
   IF categories <> '' THEN
-    SET @search_clauses = CONCAT(@search_clauses, ' AND rc.category_id IN (',categories,') ');
+    SET @search_clauses = 
+      CONCAT(@search_clauses, ' AND rc.category_id IN (',categories,') ');
   END IF;
 
   -- searching by requesting user
   IF user_id <> '' THEN
-    SET @search_clauses = CONCAT(@search_clauses, ' AND requesting_user_id IN (', user_id ,')');
+    SET @search_clauses = 
+      CONCAT(@search_clauses, ' AND requesting_user_id IN (', user_id ,')');
   END IF;
   
   -- searching by dates
   IF startdate <> '' AND enddate <> '' THEN
     SET @startdate = startdate;
     SET @enddate = enddate;
-    SET @search_clauses = CONCAT(@search_clauses, ' AND datetime >= @startdate AND datetime <= @enddate ');
+    SET @search_clauses = 
+      CONCAT(@search_clauses, 
+        ' AND datetime >= @startdate AND datetime <= @enddate ');
   ELSEIF startdate <> '' THEN
     SET @startdate = startdate;
-    SET @search_clauses = CONCAT(@search_clauses, ' AND datetime >= @startdate ');
+    SET @search_clauses = 
+      CONCAT(@search_clauses, ' AND datetime >= @startdate ');
   ELSEIF enddate <> '' THEN
     SET @enddate = enddate;
-    SET @search_clauses = CONCAT(@search_clauses, ' AND datetime <= @enddate ');
+    SET @search_clauses = CONCAT(@search_clauses, 
+      ' AND datetime <= @enddate ');
   END IF;
 
   -- searching by title
 	IF title <> '' THEN
 		SET @title = title;
-		SET @search_clauses = CONCAT(@search_clauses, " AND title LIKE CONCAT('%' , @title , '%') ");
+		SET @search_clauses = 
+    CONCAT(@search_clauses, " AND title LIKE CONCAT('%' , @title , '%') ");
 	END IF;
 
   -- getting the requesting user, and rows for paging
