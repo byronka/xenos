@@ -337,60 +337,21 @@ public final class Request_utils {
     * @return true if successful
     */
   public static boolean delete_request(int request_id, int deleting_user_id) {
-    // 0. Get this request object in memory, we need some values
-    //    for auditing purposes and deducting points
-    Request request_to_delete = get_a_request(request_id);
-    if (request_to_delete == null) {
-      return false;
-    }
-
-    // 1. set the sql
-    String delete_request_sql = 
-      "DELETE FROM request WHERE request_id = ?";
-    String update_points_sql = 
-      "UPDATE user SET points = points + ? WHERE user_id = ?";
-
-    int result = -1; //default to a guard value that indicates failure
-    PreparedStatement del_pstmt = null; //the deletion statement
-    PreparedStatement up_pts_pstmt = null; //updating the points statement
-    Connection conn = null;
+    CallableStatement cs = null;
     try {
-      // 3. get the connection and set up a statement
-      conn = Database_access.get_a_connection();
-
-      //check if the user wanting the delete is the one who
-      //created the Request.  If not, deny!
-      //note: we may change this in the future to allow admin privs.
-      if (deleting_user_id != request_to_delete.requesting_user_id) {
-        conn.rollback();
-        return false;
-      }
-
-      //delete the request
-      del_pstmt = Database_access
-        .prepare_statement(conn, delete_request_sql);
-      del_pstmt.setInt(1, request_id); 
-      Database_access.execute_update(del_pstmt);
-
-      up_pts_pstmt = Database_access
-        .prepare_statement(conn, update_points_sql);
-      up_pts_pstmt.setInt(1,request_to_delete.points); 
-      up_pts_pstmt.setInt(2,request_to_delete.requesting_user_id); 
-      Database_access.execute_update(up_pts_pstmt);
-
-      //get audit info notes
-      String my_notes = create_deletion_audit_notes(request_to_delete);
-
-      final int delete_action = 2;
-
-      Utils.create_audit(delete_action, deleting_user_id, request_id, my_notes);
-
+      Connection conn = Database_access.get_a_connection();
+      // see db_scripts/v1_setup.sql delete_request for
+      // details on this stored procedure.
+      
+      cs = conn.prepareCall(String.format(
+        "{call delete_request(%d,%d)}"
+        ,deleting_user_id, request_id));
+      cs.executeQuery();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_statement(del_pstmt);
-      Database_access.close_statement(up_pts_pstmt);
+      Database_access.close_statement(cs);
     }
     return true;
   }

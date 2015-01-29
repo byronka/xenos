@@ -525,10 +525,11 @@ CREATE PROCEDURE delete_request
   request_id INT UNSIGNED
 ) 
 BEGIN 
-  -- A) The main part - add the request to that table.
   SET @user_id = user_id;
   SET @request_id = request_id;
 
+  -- first check that they are trying to 
+  -- delete something that exists
    SET @valid_id_sql = "
     SELECT COUNT(*) INTO @valid_id 
     FROM request 
@@ -553,7 +554,7 @@ BEGIN
 	PREPARE pts_sql FROM @pts_sql;
 	EXECUTE pts_sql; 
 
-  -- get a string from the status
+  -- get a string version of the status
   SET @status_sql = "
       SELECT request_status_value INTO @status
       FROM request_status 
@@ -566,6 +567,7 @@ BEGIN
 	PREPARE status_sql FROM @status_sql;
 	EXECUTE status_sql; 
 
+  -- get a message for the deletion audit
   SET @delete_msg_sql = 
   "SELECT CONCAT(
       SUBSTR(description,1,30),
@@ -583,11 +585,13 @@ BEGIN
 	PREPARE delete_msg_sql FROM @delete_msg_sql;
 	EXECUTE delete_msg_sql;  
 
+  -- actually delete the request here.
   SET @del_sql = 'DELETE FROM request WHERE request_id = @request_id';
 
 	PREPARE del_sql FROM @del_sql;
 	EXECUTE del_sql; 
 
+  -- give points back to the user
   SET @pts_sql = '
     UPDATE user 
     SET points = points + @points 
