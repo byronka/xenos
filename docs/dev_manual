@@ -214,6 +214,11 @@ Whenever a page needs values, it runs the command Localization.get(),
 along with the index of the value it needs and the phrase it needs
 localized.  
 
+To add a new language: add a new row to the languages table, with the
+id of the language as used in localization_lookup, and the string to
+look for in the locale string sent by the client.  Then just add a row
+of data for every word/phrase in that language into localization_lookup.
+
 
 
 
