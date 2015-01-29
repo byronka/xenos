@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS
     user_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
     username NVARCHAR(50) UNIQUE,
     email NVARCHAR(200) UNIQUE, 
-    password NVARCHAR(100),
+    password NVARCHAR(50),
     points INT UNSIGNED, -- max-out at 65535 - keep them below that.
     language INT UNSIGNED NULL, -- 1 is English.
     is_logged_in BOOL, 
@@ -51,32 +51,6 @@ VALUES
 ('admin_bk','byron@renomad.com','password',1,100, true),
 ('admin_ds','dan@renomad.com','password',1,100, true)
 
-
----DELIMITER---
-
--- create a trigger to cause an error condition if someone tries
--- adding a username that is a string that equates to an email.
--- we want uniqueness of usernames, emails, and also usernames are
--- not allowed to match existing emails in other users.
-
-CREATE TRIGGER trg_error_if_username_matches_other_user_email 
-BEFORE INSERT ON user
-FOR EACH ROW
-BEGIN
-    DECLARE msg VARCHAR(255);
-    SET @username_exists_as_email := 
-      (
-        SELECT COUNT(*) 
-        FROM user 
-        WHERE NEW.username = user.email
-      );
-    
-    IF (@username_exists_as_email > 0) THEN
-        SET msg = CONCAT('username matches existing email during insert: ', NEW.username );
-        signal sqlstate '45000' set message_text = msg;
-    END IF;
-
-END
 
 ---DELIMITER---
 
@@ -233,7 +207,8 @@ INSERT INTO audit_actions (action_id,action)
 VALUES
 (1,'User created a request'),
 (2,'User deleted a request'),
-(3,'User handled a request')
+(3,'User handled a request'),
+(4,'New user was registered')
 
 
 ---DELIMITER---
@@ -291,7 +266,7 @@ BEGIN
   DECLARE the_audit_notes_id INT UNSIGNED;
 
   CASE
-    WHEN my_notes = "" -- if we get an empty string, don't add to notes
+    WHEN my_notes = "" OR my_notes is NULL -- if we get an empty string, don't add to notes
   THEN 
     INSERT INTO audit (
       datetime, audit_action_id, user_id, target_id)
@@ -605,3 +580,40 @@ BEGIN
 
 END
 
+---DELIMITER---
+
+CREATE PROCEDURE create_new_user
+(
+  username NVARCHAR(50),
+  password NVARCHAR(50)
+) 
+BEGIN 
+  SET @username = username;
+  SET @password = password;
+
+  -- check that this username doesn't match an email in the system
+  SET @username_exists_as_email = "
+    SELECT COUNT(*) INTO @count_email_username
+    FROM user 
+    WHERE @username = user.email";
+	PREPARE username_exists_as_email FROM @username_exists_as_email;
+	EXECUTE username_exists_as_email;  
+    
+  IF (@count_email_username > 0) THEN
+      SET @msg = CONCAT('username matches existing email during insert: ', @username );
+      SIGNAL SQLSTATE '45000' 
+      SET message_text = @msg;
+  END IF;
+
+  -- add the user
+  SET @insert_sql = "
+    INSERT INTO user (username, password, points)
+    VALUES (@username, @password, 100)";
+	PREPARE insert_sql FROM @insert_sql;
+	EXECUTE insert_sql;  
+
+  SET @new_user_id = LAST_INSERT_ID();
+  -- Add an audit
+  CALL add_audit(4,@new_user_id,NULL,NULL);
+
+END

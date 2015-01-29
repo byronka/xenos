@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 
 /**
   * Utilities methods used to work with users
@@ -187,58 +188,31 @@ public final class User_utils {
     * @return true if successful
     */
   public static boolean put_user(String username, String password) {
-      boolean is_bad = false;
 
-      //just check non-empty.  Later we do deeper checks.
-      is_bad |= Utils.is_null_or_empty(username);
-      is_bad |= Utils.is_null_or_empty(password);
-      if (is_bad) {
+      if ( Utils.is_null_or_empty(username) ||
+           Utils.is_null_or_empty(password)) {
         return false;
       }
-      User u = new User(username, password, 100);
-      return put_user(u);
+
+      CallableStatement cs = null;
+      try {
+        Connection conn = Database_access.get_a_connection();
+        // see db_scripts/v1_setup.sql delete_request for
+        // details on this stored procedure.
+        
+        cs = conn.prepareCall("{call create_new_user(?,?)}");
+        cs.setNString(1,username);
+        cs.setNString(2,password);
+        cs.executeQuery();
+      } catch (SQLException ex) {
+        Database_access.handle_sql_exception(ex);
+        return false;
+      } finally {
+        Database_access.close_statement(cs);
+      }
+      return true;
   }
 
-
-  /**
-    * This overload of put_user stores the new user's values into the
-    * database, but beware!  There are constraints set up in the
-    * database that prevent corrupt data.  Like, for example, you
-    * should not be allowed to have duplicate emails or usernames in
-    * the database.  Further, you should not be able to have a
-    * username the same as an email address.
-    * @return true if successful, false if failure or any constraints
-    * violated (like, uniqueness of username or email, for example)
-    */
-  private static boolean put_user(User user) {
-
-    // 1. set the sql
-      String sqlText = 
-        "INSERT INTO user (username, password, points) " +
-        "VALUES (?, ?, ?)";
-    // 2. set up values we'll need outside the try
-    boolean result = false;
-    PreparedStatement pstmt = null;
-    try {
-      // 3. get the connection and set up a statement
-      Connection conn = Database_access.get_a_connection();
-      pstmt = Database_access.prepare_statement(
-          conn, sqlText);     
-      // 4. set values into the statement
-      pstmt.setNString( 1, user.username);
-      pstmt.setNString( 2, user.password);
-      pstmt.setInt( 3, user.points);
-      // 5. execute a statement
-      result = Database_access.execute_update(pstmt) > 0;
-      // 10. cleanup and exceptions
-      return result;
-    } catch (SQLException ex) {
-      Database_access.handle_sql_exception(ex);
-      return false;
-    } finally {
-      Database_access.close_statement(pstmt);
-    }
-  }
 
 
 }
