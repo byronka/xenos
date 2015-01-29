@@ -330,8 +330,6 @@ public final class Request_utils {
 
 
 
-  
-
   /**
     * deletes a request.
     * @param request_id the id of the request to delete
@@ -397,47 +395,6 @@ public final class Request_utils {
     return true;
   }
 
-
-  /**
-    * adds information for the audit of a deletion.  The special
-    * thing here is that since we are actually losing info ( we
-    * are really deleting this row) we want to keep some meta
-    * data for the future just in case.  So we collect some of
-    * the title, description, points, creation date, etc. as notes
-    */
-  private static String create_deletion_audit_notes(Request r) {
-
-      //description - get no more than 20 chars
-      String descr = r.description;
-      String cropped_desc = descr.length() <= 30 ? 
-        descr : 
-        descr.substring(0,30);
-
-      //title - get no more than 10 chars
-      String title = r.title;
-      String cropped_title = title.length() <= 20 ? 
-        title : 
-        title.substring(0,20);
-
-      String date_created = r.datetime.substring(0,10);
-      int points = r.points;
-
-      //get the status string, localized to English
-      final int admin_user_id = 1;
-      Localization loc  = new Localization(admin_user_id);
-      int loc_status_value = 
-         get_status_localization_value(r.status);
-      String status_string = loc.get(loc_status_value, "");
-
-      String my_notes = String.format("%s|%s|created:%s|pts:%d|st:%s", 
-          cropped_title, 
-          cropped_desc, 
-          date_created, 
-          points, 
-          status_string);
-
-      return my_notes;
-  }
 
 
   /**

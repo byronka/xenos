@@ -124,33 +124,6 @@ request (
 
 ---DELIMITER---
 
--- create a trigger to cause an error condition if someone tries
--- inserting a request with a user who does not have enough points
--- to make the request.
-
-CREATE TRIGGER trg_error_if_user_lacks_points_for_rqst 
-BEFORE INSERT ON request
-FOR EACH ROW
-BEGIN
-    DECLARE msg VARCHAR(255);
-    SET @user_points := 
-      (
-        SELECT points 
-        FROM user 
-        WHERE NEW.requesting_user_id = user.user_id
-      );
-    
-    IF (@user_points < NEW.points) THEN
-        SET msg = CONCAT('user lacks points to make this request: ', 
-          NEW.requesting_user_id );
-        signal sqlstate '45001' set message_text = msg;
-    END IF;
-
-END
-
-
----DELIMITER---
-
 
 -- create a table of known languages
 
@@ -468,6 +441,20 @@ CREATE PROCEDURE put_request
   OUT new_request_id INT UNSIGNED
 ) 
 BEGIN 
+  -- Check that the user has the points.
+  SET @user_points_sql = "
+      SELECT points INTO @user_points
+      FROM user 
+      WHERE user_id = @requesting_user_id";
+	PREPARE user_points_sql FROM @user_points_sql;
+	EXECUTE user_points_sql; 
+  
+  IF (@user_points < @points) THEN
+      SET @msg = CONCAT('user lacks points to make this request: ', 
+        @requesting_user_id );
+      SIGNAL SQLSTATE '45001' set message_text = msg;
+  END IF;
+
   -- A) The main part - add the request to that table.
   SET @desc = description;
   SET @points = points;
@@ -528,5 +515,89 @@ BEGIN
  
 	PREPARE insert_clause FROM @insert_clause;
 	EXECUTE insert_clause; 
+END
+
+---DELIMITER---
+
+CREATE PROCEDURE delete_request
+(
+  user_id INT UNSIGNED,
+  request_id INT UNSIGNED
+) 
+BEGIN 
+  -- A) The main part - add the request to that table.
+  SET @user_id = user_id;
+  SET @request_id = request_id;
+
+   SET @valid_id_sql = "
+    SELECT COUNT(*) INTO @valid_id 
+    FROM request 
+    WHERE request_id = @request_id";
+	PREPARE valid_id_sql FROM @valid_id_sql;
+	EXECUTE valid_id_sql; 
+
+  IF (@valid_id <> 1) THEN
+      SET @msg = CONCAT('request does not exist in the system: ', 
+        @request_id);
+      SIGNAL SQLSTATE '45002' 
+      SET message_text = @msg;
+  END IF;
+
+  -- get the points on this request.
+
+  SET @pts_sql = "
+    SELECT points into @points
+    FROM request 
+    WHERE request_id = @request_id
+    ";
+	PREPARE pts_sql FROM @pts_sql;
+	EXECUTE pts_sql; 
+
+  -- get a string from the status
+  SET @status_sql = "
+      SELECT request_status_value INTO @status
+      FROM request_status 
+      WHERE request_status_id = 
+        (
+          SELECT status
+          FROM request 
+          WHERE request_id = @request_id
+        )";
+	PREPARE status_sql FROM @status_sql;
+	EXECUTE status_sql; 
+
+  SET @delete_msg_sql = 
+  "SELECT CONCAT(
+      SUBSTR(description,1,30),
+      '|',
+      SUBSTR(title,1,20),
+      '|',
+      'created:', SUBSTR(datetime,1,10),
+      '|',
+      'pts:', points,
+      '|',
+      'st:',@status) INTO @delete_msg
+    FROM request
+    WHERE request_id = @request_id";
+
+	PREPARE delete_msg_sql FROM @delete_msg_sql;
+	EXECUTE delete_msg_sql;  
+
+  SET @del_sql = 'DELETE FROM request WHERE request_id = @request_id';
+
+	PREPARE del_sql FROM @del_sql;
+	EXECUTE del_sql; 
+
+  SET @pts_sql = '
+    UPDATE user 
+    SET points = points + @points 
+    WHERE user_id = @user_id';
+
+	PREPARE pts_sql FROM @pts_sql;
+	EXECUTE pts_sql; 
+
+  -- Add an audit
+  CALL add_audit(2,@user_id,@request_id,@delete_msg);
+
 END
 
