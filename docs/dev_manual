@@ -304,11 +304,19 @@ SQL standards
 2) Don't cascade triggers.  We don't want impossible-to-comprehend events.
 3) Describe what your SQL is meant to do, and why.
 4) Try to simplify your SQL code.
-5) A great way to make your work transparent while you are writing it
-  is to include a select statement indicating the query.  For example,
+5) A great way to debug work while you are writing it is to include a
+	select statement indicating the query.  For example,
   if you are writing a stored procedure, include near the end a SELECT
   @query to print out the resulting SQL so you can understand what the
   database is thinking.
+6) Great reasons to use stored procedures: if you are doing something
+	that requires multiple conversations with the database, that might be
+	a good time to use stored procedures.  For example, you want to delete
+	a request.  So first, check that the request exists, then delete the
+	request, then add an audit.  If you do that in code, there is a lot of
+	boiler plate required to tie things together - checking for errors,
+	rolling back if necessary, etc. Whereas, if you do it in a stored
+	procedure, all that boiler plate disappears.
 
 
 
