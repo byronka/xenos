@@ -267,7 +267,8 @@ BEGIN
   DECLARE the_audit_notes_id INT UNSIGNED;
 
   CASE
-    WHEN my_notes = "" OR my_notes is NULL -- if we get an empty string, don't add to notes
+    WHEN my_notes = "" 
+			OR my_notes is NULL -- if we get an empty string, don't add to notes
   THEN 
     INSERT INTO audit (
       datetime, audit_action_id, user_id, target_id)
@@ -342,7 +343,8 @@ BEGIN
   -- searching by requesting user
   IF user_id <> '' THEN
     SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND requesting_user_id IN (', user_id ,')');
+			CONCAT(@search_clauses, 
+				' AND requesting_user_id IN (', user_id ,')');
   END IF;
   
   -- searching by dates
@@ -645,7 +647,8 @@ BEGIN
 	EXECUTE username_exists_as_email;  
     
   IF (@count_email_username > 0) THEN
-      SET @msg = CONCAT('username matches existing email during insert: ', @username );
+      SET @msg = CONCAT(
+				'username matches existing email during insert: ', @username );
       SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
   END IF;
