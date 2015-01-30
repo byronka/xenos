@@ -74,6 +74,7 @@
 		<antcall target="build-language-data" />
     <antcall target="install" />
     <antcall target="tomcat-restart" />
+    <antcall target="clean-schema-code" />
   </target>
 
 
@@ -98,7 +99,7 @@
 	<!-- deletes the compiled java files in the work directory
 	and also the entire database.  use with caution! -->
   <target 
-    name="clean-db-and-classes" 
+    name="clean-db-and-classes" depends="compile-schema-code" 
     description="deletes database (Bye-bye all data) and build directory">
     <antcall target="clean-schema" />
     <antcall target="clean-build" />
@@ -108,7 +109,7 @@
 	<!-- deletes the compiled java files in the work directory
 	and also the entire database.  use with caution! -->
   <target 
-    name="clean-everything" 
+    name="clean-everything" depends="compile-schema-code" 
     description="deletes db, classes, code analysis, javadocs, tomcat logs and work directories">
     <antcall target="clean-schema" />
     <antcall target="clean-build" />
@@ -135,6 +136,13 @@
 		</delete>
   </target>
 
+  <!-- deletes the code used to build the schema. --> 
+  <target 
+    name="clean-schema-code" 
+    description="deletes the classes for working with schema">
+		<delete dir="build_schema"/>
+  </target>
+
   <!-- deletes the output from code analysis tools. --> 
   <target 
     name="clean-code-analysis" 
@@ -153,10 +161,10 @@
 
 
   <!-- deletes the database schema, and all its data -->
-  <target name="clean-schema" 
+  <target name="clean-schema" depends="compile-schema-code"  
     description="deletes the db schema, and ALL DATA!">
     <java 
-      classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
+      classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.xenos.schema.Delete_db_schema" 
       fork="true" >
 			<jvmarg value="-D${conn.str.without.db}" />
@@ -186,6 +194,24 @@
         ${tomcat.lib.dir}servlet-api.jar"
       srcdir="src" 
       destdir="build/classes">
+			<exclude name="com/renomad/xenos/schema/**" />
+      <compilerarg value="-Xlint:unchecked" /> <!-- for more warnings -->
+    </javac>
+  </target>
+
+  <target name="compile-schema-code" description="code for building schema">
+    <mkdir dir="build_schema/classes"/>
+    <javac 
+      debug="true" 
+      debuglevel="lines,vars,source" 
+      includeantruntime="false" 
+      classpath="
+        lib/mysql-connector-java-5.1.33-bin.jar:
+        lib/junit-4.12.jar:
+        ${tomcat.lib.dir}servlet-api.jar"
+      srcdir="src" 
+      destdir="build_schema/classes">
+			<include name="com/renomad/xenos/schema/**" />
       <compilerarg value="-Xlint:unchecked" /> <!-- for more warnings -->
     </javac>
   </target>
@@ -217,10 +243,10 @@
     build-schema runs the SQL scripts necessary for the 
     database to have the proper schema.
   -->
-  <target name="build-schema" 
+  <target name="build-schema" depends="compile-schema-code"
     description="builds the db schema.  see comments in build.xml">
     <java 
-      classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
+      classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.xenos.schema.Build_db_schema" 
       fork="true" >
 			<jvmarg value="-D${conn.str.with.db}" />
@@ -233,10 +259,10 @@
     build-sample-data adds some sample data to the database to make
     testing easier.
   -->
-  <target name="build-sample-data" 
+  <target name="build-sample-data" depends="compile-schema-code" 
     description="adds sample data to the database for testing">
     <java 
-      classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
+			classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.xenos.schema.Add_sample_data_to_db"
       fork="true" >
 			<jvmarg value="-D${conn.str.with.db}" />
@@ -247,10 +273,10 @@
    <!-- 
     build-language-data adds localized text to the database
   -->
-  <target name="build-language-data" 
+  <target name="build-language-data" depends="compile-schema-code" 
     description="adds localized language data">
     <java 
-      classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
+      classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.xenos.schema.Add_language_data_to_db"
       fork="true" >
 			<jvmarg value="-D${conn.str.with.db}" />
@@ -297,8 +323,10 @@
 	<target name="test" 
     description="runs the tests">
     <antcall target="clean-db-and-classes" />
+    <antcall target="compile" />
     <antcall target="build-schema" />
     <antcall target="build-sample-data" />
+    <antcall target="build-language-data" />
 		<junit printsummary="on" fork="true" haltonfailure="yes">
 			<jvmarg value="-DTESTING_DATABASE_CODE_WITHOUT_TOMCAT=true"	/>
 			<jvmarg value="-D${conn.str.with.db}"	/>
