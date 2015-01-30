@@ -67,11 +67,13 @@
   -->
   <target name="run-initial" 
     description="full-cleans (bye-byte data!), makes a new database with sample data, compiles, starts server">
-    <antcall target="clean-db-and-classes" />
+    <antcall target="compile" />
+    <antcall target="clean-schema" />
     <antcall target="build-schema" />
     <antcall target="build-sample-data" />
 		<antcall target="build-language-data" />
-    <antcall target="run" />
+    <antcall target="install" />
+    <antcall target="tomcat-restart" />
   </target>
 
 
@@ -152,7 +154,6 @@
 
   <!-- deletes the database schema, and all its data -->
   <target name="clean-schema" 
-    depends="compile"
     description="deletes the db schema, and ALL DATA!">
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
@@ -217,7 +218,6 @@
     database to have the proper schema.
   -->
   <target name="build-schema" 
-    depends="compile" 
     description="builds the db schema.  see comments in build.xml">
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
@@ -234,10 +234,7 @@
     testing easier.
   -->
   <target name="build-sample-data" 
-    depends="compile" 
     description="adds sample data to the database for testing">
-    <antcall target="clean-schema" />
-    <antcall target="build-schema" />
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.xenos.schema.Add_sample_data_to_db"
@@ -251,7 +248,6 @@
     build-language-data adds localized text to the database
   -->
   <target name="build-language-data" 
-    depends="compile" 
     description="adds localized language data">
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
@@ -271,7 +267,7 @@
   <!--====================================================-->
 
 	<!-- Creates Javadoc -->
-	<target name="docs" depends="compile"
+	<target name="docs" 
     description="builds the javadocs">
 		<javadoc packagenames="com.renomad.xenos" sourcepath="${src.dir}" destdir="${docs.dir}">
 			<!-- Define which files / directory should get included, we include all -->
@@ -298,7 +294,7 @@
   <!--====================================================-->
 
     <!-- Run the JUnit Tests -->
-	<target name="test" depends="compile"
+	<target name="test" 
     description="runs the tests">
     <antcall target="clean-db-and-classes" />
     <antcall target="build-schema" />
@@ -328,14 +324,17 @@
   <!-- Scripts for running static code analysis on the codebase -->
   <!--===========================================================-->
 
-  <target name="lint-all" depends="findbugs, pmd, lint4j"
-    description="runs all the lint programs" />
+  <target name="lint-all" description="runs all the lint programs" >
+		<antcall target="findbugs" />
+		<antcall target="pmd" />
+		<antcall target="lint4j" />
+	</target>
 
 	<target name="build-lint-output">
 		<mkdir dir="${lint.output.dir}"/>
 	</target>
 
-  <target name="findbugs" depends="compile, build-lint-output">
+  <target name="findbugs" depends="build-lint-output">
     <taskdef name="findbugs" 
       classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
       <classpath>
@@ -352,7 +351,7 @@
 		<echo message="output from findbugs is in http://localhost:8080/lint/findbugs_output.html" />
   </target>
 
-  <target name="pmd" depends="compile">
+  <target name="pmd" >
     <path id="pmd.classpath">
       <fileset dir="${tomcat.lib.dir}/" >
         <include name="*.jar" />
@@ -381,7 +380,7 @@
   </target>
 
 
-  <target name="lint4j" depends="compile">
+  <target name="lint4j" >
     <taskdef 
       name="lint4j" 
       classname="com.jutils.lint4j.ant.Lint4jAntTask"  >

@@ -30,7 +30,7 @@ public final class Request_utils {
     * given an array of words, we'll look up the local words
     * for statuses and see if any match.  If so, we'll return those
     * as an array of ints.
-    * @param stats the words we'll compare to see if 
+    * @param statuses the words we'll compare to see if 
     *  they are localized statuses
     * @param loc the localization object
     * @return an array of ints of statuses that were 
