@@ -132,9 +132,7 @@
         <span class="label"><%=loc.get(24, "Status")%>:</span>
         <span 
           class="value">
-          <%int status_val = Request_utils.
-            get_status_localization_value(r.status); %>
-          <%=loc.get(status_val,"")%></span>
+          <%=loc.get(r.status,"")%></span>
       </li>
       <li class="datetime">
         <span class="label"><%=loc.get(25, "Date")%>:</span>

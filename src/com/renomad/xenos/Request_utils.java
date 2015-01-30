@@ -635,24 +635,4 @@ public final class Request_utils {
   }
 
 
-  /**
-    * acts as a simple lookup table between the status
-    * value and the index into localized values
-    * Since there are so few statuses, probably no harm.  If the
-    * paradigm changes so there are lots of statuses, change this
-    * paradigm.
-    */
-  public static int get_status_localization_value(int status) {
-    switch(status) {
-      case 1:
-        return 76; //open
-      case 2:
-        return 77; //closed
-      case 3:
-        return 78; //taken
-      default:
-        return -1;
-    }
-  }
-
 }

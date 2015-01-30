@@ -47,7 +47,7 @@
   <%@include file="includes/header.jsp" %>
   <p><%=loc.get(23,"Description")%>: <%=Utils.safe_render(r.description)%>
   <p><%=loc.get(24,"Status")%>: 
-    <%=loc.get(Request_utils.get_status_localization_value(r.status),"")%>
+    <%=loc.get(r.status,"")%>
   <p><%=loc.get(25,"Date")%>: <%=r.datetime%>
   <p><%=loc.get(26,"Points")%>: <%=r.points%>
   <p><%=loc.get(27,"Title")%>: <%=Utils.safe_render(r.title)%>

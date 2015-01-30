@@ -61,7 +61,7 @@ VALUES
 
 CREATE TABLE IF NOT EXISTS
 request_status (
-  request_status_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  request_status_id INT NOT NULL PRIMARY KEY, -- this value maps to localization values
   request_status_value VARCHAR(20)
 );
 
@@ -71,8 +71,8 @@ request_status (
 -- now we put our enums into the request_status table.
 -- these are intentionally in all-caps to emphasize they are not
 -- supposed to go straight to the client.  They must be localized first.
-INSERT INTO request_status (request_status_value)
-VALUES('OPEN'),('CLOSED'),('TAKEN');
+INSERT INTO request_status (request_status_id, request_status_value)
+VALUES(76,'OPEN'),(77,'CLOSED'),(78,'TAKEN');
 
 ---DELIMITER---
 
@@ -434,7 +434,7 @@ BEGIN
   SET @desc = description;
   SET @points = points;
   SET @title = title;
-  SET @status = 1; -- requests always start 'open'
+  SET @status = 76; -- requests always start 'open'
   SET @ruid = requesting_user_id;
 	SET @insert_clause = 
       "INSERT into request (description, datetime, points,
