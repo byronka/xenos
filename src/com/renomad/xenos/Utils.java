@@ -124,10 +124,10 @@ public final class Utils {
       String dash_string = m.group(2);
       String ld_string = m.group(3);
       String single_date_string = m.group(4);
-      boolean first_date_in_range = is_good_value(fd_string);
+      boolean first_date_in_range = is_good_date_value(fd_string);
       boolean dash = !Utils.is_null_or_empty(dash_string);
-      boolean last_date_in_range = is_good_value(ld_string);
-      boolean single_date = is_good_value(single_date_string);
+      boolean last_date_in_range = is_good_date_value(ld_string);
+      boolean single_date = is_good_date_value(single_date_string);
 
 
       int count_true = 0;
@@ -230,7 +230,7 @@ public final class Utils {
     * third is between 1 and 31 depending on month
     * @param date a date value such as "2013-11-27"
     */
-  private static boolean is_good_value(String date) {
+  private static boolean is_good_date_value(String date) {
     if (is_null_or_empty(date)) { 
       return false;
     }
@@ -346,4 +346,29 @@ public final class Utils {
         return null;
       }
     }
+
+
+  /**
+    * this is a helper method to verify that the string
+    * passed in consists of integers separated by commas.
+    * This is used in places like query strings, and we want
+    * to use this to verify we are not getting mangled numbers
+    * or are under security attack.
+    * @return true if valid comma delimited integers, false otherwise
+    */
+  public static boolean is_comma_delimited_numbers(String numbers) {
+    if (is_null_or_empty(numbers)) {
+      return false;
+    }
+
+    String[] split_values = numbers.split(",");
+    for(String sv : split_values) {
+      if (parse_int(sv) == null) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
 }

@@ -37,11 +37,39 @@ public final class Request_utils {
     *  found amongst the words.
     */
   public static Integer[] 
-    parse_statuses_string(String[] stats, Localization loc) {
-    //get all the localized statuses
-    //compare those with stats
-    //return the id's of statuses that were found.
-    return new Integer[0];
+    parse_statuses_string(String statuses, Localization loc) {
+    // 1. set the sql
+    String get_statuses_sql = 
+      "SELECT request_status_id FROM request_status";
+    PreparedStatement pstmt = null;
+    try {
+      // 3. get the connection and set up a statement
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, get_statuses_sql);     
+      // 4. execute a statement
+      ResultSet resultSet = pstmt.executeQuery();
+      // 5. check that we got results
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return null;
+      }
+
+      ArrayList<Integer> status_ids_found 
+        = new ArrayList<Integer>();
+      while(resultSet.next()) {
+        int rsid = resultSet.getInt("request_status_id");
+        String localized_status = loc.get(rsid, "");
+        if (statuses.contains(localized_status)) {
+          status_ids_found.add(rsid);
+        }
+      }
+      return status_ids_found.toArray(new Integer[status_ids_found.size()]);
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new Integer[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
   }
 
 
@@ -180,11 +208,17 @@ public final class Request_utils {
       this.startdate = startdate;
       this.enddate = enddate;
       this.title = title;
-      this.categories = categories;
-      this.statuses = statuses;
+      this.categories = Utils.is_comma_delimited_numbers(categories) ? 
+        categories 
+        : "";
+      this.statuses = Utils.is_comma_delimited_numbers(statuses) ? 
+        statuses 
+        : "";
       this.minpoints = minpoints;
       this.maxpoints = maxpoints;
-      this.user_ids = user_ids;
+      this.user_ids = Utils.is_comma_delimited_numbers(user_ids) ? 
+        user_ids 
+        : "";
     }
 
   }

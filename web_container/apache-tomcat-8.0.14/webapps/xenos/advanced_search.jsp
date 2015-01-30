@@ -46,12 +46,7 @@ if (request.getMethod().equals("POST")) {
     statuses = "";
   }
 
-  //split the statuses string on one or more whitespace or one 
-  //or more non-word chars.
-  String[] split_statuses = statuses.split("\\s+?|\\W+?"); 
-
-  Integer[] status_array = Request_utils
-    .parse_statuses_string(split_statuses, loc );
+  Integer[] status_array = Request_utils.parse_statuses_string(statuses, loc );
 
   if (status_array.length == 0 && statuses.length() > 0) { 
     //if there were no statuses found, but they entered something...
@@ -118,7 +113,7 @@ if (request.getMethod().equals("POST")) {
   if(!validation_error) {
     String dashboard_string = String.format(
         "dashboard.jsp?da=%s,%s&ti=%s&pts=%s,%s&cat=%s&us=%s&sta=%s",
-         startdate,enddate,title,minpoints,maxpoints,categories,user_ids,statuses );
+         startdate,enddate,title,minpoints,maxpoints,categories,user_ids,Utils.int_array_to_string(status_array) );
     response.sendRedirect(dashboard_string);
     return;
   }

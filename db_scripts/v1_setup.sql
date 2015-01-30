@@ -315,15 +315,15 @@ BEGIN
     SET @maxpoints = maxpoints;
     SET @search_clauses = 
       CONCAT(@search_clauses, 
-        ' AND @minpoints <= points AND points <= @maxpoints ');
+        ' AND @minpoints <= r.points AND r.points <= @maxpoints ');
   ELSEIF minpoints > 0 THEN
     SET @minpoints = minpoints;
     SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND @minpoints <= points ');
+      CONCAT(@search_clauses, ' AND @minpoints <= r.points ');
   ELSEIF maxpoints > 0 THEN
     SET @maxpoints = maxpoints;
     SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND @maxpoints >= points ');
+      CONCAT(@search_clauses, ' AND @maxpoints >= r.points ');
   END IF;
 
   -- searching by status
@@ -617,3 +617,4 @@ BEGIN
   CALL add_audit(4,@new_user_id,NULL,NULL);
 
 END
+
