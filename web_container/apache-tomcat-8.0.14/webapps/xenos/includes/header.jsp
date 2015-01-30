@@ -10,7 +10,7 @@
     <a href="logout.jsp" ><%=loc.get(3, "Logout")%></a>
   </nav>
   <form class="search" method="GET" action="dashboard.jsp" >
-    <span><input type="text" name="search" maxlength="20" />
+    <span><input type="text" name="ti" maxlength="20" />
       <button><%=loc.get(1, "search")%></button></span>
   </form>
   <div class="user-displayname">
