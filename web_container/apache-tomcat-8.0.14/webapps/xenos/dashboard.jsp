@@ -170,7 +170,7 @@
       <%  }
       }%>
   </select>
-  <button><%=loc.get(1, "search")%></button></span>
+  <button type="submit"><%=loc.get(1, "search")%></button></span>
 
 </div>
 </form>

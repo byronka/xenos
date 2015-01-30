@@ -71,7 +71,7 @@
         <span class="error"><%=password_error_msg %></span>
       </div>
 
-      <button form="enter_name_form" >
+      <button type="submit">
         <%=loc.get(64,"Create my new user!")%>
       </button>
 

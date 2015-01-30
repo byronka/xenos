@@ -1,2 +1,5 @@
 at the command line in this directory, type "run_tests" and lynx will 
 run all the scripts ending in .test
+
+curl_script.sh is a script that will run curl against several of the
+pages on the site.

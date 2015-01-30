@@ -11,7 +11,7 @@
   </nav>
   <form class="search" method="GET" action="dashboard.jsp" >
     <span><input type="text" name="ti" maxlength="20" />
-      <button><%=loc.get(1, "search")%></button></span>
+      <button type="submit"><%=loc.get(1, "search")%></button></span>
   </form>
   <div class="user-displayname">
     <span id="username"><%=Utils.safe_render(user.username)%></span>
