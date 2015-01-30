@@ -444,7 +444,8 @@ BEGIN
          
 	PREPARE insert_clause FROM @insert_clause;
 	EXECUTE insert_clause; 
-  SET @new_request_id = LAST_INSERT_ID();
+  SET new_request_id = LAST_INSERT_ID();
+  SET @new_request_id = new_request_id;
 
 
   -- B) Add categories.
@@ -453,7 +454,7 @@ BEGIN
 	PREPARE cat_sql FROM @cat_sql;
 	EXECUTE cat_sql; 
   INSERT INTO request_to_category (request_id, request_category_id)
-  SELECT @new_request_id, id FROM CAT_IDS;
+  SELECT new_request_id, id FROM CAT_IDS;
   DROP TABLE CAT_IDS;
 
   -- C) Deduct points from the user

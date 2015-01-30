@@ -234,8 +234,10 @@
     testing easier.
   -->
   <target name="build-sample-data" 
-    depends="compile, clean-schema, build-schema" 
+    depends="compile" 
     description="adds sample data to the database for testing">
+    <antcall target="clean-schema" />
+    <antcall target="build-schema" />
     <java 
       classpath="build/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.xenos.schema.Add_sample_data_to_db"
@@ -350,7 +352,7 @@
 		<echo message="output from findbugs is in http://localhost:8080/lint/findbugs_output.html" />
   </target>
 
-  <target name="pmd" depends="compile,build-lint-output">
+  <target name="pmd" depends="compile">
     <path id="pmd.classpath">
       <fileset dir="${tomcat.lib.dir}/" >
         <include name="*.jar" />
@@ -379,7 +381,7 @@
   </target>
 
 
-  <target name="lint4j" depends="compile,build-lint-output">
+  <target name="lint4j" depends="compile">
     <taskdef 
       name="lint4j" 
       classname="com.jutils.lint4j.ant.Lint4jAntTask"  >

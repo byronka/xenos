@@ -22,13 +22,13 @@ public class Request_tests {
     Request_status[] rs_actual = Request_utils.get_request_statuses();
     for (Request_status rs : rs_actual) {
       switch(rs.status_id) {
-        case 1:
+        case 76:
           assertEquals("OPEN", rs.status_value);
           break;
-        case 2:
+        case 77:
           assertEquals("CLOSED", rs.status_value);
           break;
-        case 3:
+        case 78:
           assertEquals("TAKEN", rs.status_value);
           break;
         default:
@@ -43,7 +43,7 @@ public class Request_tests {
   public void testing_put_request() {
     //set up a standard put_request() and use it.
     //arrange
-    int user_id = 1;
+    int user_id = 4;
     String desc = "desc";
     int points = 100; 
     String title = "title"; 
@@ -58,10 +58,11 @@ public class Request_tests {
 
     //assert
     Request r2 = Request_utils.get_a_request(response.id);
+    assertNotNull(String.format("r2 was null after trying an id of %d", response.id), r2);
     assertTrue(r2.datetime.length() > 0);
     assertEquals(desc, r2.description);
     assertEquals(points, r2.points);
-    assertEquals(1, r2.status); //always starts OPEN
+    assertEquals(76, r2.status); //always starts OPEN
     assertEquals(title, r2.title);
     assertEquals(user_id, r2.requesting_user_id);
     assertArrayEquals(categories, r2.get_categories());
