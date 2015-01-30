@@ -116,6 +116,30 @@ public final class Request_utils {
 
 
   /**
+    * sets the status of the request to taken for a given user.
+    * @return true if successful at taking, false otherwise.
+    */
+  public static boolean take_request(int user_id, int request_id) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      // see db_scripts/v1_setup.sql take_request for
+      // details on this stored procedure.
+      
+      cs = conn.prepareCall(String.format(
+        "{call take_request(%d, %d)}" , user_id, request_id));
+      cs.execute();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+    return true;
+  }
+
+
+  /**
     * Gets a specific Request 
     * 
     * @param request_id the id of a particular Request

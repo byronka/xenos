@@ -105,7 +105,7 @@
     <span class="handle-button-span">
       <a 
         class="button" 
-        href="request.jsp?request=<%=r.request_id%>&service=true"> 
+        href="handle.jsp?request=<%=r.request_id%>"> 
         <%=loc.get(20, "Handle")%> 
       </a>
     </span>

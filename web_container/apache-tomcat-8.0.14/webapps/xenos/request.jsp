@@ -73,7 +73,7 @@
 
     <%} if (show_handle_button) {%>
 
-      <a href="request.jsp?request=<%=r.request_id%>&service=true">
+      <a href="handle.jsp?request=<%=r.request_id%>">
         <%=loc.get(37,"Handle")%>
       </a>
 

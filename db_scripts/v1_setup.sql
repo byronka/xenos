@@ -87,6 +87,7 @@ request (
   status INT,
   title NVARCHAR(255),
   requesting_user_id INT UNSIGNED NOT NULL,
+  handling_user_id INT UNSIGNED,
   FOREIGN KEY FK_requesting_user_user_id (requesting_user_id) 
     REFERENCES user (user_id) 
     ON DELETE CASCADE,
@@ -490,6 +491,49 @@ BEGIN
  
 	PREPARE insert_clause FROM @insert_clause;
 	EXECUTE insert_clause; 
+END
+
+---DELIMITER---
+
+CREATE PROCEDURE take_request
+(
+  user_id INT UNSIGNED,
+  request_id INT UNSIGNED
+) 
+BEGIN 
+  SET @user_id = user_id;
+  SET @request_id = request_id;
+
+  -- first check that they are trying to 
+  -- take something that exists
+   SET @valid_id_sql = "
+    SELECT COUNT(*) INTO @valid_id 
+    FROM request 
+    WHERE request_id = @request_id";
+	PREPARE valid_id_sql FROM @valid_id_sql;
+	EXECUTE valid_id_sql; 
+
+  IF (@valid_id <> 1) THEN
+      SET @msg = CONCAT('request does not exist in the system: ', 
+        @request_id);
+      SIGNAL SQLSTATE '45002' 
+      SET message_text = @msg;
+  END IF;
+
+  -- actually change the status of the request here.
+  SET @take_sql = '
+    UPDATE request 
+    SET 
+      status = 78, 
+      handling_user_id = @user_id  
+    WHERE request_id = @request_id';
+
+	PREPARE take_sql FROM @take_sql;
+	EXECUTE take_sql; 
+
+  -- Add an audit
+  CALL add_audit(3,@user_id,@request_id,NULL);
+
 END
 
 ---DELIMITER---
