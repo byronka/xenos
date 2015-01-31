@@ -433,6 +433,11 @@ BEGIN
       SIGNAL SQLSTATE '45001' set message_text = msg;
   END IF;
 
+  -- Prepare a handler in case there is a SQLException, 
+  -- we want to roll back.
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
+  START TRANSACTION;
+
   -- A) The main part - add the request to that table.
   SET @desc = description;
   SET @points = points;
@@ -465,6 +470,8 @@ BEGIN
 	PREPARE update_points_sql FROM @update_points_sql;
 	EXECUTE update_points_sql; 
 
+  COMMIT;
+
   -- D) Add an audit
   CALL add_audit(1,@ruid,@new_request_id,'');
 END
@@ -483,6 +490,9 @@ BEGIN
   SET @user_id = user_id;
   SET @request_id = request_id;
 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
+  START TRANSACTION;
+
 	SET @insert_clause = 
      "INSERT into request_message (message, request_id, user_id, timestamp)
       SELECT 
@@ -494,6 +504,7 @@ BEGIN
  
 	PREPARE insert_clause FROM @insert_clause;
 	EXECUTE insert_clause; 
+  COMMIT;
 END
 
 ---DELIMITER---
@@ -523,6 +534,8 @@ BEGIN
       SET message_text = @msg;
   END IF;
 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
+  START TRANSACTION;
   -- actually change the status of the request here.
   SET @take_sql = '
     UPDATE request 
@@ -533,6 +546,8 @@ BEGIN
 
 	PREPARE take_sql FROM @take_sql;
 	EXECUTE take_sql; 
+
+  COMMIT;
 
   -- Add an audit
   CALL add_audit(3,@user_id,@request_id,NULL);
@@ -566,7 +581,10 @@ BEGIN
       SET message_text = @msg;
   END IF;
 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
+  START TRANSACTION;
   -- get the points on this request.
+
 
   SET @pts_sql = "
     SELECT points into @points
@@ -622,6 +640,8 @@ BEGIN
 	PREPARE pts_sql FROM @pts_sql;
 	EXECUTE pts_sql; 
 
+  COMMIT;
+
   -- Add an audit
   CALL add_audit(2,@user_id,@request_id,@delete_msg);
 
@@ -653,6 +673,9 @@ BEGIN
       SET message_text = @msg;
   END IF;
 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
+  START TRANSACTION;
+
   -- add the user
   SET @insert_sql = "
     INSERT INTO user (username, password, points)
@@ -661,6 +684,9 @@ BEGIN
 	EXECUTE insert_sql;  
 
   SET @new_user_id = LAST_INSERT_ID();
+
+  COMMIT;
+
   -- Add an audit
   CALL add_audit(4,@new_user_id,NULL,NULL);
 
