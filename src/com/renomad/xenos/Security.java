@@ -31,7 +31,8 @@ public final class Security {
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt = conn.prepareStatement(
+					sqlText, Statement.RETURN_GENERATED_KEYS);     
       pstmt.setInt( 1, user_id);
       ResultSet resultSet = pstmt.executeQuery();
 
@@ -51,7 +52,8 @@ public final class Security {
   }
 
   /**
-    * simply sets "is_logged_in" to false in the database for the given user.
+		* simply sets "is_logged_in" to false in the database for the
+		* given user.
     * @param user_id the user in question to set logged_in to false.
     */
   public static boolean set_user_not_logged_in(int user_id) {
@@ -59,7 +61,8 @@ public final class Security {
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt = conn.prepareStatement(
+					sqlText, Statement.RETURN_GENERATED_KEYS);     
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return false; //if a failure occurred.
@@ -73,7 +76,8 @@ public final class Security {
   /**
     * checks the password based on the username, the user's unique key
     *
-    * @return the user id if the password is correct for that username, 0 otherwise
+    * @return the user id if the password is correct for that 
+		*  username, 0 otherwise
     */
   public static int check_login(String username, String password) {
     String salt = User_utils.get_user_salt(username);
@@ -85,7 +89,8 @@ public final class Security {
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+      pstmt = conn.prepareStatement(
+					sqlText, Statement.RETURN_GENERATED_KEYS);     
       pstmt.setNString( 1, username);
       pstmt.setString( 2, hashed_pwd);
       ResultSet resultSet = pstmt.executeQuery();
@@ -135,7 +140,8 @@ public final class Security {
       PreparedStatement pstmt = null;
       try {
         Connection conn = Database_access.get_a_connection();
-        pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
+        pstmt = conn.prepareStatement(
+						sqlText, Statement.RETURN_GENERATED_KEYS);     
         pstmt.setString( 1, ip);
         pstmt.setInt( 2, user_id);
         Database_access.execute_update(pstmt);
