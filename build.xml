@@ -84,8 +84,6 @@
     <antcall target="compile" />
     <antcall target="install" />
     <antcall target="tomcat-restart" />
-    <echo message="Xenos is ready at https://localhost:8443/xenos"/>
-    <echo message="or (non-ssl) at http://localhost:8080/xenos"/>
   </target>
 
 
@@ -476,6 +474,8 @@
   <target name="tomcat-start" description="start tomcat">
     <exec executable="${tomcat.home.bin}startup.sh" osfamily="unix" />
     <exec executable="${tomcat.home.bin}startup.bat" osfamily="windows" />
+    <echo message="Xenos is ready at https://localhost:8443/xenos"/>
+    <echo message="or (non-ssl) at http://localhost:8080/xenos"/>
   </target>
 
   <target name="tomcat-stop" 
