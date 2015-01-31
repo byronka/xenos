@@ -419,6 +419,7 @@ CREATE PROCEDURE put_request
   OUT new_request_id INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
   -- Check that the user has the points.
   SET @user_points_sql = "
       SELECT points INTO @user_points
@@ -435,7 +436,6 @@ BEGIN
 
   -- Prepare a handler in case there is a SQLException, 
   -- we want to roll back.
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
   START TRANSACTION;
 
   -- A) The main part - add the request to that table.
@@ -485,12 +485,12 @@ CREATE PROCEDURE put_message
   request_id INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
   -- A) The main part - add the request to that table.
   SET @message = message;
   SET @user_id = user_id;
   SET @request_id = request_id;
 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
   START TRANSACTION;
 
 	SET @insert_clause = 
@@ -515,6 +515,7 @@ CREATE PROCEDURE take_request
   request_id INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
   SET @user_id = user_id;
   SET @request_id = request_id;
 
@@ -534,7 +535,6 @@ BEGIN
       SET message_text = @msg;
   END IF;
 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
   START TRANSACTION;
   -- actually change the status of the request here.
   SET @take_sql = '
@@ -562,6 +562,7 @@ CREATE PROCEDURE delete_request
   request_id INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
   SET @user_id = user_id;
   SET @request_id = request_id;
 
@@ -581,7 +582,6 @@ BEGIN
       SET message_text = @msg;
   END IF;
 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
   START TRANSACTION;
   -- get the points on this request.
 
@@ -655,6 +655,7 @@ CREATE PROCEDURE create_new_user
   password NVARCHAR(50)
 ) 
 BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
   SET @username = username;
   SET @password = password;
 
@@ -673,7 +674,6 @@ BEGIN
       SET message_text = @msg;
   END IF;
 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
   START TRANSACTION;
 
   -- add the user
