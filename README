@@ -74,7 +74,7 @@ mysql> GRANT ALL PRIVILEGES ON *.* TO 'xenosuser'@'%' WITH GRANT OPTION;
 2) Environment variables
 ========================
 
-There is a script called set_env.sh which will try to get the
+There is a script, utils/set_env.sh which will try to get the
 proper values for JAVA_HOME, ANT_HOME, and CATALINA_HOME.  Of these,
 JAVA_HOME is the tricky one, since the other two are in this directory!
 
@@ -102,6 +102,26 @@ JAVA_HOME should point to a Java 1.7 OpenJdk directory.  Ant needs it
 
 CATALINA_HOME should point to the Tomcat directory.  The Tomcat
   scripts need this.
+
+
+Optional variables
+------------------
+
+If you want Ant to only print information about targets when there is
+something interesting in it (like errors or notes), you might add this
+environment variable:
+
+  set ANT_ARGS=-emacs -logger org.apache.tools.ant.NoBannerLogger 
+  export ANT_ARGS
+
+This way a lot of the unneccessary information is avoided during
+builds.  You can try this out yourself from the command line:
+
+  ant -emacs -logger org.apache.tools.ant.NoBannerLogger run-initial
+
+See more about this at: ./utils/ant/apache-ant-1.9.4/manual/listeners.html
+
+
 
 
 

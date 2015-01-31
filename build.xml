@@ -65,7 +65,7 @@
       data to it, then cleans and builds the classes, puts everything
       in its place, and kicks off the server.
   -->
-  <target name="run-initial" 
+  <target name="run-initial" depends="compile-schema-code"
     description="full-cleans (bye-byte data!), makes a new database with sample data, compiles, starts server">
     <antcall target="compile" />
     <antcall target="clean-schema" />
@@ -77,44 +77,11 @@
   </target>
 
 
-  <!-- cleans, builds, installs into container, restarts tomcat -->
-  <target name="run" 
-    description="cleans, builds, installs, restarts">
-    <antcall target="clean-build" />
-    <antcall target="compile" />
-    <antcall target="install" />
-    <antcall target="tomcat-restart" />
-  </target>
-
-
   <!-- ################ -->
   <!--    CLEANING      -->
   <!-- ################ -->
   <!-- targets that deleted generated files and directories -->
   <!--======================================================-->
-
-	<!-- deletes the compiled java files in the work directory
-	and also the entire database.  use with caution! -->
-  <target 
-    name="clean-db-and-classes" depends="compile-schema-code" 
-    description="deletes database (Bye-bye all data) and build directory">
-    <antcall target="clean-schema" />
-    <antcall target="clean-build" />
-  </target>
-
-
-	<!-- deletes the compiled java files in the work directory
-	and also the entire database.  use with caution! -->
-  <target 
-    name="clean-everything" depends="compile-schema-code" 
-    description="deletes db, classes, code analysis, javadocs, tomcat logs and work directories">
-    <antcall target="clean-schema" />
-    <antcall target="clean-build" />
-    <antcall target="clean-javadoc" />
-    <antcall target="clean-tomcat" />
-    <antcall target="clean-code-analysis" />
-    <antcall target="clean-schema-code" />
-  </target>
 
   <!-- deletes the javadoc directory --> 
   <target 
@@ -282,7 +249,7 @@
 			<jvmarg value="-D${conn.str.with.db}" />
 			<jvmarg value="-D${conn.str.without.db}" />
 		</java>
-	<echo message="If this succeeded, run 'ant run' to get this new data in the system"/>
+	<echo message="If this succeeded, run 'ant tomcat-restart' to get this new data in the system"/>
   </target>
 
 
@@ -320,13 +287,7 @@
   <!--====================================================-->
 
     <!-- Run the JUnit Tests -->
-	<target name="test" 
-    description="runs the tests">
-    <antcall target="clean-db-and-classes" />
-    <antcall target="compile" />
-    <antcall target="build-schema" />
-    <antcall target="build-sample-data" />
-    <antcall target="build-language-data" />
+	<target name="test" description="runs the tests">
 		<junit printsummary="on" fork="true" haltonfailure="yes">
 			<jvmarg value="-DTESTING_DATABASE_CODE_WITHOUT_TOMCAT=true"	/>
 			<jvmarg value="-D${conn.str.with.db}"	/>
@@ -343,6 +304,11 @@
 		<test name="com.renomad.xenos.tests.Request_tests"/>
 		<test name="com.renomad.xenos.tests.Utils_tests"/>
 	</junit>
+    <echo message=""/>
+    <echo message="*** Make sure you compiled or rebuilt the schema if neccessary."/>
+    <echo message="*** If there were errors, check whether you should rebuild classes or database"/>
+    <echo message="*** All this target does is run the tests."/>
+    <echo message=""/>
 	</target>
 
 
@@ -474,6 +440,8 @@
   <target name="tomcat-start" description="start tomcat">
     <exec executable="${tomcat.home.bin}startup.sh" osfamily="unix" />
     <exec executable="${tomcat.home.bin}startup.bat" osfamily="windows" />
+    <echo message=""/>
+    <echo message="Installing language data."/>
     <echo message="Xenos is ready at https://localhost:8443/xenos"/>
     <echo message="or (non-ssl) at http://localhost:8080/xenos"/>
   </target>
