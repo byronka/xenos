@@ -16,7 +16,7 @@ VALUES
 ( 'alice'  , NULL  ,'F60370D4FEEB445A3170329052A5F6377F15749524AF7F2C789DB5DA66D5EC15',    100 ,        1 ,         NULL ,'2015-01-31 04:06:12','8343535681861390929', NULL                , NULL              ,   50 ,        0 ),
 ( "<script>alert('wow')</script>" , NULL  ,'4F45715CCBCBB506795356D085AC349BC02CB49BADA070E5F1F544F9CB04F6B7',    100 ,        1 ,            1 ,'2015-01-31 04:06:21','1683430133699830866','2015-01-31 04:08:09','127.0.0.1'        ,   50 ,        0 );
 
--- password for bob, sally, and alice is "password"
+-- password for everyone is "password"
 
 
 ---DELIMITER---
@@ -102,12 +102,12 @@ VALUES
 -- add some messages for some requests
 INSERT INTO request_message (request_id, message, timestamp, user_id)
 VALUES 
-(1, "Hi there mom!","2014-12-18 21:22:42",1 ),
-(1,"What do ya know?","2014-12-18 21:22:43",1 ),
-(1,"this sure is fun!","2014-12-18 21:22:44",1 ),
-(2,"<script>alert('neato words')</script>","2014-12-18 21:22:45",1 ),
-(2,"byron: What we could do is to do something or other","2014-12-18 21:22:46",1 ),
-(2,"dan: what do you think about this then?","2014-12-18 21:22:47",2 )
+(1, "Hi there mom!","2014-12-18 21:22:42",4 ),
+(1, "What do ya know?","2014-12-18 21:22:43",4 ),
+(1, "this sure is fun!","2014-12-18 21:22:44",4 ),
+(2, "<script>alert('neato words')</script>","2014-12-18 21:22:45",4 ),
+(2, "byron: What we could do is to do something or other","2014-12-18 21:22:46",4 ),
+(2, "dan: what do you think about this then?","2014-12-18 21:22:47",5 )
 
 
 ---DELIMITER---

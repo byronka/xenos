@@ -430,13 +430,13 @@ public final class Request_utils {
 
     int new_request_id = -1; //need it here to be outside the "try".
     CallableStatement cs = null;
+    String categories_str = "";
     try {
       Connection conn = Database_access.get_a_connection();
       // see db_scripts/v1_setup.sql put_request for
       // details on this stored procedure.
       
       //convert categories into proper format: e.g. (1),(2),(3)
-      String categories_str = "";
       if (categories.length > 0) {
         StringBuilder sb = 
           new StringBuilder(String.format("(%d)", categories[0]));
@@ -462,7 +462,7 @@ public final class Request_utils {
         return new Request_response(Request_response.Stat.LACK_POINTS, -1);
       }
 
-      Database_access.handle_sql_exception(ex, cs);
+      Database_access.handle_sql_exception(ex);
       return new Request_response(Request_response.Stat.ERROR, -1);
     } finally {
       Database_access.close_statement(cs);

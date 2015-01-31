@@ -421,7 +421,12 @@ CREATE PROCEDURE put_request
   OUT new_request_id INT UNSIGNED
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' set message_text = 'general error while creating request.';
+  END;
+
   -- Check that the user has the points.
   SET @user_points_sql = "
       SELECT points INTO @user_points
@@ -487,7 +492,12 @@ CREATE PROCEDURE put_message
   request_id INT UNSIGNED
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    SIGNAL SQLSTATE '45000' set message_text = 'general error while adding message.';
+    ROLLBACK;
+  END;
+
   -- A) The main part - add the request to that table.
   SET @message = message;
   SET @user_id = user_id;
@@ -517,7 +527,11 @@ CREATE PROCEDURE take_request
   request_id INT UNSIGNED
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    SIGNAL SQLSTATE '45000' set message_text = 'general error while taking a request.';
+    ROLLBACK;
+  END;
   SET @user_id = user_id;
   SET @request_id = request_id;
 
@@ -564,7 +578,11 @@ CREATE PROCEDURE delete_request
   request_id INT UNSIGNED
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    SIGNAL SQLSTATE '45000' set message_text = 'general error while deleting a request.';
+    ROLLBACK;
+  END;
   SET @user_id = user_id;
   SET @request_id = request_id;
 
@@ -658,7 +676,11 @@ CREATE PROCEDURE create_new_user
   salt VARCHAR(50)
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    SIGNAL SQLSTATE '45000' set message_text = 'general error while creating a new user.';
+    ROLLBACK;
+  END;
   SET @username = username;
   SET @password = password;
   SET @salt = salt;

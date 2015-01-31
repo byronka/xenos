@@ -17,25 +17,6 @@ public final class Database_access {
     //do nothing.
   }
 
-  /**
-    * this overload of the method will also rollback commits.
-    */
-  public static void handle_sql_exception(SQLException ex, Statement stmt) {
-    try {
-      if (stmt != null) {
-        Connection conn = stmt.getConnection();
-        if (conn != null) {
-          System.err.println("Transaction is being rolled back");
-          conn.rollback();
-        }
-      }
-    } catch(SQLException excep) {
-      handle_sql_exception(excep); //inner exception
-    } finally {
-      handle_sql_exception(ex);  //exception from parameter list
-    }
-  }
-
 
   /**
     * provides a few boilerplate println's for sql exceptions
