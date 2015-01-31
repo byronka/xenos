@@ -427,6 +427,8 @@ BEGIN
     SIGNAL SQLSTATE '45000' set message_text = 'general error while creating request.';
   END;
 
+  START TRANSACTION;
+
   -- Check that the user has the points.
   SET @user_points_sql = "
       SELECT points INTO @user_points
@@ -438,12 +440,12 @@ BEGIN
   IF (@user_points < @points) THEN
       SET @msg = CONCAT('user lacks points to make this request: ', 
         @requesting_user_id );
+      ROLLBACK;
       SIGNAL SQLSTATE '45001' set message_text = msg;
   END IF;
 
   -- Prepare a handler in case there is a SQLException, 
   -- we want to roll back.
-  START TRANSACTION;
 
   -- A) The main part - add the request to that table.
   SET @desc = description;
@@ -477,10 +479,11 @@ BEGIN
 	PREPARE update_points_sql FROM @update_points_sql;
 	EXECUTE update_points_sql; 
 
-  COMMIT;
 
   -- D) Add an audit
   CALL add_audit(1,@ruid,@new_request_id,'');
+
+  COMMIT;
 END
 
 ---DELIMITER---
@@ -494,16 +497,17 @@ CREATE PROCEDURE put_message
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    SIGNAL SQLSTATE '45000' set message_text = 'general error while adding message.';
     ROLLBACK;
+    SIGNAL SQLSTATE '45000' set message_text = 'general error while adding message.';
   END;
+
+  START TRANSACTION;
 
   -- A) The main part - add the request to that table.
   SET @message = message;
   SET @user_id = user_id;
   SET @request_id = request_id;
 
-  START TRANSACTION;
 
 	SET @insert_clause = 
      "INSERT into request_message (message, request_id, user_id, timestamp)
@@ -529,9 +533,10 @@ CREATE PROCEDURE take_request
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    SIGNAL SQLSTATE '45000' set message_text = 'general error while taking a request.';
     ROLLBACK;
+    SIGNAL SQLSTATE '45000' set message_text = 'general error while taking a request.';
   END;
+  START TRANSACTION;
   SET @user_id = user_id;
   SET @request_id = request_id;
 
@@ -547,11 +552,11 @@ BEGIN
   IF (@valid_id <> 1) THEN
       SET @msg = CONCAT('request does not exist in the system: ', 
         @request_id);
+      ROLLBACK;
       SIGNAL SQLSTATE '45002' 
       SET message_text = @msg;
   END IF;
 
-  START TRANSACTION;
   -- actually change the status of the request here.
   SET @take_sql = '
     UPDATE request 
@@ -563,10 +568,11 @@ BEGIN
 	PREPARE take_sql FROM @take_sql;
 	EXECUTE take_sql; 
 
-  COMMIT;
 
   -- Add an audit
   CALL add_audit(3,@user_id,@request_id,NULL);
+
+  COMMIT;
 
 END
 
@@ -580,9 +586,12 @@ CREATE PROCEDURE delete_request
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    SIGNAL SQLSTATE '45000' set message_text = 'general error while deleting a request.';
     ROLLBACK;
+    SIGNAL SQLSTATE '45000' set message_text = 'general error while deleting a request.';
   END;
+
+  START TRANSACTION;
+
   SET @user_id = user_id;
   SET @request_id = request_id;
 
@@ -598,11 +607,11 @@ BEGIN
   IF (@valid_id <> 1) THEN
       SET @msg = CONCAT('request does not exist in the system: ', 
         @request_id);
+      ROLLBACK;
       SIGNAL SQLSTATE '45002' 
       SET message_text = @msg;
   END IF;
 
-  START TRANSACTION;
   -- get the points on this request.
 
 
@@ -660,10 +669,11 @@ BEGIN
 	PREPARE pts_sql FROM @pts_sql;
 	EXECUTE pts_sql; 
 
-  COMMIT;
 
   -- Add an audit
   CALL add_audit(2,@user_id,@request_id,@delete_msg);
+
+  COMMIT;
 
 END
 
@@ -678,9 +688,12 @@ CREATE PROCEDURE create_new_user
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    SIGNAL SQLSTATE '45000' set message_text = 'general error while creating a new user.';
     ROLLBACK;
+    SIGNAL SQLSTATE '45000' set message_text = 'general error while creating a new user.';
   END;
+
+  START TRANSACTION;
+
   SET @username = username;
   SET @password = password;
   SET @salt = salt;
@@ -696,11 +709,11 @@ BEGIN
   IF (@count_email_username > 0) THEN
       SET @msg = CONCAT(
 				'username matches existing email during insert: ', @username );
+      ROLLBACK;
       SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
   END IF;
 
-  START TRANSACTION;
 
   -- add the user
   SET @insert_sql = "
@@ -711,10 +724,10 @@ BEGIN
 
   SET @new_user_id = LAST_INSERT_ID();
 
-  COMMIT;
 
   -- Add an audit
   CALL add_audit(4,@new_user_id,NULL,NULL);
 
-END
+  COMMIT;
 
+END
