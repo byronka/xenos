@@ -339,11 +339,11 @@ feature is going to require multiple commits to finish.  If it's a
 tiny thing (one commit) you can just add that to the master branch
 directly.  Use the following convention for the branch names:
 
-initials/branchName
+  initials/branchName
 
 for example:
 
-bk/Adding_documentation
+  bk/Adding_documentation
 
 
 
