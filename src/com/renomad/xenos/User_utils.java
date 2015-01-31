@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.CallableStatement;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
   * Utilities methods used to work with users
   */
@@ -76,6 +78,37 @@ public final class User_utils {
       }
 
       return user_ids_sb.toString();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return "";
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
+    * gets the salt for a given user.
+    * @param username the username for the user
+    * @return the salt for the user, used in hashing 
+    *   password, or empty if failure
+    */
+  public static String get_user_salt(String username) {
+    String sqlText = "SELECT salt FROM user WHERE username = ?;";
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setNString( 1, username);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return "";
+      }
+
+      resultSet.next(); //move to the first set of results.
+      String salt = resultSet.getString("salt");
+      return salt;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return "";
@@ -200,9 +233,13 @@ public final class User_utils {
         // see db_scripts/v1_setup.sql delete_request for
         // details on this stored procedure.
         
-        cs = conn.prepareCall("{call create_new_user(?,?)}");
+        cs = conn.prepareCall("{call create_new_user(?,?,?)}");
         cs.setNString(1,username);
-        cs.setNString(2,password);
+        //make a salt we'll use for hashing.
+        String salt = Long.toString(ThreadLocalRandom.current().nextLong(Long.MAX_VALUE));
+        String hashed_pwd = hash_password(password, salt);
+        cs.setString(2,hashed_pwd);
+        cs.setString(3,salt);
         cs.executeQuery();
       } catch (SQLException ex) {
         Database_access.handle_sql_exception(ex);
@@ -211,6 +248,19 @@ public final class User_utils {
         Database_access.close_statement(cs);
       }
       return true;
+  }
+
+
+  /**
+    * Just like it says: concatenates the salt and password, and then
+    * generates a hash from it.  We'll go with Sha256.
+    * FYI: look up "salt" as it relates to hashing.  It's a way to combat
+    * rainbow tables in hash attacks.
+    */
+  public static String hash_password(String password, String salt) {
+    String value_to_hash = password + salt;
+    byte[] hashed_bytes = Utils.get_sha_256(value_to_hash);
+    return Utils.bytes_to_hex(hashed_bytes); 
   }
 
 

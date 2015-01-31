@@ -71,17 +71,23 @@ public final class Security {
 
 
   /**
-    * checks the password based on the email, the user's unique key
+    * checks the password based on the username, the user's unique key
     *
-    * @return the user id if the password is correct for that email.
+    * @return the user id if the password is correct for that username, 0 otherwise
     */
-  public static int check_login(String email, String password) {
-    String sqlText = "SELECT password,user_id FROM user WHERE username = ?";
+  public static int check_login(String username, String password) {
+    String salt = User_utils.get_user_salt(username);
+    String hashed_pwd = User_utils.hash_password(password, salt);
+    String sqlText = 
+      "SELECT user_id "+
+      "FROM user "+
+      "WHERE username = ? AND password = ?";
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
       pstmt = conn.prepareStatement(sqlText, Statement.RETURN_GENERATED_KEYS);     
-      pstmt.setNString( 1, email);
+      pstmt.setNString( 1, username);
+      pstmt.setString( 2, hashed_pwd);
       ResultSet resultSet = pstmt.executeQuery();
 
       if(Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -89,11 +95,7 @@ public final class Security {
       }
 
       resultSet.next(); //move to the first set of results.
-
-      if (resultSet.getNString("password").equals(password)) {
-        return resultSet.getInt("user_id"); //success!
-      }
-      return 0; //password was bad - return user "0"
+      return resultSet.getInt("user_id"); //success!
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return 0;

@@ -32,10 +32,12 @@ CREATE TABLE IF NOT EXISTS
     user_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
     username NVARCHAR(50) UNIQUE,
     email NVARCHAR(200) UNIQUE, 
-    password NVARCHAR(50),
-    points INT UNSIGNED, -- max-out at 65535 - keep them below that.
-    language INT UNSIGNED NULL, -- 1 is English.
+    password VARCHAR(64),
+    points INT UNSIGNED DEFAULT 100, 
+    language INT UNSIGNED NULL DEFAULT 1, -- 1 is English.
     is_logged_in BOOL, 
+    date_created DATETIME,
+    salt VARCHAR(50), -- used when hashing password
     last_time_logged_in DATETIME,
     last_ip_logged_in VARCHAR(40),
     rank INT UNSIGNED NOT NULL DEFAULT 50, -- how they are ranked (like, in stars)
@@ -652,12 +654,14 @@ END
 CREATE PROCEDURE create_new_user
 (
   username NVARCHAR(50),
-  password NVARCHAR(50)
+  password VARCHAR(64),
+  salt VARCHAR(50)
 ) 
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING ROLLBACK;
   SET @username = username;
   SET @password = password;
+  SET @salt = salt;
 
   -- check that this username doesn't match an email in the system
   SET @username_exists_as_email = "
@@ -678,8 +682,8 @@ BEGIN
 
   -- add the user
   SET @insert_sql = "
-    INSERT INTO user (username, password, points)
-    VALUES (@username, @password, 100)";
+    INSERT INTO user (username, password, salt, date_created)
+    VALUES (@username, @password, @salt, UTC_TIMESTAMP())";
 	PREPARE insert_sql FROM @insert_sql;
 	EXECUTE insert_sql;  
 

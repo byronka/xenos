@@ -11,6 +11,9 @@ import java.sql.Connection;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
   * Utils holds utilities that apply across many situations
   */
@@ -368,6 +371,41 @@ public final class Utils {
       }
     }
     return true;
+  }
+
+
+  /**
+    * calculates the SHA-256 32-byte array for any given string.
+    */
+  public static byte[] get_sha_256(String value_to_hash) {
+    MessageDigest sha256 = null;
+    try {
+      sha256 = MessageDigest.getInstance("SHA-256");        
+    } catch (NoSuchAlgorithmException ex) {
+      System.err.println("Error: no such algorithm: SHA-256");
+    }
+    byte[] passBytes = value_to_hash.getBytes();
+    byte[] passHash = sha256.digest(passBytes);
+    return passHash;
+  }
+
+
+  /**
+    * given a byte array, return a string of hexadecimal
+    * found on stackoverflow.com at 
+    * http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
+    * @param bytes a byte array
+    * @return a string of the hexadecimal value for the array
+    */
+  public static String bytes_to_hex(byte[] bytes) {
+    final char[] hexArray = "0123456789ABCDEF".toCharArray();
+    char[] hexChars = new char[bytes.length * 2];
+    for ( int j = 0; j < bytes.length; j++ ) {
+    int v = bytes[j] & 0xFF;
+    hexChars[j * 2] = hexArray[v >>> 4];
+    hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+    }
+    return new String(hexChars);
   }
 
 

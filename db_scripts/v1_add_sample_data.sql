@@ -9,11 +9,14 @@ SET FOREIGN_KEY_CHECKS=0;
  ------------*/
 
 INSERT INTO user
-(username, email, password, is_logged_in, last_time_logged_in, last_ip_logged_in, points)
+( username, email , password                                                         , points , language , is_logged_in , date_created        , salt                , last_time_logged_in , last_ip_logged_in , rank , is_admin )
 VALUES
-("bk","bk@coolnet", "password",1,"2014-11-11","198.24.24.26", 100),
-("ds","ds@coolnet", "password",1,"2014-11-11","198.24.24.27", 100),
-("<script>alert('wow')</script>","<script>alert('dude')</script>", "password",1,"2014-11-11","198.24.24.26", 100)
+( 'bob'    , NULL  ,'389EA2EDD0D01B416CCA07D7E5EB36D7E98A4D7406F98559AAE0082CD4943C2A',    100 ,        1 ,         NULL ,'2015-01-31 04:05:54','4647350076936507137', NULL                , NULL              ,   50 ,        0 ),
+( 'sally'  , NULL  ,'F8447927FF83B47E084D430ABABC66FC1A47BBCF6DBA4D60A8FE40CCE7E7E7DA',    100 ,        1 ,         NULL ,'2015-01-31 04:06:03','7526054207525219118', NULL                , NULL              ,   50 ,        0 ),
+( 'alice'  , NULL  ,'F60370D4FEEB445A3170329052A5F6377F15749524AF7F2C789DB5DA66D5EC15',    100 ,        1 ,         NULL ,'2015-01-31 04:06:12','8343535681861390929', NULL                , NULL              ,   50 ,        0 ),
+( "<script>alert('wow')</script>" , NULL  ,'4F45715CCBCBB506795356D085AC349BC02CB49BADA070E5F1F544F9CB04F6B7',    100 ,        1 ,            1 ,'2015-01-31 04:06:21','1683430133699830866','2015-01-31 04:08:09','127.0.0.1'        ,   50 ,        0 );
+
+-- password for bob, sally, and alice is "password"
 
 
 ---DELIMITER---
