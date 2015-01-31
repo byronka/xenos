@@ -261,6 +261,8 @@
   -->
   <target name="build-sample-data" depends="compile-schema-code" 
     description="adds sample data to the database for testing">
+    <antcall target="clean-schema" />
+    <antcall target="build-schema" />
     <java 
 			classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.xenos.schema.Add_sample_data_to_db"
