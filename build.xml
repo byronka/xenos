@@ -1,13 +1,5 @@
 <project name="Xenos" default="usage" >
 
-  <target name="usage"> 
-    <echo message="  If this is your first time with the project, read"/> 
-    <echo message="  the README file and make sure you have the dependencies."/> 
-    <echo message="  Then, to build everything, just run:"/> 
-    <echo message="     ant run-initial"/> 
-    <echo message=""/> 
-    <echo message="  Execute 'ant -p' for build file help."/> 
-  </target> 
 
   <!-- Note: it is important that this file, build.xml, remain
        at the top of the directory, as it refers to directories
@@ -414,6 +406,25 @@
 	</target>
 
 
+
+  <!-- ############## -->
+  <!--     UTILS      -->
+  <!-- ############## -->
+  <!-- Scripts for helping out with using Ant   -->
+  <!--====================================================-->
+
+  <target name="usage"> 
+    <echo message="  If this is your first time with the project, read"/> 
+    <echo message="  the README file and make sure you have the dependencies."/> 
+    <echo message="  Then, to build everything, just run:"/> 
+    <echo message="     ant run-initial"/> 
+    <echo message=""/> 
+    <echo message="  Execute 'ant -p' for build file help."/> 
+  </target> 
+
+  <target name="debug" description="see all properties configured">
+    <echoproperties/>
+  </target>
 
   <!-- ############## -->
   <!--     TOMCAT     -->
