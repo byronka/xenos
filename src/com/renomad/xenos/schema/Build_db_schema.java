@@ -177,45 +177,23 @@ public final class Build_db_schema {
 
   public static void run_multiple_statements(String file) {
     Statement stmt = null;
+    int counter = 0;
     try (Scanner s = new Scanner(new File(file), "UTF-8")) {
       stmt = get_a_statement();
       s.useDelimiter("---DELIMITER---");
       while(s.hasNext()) {
         String next_statement = s.next();
-        execute_statement(
-            next_statement, stmt);
+        counter++;
+        stmt.execute(next_statement);
       }
     } catch (FileNotFoundException ex) {
       System.err.println(ex);
     } catch (SQLException ex) {
+      System.err.println("error at delimiter " + counter);
       handle_sql_exception(ex);
     } finally {
       close_statement(stmt);
     }
-  }
-
-
-
-  /**
-    *A wrapper for Statement.execute, and running statements 
-    * that have not come
-    * from the user, so we don't have to worry about SQL Injection.
-    *
-    * Note: does not close connection.
-    * @param sqlText the SQL text we will run - it must be a
-    *  single statement.  Multiple combined statements will fail.
-    * @param stmt the statement
-    * @return true if the first result is a ResultSet object; false 
-    *  if it is an update count or there are no results
-    */
-  public static boolean execute_statement(String sqlText, Statement stmt) {
-    boolean result = false;
-    try {
-      result = stmt.execute(sqlText);
-    }  catch (SQLException ex) {
-      handle_sql_exception(ex);
-    }
-    return result;
   }
 
 
