@@ -300,7 +300,7 @@ END
 
 CREATE PROCEDURE get_others_requests
 (
-  requesting_user_id INT UNSIGNED,
+  ruid INT UNSIGNED,
 	title NVARCHAR(255),
   startdate VARCHAR(10),
   enddate VARCHAR(10),
@@ -374,14 +374,12 @@ BEGIN
     CONCAT(@search_clauses, " AND title LIKE CONCAT('%' , @title , '%') ");
 	END IF;
 
-  -- getting the requesting user, and rows for paging
-  SET @ruid = requesting_user_id;
-
   -- set up paging.  Right now it's always 10 or less rows on the page.
   SET @first_row = page * 10;
   SET @last_row = (page * 10) + 10;
 
   -- the prime request
+  SET @ruid = ruid;
   SET @get_request = 
      CONCAT('SELECT r.request_id, 
             r.datetime, 
@@ -414,11 +412,11 @@ END
 
 CREATE PROCEDURE put_request
 (
-  description NVARCHAR(10000),
-  requesting_user_id INT UNSIGNED,
-	title NVARCHAR(255),
-  points INT UNSIGNED, 
-  categories VARCHAR(50),
+  my_desc NVARCHAR(10000),
+  ruid INT UNSIGNED, -- requesting user id
+	ti NVARCHAR(255), -- title
+  pts INT UNSIGNED, -- points
+  cats VARCHAR(50), -- categories
   OUT new_request_id INT UNSIGNED
 ) 
 BEGIN 
@@ -434,11 +432,11 @@ BEGIN
   -- Check that the user has the points.
   SELECT points INTO @user_points
   FROM user 
-  WHERE user_id = @requesting_user_id;
+  WHERE user_id = ruid;
   
   IF (@user_points < @points) THEN
       SET @msg = CONCAT('user lacks points to make this request: ', 
-        @requesting_user_id );
+        ruid );
       ROLLBACK;
       SIGNAL SQLSTATE '45001' set message_text = msg;
   END IF;
@@ -447,34 +445,32 @@ BEGIN
   -- we want to roll back.
 
   -- A) The main part - add the request to that table.
-  SET @desc = description;
-  SET @points = points;
-  SET @title = title;
   SET @status = 76; -- requests always start 'open'
-  SET @ruid = requesting_user_id;
   INSERT into request (description, datetime, points,
    status, title, requesting_user_id)
-   VALUES (@desc, UTC_TIMESTAMP(), @points, @status, @title, @ruid); 
+   VALUES (my_desc, UTC_TIMESTAMP(), pts, @status, ti, ruid); 
          
   SET new_request_id = LAST_INSERT_ID();
-  SET @new_request_id = new_request_id;
 
 
   -- B) Add categories.
   CREATE TEMPORARY TABLE CAT_IDS (id INT);
   SELECT CONCAT(
-    'INSERT INTO CAT_IDS (id) VALUES ',categories) INTO @cat_sql;
+    'INSERT INTO CAT_IDS (id) VALUES ',cats) INTO @cat_sql;
+
+  PREPARE cat_sql FROM @cat_sql;
+  EXECUTE cat_sql;
 
   INSERT INTO request_to_category (request_id, request_category_id)
   SELECT new_request_id, id FROM CAT_IDS;
   DROP TABLE CAT_IDS;
 
   -- C) Deduct points from the user
-  UPDATE user SET points = points - @points WHERE user_id = @ruid;
+  UPDATE user SET points = points - pts WHERE user_id = ruid;
 
 
   -- D) Add an audit
-  CALL add_audit(1,@ruid,@new_request_id,'');
+  CALL add_audit(1,ruid,new_request_id,'');
 
   COMMIT;
 END
@@ -483,32 +479,29 @@ END
 
 CREATE PROCEDURE put_message
 (
-  message NVARCHAR(10000),
-  user_id INT UNSIGNED,
-  request_id INT UNSIGNED
+  my_message NVARCHAR(10000),
+  uid INT UNSIGNED,
+  rid INT UNSIGNED
 ) 
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' set message_text = 'general error while adding message.';
+    SIGNAL SQLSTATE '45000' 
+    SET message_text = 'general error while adding message.';
   END;
 
   START TRANSACTION;
 
   -- A) The main part - add the request to that table.
-  SET @message = message;
-  SET @user_id = user_id;
-  SET @request_id = request_id;
-
 
   INSERT into request_message (message, request_id, user_id, timestamp)
   SELECT 
   CONCAT(username,' says:', @message), 
-  @request_id, 
-  user_id, 
+  rid, 
+  uid, 
   UTC_TIMESTAMP()
-  FROM user WHERE user_id = @user_id;
+  FROM user WHERE user_id = uid;
  
   COMMIT;
 END
@@ -517,28 +510,27 @@ END
 
 CREATE PROCEDURE take_request
 (
-  user_id INT UNSIGNED,
-  request_id INT UNSIGNED
+  uid INT UNSIGNED,
+  rid INT UNSIGNED
 ) 
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' set message_text = 'general error while taking a request.';
+    SIGNAL SQLSTATE '45000' 
+    SET message_text = 'general error while taking a request.';
   END;
   START TRANSACTION;
-  SET @user_id = user_id;
-  SET @request_id = request_id;
 
   -- first check that they are trying to 
   -- take something that exists
   SELECT COUNT(*) INTO @valid_id 
   FROM request 
-  WHERE request_id = @request_id;
+  WHERE request_id = rid;
 
   IF (@valid_id <> 1) THEN
       SET @msg = CONCAT('request does not exist in the system: ', 
-        @request_id);
+        rid);
       ROLLBACK;
       SIGNAL SQLSTATE '45002' 
       SET message_text = @msg;
@@ -548,11 +540,11 @@ BEGIN
   UPDATE request 
   SET 
     status = 78, 
-    handling_user_id = @user_id  
-  WHERE request_id = @request_id;
+    handling_user_id = uid  
+  WHERE request_id = rid;
 
   -- Add an audit
-  CALL add_audit(3,@user_id,@request_id,NULL);
+  CALL add_audit(3,uid,rid,NULL);
 
   COMMIT;
 
@@ -562,30 +554,28 @@ END
 
 CREATE PROCEDURE delete_request
 (
-  user_id INT UNSIGNED,
-  request_id INT UNSIGNED
+  uid INT UNSIGNED,
+  rid INT UNSIGNED
 ) 
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' set message_text = 'general error while deleting a request.';
+    SIGNAL SQLSTATE '45000' 
+    SET message_text = 'general error while deleting a request.';
   END;
 
   START TRANSACTION;
-
-  SET @user_id = user_id;
-  SET @request_id = request_id;
 
   -- first check that they are trying to 
   -- delete something that exists
   SELECT COUNT(*) INTO @valid_id 
   FROM request 
-  WHERE request_id = @request_id;
+  WHERE request_id = rid;
 
   IF (@valid_id <> 1) THEN
       SET @msg = CONCAT('request does not exist in the system: ', 
-        @request_id);
+        rid);
       ROLLBACK;
       SIGNAL SQLSTATE '45002' 
       SET message_text = @msg;
@@ -596,7 +586,7 @@ BEGIN
 
   SELECT points into @points
   FROM request 
-  WHERE request_id = @request_id;
+  WHERE request_id = rid;
 
   -- get a string version of the status
   SELECT request_status_value INTO @status
@@ -605,7 +595,7 @@ BEGIN
     (
       SELECT status
       FROM request 
-      WHERE request_id = @request_id
+      WHERE request_id = rid
     );
 
   -- get a message for the deletion audit
@@ -620,19 +610,19 @@ BEGIN
       '|',
       'st:',@status) INTO @delete_msg
     FROM request
-    WHERE request_id = @request_id;
+    WHERE request_id = rid;
 
 
   -- actually delete the request here.
-  DELETE FROM request WHERE request_id = @request_id;
+  DELETE FROM request WHERE request_id = rid;
 
   -- give points back to the user
   UPDATE user 
   SET points = points + @points 
-  WHERE user_id = @user_id;
+  WHERE user_id = uid;
 
   -- Add an audit
-  CALL add_audit(2,@user_id,@request_id,@delete_msg);
+  CALL add_audit(2,uid,rid,@delete_msg);
 
   COMMIT;
 
@@ -642,31 +632,28 @@ END
 
 CREATE PROCEDURE create_new_user
 (
-  username NVARCHAR(50),
-  password VARCHAR(64),
-  salt VARCHAR(50)
+  uname NVARCHAR(50),
+  pword VARCHAR(64),
+  slt VARCHAR(50)
 ) 
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' set message_text = 'general error while creating a new user.';
+    SIGNAL SQLSTATE '45000' 
+    SET message_text = 'general error while creating a new user.';
   END;
 
   START TRANSACTION;
 
-  SET @username = username;
-  SET @password = password;
-  SET @salt = salt;
-
   -- check that this username doesn't match an email in the system
   SELECT COUNT(*) INTO @count_email_username
   FROM user 
-  WHERE @username = user.email;
+  WHERE uname = user.email;
     
   IF (@count_email_username > 0) THEN
       SET @msg = CONCAT(
-				'username matches existing email during insert: ', @username );
+				'username matches existing email during insert: ', uname );
       ROLLBACK;
       SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
@@ -675,7 +662,7 @@ BEGIN
 
   -- add the user
   INSERT INTO user (username, password, salt, date_created)
-  VALUES (@username, @password, @salt, UTC_TIMESTAMP());
+  VALUES (uname, pword, slt, UTC_TIMESTAMP());
 
   SET @new_user_id = LAST_INSERT_ID();
 
@@ -690,10 +677,10 @@ END
 
 CREATE PROCEDURE register_user_and_get_cookie
 (
-  user_id INT UNSIGNED,
-  ip_address VARCHAR(15), -- e.g. "255.255.255.255"
-  passphrase VARCHAR(50), -- used to encrypt the cookie_plaintext
-  OUT cookie VARCHAR(200)
+  uid INT UNSIGNED,
+  ip VARCHAR(15), -- e.g. "255.255.255.255"
+  p_phrase VARCHAR(50), -- used to encrypt the cookie_plaintext
+  OUT new_cookie VARCHAR(200)
 ) 
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -705,17 +692,13 @@ BEGIN
 
   START TRANSACTION;
 
-  SET @user_id = user_id;
-  SET @ip_address = ip_address;
-  SET @passphrase = passphrase;
-
   SELECT UTC_TIMESTAMP() INTO @timestamp;
 
   -- set registration values
   UPDATE user
   SET is_logged_in = 1, last_time_logged_in = @timestamp,
-  last_ip_logged_in = @ip_address
-  WHERE user_id = @user_id;
+  last_ip_logged_in = ip
+  WHERE user_id = uid;
 
   -- takes the user id, the ip, and a timestamp and encrypts
   -- that into a string value which we will use as the cookie.
@@ -724,13 +707,12 @@ BEGIN
   -- for example:
   -- "123|108.91.12.198|2014-01-02 13:04:19"
   -- Notice the delimiter is a pipe symbol.
-  SELECT CONCAT(@user_id,'|',@ip_address,'|',@timestamp) 
+  SELECT CONCAT(uid,'|',ip,'|',@timestamp) 
     INTO @cookie_val_plaintext;
 
   SELECT HEX(
     AES_ENCRYPT(
-      @cookie_val_plaintext, SHA2(@passphrase,512))) INTO @cookie;
-  SET cookie = @cookie;
+      @cookie_val_plaintext, SHA2(p_phrase,512))) INTO new_cookie;
 
   COMMIT;
 
@@ -739,8 +721,8 @@ END
 
 CREATE PROCEDURE decrypt_cookie_and_check_validity
 (
-  encrypted_cookie VARCHAR(200),
-  passphrase VARCHAR(50),
+  enc_cookie VARCHAR(200), -- The cookie encrypted
+  p_phrase VARCHAR(50),
   OUT user_id_out INT
 ) 
 BEGIN 
@@ -750,24 +732,17 @@ BEGIN
     set message_text = 'general error while validating cookie.';
   END;
 
-  SET @encrypted_cookie = encrypted_cookie;
-  SET @passphrase = passphrase;
-
-  -- decrypts the cookie and gets
-  -- the user id, the ip, and a timestamp
-  -- the value decrypted will look like this:
-  -- USER_ID|IP|TIMESTAMP
-  -- for example:
-  -- "123|108.91.12.198|2014-01-02 13:04:19"
-  -- Notice the delimiter is a pipe symbol.
+  -- See register_user_and_get_cookie for more info on cookie format
   SELECT 
-    AES_DECRYPT(UNHEX(@encrypted_cookie), SHA2(@passphrase,512)) 
+    AES_DECRYPT(UNHEX(enc_cookie), SHA2(p_phrase,512)) 
     INTO @plaintext_cookie;
 
   SELECT SUBSTRING_INDEX(@plaintext_cookie, '|',1) INTO @my_user_id;
-  SELECT LENGTH(SUBSTRING_INDEX(@plaintext_cookie, '|',1)) INTO @user_id_length;
+  SELECT LENGTH(
+    SUBSTRING_INDEX(@plaintext_cookie, '|',1)) INTO @user_id_length;
   SELECT SUBSTR(
-    SUBSTRING_INDEX(@plaintext_cookie, '|',2),@user_id_length+2) INTO @ip_address;
+    SUBSTRING_INDEX(
+      @plaintext_cookie, '|',2),@user_id_length+2) INTO @ip_address;
   SELECT SUBSTRING_INDEX(@plaintext_cookie, '|',-1) INTO @timestamp;
   
   SELECT COUNT(*) INTO @found_users
