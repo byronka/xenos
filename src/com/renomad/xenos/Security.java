@@ -114,17 +114,28 @@ public final class Security {
     * stores information on the user when they login, things like
     * their ip, time they logged in, that they are in fact logged in,
     * etc.
+    * also,
+    * takes the user id, the ip, and a timestamp and encrypts
+    * that into a string value which we will use as the cookie.
+    * the value to encrypt will look like this:
+    * USER_ID|IP|TIMESTAMP
+    * for example:
+    * "123|108.91.12.198|2014-01-02 13:04:19"
+    * Notice the delimiter is a pipe symbol.
+    * when we get the cookie, we'll extract those
+    * values and use them to authenticate.
     *
     * @param user_id the user's id, an int.
     * @param ip the user's ip.
+    * @return an encrypted cookie
     */
-  public static void 
+  public static String 
     register_user(int user_id, String ip) {
 
       if (user_id < 0) {
         System.err.println("error: user id was " + 
             user_id + " in register_details_on_user_login");
-        return;
+        return null;
       }
       String ip_address = ip;
       if (ip_address == null || ip_address.length() == 0) {
@@ -145,12 +156,15 @@ public final class Security {
         pstmt.setString( 1, ip);
         pstmt.setInt( 2, user_id);
         Database_access.execute_update(pstmt);
+        return "";
       } catch (SQLException ex) {
         Database_access.handle_sql_exception(ex);
+        return null;
       } finally {
         Database_access.close_statement(pstmt);
       }
   }
+
 
   /**
     * tries logging out the user.  If successful, return true

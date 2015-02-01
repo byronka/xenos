@@ -424,18 +424,16 @@ BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION 
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' set message_text = 'general error while creating request.';
+    SIGNAL SQLSTATE '45000' 
+    SET message_text = 'general error while creating request.';
   END;
 
   START TRANSACTION;
 
   -- Check that the user has the points.
-  SET @user_points_sql = "
-      SELECT points INTO @user_points
-      FROM user 
-      WHERE user_id = @requesting_user_id";
-	PREPARE user_points_sql FROM @user_points_sql;
-	EXECUTE user_points_sql; 
+  SELECT points INTO @user_points
+  FROM user 
+  WHERE user_id = @requesting_user_id;
   
   IF (@user_points < @points) THEN
       SET @msg = CONCAT('user lacks points to make this request: ', 
@@ -453,31 +451,25 @@ BEGIN
   SET @title = title;
   SET @status = 76; -- requests always start 'open'
   SET @ruid = requesting_user_id;
-	SET @insert_clause = 
-      "INSERT into request (description, datetime, points,
-       status, title, requesting_user_id)
-       VALUES (@desc, UTC_TIMESTAMP(), @points, @status, @title, @ruid)"; 
+  INSERT into request (description, datetime, points,
+   status, title, requesting_user_id)
+   VALUES (@desc, UTC_TIMESTAMP(), @points, @status, @title, @ruid); 
          
-	PREPARE insert_clause FROM @insert_clause;
-	EXECUTE insert_clause; 
   SET new_request_id = LAST_INSERT_ID();
   SET @new_request_id = new_request_id;
 
 
   -- B) Add categories.
   CREATE TEMPORARY TABLE CAT_IDS (id INT);
-  SET @cat_sql = CONCAT('INSERT INTO CAT_IDS (id) VALUES ',categories);
-	PREPARE cat_sql FROM @cat_sql;
-	EXECUTE cat_sql; 
+  SELECT CONCAT(
+    'INSERT INTO CAT_IDS (id) VALUES ',categories) INTO @cat_sql;
+
   INSERT INTO request_to_category (request_id, request_category_id)
   SELECT new_request_id, id FROM CAT_IDS;
   DROP TABLE CAT_IDS;
 
   -- C) Deduct points from the user
-  SET @update_points_sql = 
-    "UPDATE user SET points = points - @points WHERE user_id = @ruid";
-	PREPARE update_points_sql FROM @update_points_sql;
-	EXECUTE update_points_sql; 
+  UPDATE user SET points = points - @points WHERE user_id = @ruid;
 
 
   -- D) Add an audit
@@ -509,17 +501,14 @@ BEGIN
   SET @request_id = request_id;
 
 
-	SET @insert_clause = 
-     "INSERT into request_message (message, request_id, user_id, timestamp)
-      SELECT 
-      CONCAT(username,' says:', @message), 
-      @request_id, 
-      user_id, 
-      UTC_TIMESTAMP()
-      FROM user WHERE user_id = @user_id";
+  INSERT into request_message (message, request_id, user_id, timestamp)
+  SELECT 
+  CONCAT(username,' says:', @message), 
+  @request_id, 
+  user_id, 
+  UTC_TIMESTAMP()
+  FROM user WHERE user_id = @user_id;
  
-	PREPARE insert_clause FROM @insert_clause;
-	EXECUTE insert_clause; 
   COMMIT;
 END
 
@@ -542,12 +531,9 @@ BEGIN
 
   -- first check that they are trying to 
   -- take something that exists
-   SET @valid_id_sql = "
-    SELECT COUNT(*) INTO @valid_id 
-    FROM request 
-    WHERE request_id = @request_id";
-	PREPARE valid_id_sql FROM @valid_id_sql;
-	EXECUTE valid_id_sql; 
+  SELECT COUNT(*) INTO @valid_id 
+  FROM request 
+  WHERE request_id = @request_id;
 
   IF (@valid_id <> 1) THEN
       SET @msg = CONCAT('request does not exist in the system: ', 
@@ -558,16 +544,11 @@ BEGIN
   END IF;
 
   -- actually change the status of the request here.
-  SET @take_sql = '
-    UPDATE request 
-    SET 
-      status = 78, 
-      handling_user_id = @user_id  
-    WHERE request_id = @request_id';
-
-	PREPARE take_sql FROM @take_sql;
-	EXECUTE take_sql; 
-
+  UPDATE request 
+  SET 
+    status = 78, 
+    handling_user_id = @user_id  
+  WHERE request_id = @request_id;
 
   -- Add an audit
   CALL add_audit(3,@user_id,@request_id,NULL);
@@ -597,12 +578,9 @@ BEGIN
 
   -- first check that they are trying to 
   -- delete something that exists
-   SET @valid_id_sql = "
-    SELECT COUNT(*) INTO @valid_id 
-    FROM request 
-    WHERE request_id = @request_id";
-	PREPARE valid_id_sql FROM @valid_id_sql;
-	EXECUTE valid_id_sql; 
+  SELECT COUNT(*) INTO @valid_id 
+  FROM request 
+  WHERE request_id = @request_id;
 
   IF (@valid_id <> 1) THEN
       SET @msg = CONCAT('request does not exist in the system: ', 
@@ -615,30 +593,22 @@ BEGIN
   -- get the points on this request.
 
 
-  SET @pts_sql = "
-    SELECT points into @points
-    FROM request 
-    WHERE request_id = @request_id
-    ";
-	PREPARE pts_sql FROM @pts_sql;
-	EXECUTE pts_sql; 
+  SELECT points into @points
+  FROM request 
+  WHERE request_id = @request_id;
 
   -- get a string version of the status
-  SET @status_sql = "
-      SELECT request_status_value INTO @status
-      FROM request_status 
-      WHERE request_status_id = 
-        (
-          SELECT status
-          FROM request 
-          WHERE request_id = @request_id
-        )";
-	PREPARE status_sql FROM @status_sql;
-	EXECUTE status_sql; 
+  SELECT request_status_value INTO @status
+  FROM request_status 
+  WHERE request_status_id = 
+    (
+      SELECT status
+      FROM request 
+      WHERE request_id = @request_id
+    );
 
   -- get a message for the deletion audit
-  SET @delete_msg_sql = 
-  "SELECT CONCAT(
+  SELECT CONCAT(
       SUBSTR(description,1,30),
       '|',
       SUBSTR(title,1,20),
@@ -649,26 +619,16 @@ BEGIN
       '|',
       'st:',@status) INTO @delete_msg
     FROM request
-    WHERE request_id = @request_id";
+    WHERE request_id = @request_id;
 
-	PREPARE delete_msg_sql FROM @delete_msg_sql;
-	EXECUTE delete_msg_sql;  
 
   -- actually delete the request here.
-  SET @del_sql = 'DELETE FROM request WHERE request_id = @request_id';
-
-	PREPARE del_sql FROM @del_sql;
-	EXECUTE del_sql; 
+  DELETE FROM request WHERE request_id = @request_id;
 
   -- give points back to the user
-  SET @pts_sql = '
-    UPDATE user 
-    SET points = points + @points 
-    WHERE user_id = @user_id';
-
-	PREPARE pts_sql FROM @pts_sql;
-	EXECUTE pts_sql; 
-
+  UPDATE user 
+  SET points = points + @points 
+  WHERE user_id = @user_id;
 
   -- Add an audit
   CALL add_audit(2,@user_id,@request_id,@delete_msg);
@@ -699,12 +659,9 @@ BEGIN
   SET @salt = salt;
 
   -- check that this username doesn't match an email in the system
-  SET @username_exists_as_email = "
-    SELECT COUNT(*) INTO @count_email_username
-    FROM user 
-    WHERE @username = user.email";
-	PREPARE username_exists_as_email FROM @username_exists_as_email;
-	EXECUTE username_exists_as_email;  
+  SELECT COUNT(*) INTO @count_email_username
+  FROM user 
+  WHERE @username = user.email;
     
   IF (@count_email_username > 0) THEN
       SET @msg = CONCAT(
@@ -716,11 +673,8 @@ BEGIN
 
 
   -- add the user
-  SET @insert_sql = "
-    INSERT INTO user (username, password, salt, date_created)
-    VALUES (@username, @password, @salt, UTC_TIMESTAMP())";
-	PREPARE insert_sql FROM @insert_sql;
-	EXECUTE insert_sql;  
+  INSERT INTO user (username, password, salt, date_created)
+  VALUES (@username, @password, @salt, UTC_TIMESTAMP());
 
   SET @new_user_id = LAST_INSERT_ID();
 
@@ -728,6 +682,46 @@ BEGIN
   -- Add an audit
   CALL add_audit(4,@new_user_id,NULL,NULL);
 
+  COMMIT;
+
+END
+---DELIMITER---
+
+CREATE PROCEDURE register_user_and_get_cookie
+(
+  user_id INT UNSIGNED,
+  ip_address VARCHAR(15) -- e.g. "255.255.255.255"
+) 
+BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+    set message_text = 'general error while registering a user.';
+  END;
+
+  START TRANSACTION;
+
+  SET @user_id = user_id;
+  SET @ip_address = ip_address;
+
+  SELECT UTC_TIMESTAMP() INTO @timestamp;
+
+  -- set registration values
+  UPDATE user
+  SET is_logged_in = 1, last_time_logged_in = @timestamp,
+  last_ip_logged_in = @ip_address
+  WHERE user_id = @user_id;
+
+  -- takes the user id, the ip, and a timestamp and encrypts
+  -- that into a string value which we will use as the cookie.
+  -- the value to encrypt will look like this:
+  -- USER_ID|IP|TIMESTAMP
+  -- for example:
+  -- "123|108.91.12.198|2014-01-02 13:04:19"
+  -- Notice the delimiter is a pipe symbol.
+  SELECT CONCAT(@user_id,'|',@ip_address,'|',@timestamp) 
+    INTO @cookie_val_plaintext;
   COMMIT;
 
 END

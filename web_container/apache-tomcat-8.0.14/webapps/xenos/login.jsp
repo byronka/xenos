@@ -39,12 +39,12 @@
     int uid = 0;
     if ((uid = Security.check_login(user, pass)) > 0) {
       String ip_address = request.getRemoteAddr();
-      Security.register_user(uid, ip_address);
-      response.addCookie(
-        new Cookie("xenos_cookie", Integer.toString(uid)));
+      String cookie = Security.register_user(uid, ip_address);
+      response.addCookie(new Cookie("xenos_cookie", cookie));
       response.sendRedirect("dashboard.jsp");
     } else {
-      login_error_msg = loc.get(49,"Invalid username / password combination");
+      login_error_msg = 
+        loc.get(49,"Invalid username / password combination");
     }
   }
 
