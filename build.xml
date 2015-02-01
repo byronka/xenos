@@ -69,6 +69,7 @@
   <target name="run-initial" depends="compile-schema-code"
     description="full-cleans (bye-byte data!), makes a new database with sample data, compiles, starts server">
     <antcall target="compile" />
+    <antcall target="clean-schema" />
     <antcall target="build-sample-data" />
     <antcall target="build-procs" />
 		<antcall target="build-language-data" />
@@ -222,11 +223,10 @@
 
   <!-- 
     build-sample-data adds some sample data to the database to make
-    testing easier.  It deletes the entire database before it does this.
+    testing easier.
   -->
   <target name="build-sample-data" depends="compile-schema-code" 
     description="adds sample data to the database for testing">
-    <antcall target="clean-schema" />
     <antcall target="build-schema" />
     <java 
 			classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
