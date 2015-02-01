@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 
 /**
   * Security holds methods necessary for authentication
@@ -20,35 +21,6 @@ public final class Security {
   private Security () {
     //we don't want anyone instantiating this
     //do nothing.
-  }
-
-  /**
-    * Checks the database, given the user id, whether that
-    * user is logged in
-    */
-  public static boolean user_is_logged_in(int user_id) {
-    String sqlText = "SELECT is_logged_in FROM user WHERE user_id = ?";
-    PreparedStatement pstmt = null;
-    try {
-      Connection conn = Database_access.get_a_connection();
-      pstmt = conn.prepareStatement(
-					sqlText, Statement.RETURN_GENERATED_KEYS);     
-      pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();
-
-      if(Database_access.resultset_is_null_or_empty(resultSet)) {
-        return false; // no results on query - return not logged in
-      }
-
-      resultSet.next(); //move to the first set of results.
-      return resultSet.getBoolean("is_logged_in");
-    } catch (SQLException ex) {
-      Database_access.handle_sql_exception(ex);
-      return false;
-    } finally {
-      Database_access.close_statement(pstmt);
-    }
-
   }
 
   /**
@@ -100,7 +72,8 @@ public final class Security {
       }
 
       resultSet.next(); //move to the first set of results.
-      return resultSet.getInt("user_id"); //success!
+      int user_id = resultSet.getInt("user_id"); //success!
+      return user_id;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return 0;
@@ -132,6 +105,7 @@ public final class Security {
   public static String 
     register_user(int user_id, String ip) {
 
+      // simple guard clauses for empty values
       if (user_id < 0) {
         System.err.println("error: user id was " + 
             user_id + " in register_details_on_user_login");
@@ -142,27 +116,27 @@ public final class Security {
         ip = "error: no ip in request";
       }
 
-      String sqlText = 
-        "UPDATE user " + 
-        "SET is_logged_in = 1, last_time_logged_in = UTC_TIMESTAMP(), " + 
-        "last_ip_logged_in = ? " + 
-        "WHERE user_id = ?";
-
-      PreparedStatement pstmt = null;
-      try {
-        Connection conn = Database_access.get_a_connection();
-        pstmt = conn.prepareStatement(
-						sqlText, Statement.RETURN_GENERATED_KEYS);     
-        pstmt.setString( 1, ip);
-        pstmt.setInt( 2, user_id);
-        Database_access.execute_update(pstmt);
-        return "";
-      } catch (SQLException ex) {
-        Database_access.handle_sql_exception(ex);
-        return null;
-      } finally {
-        Database_access.close_statement(pstmt);
-      }
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      // see db_scripts/v1_setup.sql for
+      // details on this stored procedure.
+      
+      cs = conn.prepareCall(String.format(
+        "{call register_user_and_get_cookie(%d, ?,?,?)}" 
+        , user_id));
+      cs.setString(1,ip);
+      cs.setString(2,"PASSPHRASE_GOES_HERE");
+      cs.registerOutParameter(3, java.sql.Types.VARCHAR);
+      cs.executeQuery();
+      String cookie = cs.getString(3);
+      return cookie;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return "ERROR_IN_ENCRYPTING_COOKIE";
+    } finally {
+      Database_access.close_statement(cs);
+    }
   }
 
 
@@ -181,8 +155,9 @@ public final class Security {
   }
 
   /**
-    * we just look up the user.  If they are logged in, we
-    * return the user id.  if failed, return -1;
+    * We go looking for the cookie.  Once we get that, we send it
+    * to a stored procedure which checks that it is valid, and if
+    * so, it returns the user id.  if failed, return -1;
     * @param r the request object
     * @return a valid user id if allowd.  -1 otherwise.
     */
@@ -192,18 +167,28 @@ public final class Security {
     if (c == null) {
       return -1;
     }
-    Integer user_id = Utils.parse_int(c.getValue());
-    if (user_id == null) { return -1; }
-    if (user_id < 0) {
-      System.err.println("error: user id was " + user_id + 
-          " in user_is_logged_in()");
-      return -1;
-    }
-    boolean is_logged_in = user_is_logged_in(user_id);
-    if (is_logged_in) {
+    String cookie_value = c.getValue();
+
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      // see db_scripts/v1_setup.sql for
+      // details on this stored procedure.
+      
+      cs = conn.prepareCall(
+          "{call decrypt_cookie_and_check_validity(?,?,?)}"); 
+      cs.setString(1, cookie_value);
+      cs.setString(2,"PASSPHRASE_GOES_HERE");
+      cs.registerOutParameter(3, java.sql.Types.INTEGER);
+      cs.executeQuery();
+      int user_id = cs.getInt(3);
       return user_id;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return -1;
+    } finally {
+      Database_access.close_statement(cs);
     }
-    return -1; //-1 means not allowed or failure.
   }
 
   /**

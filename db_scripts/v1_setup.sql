@@ -211,7 +211,8 @@ VALUES
 (1,'User created a request'),
 (2,'User deleted a request'),
 (3,'User handled a request'),
-(4,'New user was registered')
+(4,'New user was registered'),
+(5,'cookie authentication failed')
 
 
 ---DELIMITER---
@@ -690,7 +691,9 @@ END
 CREATE PROCEDURE register_user_and_get_cookie
 (
   user_id INT UNSIGNED,
-  ip_address VARCHAR(15) -- e.g. "255.255.255.255"
+  ip_address VARCHAR(15), -- e.g. "255.255.255.255"
+  passphrase VARCHAR(50), -- used to encrypt the cookie_plaintext
+  OUT cookie VARCHAR(200)
 ) 
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -704,6 +707,7 @@ BEGIN
 
   SET @user_id = user_id;
   SET @ip_address = ip_address;
+  SET @passphrase = passphrase;
 
   SELECT UTC_TIMESTAMP() INTO @timestamp;
 
@@ -722,6 +726,67 @@ BEGIN
   -- Notice the delimiter is a pipe symbol.
   SELECT CONCAT(@user_id,'|',@ip_address,'|',@timestamp) 
     INTO @cookie_val_plaintext;
+
+  SELECT HEX(
+    AES_ENCRYPT(
+      @cookie_val_plaintext, SHA2(@passphrase,512))) INTO @cookie;
+  SET cookie = @cookie;
+
   COMMIT;
 
+END
+---DELIMITER---
+
+CREATE PROCEDURE decrypt_cookie_and_check_validity
+(
+  encrypted_cookie VARCHAR(200),
+  passphrase VARCHAR(50),
+  OUT user_id_out INT
+) 
+BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    SIGNAL SQLSTATE '45000' 
+    set message_text = 'general error while validating cookie.';
+  END;
+
+  SET @encrypted_cookie = encrypted_cookie;
+  SET @passphrase = passphrase;
+
+  -- decrypts the cookie and gets
+  -- the user id, the ip, and a timestamp
+  -- the value decrypted will look like this:
+  -- USER_ID|IP|TIMESTAMP
+  -- for example:
+  -- "123|108.91.12.198|2014-01-02 13:04:19"
+  -- Notice the delimiter is a pipe symbol.
+  SELECT 
+    AES_DECRYPT(UNHEX(@encrypted_cookie), SHA2(@passphrase,512)) 
+    INTO @plaintext_cookie;
+
+  SELECT SUBSTRING_INDEX(@plaintext_cookie, '|',1) INTO @my_user_id;
+  SELECT LENGTH(SUBSTRING_INDEX(@plaintext_cookie, '|',1)) INTO @user_id_length;
+  SELECT SUBSTR(
+    SUBSTRING_INDEX(@plaintext_cookie, '|',2),@user_id_length+2) INTO @ip_address;
+  SELECT SUBSTRING_INDEX(@plaintext_cookie, '|',-1) INTO @timestamp;
+  
+  SELECT COUNT(*) INTO @found_users
+  FROM user
+  WHERE 
+    is_logged_in = 1 
+    AND last_time_logged_in = @timestamp
+    AND user_id = @my_user_id
+    AND last_ip_logged_in = @ip_address;
+
+  IF (@found_users <> 1) THEN
+    SET @msg = CONCAT(IFNULL(@found_users,-1), ' users found. user_id: '
+      , IFNULL(@user_id , -1)
+      ,' ip_address: ',IFNULL(@ip_address, '')
+      ,' timestamp: ',IFNULL(@timestamp, ''));
+    CALL add_audit(5,@user_id,NULL,@msg);
+    SET user_id_out = -1;
+  ELSE
+    SET user_id_out = @my_user_id;
+  END IF;
+ 
 END
