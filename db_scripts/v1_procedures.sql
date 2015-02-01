@@ -12,11 +12,11 @@ CREATE PROCEDURE is_non_empty_string
 (
   procname VARCHAR(40), -- add here the name of the procedure we're coming from
   fieldname VARCHAR(40), -- add the field we're checking for non-null or empty
-  text_value NVARCHAR(1000) -- here you place the actual text to check
+  text_value NVARCHAR(10000) -- here you place the actual text to check
 ) 
 BEGIN
   IF (text_value IS NULL OR text_value = '') THEN
-      SET @msg = CONCAT(fieldname,' value in ',procname,' empty - was: :', text_value);
+      SET @msg = CONCAT(fieldname,' value in ',procname,' was empty or null');
       ROLLBACK;
       SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
@@ -321,10 +321,13 @@ CREATE PROCEDURE put_message
 ) 
 BEGIN 
   -- A) The main part - add the request to that table.
+  CALL is_non_empty_string('put_message','my_message',my_message);
+  call validate_request_id(rid);
+  call validate_user_id(uid);
 
   INSERT into request_message (message, request_id, user_id, timestamp)
   SELECT 
-    CONCAT(username,' says:', @message), 
+    CONCAT(username,' says:', my_message), 
     rid, 
     uid, 
     UTC_TIMESTAMP()
@@ -344,7 +347,7 @@ CREATE PROCEDURE take_request
 ) 
 BEGIN 
   call validate_request_id(rid);
-  call calidate_user_id(uid);
+  call validate_user_id(uid);
 
   START TRANSACTION;
     UPDATE request 

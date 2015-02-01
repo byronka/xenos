@@ -123,7 +123,7 @@ public final class Request_utils {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      // see db_scripts/v1_setup.sql take_request for
+      // see db_scripts/v1_procedures.sql take_request for
       // details on this stored procedure.
       
       cs = conn.prepareCall(String.format(
@@ -270,7 +270,7 @@ public final class Request_utils {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      // see db_scripts/v1_setup.sql get_others_requests for
+      // see db_scripts/v1_procedures.sql get_others_requests for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
         "{call get_others_requests(%d,?,?,?,?,?,%d,%d,?,%d)}"
@@ -398,7 +398,7 @@ public final class Request_utils {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      // see db_scripts/v1_setup.sql delete_request for
+      // see db_scripts/v1_procedures.sql delete_request for
       // details on this stored procedure.
       
       cs = conn.prepareCall(String.format(
@@ -433,7 +433,7 @@ public final class Request_utils {
     String categories_str = "";
     try {
       Connection conn = Database_access.get_a_connection();
-      // see db_scripts/v1_setup.sql put_request for
+      // see db_scripts/v1_procedures.sql put_request for
       // details on this stored procedure.
       
       //convert categories into proper format: e.g. (1),(2),(3)
@@ -609,7 +609,7 @@ public final class Request_utils {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      // see db_scripts/v1_setup.sql get_others_requests for
+      // see db_scripts/v1_procedures.sql for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
         "{call put_message(?,%d,%d)}" ,user_id, request_id));
