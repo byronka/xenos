@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS
     date_created DATETIME,
     salt VARCHAR(50), -- used when hashing password
     last_time_logged_in DATETIME,
+    last_activity_time DATETIME,
     last_ip_logged_in VARCHAR(40),
     rank INT UNSIGNED NOT NULL DEFAULT 50, -- how they are ranked (like, in stars)
     is_admin BOOL NOT NULL DEFAULT FALSE

@@ -532,8 +532,10 @@ CREATE PROCEDURE decrypt_cookie_and_check_validity
   OUT user_id_out INT
 ) 
 BEGIN 
-  call is_non_empty_string('decrypt_cookie_and_check_validity','enc_cookie',enc_cookie);
-  call is_non_empty_string('decrypt_cookie_and_check_validity','p_phrase',p_phrase);
+  call is_non_empty_string(
+    'decrypt_cookie_and_check_validity','enc_cookie',enc_cookie);
+  call is_non_empty_string(
+    'decrypt_cookie_and_check_validity','p_phrase',p_phrase);
 
   -- See register_user_and_get_cookie for more info on cookie format
   SELECT 
@@ -563,7 +565,8 @@ BEGIN
       ,' timestamp: ',IFNULL(@timestamp, ''));
     CALL add_audit(5,@user_id,NULL,@msg);
     SET user_id_out = -1;
-  ELSE
+  ELSE -- if we got here, the user's info is good.
+    UPDATE user SET last_activity_time = UTC_TIMESTAMP();
     SET user_id_out = @my_user_id;
   END IF;
  
