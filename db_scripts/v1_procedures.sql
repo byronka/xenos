@@ -566,7 +566,7 @@ BEGIN
     CALL add_audit(5,@user_id,NULL,@msg);
     SET user_id_out = -1;
   ELSE -- if we got here, the user's info is good.
-    UPDATE user SET last_activity_time = UTC_TIMESTAMP();
+    UPDATE user SET last_activity_time = UTC_TIMESTAMP() WHERE user_id = @my_user_id;
     SET user_id_out = @my_user_id;
   END IF;
  

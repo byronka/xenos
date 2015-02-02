@@ -1,6 +1,6 @@
 If you have already set up everything, just type:
 
-  ant run-initial
+  ant run
 
 
 
@@ -111,13 +111,13 @@ If you want Ant to only print information about targets when there is
 something interesting in it (like errors or notes), you might add this
 environment variable:
 
-  set ANT_ARGS=-emacs -logger org.apache.tools.ant.NoBannerLogger 
+  set ANT_ARGS="-emacs -logger org.apache.tools.ant.NoBannerLogger"
   export ANT_ARGS
 
 This way a lot of the unneccessary information is avoided during
 builds.  You can try this out yourself from the command line:
 
-  ant -emacs -logger org.apache.tools.ant.NoBannerLogger run-initial
+  ant -emacs -logger org.apache.tools.ant.NoBannerLogger run
 
 See more about this at: ./utils/ant/apache-ant-1.9.4/manual/listeners.html
 

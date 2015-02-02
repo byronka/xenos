@@ -189,7 +189,7 @@ public final class Build_db_schema {
     } catch (FileNotFoundException ex) {
       System.err.println(ex);
     } catch (SQLException ex) {
-      System.err.println("error at delimiter " + counter);
+      System.err.println("error at section " + counter);
       handle_sql_exception(ex);
     } finally {
       close_statement(stmt);

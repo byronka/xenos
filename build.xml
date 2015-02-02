@@ -66,12 +66,13 @@
       data to it, then cleans and builds the classes, puts everything
       in its place, and kicks off the server.
   -->
-  <target name="run-initial" depends="compile-schema-code"
+  <target name="run" depends="compile-schema-code"
     description="full-cleans (bye-byte data!), makes a new database with sample data, compiles, starts server">
     <antcall target="compile" />
     <antcall target="clean-schema" />
     <antcall target="build-sample-data" />
     <antcall target="build-procs" />
+    <antcall target="build-events" />
 		<antcall target="build-language-data" />
     <antcall target="install" />
     <antcall target="tomcat-restart" />
@@ -268,6 +269,20 @@
 		</java>
   </target>
 
+   <!-- 
+    build-events adds events to the database
+  -->
+  <target name="build-events" depends="compile-schema-code" 
+    description="adds (or rebuilds if they exist) events">
+    <java 
+      classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
+      classname="com.renomad.xenos.schema.Build_events"
+      fork="true" >
+			<jvmarg value="-D${conn.str.with.db}" />
+			<jvmarg value="-D${conn.str.without.db}" />
+		</java>
+  </target>
+
 
   <!-- ############## -->
   <!--     JAVADOC    -->
@@ -432,7 +447,7 @@
     <echo message="  If this is your first time with the project, read"/> 
     <echo message="  the README file and make sure you have the dependencies."/> 
     <echo message="  Then, to build everything, just run:"/> 
-    <echo message="     ant run-initial"/> 
+    <echo message="     ant run"/> 
     <echo message=""/> 
     <echo message="  Execute 'ant -p' for build file help."/> 
   </target> 
