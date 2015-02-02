@@ -184,11 +184,12 @@ public final class User_utils {
   /** *
    * gets a user object
    *  
-    * @return a User object filled with username and points, or
-    * null if not found.
+    * @return a User object, or null if not found.
     */
   public static User get_user(int user_id) {
-    String sqlText = "SELECT username,points FROM user WHERE user_id = ?;";
+    String sqlText = 
+      "SELECT username,points, timeout_seconds "+
+      "FROM user WHERE user_id = ?;";
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
@@ -203,7 +204,8 @@ public final class User_utils {
       resultSet.next(); //move to the first set of results.
       String username = resultSet.getNString("username");
       int points = resultSet.getInt("points");
-      return new User(username, "", points);
+      int timeout_seconds = resultSet.getInt("timeout_seconds");
+      return new User(username, "", points, timeout_seconds);
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return null;

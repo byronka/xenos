@@ -12,12 +12,14 @@ public class User {
   public final String username;
   public final String password;
   public final int points;
+  public final int timeout_seconds;
 
   public User (
-      String username, String password, int points) {
+      String username, String password, int points, int timeout_seconds) {
     this.username = username;
     this.password = password;
     this.points = points;
+    this.timeout_seconds = timeout_seconds;
   }
   
   
