@@ -52,11 +52,15 @@ public class Request_tests {
     //act
     // this will cause user 4 to issue a 100 point request.  we will
     // need to clean up at the end of this test to refund those points.
-    // deleting the request at the end should refund automatically.
+    // deleting the request at the end includes a piece for refunding points
     Request_utils.Request_response response = Request_utils.put_request(
         user_id, desc, points, title, categories);
 
+		//now we've put a request in.
+
     //assert
+		//let's get back that request we just added and check it out.
+		//make sure that what we get back is what we put in.
     Request r2 = Request_utils.get_a_request(response.id);
     assertNotNull(String.format("r2 was null after trying an id of %d", response.id), r2);
     assertTrue(r2.datetime.length() > 0);
@@ -68,6 +72,7 @@ public class Request_tests {
     assertArrayEquals(categories, r2.get_categories());
 
     //cleanup
+		//delete the request.  This will give our user back his 100 points
     Request_utils.delete_request(response.id, user_id);
     int refunded_points = User_utils.get_user_points(user_id);
 
