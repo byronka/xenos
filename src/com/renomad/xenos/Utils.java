@@ -80,7 +80,10 @@ public final class Utils {
 
 
   public static boolean is_valid_date(String date) {
-    return get_date_search_query(date).length() > 0;
+    
+    String result = get_date_search_query(date);
+    System.out.println("result is " + result);
+    return result.length() > 0;
   }
 
   /**
@@ -105,88 +108,56 @@ public final class Utils {
     //a basic date regular expression.
     String date_ex = "([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})"; 
 
-    //either
-    // a) date range, blah-blah     
-    //      blah being there 0 or 1 times, followed by exactly
-    //      no space, then dash, then exactly no space, then blah again.
-    // or
-    // b) a single date, no spaces.
-    String full_expression = 
-      String.format("%s{0,1}(-)%s{0,1}|%s", date_ex, date_ex, date_ex); 
+    String case_a_pattern = "^"+date_ex+"$"; 
+    String case_b_pattern = "^"+date_ex+"-"+date_ex+"$";
+    String case_c_pattern = "^"+date_ex+"-$"; 
+    String case_d_pattern = "^-"+date_ex+"$"; 
 
-    //with the capture groups I've set up, if group 3 is non-null, then
-    //it's a single date.  otherwise, if group 1 and 2 are non-null, then
-    //it's a range
+    Pattern p_a = Pattern.compile(case_a_pattern);
+    Matcher m_a = p_a.matcher(date);
 
-    Pattern p = Pattern.compile(full_expression);
-    Matcher m = p.matcher(date);
+    Pattern p_b = Pattern.compile(case_b_pattern);
+    Matcher m_b = p_b.matcher(date);
 
-    //first check - did we find anything?
-    if (m.find()) { // we only look once.
-      String fd_string = m.group(1);
-      String dash_string = m.group(2);
-      String ld_string = m.group(3);
-      String single_date_string = m.group(4);
-      boolean first_date_in_range = is_good_date_value(fd_string);
-      boolean dash = !Utils.is_null_or_empty(dash_string);
-      boolean last_date_in_range = is_good_date_value(ld_string);
-      boolean single_date = is_good_date_value(single_date_string);
+    Pattern p_c = Pattern.compile(case_c_pattern);
+    Matcher m_c = p_c.matcher(date);
 
+    Pattern p_d = Pattern.compile(case_d_pattern);
+    Matcher m_d = p_d.matcher(date);
 
-      int count_true = 0;
-
-      boolean case_A = !dash && single_date;
-      if (case_A) {
-        count_true++;
-        return_sql_string = 
-          String.format(
-              "AND r.datetime BETWEEN '%s 00:00:00' AND "+
-              "'%s 23:59:59.999' ",single_date_string, single_date_string);
-      }
-
-      boolean case_B = dash &&
-                      !single_date &&
-                      first_date_in_range && last_date_in_range;
-      if (case_B) {
-        count_true++;
-        return_sql_string = 
-          String.format(
-              "AND r.datetime > '%s 00:00:00' AND "+
-              "r.datetime < '%s 23:59:59.999' ",fd_string, ld_string);
-      }
-
-      boolean case_C = dash &&
-        !single_date &&
-        first_date_in_range && !last_date_in_range;
-
-      if (case_C) {
-        count_true++;
-        return_sql_string = 
-          String.format(
-              "AND r.datetime > '%s 00:00:00' ",fd_string);
-      }
-
-      boolean case_D = dash && 
-        !single_date && 
-        !first_date_in_range && 
-        last_date_in_range;
-
-      if (case_D) {
-        count_true++;
-        return_sql_string = 
-          String.format(
-              "AND r.datetime < '%s 23:59:59.999' ",ld_string);
-      }
-
-      //second check - make sure one and *only one* case is true
-      if (count_true == 1) {
-        return return_sql_string;
-      }
+    if (m_a.find()) {
+      if (!is_good_date_value(m_a.group(1))) { return "";}
+      return_sql_string = 
+        String.format(
+            "AND r.datetime BETWEEN '%s 00:00:00' "+
+            "AND '%s 23:59:59.999' ",m_a.group(1), m_a.group(1));
     }
 
-    //if we got here, we didn't meet the precise criteria.
-    return "";
+    if (m_b.find()) {
+      if (!(is_good_date_value(m_b.group(1)) && is_good_date_value(m_b.group(2)))) { return "";}
+      return_sql_string = 
+        String.format(
+            "AND r.datetime BETWEEN '%s 00:00:00' "+
+            "AND %s 23:59:59.999' ",m_b.group(1), m_b.group(2));
+    }
+
+    if (m_c.find()) {
+      if (!is_good_date_value(m_c.group(1))) { return "";}
+      return_sql_string = 
+        String.format(
+            "AND r.datetime > '%s 00:00:00' ",m_c.group(1));
+    }
+
+    if (m_d.find()) {
+      if (!is_good_date_value(m_d.group(1))) { return "";}
+      return_sql_string = 
+        String.format(
+            "AND r.datetime < '%s 23:59:59.999' ",m_d.group(1));
+    }
+
+    return return_sql_string;
   }
+
 
 //                        Yearly calendar:
 //                        ================

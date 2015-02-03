@@ -20,9 +20,9 @@ public class Utils_tests {
 
   @Test
   public void test_is_valid_date() {
-    assertTrue(Utils.is_valid_date("2001-01-01 - 2002-01-02"));
+    assertTrue(Utils.is_valid_date("2001-01-01-2002-01-02"));
     assertTrue(Utils.is_valid_date("2001-01-01"));
-    assertTrue(Utils.is_valid_date("2001-01-01 - "));
+    assertTrue(Utils.is_valid_date("2001-01-01-"));
     assertTrue(Utils.is_valid_date("-2002-01-02"));
   }
 
