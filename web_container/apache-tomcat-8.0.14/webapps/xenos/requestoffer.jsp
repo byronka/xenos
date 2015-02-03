@@ -2,33 +2,33 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><%=loc.get(22,"Request Details")%></title>
+		<title><%=loc.get(22,"Requestoffer Details")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
-<%@ page import="com.renomad.xenos.Request_utils" %>
-<%@ page import="com.renomad.xenos.Request" %>
+<%@ page import="com.renomad.xenos.Requestoffer_utils" %>
+<%@ page import="com.renomad.xenos.Requestoffer" %>
 <%
   String qs = request.getQueryString();
-  Request r = Request_utils.parse_querystring_and_get_request(qs);
+  Requestoffer r = Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
   if (r == null) {
     response.sendRedirect("general_error.jsp");
     return;
   }
-  boolean is_requesting_user = user_id == r.requesting_user_id;
+  boolean is_requestoffering_user = user_id == r.requestoffering_user_id;
   boolean is_servicing = qs.indexOf("service=true") > 0;
   boolean is_deleting = qs.indexOf("delete=true") > 0;
 
   boolean show_handle_button = 
-    !is_requesting_user && !is_servicing && !is_deleting;
+    !is_requestoffering_user && !is_servicing && !is_deleting;
   boolean show_delete_info = 
-      is_requesting_user && is_deleting;
+      is_requestoffering_user && is_deleting;
   boolean show_message_input = 
-      !is_requesting_user && is_servicing && !is_deleting;
+      !is_requestoffering_user && is_servicing && !is_deleting;
 
   //handle bad scenarios
-  if (is_requesting_user && is_servicing ||
-      !is_requesting_user && is_deleting) {
+  if (is_requestoffering_user && is_servicing ||
+      !is_requestoffering_user && is_deleting) {
     response.sendRedirect("general_error.jsp");
     return;
   }
@@ -36,9 +36,9 @@
   String msg = request.getParameter("message");
 
   if (msg != null && msg != "") {
-    Request_utils.set_message(msg, r.request_id, user_id);
+    Requestoffer_utils.set_message(msg, r.requestoffer_id, user_id);
     response.sendRedirect(
-      "request.jsp?request="+r.request_id+"&service=true");
+      "requestoffer.jsp?requestoffer="+r.requestoffer_id+"&service=true");
     return;
   }
 
@@ -60,12 +60,12 @@
   if (show_delete_info) {%>
 
     <p>
-      <%=loc.get(39,"Are you sure you want to delete this request?")%> <%=r.points%> <%=loc.get(39,"points will be refunded to you")%>
+      <%=loc.get(39,"Are you sure you want to delete this requestoffer?")%> <%=r.points%> <%=loc.get(39,"points will be refunded to you")%>
        
     </p>
 
     <p>
-      <a href="delete_request.jsp?request=<%=r.request_id%>"><%=loc.get(29, "Yes, delete!")%></a>
+      <a href="delete_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(29, "Yes, delete!")%></a>
     </p>
     <p>
       <a href="dashboard.jsp"><%=loc.get(30,"Nevermind, do not delete it")%></a>
@@ -73,18 +73,18 @@
 
     <%} if (show_handle_button) {%>
 
-      <a href="handle.jsp?request=<%=r.request_id%>">
+      <a href="handle.jsp?requestoffer=<%=r.requestoffer_id%>">
         <%=loc.get(37,"Handle")%>
       </a>
 
       <%}
-      String[] messages = Request_utils.get_messages(r.request_id);
+      String[] messages = Requestoffer_utils.get_messages(r.requestoffer_id);
        for (String m : messages) { %>
 
       <p><%=Utils.safe_render(m)%></p>
 
       <%} if (show_message_input) { %>
-    <form method="POST" action="request.jsp?request=<%=r.request_id%>&service=true">
+    <form method="POST" action="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&service=true">
       <p><%=loc.get(38,"Message (up to 10,000 characters)")%></p>
       <input type="text" name="message" maxlength="10000" />
       <button type="submit"><%=loc.get(36,"Send message")%></button>

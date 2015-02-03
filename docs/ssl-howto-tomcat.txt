@@ -68,7 +68,7 @@ Table of Contents
             Prepare the Certificate Keystore
             Edit the Tomcat Configuration File
         Installing a Certificate from a Certificate Authority
-            Create a local Certificate Signing Request (CSR)
+            Create a local Certificate Signing Requestoffer (CSR)
             Importing the Certificate
         Troubleshooting
         Miscellaneous Tips and Bits
@@ -107,11 +107,11 @@ Introduction to SSL
 
     SSL, or Secure Socket Layer, is a technology which allows web browsers and web servers to communicate over a secured connection. This means that the data being sent is encrypted by one side, transmitted, then decrypted by the other side before processing. This is a two-way process, meaning that both the server AND the browser encrypt all traffic before sending out data.
 
-    Another important aspect of the SSL protocol is Authentication. This means that during your initial attempt to communicate with a web server over a secure connection, that server will present your web browser with a set of credentials, in the form of a "Certificate", as proof the site is who and what it claims to be. In certain cases, the server may also request a Certificate from your web browser, asking for proof that you are who you claim to be. This is known as "Client Authentication," although in practice this is used more for business-to-business (B2B) transactions than with individual users. Most SSL-enabled web servers do not request Client Authentication.
+    Another important aspect of the SSL protocol is Authentication. This means that during your initial attempt to communicate with a web server over a secure connection, that server will present your web browser with a set of credentials, in the form of a "Certificate", as proof the site is who and what it claims to be. In certain cases, the server may also requestoffer a Certificate from your web browser, asking for proof that you are who you claim to be. This is known as "Client Authentication," although in practice this is used more for business-to-business (B2B) transactions than with individual users. Most SSL-enabled web servers do not requestoffer Client Authentication.
 
 SSL and Tomcat
 
-    It is important to note that configuring Tomcat to take advantage of secure sockets is usually only necessary when running it as a stand-alone web server. When running Tomcat primarily as a Servlet/JSP container behind another web server, such as Apache or Microsoft IIS, it is usually necessary to configure the primary web server to handle the SSL connections from users. Typically, this server will negotiate all SSL-related functionality, then pass on any requests destined for the Tomcat container only after decrypting those requests. Likewise, Tomcat will return cleartext responses, that will be encrypted before being returned to the user's browser. In this environment, Tomcat knows that communications between the primary web server and the client are taking place over a secure connection (because your application needs to be able to ask about this), but it does not participate in the encryption or decryption itself.
+    It is important to note that configuring Tomcat to take advantage of secure sockets is usually only necessary when running it as a stand-alone web server. When running Tomcat primarily as a Servlet/JSP container behind another web server, such as Apache or Microsoft IIS, it is usually necessary to configure the primary web server to handle the SSL connections from users. Typically, this server will negotiate all SSL-related functionality, then pass on any requestoffers destined for the Tomcat container only after decrypting those requestoffers. Likewise, Tomcat will return cleartext responses, that will be encrypted before being returned to the user's browser. In this environment, Tomcat knows that communications between the primary web server and the client are taking place over a secure connection (because your application needs to be able to ask about this), but it does not participate in the encryption or decryption itself.
 
 Certificates
 
@@ -125,9 +125,9 @@ General Tips on Running SSL
 
     The first time a user attempts to access a secured page on your site, he or she is typically presented with a dialog containing the details of the certificate (such as the company and contact name), and asked if he or she wishes to accept the Certificate as valid and continue with the transaction. Some browsers will provide an option for permanently accepting a given Certificate as valid, in which case the user will not be bothered with a prompt each time they visit your site. Other browsers do not provide this option. Once approved by the user, a Certificate will be considered valid for at least the entire browser session.
 
-    Also, while the SSL protocol was designed to be as efficient as securely possible, encryption/decryption is a computationally expensive process from a performance standpoint. It is not strictly necessary to run an entire web application over SSL, and indeed a developer can pick and choose which pages require a secure connection and which do not. For a reasonably busy site, it is customary to only run certain pages under SSL, namely those pages where sensitive information could possibly be exchanged. This would include things like login pages, personal information pages, and shopping cart checkouts, where credit card information could possibly be transmitted. Any page within an application can be requested over a secure socket by simply prefixing the address with https: instead of http:. Any pages which absolutely require a secure connection should check the protocol type associated with the page request and take the appropriate action if https is not specified.
+    Also, while the SSL protocol was designed to be as efficient as securely possible, encryption/decryption is a computationally expensive process from a performance standpoint. It is not strictly necessary to run an entire web application over SSL, and indeed a developer can pick and choose which pages require a secure connection and which do not. For a reasonably busy site, it is customary to only run certain pages under SSL, namely those pages where sensitive information could possibly be exchanged. This would include things like login pages, personal information pages, and shopping cart checkouts, where credit card information could possibly be transmitted. Any page within an application can be requestoffered over a secure socket by simply prefixing the address with https: instead of http:. Any pages which absolutely require a secure connection should check the protocol type associated with the page requestoffer and take the appropriate action if https is not specified.
 
-    Finally, using name-based virtual hosts on a secured connection can be problematic. This is a design limitation of the SSL protocol itself. The SSL handshake, where the client browser accepts the server certificate, must occur before the HTTP request is accessed. As a result, the request information containing the virtual host name cannot be determined prior to authentication, and it is therefore not possible to assign multiple certificates to a single IP address. If all virtual hosts on a single IP address need to authenticate against the same certificate, the addition of multiple virtual hosts should not interfere with normal SSL operations on the server. Be aware, however, that most client browsers will compare the server's domain name against the domain name listed in the certificate, if any (applicable primarily to official, CA-signed certificates). If the domain names do not match, these browsers will display a warning to the client user. In general, only address-based virtual hosts are commonly used with SSL in a production environment.
+    Finally, using name-based virtual hosts on a secured connection can be problematic. This is a design limitation of the SSL protocol itself. The SSL handshake, where the client browser accepts the server certificate, must occur before the HTTP requestoffer is accessed. As a result, the requestoffer information containing the virtual host name cannot be determined prior to authentication, and it is therefore not possible to assign multiple certificates to a single IP address. If all virtual hosts on a single IP address need to authenticate against the same certificate, the addition of multiple virtual hosts should not interfere with normal SSL operations on the server. Be aware, however, that most client browsers will compare the server's domain name against the domain name listed in the certificate, if any (applicable primarily to official, CA-signed certificates). If the domain names do not match, these browsers will display a warning to the client user. In general, only address-based virtual hosts are commonly used with SSL in a production environment.
 
 Configuration
 
@@ -316,9 +316,9 @@ Configuration
 Installing a Certificate from a Certificate Authority
 
     To obtain and install a Certificate from a Certificate Authority (like verisign.com, thawte.com or trustcenter.de), read the previous section and then follow these instructions:
-    Create a local Certificate Signing Request (CSR)
+    Create a local Certificate Signing Requestoffer (CSR)
 
-        In order to obtain a Certificate from the Certificate Authority of your choice you have to create a so called Certificate Signing Request (CSR). That CSR will be used by the Certificate Authority to create a Certificate that will identify your website as "secure". To create a CSR follow these steps:
+        In order to obtain a Certificate from the Certificate Authority of your choice you have to create a so called Certificate Signing Requestoffer (CSR). That CSR will be used by the Certificate Authority to create a Certificate that will identify your website as "secure". To create a CSR follow these steps:
 
             Create a local self-signed Certificate (as described in the previous section):
             		
@@ -390,8 +390,8 @@ Troubleshooting
 
 Miscellaneous Tips and Bits
 
-    To access the SSL session ID from the request, use:
-    String sslID = (String)request.getAttribute("javax.servlet.request.ssl_session");
+    To access the SSL session ID from the requestoffer, use:
+    String sslID = (String)requestoffer.getAttribute("javax.servlet.requestoffer.ssl_session");
     For additional discussion on this area, please see Bugzilla.
 
 Copyright © 1999-2014, Apache Software Foundation

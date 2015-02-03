@@ -9,7 +9,7 @@ div.dashboard-container {
 }
 
 
-h2.my-requests-header {
+h2.my-requestoffers-header {
   margin-left: auto;
   margin-right: auto;
   min-width: 300px;
@@ -17,14 +17,14 @@ h2.my-requests-header {
   color:white;
 }
 
-div.requests {
+div.requestoffers {
   margin-left: auto;
   margin-right: auto;
   min-width: 300px;
   max-width: 400px;
 }
 
-h2.others-requests-header {
+h2.others-requestoffers-header {
   margin-left: auto;
   margin-right: auto;
   min-width: 300px;
@@ -38,7 +38,7 @@ ul {
   padding: 0px;
 }
 
-div.request {
+div.requestoffer {
   -webkit-border-radius: 10px 10px 10px 10px;
   border-radius: 10px 10px 10px 10px;
   padding: 10px;
@@ -48,7 +48,7 @@ div.request {
   position:relative;
 }
 
-div.request.mine {
+div.requestoffer.mine {
   height: 20px;
 }
 
@@ -138,7 +138,7 @@ a.button:hover {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', endColorstr='#0e0e0e',GradientType=0 ); /* IE6-9 */
 }
 
-div.others-requests {
+div.others-requestoffers {
   margin-left: auto;
   margin-right: auto;
   width: 400px;

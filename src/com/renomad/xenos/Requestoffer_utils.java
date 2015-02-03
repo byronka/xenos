@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import com.renomad.xenos.Database_access;
-import com.renomad.xenos.Request;
-import com.renomad.xenos.Others_Request;
+import com.renomad.xenos.Requestoffer;
+import com.renomad.xenos.Others_Requestoffer;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Connection;
@@ -16,11 +16,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
-  * this class consists of methods that act upon Requests
+  * this class consists of methods that act upon Requestoffers
   */
-public final class Request_utils {
+public final class Requestoffer_utils {
 
-  private Request_utils() {
+  private Requestoffer_utils() {
     //private constructor.  This class is not allowed to be
     //instantiated.  do nothing here.
   }
@@ -40,7 +40,7 @@ public final class Request_utils {
     parse_statuses_string(String statuses, Localization loc) {
     // 1. set the sql
     String get_statuses_sql = 
-      "SELECT request_status_id FROM request_status";
+      "SELECT requestoffer_status_id FROM requestoffer_status";
     PreparedStatement pstmt = null;
     try {
       // 3. get the connection and set up a statement
@@ -57,7 +57,7 @@ public final class Request_utils {
       ArrayList<Integer> status_ids_found 
         = new ArrayList<Integer>();
       while(resultSet.next()) {
-        int rsid = resultSet.getInt("request_status_id");
+        int rsid = resultSet.getInt("requestoffer_status_id");
         String localized_status = loc.get(rsid, "");
         if (statuses.contains(localized_status)) {
           status_ids_found.add(rsid);
@@ -81,8 +81,8 @@ public final class Request_utils {
   public static ArrayList<Integer> get_all_categories() {
     // 1. set the sql
     String sqlText = 
-      "SELECT category_id, request_category_value "+
-      "FROM request_category; ";
+      "SELECT category_id, requestoffer_category_value "+
+      "FROM requestoffer_category; ";
     // 2. set up values we'll need outside the try
     PreparedStatement pstmt = null;
     try {
@@ -116,18 +116,18 @@ public final class Request_utils {
 
 
   /**
-    * sets the status of the request to taken for a given user.
+    * sets the status of the requestoffer to taken for a given user.
     * @return true if successful at taking, false otherwise.
     */
-  public static boolean take_request(int user_id, int request_id) {
+  public static boolean take_requestoffer(int user_id, int requestoffer_id) {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      // see db_scripts/v1_procedures.sql take_request for
+      // see db_scripts/v1_procedures.sql take_requestoffer for
       // details on this stored procedure.
       
       cs = conn.prepareCall(String.format(
-        "{call take_request(%d, %d)}" , user_id, request_id));
+        "{call take_requestoffer(%d, %d)}" , user_id, requestoffer_id));
       cs.execute();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
@@ -140,47 +140,47 @@ public final class Request_utils {
 
 
   /**
-    * Gets a specific Request 
+    * Gets a specific Requestoffer 
     * 
-    * @param request_id the id of a particular Request
-    * @return a single Request, or null if failure
+    * @param requestoffer_id the id of a particular Requestoffer
+    * @return a single Requestoffer, or null if failure
     */
-  public static Request get_a_request(int request_id) {
+  public static Requestoffer get_a_requestoffer(int requestoffer_id) {
     
     String sqlText = 
-      "SELECT r.request_id, r.datetime, r.description, r.points,"+
-      "r.status, r.title, r.requesting_user_id, "+
+      "SELECT r.requestoffer_id, r.datetime, r.description, r.points,"+
+      "r.status, r.title, r.requestoffering_user_id, "+
       "GROUP_CONCAT(rc.category_id SEPARATOR ',') AS categories "+
-      "FROM request r "+
-      "JOIN request_to_category rtc ON rtc.request_id = r.request_id "+
-      "JOIN request_category rc "+
-        "ON rc.category_id = rtc.request_category_id "+
-      "WHERE r.request_id = ? GROUP BY request_id";
+      "FROM requestoffer r "+
+      "JOIN requestoffer_to_category rtc ON rtc.requestoffer_id = r.requestoffer_id "+
+      "JOIN requestoffer_category rc "+
+        "ON rc.category_id = rtc.requestoffer_category_id "+
+      "WHERE r.requestoffer_id = ? GROUP BY requestoffer_id";
 
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      pstmt.setInt( 1, request_id);
+      pstmt.setInt( 1, requestoffer_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
       }
 
       resultSet.next();
-      int rid = resultSet.getInt("request_id");
+      int rid = resultSet.getInt("requestoffer_id");
       String dt = resultSet.getString("datetime");
       String d = resultSet.getNString("description");
       int p = resultSet.getInt("points");
       int s = resultSet.getInt("status");
       String t = resultSet.getNString("title");
-      int ru = resultSet.getInt("requesting_user_id");
+      int ru = resultSet.getInt("requestoffering_user_id");
       String ca = resultSet.getString("categories");
       Integer[] categories = parse_string_to_int_array(ca);
-      Request request = new Request(rid,dt,d,p,s,t,ru,categories);
+      Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,t,ru,categories);
 
-      return request;
+      return requestoffer;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return null;
@@ -250,19 +250,19 @@ public final class Request_utils {
 
   /**
     * Gets information necessary for display on the dashboard,
-    * about requests that are not the currently logged-in user's.
+    * about requestoffers that are not the currently logged-in user's.
     * 
-    * @param ruid the id of the user asking for the requests.
+    * @param ruid the id of the user asking for the requestoffers.
     * @param so an object that holds all the ways to search
-    * the requests.  Things like, dates, categories, titles, etc.
-    * @param page This method is used to display requests, and we
+    * the requestoffers.  Things like, dates, categories, titles, etc.
+    * @param page This method is used to display requestoffers, and we
     * include paging functionality - splitting the response into
     * pages of data.  Which page are we on?
-    * @return an array of Others_Requests that were *not* made 
-    * by that user, or an empty array of Others_Requests if failure or
+    * @return an array of Others_Requestoffers that were *not* made 
+    * by that user, or an empty array of Others_Requestoffers if failure or
     * none.
     */
-  public static Others_Request[] get_others_requests(
+  public static Others_Requestoffer[] get_others_requestoffers(
       int ruid, 
       Search_Object so, 
       int page) {
@@ -270,10 +270,10 @@ public final class Request_utils {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      // see db_scripts/v1_procedures.sql get_others_requests for
+      // see db_scripts/v1_procedures.sql get_others_requestoffers for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
-        "{call get_others_requests(%d,?,?,?,?,?,%d,%d,?,%d)}"
+        "{call get_others_requestoffers(%d,?,?,?,?,?,%d,%d,?,%d)}"
         ,ruid, so.minpoints, so.maxpoints, page));
       cs.setNString(1, so.title);
       cs.setString(2, so.startdate);
@@ -284,36 +284,36 @@ public final class Request_utils {
       ResultSet resultSet = cs.executeQuery();
 
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return new Others_Request[0];
+        return new Others_Requestoffer[0];
       }
 
       //keep adding rows of data while there is more data
-      ArrayList<Others_Request> requests = 
-        new ArrayList<Others_Request>();
+      ArrayList<Others_Requestoffer> requestoffers = 
+        new ArrayList<Others_Requestoffer>();
       while(resultSet.next()) {
-        int rid = resultSet.getInt("request_id");
+        int rid = resultSet.getInt("requestoffer_id");
         String dt = resultSet.getString("datetime");
         String d = resultSet.getNString("description");
         int p = resultSet.getInt("points");
         int s = resultSet.getInt("status");
         String t = resultSet.getNString("title");
-        int ru = resultSet.getInt("requesting_user_id");
+        int ru = resultSet.getInt("requestoffering_user_id");
         int ra = resultSet.getInt("rank");
         String cats = resultSet.getString("categories");
         Integer[] cat_array = parse_string_to_int_array(cats);
 
-        Others_Request request = 
-          new Others_Request(t,dt,d,s,ra,p,rid,ru,cat_array);
-        requests.add(request);
+        Others_Requestoffer requestoffer = 
+          new Others_Requestoffer(t,dt,d,s,ra,p,rid,ru,cat_array);
+        requestoffers.add(requestoffer);
       }
 
       //convert arraylist to array
-      Others_Request[] array_of_requests = 
-        requests.toArray(new Others_Request[requests.size()]);
-      return array_of_requests;
+      Others_Requestoffer[] array_of_requestoffers = 
+        requestoffers.toArray(new Others_Requestoffer[requestoffers.size()]);
+      return array_of_requestoffers;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
-      return new Others_Request[0];
+      return new Others_Requestoffer[0];
     } finally {
       Database_access.close_statement(cs);
     }
@@ -342,13 +342,13 @@ public final class Request_utils {
 
 
   /**
-    * Gets all the requests for the user.
+    * Gets all the requestoffers for the user.
     * 
     * @param user_id a particular user's id
-    * @return an array of Requests made by that user.
+    * @return an array of Requestoffers made by that user.
     */
-  public static Request[] get_requests_for_user(int user_id) {
-    String sqlText = "SELECT * FROM request WHERE requesting_user_id = ?";
+  public static Requestoffer[] get_requestoffers_for_user(int user_id) {
+    String sqlText = "SELECT * FROM requestoffer WHERE requestoffering_user_id = ?";
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
@@ -357,27 +357,27 @@ public final class Request_utils {
       pstmt.setInt( 1, user_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return new Request[0];
+        return new Requestoffer[0];
       }
 
       //keep adding rows of data while there is more data
-      ArrayList<Request> requests = new ArrayList<Request>();
+      ArrayList<Requestoffer> requestoffers = new ArrayList<Requestoffer>();
       while(resultSet.next()) {
-        int rid = resultSet.getInt("request_id");
+        int rid = resultSet.getInt("requestoffer_id");
         String dt = resultSet.getString("datetime");
         String d = resultSet.getNString("description");
         int p = resultSet.getInt("points");
         int s = resultSet.getInt("status");
         String t = resultSet.getNString("title");
-        int ru = resultSet.getInt("requesting_user_id");
-        Request request = new Request(rid,dt,d,p,s,t,ru);
-        requests.add(request);
+        int ru = resultSet.getInt("requestoffering_user_id");
+        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,t,ru);
+        requestoffers.add(requestoffer);
       }
 
       //convert arraylist to array
-      Request[] array_of_requests = 
-        requests.toArray(new Request[requests.size()]);
-      return array_of_requests;
+      Requestoffer[] array_of_requestoffers = 
+        requestoffers.toArray(new Requestoffer[requestoffers.size()]);
+      return array_of_requestoffers;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return null;
@@ -389,21 +389,21 @@ public final class Request_utils {
 
 
   /**
-    * deletes a request.
-    * @param request_id the id of the request to delete
-    * @param deleting_user_id the id of the user making the request
+    * deletes a requestoffer.
+    * @param requestoffer_id the id of the requestoffer to delete
+    * @param deleting_user_id the id of the user making the requestoffer
     * @return true if successful
     */
-  public static boolean delete_request(int request_id, int deleting_user_id) {
+  public static boolean delete_requestoffer(int requestoffer_id, int deleting_user_id) {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      // see db_scripts/v1_procedures.sql delete_request for
+      // see db_scripts/v1_procedures.sql delete_requestoffer for
       // details on this stored procedure.
       
       cs = conn.prepareCall(String.format(
-        "{call delete_request(%d,%d)}"
-        ,deleting_user_id, request_id));
+        "{call delete_requestoffer(%d,%d)}"
+        ,deleting_user_id, requestoffer_id));
       cs.executeQuery();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
@@ -417,23 +417,23 @@ public final class Request_utils {
 
 
   /**
-    * given all the data to add a request, does so.
+    * given all the data to add a requestoffer, does so.
     * @param user_id the user's id
-    * @param desc a description string, the core of the request
-    * @param points the points are the currency for the request
-    * @param title the short title for the request
-    * @param categories the various categories for this request, 
+    * @param desc a description string, the core of the requestoffer
+    * @param points the points are the currency for the requestoffer
+    * @param title the short title for the requestoffer
+    * @param categories the various categories for this requestoffer, 
     */
-  public static Request_response put_request(
+  public static Requestoffer_response put_requestoffer(
       int user_id, String desc, int points, 
       String title, Integer[] categories) {
 
-    int new_request_id = -1; //need it here to be outside the "try".
+    int new_requestoffer_id = -1; //need it here to be outside the "try".
     CallableStatement cs = null;
     String categories_str = "";
     try {
       Connection conn = Database_access.get_a_connection();
-      // see db_scripts/v1_procedures.sql put_request for
+      // see db_scripts/v1_procedures.sql put_requestoffer for
       // details on this stored procedure.
       
       //convert categories into proper format: e.g. (1),(2),(3)
@@ -447,33 +447,33 @@ public final class Request_utils {
       }
 
       cs = conn.prepareCall(String.format(
-        "{call put_request(?,%d,?,%d,?,?)}"
+        "{call put_requestoffer(?,%d,?,%d,?,?)}"
         ,user_id, points));
       cs.setNString(1, desc);
       cs.setNString(2, title);
       cs.setString(3, categories_str);
       cs.registerOutParameter(4, java.sql.Types.INTEGER);
       cs.executeQuery();
-      new_request_id = cs.getInt(4);
+      new_requestoffer_id = cs.getInt(4);
     } catch (SQLException ex) {
       //look for the error from the trigger to check points
       if (ex.getMessage()
-          .contains("user lacks points to make this request")) {
-        return new Request_response(Request_response.Stat.LACK_POINTS, -1);
+          .contains("user lacks points to make this requestoffer")) {
+        return new Requestoffer_response(Requestoffer_response.Stat.LACK_POINTS, -1);
       }
 
       Database_access.handle_sql_exception(ex);
-      return new Request_response(Request_response.Stat.ERROR, -1);
+      return new Requestoffer_response(Requestoffer_response.Stat.ERROR, -1);
     } finally {
       Database_access.close_statement(cs);
     }
     //indicate all is well, along with the new id
-    return new Request_response(Request_response.Stat.OK, new_request_id);
+    return new Requestoffer_response(Requestoffer_response.Stat.OK, new_requestoffer_id);
   }
 
 
   /**
-    * gets all the request categories that exist as an
+    * gets all the requestoffer categories that exist as an
     * array of their localization values, as Integers.
     * @return a Integer array of all categories' localization values,
     * useful for calling to the localization mechanism.  See
@@ -520,14 +520,14 @@ public final class Request_utils {
 
 
   /**
-    * gets all the current request statuses, like OPEN, CLOSED, and TAKEN
-    * @return an array of request statuses, or null if failure.
+    * gets all the current requestoffer statuses, like OPEN, CLOSED, and TAKEN
+    * @return an array of requestoffer statuses, or null if failure.
     */
-  public static Request_status[] get_request_statuses() {
+  public static Requestoffer_status[] get_requestoffer_statuses() {
     // 1. set the sql
     String sqlText = 
-      "SELECT request_status_id, request_status_value "+
-      "FROM request_status;";
+      "SELECT requestoffer_status_id, requestoffer_status_value "+
+      "FROM requestoffer_status;";
 
     // 2. set up values we'll need outside the try
     PreparedStatement pstmt = null;
@@ -542,24 +542,24 @@ public final class Request_utils {
 
       // 5. check that we got results
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return new Request_status[0];
+        return new Requestoffer_status[0];
       }
 
       // 6. get values from database and convert to an object
       //keep adding rows of data while there is more data
-      ArrayList<Request_status> statuses = 
-        new ArrayList<Request_status>();
+      ArrayList<Requestoffer_status> statuses = 
+        new ArrayList<Requestoffer_status>();
       while(resultSet.next()) {
-        int sid = resultSet.getInt("request_status_id");
-        String sv = resultSet.getString("request_status_value");
-        Request_status status = new Request_status(sid,sv);
+        int sid = resultSet.getInt("requestoffer_status_id");
+        String sv = resultSet.getString("requestoffer_status_value");
+        Requestoffer_status status = new Requestoffer_status(sid,sv);
         statuses.add(status);
       }
 
       // 7. if necessary, create array of objects for return
       //convert arraylist to array
-      Request_status[] my_array = 
-        statuses.toArray(new Request_status[statuses.size()]);
+      Requestoffer_status[] my_array = 
+        statuses.toArray(new Requestoffer_status[statuses.size()]);
       return my_array;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
@@ -574,37 +574,37 @@ public final class Request_utils {
 
   /**
     * given the query string, we will find the proper string
-    * and convert that to a request, and return that.
-    * @param qs this is the query string used in request.jsp and
+    * and convert that to a requestoffer, and return that.
+    * @param qs this is the query string used in requestoffer.jsp and
     * other places where there is a string with the id of a particular
-    * request.
-    * @return a request object or null if no match
+    * requestoffer.
+    * @return a requestoffer object or null if no match
     */
   public static 
-    Request parse_querystring_and_get_request(String qs) {
+    Requestoffer parse_querystring_and_get_requestoffer(String qs) {
       int id = -1;
       try {
-        id = Integer.parseInt(Utils.parse_qs(qs).get("request"));
+        id = Integer.parseInt(Utils.parse_qs(qs).get("requestoffer"));
       } catch (Exception ex) {
         System.err.println(
             "Error(6): couldn't parse int from querystring " + qs);
         System.err.println(ex);
         return null;
       }
-      return get_a_request(id);
+      return get_a_requestoffer(id);
     }
 
 
   /**
     * sets a new message into the database.  These are used for
-    * correspondence between users of the system on a given request.
+    * correspondence between users of the system on a given requestoffer.
     * @param msg the message to store.
-    * @param request_id the id of the request
+    * @param requestoffer_id the id of the requestoffer
     * @param user_id the user creating the message
     * @return true if successful
     */
   public static boolean 
-    set_message(String msg, int request_id, int user_id) {
+    set_message(String msg, int requestoffer_id, int user_id) {
 
     CallableStatement cs = null;
     try {
@@ -612,7 +612,7 @@ public final class Request_utils {
       // see db_scripts/v1_procedures.sql for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
-        "{call put_message(?,%d,%d)}" ,user_id, request_id));
+        "{call put_message(?,%d,%d)}" ,user_id, requestoffer_id));
       cs.setNString(1, msg);
       cs.execute();
     } catch (SQLException ex) {
@@ -625,20 +625,20 @@ public final class Request_utils {
   }
 
   /**
-    * gets all the messages (correspondence between users) for a request.
-    * @param request_id the key for the messages
-    * @return an array of messages for this request, 
+    * gets all the messages (correspondence between users) for a requestoffer.
+    * @param requestoffer_id the key for the messages
+    * @return an array of messages for this requestoffer, 
     * or empty array if failure.
     */
-  public static String[] get_messages(int request_id) {
+  public static String[] get_messages(int requestoffer_id) {
     String sqlText = 
-      "SELECT message FROM request_message WHERE request_id = ?";
+      "SELECT message FROM requestoffer_message WHERE requestoffer_id = ?";
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      pstmt.setInt( 1, request_id);
+      pstmt.setInt( 1, requestoffer_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new String[0];
@@ -665,14 +665,14 @@ public final class Request_utils {
 
   
   /**
-    * a type solely used to set the response from putting a request
+    * a type solely used to set the response from putting a requestoffer
     */
-  public static class Request_response { 
+  public static class Requestoffer_response { 
 
     /**
       * an enum demarcating the general status
-      * of a response from making a request.
-      * This gets included in Request_response
+      * of a response from making a requestoffer.
+      * This gets included in Requestoffer_response
       * to allow filtering.
       */
     public enum Stat {
@@ -681,11 +681,11 @@ public final class Request_utils {
     public final Stat status;
 
     /**
-      * the id of the newly-created request.
+      * the id of the newly-created requestoffer.
       */
     public final int id;
 
-    public Request_response(Stat s, int id) {
+    public Requestoffer_response(Stat s, int id) {
       this.status = s;
       this.id = id;
     }

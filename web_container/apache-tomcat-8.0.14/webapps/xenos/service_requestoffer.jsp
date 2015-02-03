@@ -1,19 +1,19 @@
 <%@include file="includes/header.jsp" %>
 <!DOCTYPE html>
 <html>
-<head><title>Handle a request</title></head>
+<head><title>Handle a requestoffer</title></head>
 
-<%@ page import="com.renomad.xenos.Request_utils" %>
-<%@ page import="com.renomad.xenos.Request" %>
+<%@ page import="com.renomad.xenos.Requestoffer_utils" %>
+<%@ page import="com.renomad.xenos.Requestoffer" %>
 <%
-  String qs = request.getQueryString();
-  Request r = Request_utils.parse_querystring_and_get_request(qs);
+  String qs = requestoffer.getQueryString();
+  Requestoffer r = Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
   if (r == null) {
     response.sendRedirect("general_error.jsp");
     return;
   }
-  boolean is_requesting_user = user_id == r.requesting_user_id;
-  if (is_requesting_user) {
+  boolean is_requestoffering_user = user_id == r.requestoffering_user_id;
+  if (is_requestoffering_user) {
     response.sendRedirect("general_error.jsp");
   }
 %>

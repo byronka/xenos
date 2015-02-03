@@ -113,7 +113,7 @@ public final class Security {
       }
       String ip_address = ip;
       if (ip_address == null || ip_address.length() == 0) {
-        ip = "error: no ip in request";
+        ip = "error: no ip in requestoffer";
       }
 
     CallableStatement cs = null;
@@ -158,7 +158,7 @@ public final class Security {
     * We go looking for the cookie.  Once we get that, we send it
     * to a stored procedure which checks that it is valid, and if
     * so, it returns the user id.  if failed, return -1;
-    * @param r the request object
+    * @param r the requestoffer object
     * @return a valid user id if allowd.  -1 otherwise.
     */
   public static int check_if_allowed(HttpServletRequest r) {

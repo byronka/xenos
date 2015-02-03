@@ -3,8 +3,8 @@
 <html>                                 
   <head><title><%=loc.get(46,"General Error")%></title></head>
 
-<%@ page import="com.renomad.xenos.Request_utils" %>
-<%@ page import="com.renomad.xenos.Request" %>
+<%@ page import="com.renomad.xenos.Requestoffer_utils" %>
+<%@ page import="com.renomad.xenos.Requestoffer" %>
 <body>
 
 <h2><%=loc.get(46,"General error")%></h2>

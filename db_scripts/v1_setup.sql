@@ -64,39 +64,39 @@ VALUES
 -- use when we need to translate languages.
 
 CREATE TABLE IF NOT EXISTS
-request_status (
-  request_status_id INT NOT NULL PRIMARY KEY, -- this value maps to localization values
-  request_status_value VARCHAR(20)
+requestoffer_status (
+  requestoffer_status_id INT NOT NULL PRIMARY KEY, -- this value maps to localization values
+  requestoffer_status_value VARCHAR(20)
 );
 
 
 ---DELIMITER---
 
--- now we put our enums into the request_status table.
+-- now we put our enums into the requestoffer_status table.
 -- these are intentionally in all-caps to emphasize they are not
 -- supposed to go straight to the client.  They must be localized first.
-INSERT INTO request_status (request_status_id, request_status_value)
+INSERT INTO requestoffer_status (requestoffer_status_id, requestoffer_status_value)
 VALUES(76,'OPEN'),(77,'CLOSED'),(78,'TAKEN');
 
 ---DELIMITER---
 
--- create_request_table
+-- create_requestoffer_table
 
 CREATE TABLE IF NOT EXISTS 
-request ( 
-  request_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+requestoffer ( 
+  requestoffer_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   datetime DATETIME,
   description NVARCHAR(10000),
   points INT UNSIGNED,
   status INT,
   title NVARCHAR(255),
-  requesting_user_id INT UNSIGNED NOT NULL,
+  requestoffering_user_id INT UNSIGNED NOT NULL,
   handling_user_id INT UNSIGNED,
-  FOREIGN KEY FK_requesting_user_user_id (requesting_user_id) 
+  FOREIGN KEY FK_requestoffering_user_user_id (requestoffering_user_id) 
     REFERENCES user (user_id) 
     ON DELETE CASCADE,
-  FOREIGN KEY FK_status_request_status_id (status)
-    REFERENCES request_status (request_status_id)
+  FOREIGN KEY FK_status_requestoffer_status_id (status)
+    REFERENCES requestoffer_status (requestoffer_status_id)
     ON DELETE CASCADE
 );
 
@@ -137,21 +137,21 @@ localization_lookup (
 )
 
 ---DELIMITER---
--- create the tables to store categories and assign them to requests.
+-- create the tables to store categories and assign them to requestoffers.
 
 CREATE TABLE IF NOT EXISTS 
-request_category ( 
+requestoffer_category ( 
   category_id INT UNSIGNED NOT NULL PRIMARY KEY, -- a localization value
-  request_category_value VARCHAR(20)
+  requestoffer_category_value VARCHAR(20)
 )
 
 ---DELIMITER---
--- now we put our enums into the request_category table.
+-- now we put our enums into the requestoffer_category table.
 -- these are intentionally in all-caps to emphasize they are not
 -- supposed to go straight to the client.  They must be localized first.
 -- this should be easy to expand later.
 
-INSERT INTO request_category (category_id, request_category_value)
+INSERT INTO requestoffer_category (category_id, requestoffer_category_value)
 VALUES
 (71, 'MATH'),
 (72,'PHYSICS'),
@@ -161,32 +161,32 @@ VALUES
 
 ---DELIMITER---
 -- here, we set up a table to correlate categories to a given
--- request.
+-- requestoffer.
 
 CREATE TABLE IF NOT EXISTS 
-request_to_category ( 
-  request_id INT UNSIGNED NOT NULL,
-  request_category_id INT UNSIGNED NOT NULL,
-  FOREIGN KEY FK_request_id (request_id) 
-    REFERENCES request (request_id) 
+requestoffer_to_category ( 
+  requestoffer_id INT UNSIGNED NOT NULL,
+  requestoffer_category_id INT UNSIGNED NOT NULL,
+  FOREIGN KEY FK_requestoffer_id (requestoffer_id) 
+    REFERENCES requestoffer (requestoffer_id) 
     ON DELETE CASCADE,
   FOREIGN KEY 
-    FK_request_category_id (request_category_id)
-    REFERENCES request_category (category_id)
+    FK_requestoffer_category_id (requestoffer_category_id)
+    REFERENCES requestoffer_category (category_id)
     ON DELETE CASCADE
 )
 
 ---DELIMITER---
--- create a table of meesages for requests
+-- create a table of meesages for requestoffers
 
 CREATE TABLE IF NOT EXISTS 
-request_message ( 
-  request_id INT UNSIGNED NOT NULL,
+requestoffer_message ( 
+  requestoffer_id INT UNSIGNED NOT NULL,
   message NVARCHAR(10000),
   timestamp datetime,
   user_id INT UNSIGNED NOT NULL,
-  FOREIGN KEY FK_request_id (request_id)
-  REFERENCES request (request_id)
+  FOREIGN KEY FK_requestoffer_id (requestoffer_id)
+  REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
   FOREIGN KEY FK_user_id (user_id)
   REFERENCES user (user_id)
@@ -210,9 +210,9 @@ audit_actions (
 
 INSERT INTO audit_actions (action_id,action)
 VALUES
-(1,'User created a request'),
-(2,'User deleted a request'),
-(3,'User handled a request'),
+(1,'User created a requestoffer'),
+(2,'User deleted a requestoffer'),
+(3,'User handled a requestoffer'),
 (4,'New user was registered'),
 (5,'cookie authentication failed')
 
@@ -220,7 +220,7 @@ VALUES
 ---DELIMITER---
 
 -- This table will store notes about some audits when that is
--- necessary.  Like for example, when we delete requests, they are
+-- necessary.  Like for example, when we delete requestoffers, they are
 -- actually deleted from the database, permanently.  So we can store
 -- some data about them here just before we delete them, for posterity.
 
@@ -234,8 +234,8 @@ audit_notes (
 
 -- the audit table will store the various actions taken by users.  
 -- for example,
--- if a user deletes a request, then a row will be added here with
--- that user's id, the request's id as "target_id", and the
+-- if a user deletes a requestoffer, then a row will be added here with
+-- that user's id, the requestoffer's id as "target_id", and the
 -- id of the action that took place, with a timestamp.
 
 -- there is no purpose to having an id that I can think, so I'll just
@@ -249,7 +249,7 @@ audit (
   datetime DATETIME NOT NULL,
   audit_action_id INT UNSIGNED NOT NULL, -- an enum of actions
   user_id INT UNSIGNED ,  -- the user who caused the action
-  target_id INT UNSIGNED, -- this is the thing manipulated, e.g. the request.
+  target_id INT UNSIGNED, -- this is the thing manipulated, e.g. the requestoffer.
   notes_id INT UNSIGNED -- some notes about the action, see audit_notes
 )
 

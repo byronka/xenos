@@ -5,9 +5,9 @@ import com.renomad.xenos.Text;
 import java.util.Locale;
 
   /**
-  * An object used to hold state so running localization requests
+  * An object used to hold state so running localization requestoffers
   * uses very little boilerplate code.
-  * By creating an object at the beginning of the request, 
+  * By creating an object at the beginning of the requestoffer, 
   * filled with information like the user_id and the accept-language string,
   * we provide the object with sufficient state to know which language
   * ought to be provided to the user.  That way, for any place where we

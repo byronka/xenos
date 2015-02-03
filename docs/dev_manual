@@ -39,7 +39,7 @@ developed thus far:
 * All business logic happens server-side.
 * Niceties for UI may be implemented in JavaScript, but code must be
   engineered to work without needing it.  For example, the code for
-  setting categories on a request.  That code will show the categories
+  setting categories on a requestoffer.  That code will show the categories
   and will allow the user to type them in, if JavaScript is not
   available.  If it is available, JavaScript can modify the page to hide
   the list of categories and display a prettier interface, but in the
@@ -312,8 +312,8 @@ SQL standards
 6) Great reasons to use stored procedures: if you are doing something
 	that requires multiple conversations with the database, that might be
 	a good time to use stored procedures.  For example, you want to delete
-	a request.  So first, check that the request exists, then delete the
-	request, then add an audit.  If you do that in code, there is a lot of
+	a requestoffer.  So first, check that the requestoffer exists, then delete the
+	requestoffer, then add an audit.  If you do that in code, there is a lot of
 	boiler plate required to tie things together - checking for errors,
 	rolling back if necessary, etc. Whereas, if you do it in a stored
 	procedure, all that boiler plate disappears.

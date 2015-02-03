@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
-<%@ page import="com.renomad.xenos.Request_utils" %>
+<%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%@ page import="com.renomad.xenos.Utils" %>
 <%
 
@@ -46,7 +46,7 @@ if (request.getMethod().equals("POST")) {
     statuses = "";
   }
 
-  Integer[] status_array = Request_utils.parse_statuses_string(statuses, loc );
+  Integer[] status_array = Requestoffer_utils.parse_statuses_string(statuses, loc );
 
   if (status_array.length == 0 && statuses.length() > 0) { 
     //if there were no statuses found, but they entered something...
@@ -62,7 +62,7 @@ if (request.getMethod().equals("POST")) {
   }
 
   Integer[] cat_array = 
-    Request_utils.parse_categories_string(category, loc );
+    Requestoffer_utils.parse_categories_string(category, loc );
   String categories = Utils.int_array_to_string(cat_array);
 
   if (cat_array.length == 0 && category.length() > 0) {
@@ -184,7 +184,7 @@ if (request.getMethod().equals("POST")) {
 
       <div id='available-categories'>
         <%
-          Integer[] local_cat_values = Request_utils.get_category_local_values();
+          Integer[] local_cat_values = Requestoffer_utils.get_category_local_values();
           for(Integer val : local_cat_values) { %>
           <%=loc.get(val,"")%>,
         <%}%>

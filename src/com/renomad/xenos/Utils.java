@@ -30,7 +30,7 @@ public final class Utils {
     * @param action_id the id of the action performed (e.g. 1 for create)
     *  see the database table "audit_actions" for available options.
     * @param user_id the id of the user causing the action
-    * @param target_id the id of the target, usually a request.
+    * @param target_id the id of the target, usually a requestoffer.
     * @return true if successful at creating the audit, false otherwise.
     */
   public static boolean 
@@ -80,26 +80,10 @@ public final class Utils {
 
 
   public static boolean is_valid_date(String date) {
-    
-    String result = get_date_search_query(date);
-    return result.length() > 0;
-  }
-
-  /**
-    * We'll just check to see that the string entered is valid per our
-    * specs.  
-    *(a single date) ex: 2014-12-18
-    */
-  private static String get_date_search_query(String date) {
     String date_pattern = "^([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})$"; 
 
-    if (Pattern.matches(date_pattern, date)) {
-      if (is_good_date_value(date)) {
-      return_sql_string = 
-        "AND r.datetime BETWEEN '"+date+" 00:00:00' AND '"+date+" 23:59:59.999' ";
-      }
-    }
-    return "";
+     return (Pattern.matches(date_pattern, date) &&
+         is_good_date_value(date));
   }
 
 

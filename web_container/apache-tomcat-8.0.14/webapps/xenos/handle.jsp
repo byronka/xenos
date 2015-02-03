@@ -2,23 +2,23 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><%=loc.get(94,"Handle request")%></title>
+		<title><%=loc.get(94,"Handle requestoffer")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
 <%@ page import="com.renomad.xenos.Utils" %>
-<%@ page import="com.renomad.xenos.Request_utils" %>
-<%@ page import="com.renomad.xenos.Request" %>
+<%@ page import="com.renomad.xenos.Requestoffer_utils" %>
+<%@ page import="com.renomad.xenos.Requestoffer" %>
 <%
   String qs = request.getQueryString();
   java.util.Map<String,String> params = Utils.parse_qs(qs);
-  int r_id = Utils.parse_int(params.get("request")); 
-  Request r = Request_utils.get_a_request(r_id);
+  int r_id = Utils.parse_int(params.get("requestoffer")); 
+  Requestoffer r = Requestoffer_utils.get_a_requestoffer(r_id);
   String is_confirmed = params.get("confirm");
   if (is_confirmed != null && is_confirmed.equals("true")) {
-  if (Request_utils.take_request(user_id, r.request_id)) {
+  if (Requestoffer_utils.take_requestoffer(user_id, r.requestoffer_id)) {
     response.sendRedirect(
-      String.format("request.jsp?request=%d&service=true",r.request_id));
+      String.format("requestoffer.jsp?requestoffer=%d&service=true",r.requestoffer_id));
     return;
     } else {
       out.println("<script>console.log('help!')</script>");
@@ -31,7 +31,7 @@
 
   //handle bad scenarios
 
-  if (user_id == r.requesting_user_id) {
+  if (user_id == r.requestoffering_user_id) {
     response.sendRedirect("general_error.jsp");
     return;
   }
@@ -39,6 +39,6 @@
 %>
 <body>
   <%@include file="includes/header.jsp" %>
-    <p>If you would like to take this request, click the confirm button below</p>
-    <a href="handle.jsp?request=<%=r.request_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
+    <p>If you would like to take this requestoffer, click the confirm button below</p>
+    <a href="handle.jsp?requestoffer=<%=r.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
 </body>

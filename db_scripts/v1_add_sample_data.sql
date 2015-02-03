@@ -24,15 +24,15 @@ VALUES
 
 /*------------
  
-   REQUESTS
+   REQUESTOFFERS
 
  ------------*/
 
 
-INSERT INTO request 
-(datetime, description, points, status, title, requesting_user_id) 
+INSERT INTO requestoffer 
+(datetime, description, points, status, title, requestoffering_user_id) 
 VALUES 
-("2014-12-31 21:22:42",   "a fine description for a request", 30, 76, "A great title", 4),
+("2014-12-31 21:22:42",   "a fine description for a requestoffer", 30, 76, "A great title", 4),
 ("2014-10-20 21:22:42",   "Gotta job for ya", 10, 76, "Throw momma from the train", 4),
 ("2014-12-18 21:22:42",   "rob the bank, get the money", 50, 76, "rob bank", 5),
 ("2014-8-27 21:22:42",    "do my homework", 15, 76, "homework", 5),
@@ -63,8 +63,8 @@ VALUES
 
 
 ---DELIMITER---
--- Here we set up all the requests to have some categories.
-INSERT INTO request_to_category (request_id, request_category_id)
+-- Here we set up all the requestoffers to have some categories.
+INSERT INTO requestoffer_to_category (requestoffer_id, requestoffer_category_id)
 VALUES
 (1,71),
 (1,73),
@@ -99,8 +99,8 @@ VALUES
 
 
 ---DELIMITER---
--- add some messages for some requests
-INSERT INTO request_message (request_id, message, timestamp, user_id)
+-- add some messages for some requestoffers
+INSERT INTO requestoffer_message (requestoffer_id, message, timestamp, user_id)
 VALUES 
 (1, "Hi there mom!","2014-12-18 21:22:42",4 ),
 (1, "What do ya know?","2014-12-18 21:22:43",4 ),

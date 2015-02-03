@@ -25,7 +25,7 @@ public final class User_utils {
 
   /**
     * gets an array of user ids by names of users. used in searching
-    * requests by users.  
+    * requestoffers by users.  
     * @param usernames an array of user usernames
     * @return a string representing an array of user ids instead of the
     *   names, or empty string if failure or none found.
@@ -232,7 +232,7 @@ public final class User_utils {
       CallableStatement cs = null;
       try {
         Connection conn = Database_access.get_a_connection();
-        // see db_scripts/v1_setup.sql delete_request for
+        // see db_scripts/v1_setup.sql delete_requestoffer for
         // details on this stored procedure.
         
         cs = conn.prepareCall("{call create_new_user(?,?,?)}");

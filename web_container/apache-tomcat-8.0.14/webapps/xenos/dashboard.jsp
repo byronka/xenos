@@ -1,8 +1,8 @@
 <%@include file="includes/init.jsp" %>
-<%@ page import="com.renomad.xenos.Request_utils" %>
-<%@ page import="com.renomad.xenos.Request" %>
+<%@ page import="com.renomad.xenos.Requestoffer_utils" %>
+<%@ page import="com.renomad.xenos.Requestoffer" %>
 <%@ page import="com.renomad.xenos.Utils" %>
-<%@ page import="com.renomad.xenos.Others_Request" %>
+<%@ page import="com.renomad.xenos.Others_Requestoffer" %>
 <%
 
   String qs = request.getQueryString();
@@ -59,31 +59,31 @@
 <body>
 <%@include file="includes/header.jsp" %>
 <div class="dashboard-container">
-<h2 class="my-requests-header"><%=loc.get(18, "Your requests")%>:</h2>
-<div class="requests mine">
+<h2 class="my-requestoffers-header"><%=loc.get(18, "Your requestoffers")%>:</h2>
+<div class="requestoffers mine">
 <%
-  Request[] my_requests = 
-    Request_utils.get_requests_for_user(user_id);
-  for (Request r : my_requests) {
+  Requestoffer[] my_requestoffers = 
+    Requestoffer_utils.get_requestoffers_for_user(user_id);
+  for (Requestoffer r : my_requestoffers) {
 %>
-  <div class="request mine">
-    <a href="request.jsp?request=<%=r.request_id %>"> 
+  <div class="requestoffer mine">
+    <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
       <%=Utils.safe_render(r.title)%> </a>
     <a 
       class="button" 
-      href="request.jsp?request=<%=r.request_id%>&delete=true">
+      href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
       <%=loc.get(21,"Delete")%>
     </a>
   </div>
 <% } %>
 </div>
-<h2 class="others-requests-header">
-  <%=loc.get(19, "Other's requests")%>:
+<h2 class="others-requestoffers-header">
+  <%=loc.get(19, "Other's requestoffers")%>:
 </h2>
-<div class="requests others">
+<div class="requestoffers others">
 <%
-  Request_utils.Search_Object so = 
-    new Request_utils.Search_Object(  
+  Requestoffer_utils.Search_Object so = 
+    new Requestoffer_utils.Search_Object(  
                                       srch_startdate, 
                                       srch_enddate, 
                                       srch_ti, 
@@ -92,20 +92,20 @@
                                       srch_minpts, 
                                       srch_maxpts, 
                                       srch_us);
-  Others_Request[] others_requests = 
-    Request_utils.get_others_requests(user_id, 
+  Others_Requestoffer[] others_requestoffers = 
+    Requestoffer_utils.get_others_requestoffers(user_id, 
                                       so , 
                                       which_page);
-  for (Others_Request r : others_requests) {
+  for (Others_Requestoffer r : others_requestoffers) {
 %>
-  <div class="others request">
-    <a href="request.jsp?request=<%=r.request_id %>">
+  <div class="others requestoffer">
+    <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>">
       <%=Utils.safe_render(r.title)%> 
     </a>
     <span class="handle-button-span">
       <a 
         class="button" 
-        href="handle.jsp?request=<%=r.request_id%>"> 
+        href="handle.jsp?requestoffer=<%=r.requestoffer_id%>"> 
         <%=loc.get(20, "Handle")%> 
       </a>
     </span>
@@ -138,10 +138,10 @@
         <span class="label"><%=loc.get(25, "Date")%>:</span>
         <span class="value"><%=r.datetime%></span>
       </li>
-      <li class="requesting-user-id">
+      <li class="requestoffering-user-id">
         <span class="label"><%=loc.get(80, "User")%>:</span>
         <%
-          User ru = User_utils.get_user(r.requesting_user_id);
+          User ru = User_utils.get_user(r.requestoffering_user_id);
         %>
         <span class="value"> <%=Utils.safe_render(ru.username)%></span>
       </li>

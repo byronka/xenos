@@ -25,22 +25,22 @@ END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS validate_request_id;
+DROP PROCEDURE IF EXISTS validate_requestoffer_id;
 
 ---DELIMITER---
 
-CREATE PROCEDURE validate_request_id
+CREATE PROCEDURE validate_requestoffer_id
 (
   rid INT UNSIGNED
 ) 
 BEGIN 
 
   SELECT COUNT(*) INTO @valid_rid 
-  FROM request 
-  WHERE request_id = rid;
+  FROM requestoffer 
+  WHERE requestoffer_id = rid;
 
   IF (@valid_rid <> 1) THEN
-      SET @msg = CONCAT('request does not exist in the system: ', 
+      SET @msg = CONCAT('requestoffer does not exist in the system: ', 
         rid);
       ROLLBACK;
       SIGNAL SQLSTATE '45002' 
@@ -124,9 +124,9 @@ END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS get_others_requests;
+DROP PROCEDURE IF EXISTS get_others_requestoffers;
 ---DELIMITER---
-CREATE PROCEDURE get_others_requests
+CREATE PROCEDURE get_others_requestoffers
 (
   ruid INT UNSIGNED,
 	title NVARCHAR(255),
@@ -171,11 +171,11 @@ BEGIN
       CONCAT(@search_clauses, ' AND rc.category_id IN (',categories,') ');
   END IF;
 
-  -- searching by requesting user
+  -- searching by requestoffering user
   IF user_id <> '' THEN
     SET @search_clauses = 
 			CONCAT(@search_clauses, 
-				' AND requesting_user_id IN (', user_id ,')');
+				' AND requestoffering_user_id IN (', user_id ,')');
   END IF;
   
   -- searching by dates
@@ -206,48 +206,48 @@ BEGIN
   SET @first_row = page * 10;
   SET @last_row = (page * 10) + 10;
 
-  -- the prime request
+  -- the prime requestoffer
   SET @ruid = ruid;
-  SET @get_request = 
-     CONCAT('SELECT r.request_id, 
+  SET @get_requestoffer = 
+     CONCAT('SELECT r.requestoffer_id, 
             r.datetime, 
             r.description, 
             r.status, 
             r.points, 
             r.title, 
             u.rank, 
-            r.requesting_user_id, 
+            r.requestoffering_user_id, 
             GROUP_CONCAT(rc.category_id SEPARATOR ",") 
             AS categories 
-            FROM request r 
-            JOIN request_to_category rtc ON rtc.request_id = r.request_id 
-            JOIN request_category rc 
-              ON rc.category_id = rtc.request_category_id 
-            JOIN user u ON u.user_id = r.requesting_user_id 
-            WHERE requesting_user_id <> @ruid
+            FROM requestoffer r 
+            JOIN requestoffer_to_category rtc ON rtc.requestoffer_id = r.requestoffer_id 
+            JOIN requestoffer_category rc 
+              ON rc.category_id = rtc.requestoffer_category_id 
+            JOIN user u ON u.user_id = r.requestoffering_user_id 
+            WHERE requestoffering_user_id <> @ruid
             ', @search_clauses ,'
-            GROUP BY r.request_id 
-            ORDER BY r.request_id ASC
+            GROUP BY r.requestoffer_id 
+            ORDER BY r.requestoffer_id ASC
             LIMIT ',@first_row,',',@last_row );
 
 
   -- prepare and execute!
-	PREPARE get_request FROM @get_request;
-	EXECUTE get_request; 
+	PREPARE get_requestoffer FROM @get_requestoffer;
+	EXECUTE get_requestoffer; 
 END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS put_request;
+DROP PROCEDURE IF EXISTS put_requestoffer;
 ---DELIMITER---
-CREATE PROCEDURE put_request
+CREATE PROCEDURE put_requestoffer
 (
   my_desc NVARCHAR(10000),
-  ruid INT UNSIGNED, -- requesting user id
+  ruid INT UNSIGNED, -- requestoffering user id
 	ti NVARCHAR(255), -- title
   pts INT UNSIGNED, -- points
   cats VARCHAR(50), -- categories - this cannot be empty or we'll SQLException.
-  OUT new_request_id INT UNSIGNED
+  OUT new_requestoffer_id INT UNSIGNED
 ) 
 BEGIN 
 
@@ -267,7 +267,7 @@ BEGIN
   WHERE user_id = ruid;
   
   IF (@user_points < @points) THEN
-      SET @msg = CONCAT('user lacks points to make this request: ', 
+      SET @msg = CONCAT('user lacks points to make this requestoffer: ', 
         ruid );
       ROLLBACK;
       SIGNAL SQLSTATE '45001' set message_text = msg;
@@ -276,13 +276,13 @@ BEGIN
   -- Prepare a handler in case there is a SQLException, 
   -- we want to roll back.
 
-  -- A) The main part - add the request to that table.
-  SET @status = 76; -- requests always start 'open'
-  INSERT into request (description, datetime, points,
-   status, title, requesting_user_id)
+  -- A) The main part - add the requestoffer to that table.
+  SET @status = 76; -- requestoffers always start 'open'
+  INSERT into requestoffer (description, datetime, points,
+   status, title, requestoffering_user_id)
    VALUES (my_desc, UTC_TIMESTAMP(), pts, @status, ti, ruid); 
          
-  SET new_request_id = LAST_INSERT_ID();
+  SET new_requestoffer_id = LAST_INSERT_ID();
 
 
   -- B) Add categories.
@@ -293,8 +293,8 @@ BEGIN
   PREPARE cat_sql FROM @cat_sql;
   EXECUTE cat_sql;
 
-  INSERT INTO request_to_category (request_id, request_category_id)
-  SELECT new_request_id, id FROM CAT_IDS;
+  INSERT INTO requestoffer_to_category (requestoffer_id, requestoffer_category_id)
+  SELECT new_requestoffer_id, id FROM CAT_IDS;
   DROP TEMPORARY TABLE CAT_IDS;
 
   -- C) Deduct points from the user
@@ -302,7 +302,7 @@ BEGIN
 
 
   -- D) Add an audit
-  CALL add_audit(1,ruid,new_request_id,'');
+  CALL add_audit(1,ruid,new_requestoffer_id,'');
 
   COMMIT;
 END
@@ -320,12 +320,12 @@ CREATE PROCEDURE put_message
   rid INT UNSIGNED
 ) 
 BEGIN 
-  -- A) The main part - add the request to that table.
+  -- A) The main part - add the requestoffer to that table.
   CALL is_non_empty_string('put_message','my_message',my_message);
-  call validate_request_id(rid);
+  call validate_requestoffer_id(rid);
   call validate_user_id(uid);
 
-  INSERT into request_message (message, request_id, user_id, timestamp)
+  INSERT into requestoffer_message (message, requestoffer_id, user_id, timestamp)
   SELECT 
     CONCAT(username,' says:', my_message), 
     rid, 
@@ -336,25 +336,25 @@ END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS take_request;
+DROP PROCEDURE IF EXISTS take_requestoffer;
 
 ---DELIMITER---
 
-CREATE PROCEDURE take_request
+CREATE PROCEDURE take_requestoffer
 (
   uid INT UNSIGNED,
   rid INT UNSIGNED
 ) 
 BEGIN 
-  call validate_request_id(rid);
+  call validate_requestoffer_id(rid);
   call validate_user_id(uid);
 
   START TRANSACTION;
-    UPDATE request 
+    UPDATE requestoffer 
     SET 
       status = 78,  -- 'taken'
       handling_user_id = uid  
-    WHERE request_id = rid;
+    WHERE requestoffer_id = rid;
 
     -- Add an audit
     CALL add_audit(3,uid,rid,NULL);
@@ -365,34 +365,34 @@ END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS delete_request;
+DROP PROCEDURE IF EXISTS delete_requestoffer;
 
 ---DELIMITER---
 
-CREATE PROCEDURE delete_request
+CREATE PROCEDURE delete_requestoffer
 (
   uid INT UNSIGNED,
   rid INT UNSIGNED
 ) 
 BEGIN 
 
-  -- check that the request exists
-  call validate_request_id(rid);
+  -- check that the requestoffer exists
+  call validate_requestoffer_id(rid);
   call validate_user_id(uid);
 
-  -- get the points on this request.
+  -- get the points on this requestoffer.
   SELECT points into @points
-  FROM request 
-  WHERE request_id = rid;
+  FROM requestoffer 
+  WHERE requestoffer_id = rid;
 
   -- get a string version of the status
-  SELECT request_status_value INTO @status
-  FROM request_status 
-  WHERE request_status_id = 
+  SELECT requestoffer_status_value INTO @status
+  FROM requestoffer_status 
+  WHERE requestoffer_status_id = 
     (
       SELECT status
-      FROM request 
-      WHERE request_id = rid
+      FROM requestoffer 
+      WHERE requestoffer_id = rid
     );
 
   -- get a message for the deletion audit
@@ -406,13 +406,13 @@ BEGIN
       'pts:', points,
       '|',
       'st:',@status) INTO @delete_msg
-    FROM request
-    WHERE request_id = rid;
+    FROM requestoffer
+    WHERE requestoffer_id = rid;
 
   START TRANSACTION;
 
-    -- actually delete the request here.
-    DELETE FROM request WHERE request_id = rid;
+    -- actually delete the requestoffer here.
+    DELETE FROM requestoffer WHERE requestoffer_id = rid;
 
     -- give points back to the user
     UPDATE user 

@@ -6,7 +6,7 @@
 <section class="header">
   <nav class="cl-effect-1">
     <a class="trademark" href="dashboard.jsp">Xenos</a>
-    <a href="create_request.jsp" ><%=loc.get(2, "Create Request")%></a>
+    <a href="create_requestoffer.jsp" ><%=loc.get(2, "Create Requestoffer")%></a>
     <a href="logout.jsp" ><%=loc.get(3, "Logout")%></a>
   </nav>
   <form class="search" method="GET" action="dashboard.jsp" >
