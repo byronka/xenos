@@ -23,8 +23,8 @@ If you have already set up everything, just type:
 =================
 
 OpenJdk 1.7
-MySQL 5.5
-Linux
+MySQL 5.6.23
+Linux (tested on Ubuntu and CentOS)
 
 
 Installing OpenJdk
