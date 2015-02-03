@@ -82,80 +82,24 @@ public final class Utils {
   public static boolean is_valid_date(String date) {
     
     String result = get_date_search_query(date);
-    System.out.println("result is " + result);
     return result.length() > 0;
   }
 
   /**
     * We'll just check to see that the string entered is valid per our
     * specs.  
-    * formats allowed:   (explanation in parens)
-    * A) date            (a single date) ex: 2014-12-18
-    * B) date-date       (a date range) ex: 2014-12-18-2014-12-22
-    * C) date-           (a date range, starting at date, ending forever)
-    * D) -date           (a date range, starting in the past, 
-    *                                               ending at date)
-    * Note that dates are inclusive.  the date range above would be from
-    * the 0:00:00.0000 point of the first day to the 23:59:59:9999 point
-    * of the last day.
+    *(a single date) ex: 2014-12-18
     */
-  public static String get_date_search_query(String date) {
-    //a proper date will look like:
-    // 2014-12-18
-    // or 0000 to 9999, dash, 0 to 12, number varying between 1 and 31
+  private static String get_date_search_query(String date) {
+    String date_pattern = "^([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})$"; 
 
-    String return_sql_string = "";
-    //a basic date regular expression.
-    String date_ex = "([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})"; 
-
-    String case_a_pattern = "^"+date_ex+"$"; 
-    String case_b_pattern = "^"+date_ex+"-"+date_ex+"$";
-    String case_c_pattern = "^"+date_ex+"-$"; 
-    String case_d_pattern = "^-"+date_ex+"$"; 
-
-    Pattern p_a = Pattern.compile(case_a_pattern);
-    Matcher m_a = p_a.matcher(date);
-
-    Pattern p_b = Pattern.compile(case_b_pattern);
-    Matcher m_b = p_b.matcher(date);
-
-    Pattern p_c = Pattern.compile(case_c_pattern);
-    Matcher m_c = p_c.matcher(date);
-
-    Pattern p_d = Pattern.compile(case_d_pattern);
-    Matcher m_d = p_d.matcher(date);
-
-    if (m_a.find()) {
-      if (!is_good_date_value(m_a.group(1))) { return "";}
+    if (Pattern.matches(date_pattern, date)) {
+      if (is_good_date_value(date)) {
       return_sql_string = 
-        String.format(
-            "AND r.datetime BETWEEN '%s 00:00:00' "+
-            "AND '%s 23:59:59.999' ",m_a.group(1), m_a.group(1));
+        "AND r.datetime BETWEEN '"+date+" 00:00:00' AND '"+date+" 23:59:59.999' ";
+      }
     }
-
-    if (m_b.find()) {
-      if (!(is_good_date_value(m_b.group(1)) && is_good_date_value(m_b.group(2)))) { return "";}
-      return_sql_string = 
-        String.format(
-            "AND r.datetime BETWEEN '%s 00:00:00' "+
-            "AND %s 23:59:59.999' ",m_b.group(1), m_b.group(2));
-    }
-
-    if (m_c.find()) {
-      if (!is_good_date_value(m_c.group(1))) { return "";}
-      return_sql_string = 
-        String.format(
-            "AND r.datetime > '%s 00:00:00' ",m_c.group(1));
-    }
-
-    if (m_d.find()) {
-      if (!is_good_date_value(m_d.group(1))) { return "";}
-      return_sql_string = 
-        String.format(
-            "AND r.datetime < '%s 23:59:59.999' ",m_d.group(1));
-    }
-
-    return return_sql_string;
+    return "";
   }
 
 

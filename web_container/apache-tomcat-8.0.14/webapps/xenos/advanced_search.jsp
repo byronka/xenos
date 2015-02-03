@@ -80,7 +80,7 @@ if (request.getMethod().equals("POST")) {
   }
 
   //a proper date will look like:
-  // 2014-12-18 21:22:42
+  // 2014-12-18
   // or 0000 to 9999, dash, 0 to 12, number varying between 1 and 31 depending on month,space
   //, 0 to 23, colon, 0 to 59, colon, 0 to 59
   if(startdate.length() > 0 && !Utils.is_valid_date(startdate)) {
