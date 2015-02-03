@@ -108,25 +108,6 @@ public final class Database_access {
 
 
   /**
-    *A wrapper for PreparedStatement.executeUpdate(PreparedStatement pstmt)
-    *
-    * Opens and closes a connection each time it's run.
-    * @param pstmt The prepared statement
-    * @return an integer that represents the new or updated id.
-    */
-  public static int execute_update(PreparedStatement pstmt) throws SQLException {
-    int id = -1; // -1 means no key was generated.
-    pstmt.executeUpdate();
-    ResultSet rs = pstmt.getGeneratedKeys();
-    if(!resultset_is_null_or_empty(rs)) {
-      rs.next();
-      id = rs.getInt(1);
-    }
-    return id;
-  }
-  
-
-  /**
     * a helper method to avoid some of the boilerplate.
     */
   public static PreparedStatement prepare_statement(Connection conn, String sqlText) throws SQLException {
