@@ -39,44 +39,63 @@ sudo apt-get install openjdk-7-jre
 Installing MySQL
 ----------------
 
-Go to the URL: http://dev.mysql.com/downloads/mysql/
-Search for "Compressed TAR Archive"
-Get either 32 bit or 64 bit
-Follow these general instructions, taken straight from the INSTALL-BINARY file in that archive:
+Download links for Generic Linux binaries:
+
+(Choose 32 bit or 64 bit.  By the way, I experimented - choosing
+one or the other will have negligible impact on memory usage)
+
+64 bit
+------
+http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.23-linux-glibc2.5-x86_64.tar.gz
+
+32 bit
+------
+http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.23-linux-glibc2.5-i686.tar.gz
+(if it complains about lacking libaio, you can install it on CentOS with: yum install libaio.i686 )
+
+Follow these general instructions, taken (and modified) from the
+INSTALL-BINARY file in that archive:
 
  To install and use a MySQL binary distribution, the basic
- command sequence looks like this:
-shell> groupadd mysql
-shell> useradd -r -g mysql mysql
-shell> cd /usr/local
-shell> tar zxvf /path/to/mysql-VERSION-OS.tar.gz
-shell> ln -s full-path-to-mysql-VERSION-OS mysql
-shell> cd mysql
-shell> chown -R mysql .
-shell> chgrp -R mysql .
-shell> scripts/mysql_install_db --user=mysql
-shell> chown -R root .
-shell> chown -R mysql data
-shell> bin/mysqld_safe --user=mysql &
-# Next command is optional
-shell> cp support-files/mysql.server /etc/init.d/mysql.server
+ command sequence looks like this (You should be root, or run with sudo):
+% groupadd mysql
+% useradd -r -g mysql mysql
+% cd /usr/local
+% tar zxf /path/to/mysql-VERSION-OS.tar.gz
+% ln -s /usr/local/mysql-VERSION-OS.tar.gz mysql
+% cd mysql
+% chown -R mysql .
+% chgrp -R mysql .
+% scripts/mysql_install_db --user=mysql
+% chown -R root .
+% chown -R mysql data
+% bin/mysqld_safe --user=mysql &
+% cp support-files/mysql.server /etc/init.d/mysql.server
+% bin/mysql_secure_installation 
 
-BY THE WAY: If there is a sock (socket) complaint it gives you, I found the
-true sock in /tmp/mysql.sock, yet for whatever reason it was looking in
-/var/run/mysqld/mysqld.sock
+	(on your dev machine, set the password to password1 ,and answer
+	"Yes" to pretty much everything else)
 
-To solve it (temporarily, just to get things going), I did this:
-I removed the file at /var/run/mysqld/mysqld.sock, and then created
-a link to the real one from the fake one.  Fixing this will involve finding
-why it thinks the sock is there.  Anyway, the command is:
-ln -s /tmp/mysql.sock /var/run/mysqld/mysqld.sock
+  (Yes, obviously that's not too secure, but it's only that way on
+	your dev machine, not in production)
+
+% service mysql.server start
+
+IMPORTANT: If there is a sock (socket) complaint it gives you, like
+something about not finding the sock in /var/run/mysql/mysql.sock or
+similar, the problem tends to be that you need to explicitly set the
+value for the file location for the socket, in my.cnf.  Also, make
+sure the directly and file for the socket are owned by mysql, by
+typing something like the following, as root or in sudo mode:
+
+  chown -R mysql:mysql /var/run/mysql
 
 Now, set up a user, xenosuser and a password of password1
 
 First, use the mysql program to connect to the server as the 
 MySQL root user:
 
-shell> mysql --u root -p
+> mysql -u root -p
 
 If you have assigned a password to the root account, you will also
 need to supply a --password or -p option, 
