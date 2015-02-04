@@ -31,7 +31,7 @@ Installing OpenJdk
 ------------------
 
 For CentOS:
-sudo yum install java-1.7.0-openjdk
+sudo yum install java-1.7.0-openjdk-devel
 
 For Ubuntu:
 sudo apt-get install openjdk-7-jre
