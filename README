@@ -39,21 +39,44 @@ sudo apt-get install openjdk-7-jre
 Installing MySQL
 ----------------
 
-For CentOS:
-read the info at http://dev.mysql.com/doc/mysql-repo-excerpt/5.6/en/linux-installation-yum-repo.html
+Go to the URL: http://dev.mysql.com/downloads/mysql/
+Search for "Compressed TAR Archive"
+Get either 32 bit or 64 bit
+Follow these general instructions, taken straight from the INSTALL-BINARY file in that archive:
 
-For Ubuntu:
-sudo apt-get install mysql-server         #install it
-sudo netstat -tap | grep mysql            #check if running
-sudo service mysql restart                #start if necessary
+ To install and use a MySQL binary distribution, the basic
+ command sequence looks like this:
+shell> groupadd mysql
+shell> useradd -r -g mysql mysql
+shell> cd /usr/local
+shell> tar zxvf /path/to/mysql-VERSION-OS.tar.gz
+shell> ln -s full-path-to-mysql-VERSION-OS mysql
+shell> cd mysql
+shell> chown -R mysql .
+shell> chgrp -R mysql .
+shell> scripts/mysql_install_db --user=mysql
+shell> chown -R root .
+shell> chown -R mysql data
+shell> bin/mysqld_safe --user=mysql &
+# Next command is optional
+shell> cp support-files/mysql.server /etc/init.d/mysql.server
 
+BY THE WAY: If there is a sock (socket) complaint it gives you, I found the
+true sock in /tmp/mysql.sock, yet for whatever reason it was looking in
+/var/run/mysqld/mysqld.sock
+
+To solve it (temporarily, just to get things going), I did this:
+I removed the file at /var/run/mysqld/mysqld.sock, and then created
+a link to the real one from the fake one.  Fixing this will involve finding
+why it thinks the sock is there.  Anyway, the command is:
+ln -s /tmp/mysql.sock /var/run/mysqld/mysqld.sock
 
 Now, set up a user, xenosuser and a password of password1
 
 First, use the mysql program to connect to the server as the 
 MySQL root user:
 
-shell> mysql --user=root mysql
+shell> mysql --u root -p
 
 If you have assigned a password to the root account, you will also
 need to supply a --password or -p option, 
