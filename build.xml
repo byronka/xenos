@@ -70,6 +70,7 @@
     description="full-cleans (bye-byte data!), makes a new database with sample data, compiles, starts server">
     <antcall target="compile" />
     <antcall target="clean-schema" />
+    <antcall target="build-schema" />
     <antcall target="build-sample-data" />
     <antcall target="build-procs" />
     <antcall target="build-events" />
@@ -210,9 +211,11 @@
     build-schema runs the SQL scripts necessary for the 
     database to have the proper schema.
   -->
-  <target name="build-schema" depends="compile-schema-code"
+	<target name="build-schema" 
+		depends="compile-schema-code"
     description="builds the db schema.  see comments in build.xml">
     <java 
+			failonerror="true" 
       classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.xenos.schema.Build_db_schema" 
       fork="true" >
@@ -228,7 +231,6 @@
   -->
   <target name="build-sample-data" depends="compile-schema-code" 
     description="adds sample data to the database for testing">
-    <antcall target="build-schema" />
     <java 
 			classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.xenos.schema.Add_sample_data_to_db"

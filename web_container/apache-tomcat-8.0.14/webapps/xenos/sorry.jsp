@@ -1,7 +1,7 @@
 <%@ page import="com.renomad.xenos.Localization" %>
 <%
   //set up an object to localize text
-  Localization loc  = new Localization(requestoffer.getLocale());
+  Localization loc  = new Localization(request.getLocale());
 %>
 <!DOCTYPE html>
 <html>                                 

@@ -63,6 +63,38 @@ public final class Build_db_schema {
 
 
   public static void main(String[] args) {
+		//first check that we are using the right version of the database software
+		Statement stmt = null;
+		try {
+			String sqlText = "Select VERSION() as version";
+			stmt = get_a_statement_before_db_exists();
+			ResultSet resultSet = stmt.executeQuery(sqlText);
+			if (resultset_is_null_or_empty(resultSet)) {
+				throw new SQLException("resultset was null or empty trying to get db version");
+			}
+
+			result_set_next(resultSet);
+			String dbv = resultSet.getString("version");
+
+			// THE VERSION SHOULD BE 5.6.23
+			String expected_version = "5.6.23";
+			if (!dbv.contains(expected_version)) {           
+				throw new SQLException(
+						"FATAL ERROR - HEY DEV! Pay attention to me now. \n"+
+						"database version should be "+
+						expected_version+", but was " + dbv +
+						"\ncheck your version of MySql by the SELECT VERSION() "+
+						"command.");
+			}
+		} catch(SQLException ex) {
+    	handle_sql_exception(ex);
+			System.exit(1);
+		}
+
+		close_statement(stmt);
+
+		// now, check what scripts we should run to set the 
+		// schema, procedures, and events
     int version = -1;
     try {
       version = get_db_version();
@@ -70,11 +102,7 @@ public final class Build_db_schema {
       create_database(); //will create the db and set version to 0
       version = 0;
     }
-    if (version == 0) { run("db_scripts/v1_setup.sql"); }
-  }
-
-  private static void run(String sql) {
-      run_multiple_statements(sql);
+    if (version == 0) { run_multiple_statements("db_scripts/v1_setup.sql"); }
   }
 
 
@@ -147,6 +175,10 @@ public final class Build_db_schema {
 				"DEFAULT CHARACTER SET utf8 " + 
 				"COLLATE utf8_general_ci " +
 				"DEFAULT COLLATE utf8_general_ci; ");
+
+	  //This stuff has to be done here.  version 0
+		// means that the database is created.  Later, the 
+		// scripts will set the version to 1.
 
     //create the config table
       run_sql_statement(

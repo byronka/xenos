@@ -1,11 +1,12 @@
 -- NOTE: This script will rebuild any existing procedures of the same name.
 
+-- Some helper validation functions follow:
+-- -----------------------------------------
+
 
 
 DROP PROCEDURE IF EXISTS is_non_empty_string;
 
--- Some helper validation functions follow:
--- -----------------------------------------
 ---DELIMITER---
 
 CREATE PROCEDURE is_non_empty_string

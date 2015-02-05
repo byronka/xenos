@@ -32,7 +32,11 @@ ON SCHEDULE
   EVERY 1 MINUTE 
 COMMENT 'logs out users past their timeout period'
 DO
-  UPDATE user 
-  SET is_logged_in = 0 
-  WHERE UTC_TIMESTAMP() > 
-      (last_activity_time + INTERVAL timeout_seconds SECOND);
+	BEGIN
+		START TRANSACTION;
+			UPDATE user 
+			SET is_logged_in = 0 
+			WHERE UTC_TIMESTAMP() > 
+					(last_activity_time + INTERVAL timeout_seconds SECOND);
+		COMMIT;
+	END
