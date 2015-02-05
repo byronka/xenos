@@ -25,6 +25,12 @@ CALL set_version(1);
 
 ---DELIMITER---
 
+INSERT INTO config (config_item, config_value)
+VALUES ('cookie_passphrase', UUID());
+
+
+---DELIMITER---
+
 -- create the user table
 
 CREATE TABLE IF NOT EXISTS 

@@ -484,13 +484,11 @@ CREATE PROCEDURE register_user_and_get_cookie
 (
   uid INT UNSIGNED,
   ip VARCHAR(15), -- e.g. "255.255.255.255"
-  p_phrase VARCHAR(50), -- used to encrypt the cookie_plaintext
   OUT new_cookie VARCHAR(200)
 ) 
 BEGIN 
   call validate_user_id(uid);
   call is_non_empty_string('register_user_and_get_cookie','ip',ip);
-  call is_non_empty_string('register_user_and_get_cookie','p_phrase',p_phrase);
 
   START TRANSACTION;
 
@@ -512,9 +510,13 @@ BEGIN
     SELECT CONCAT(uid,'|',ip,'|',@timestamp) 
       INTO @cookie_val_plaintext;
 
+    SELECT config_value INTO @p_phrase 
+    FROM config
+    WHERE config_item = 'cookie_passphrase';
+
     SELECT HEX(
       AES_ENCRYPT(
-        @cookie_val_plaintext, SHA2(p_phrase,512))) INTO new_cookie;
+        @cookie_val_plaintext, SHA2(@p_phrase,512))) INTO new_cookie;
 
   COMMIT;
 
@@ -529,19 +531,31 @@ DROP PROCEDURE IF EXISTS decrypt_cookie_and_check_validity;
 CREATE PROCEDURE decrypt_cookie_and_check_validity
 (
   enc_cookie VARCHAR(200), -- The cookie encrypted
-  p_phrase VARCHAR(50),
   OUT user_id_out INT
 ) 
 BEGIN 
   call is_non_empty_string(
     'decrypt_cookie_and_check_validity','enc_cookie',enc_cookie);
-  call is_non_empty_string(
-    'decrypt_cookie_and_check_validity','p_phrase',p_phrase);
+
+  SELECT config_value INTO @p_phrase 
+  FROM config
+  WHERE config_item = 'cookie_passphrase';
 
   -- See register_user_and_get_cookie for more info on cookie format
+  -- if this fails, it should put a null into plaintext_cookie
   SELECT 
-    AES_DECRYPT(UNHEX(enc_cookie), SHA2(p_phrase,512)) 
+    AES_DECRYPT(UNHEX(enc_cookie), SHA2(@p_phrase,512)) 
     INTO @plaintext_cookie;
+
+  IF (@plaintext_cookie = NULL OR @plaintext_cookie = '')
+    THEN
+      SET @msg = CONCAT(
+				'got null when trying to unencrypt cookie '
+        ,IFNULL(enc_cookie,'')
+        ,' with passphrase: '
+        , IFNULL(@p_phrase,'') );
+      SIGNAL SQLSTATE '45000' SET message_text = @msg;
+  END IF;
 
   SELECT SUBSTRING_INDEX(@plaintext_cookie, '|',1) INTO @my_user_id;
   SELECT LENGTH(

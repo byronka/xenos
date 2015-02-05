@@ -123,13 +123,12 @@ public final class Security {
       // details on this stored procedure.
       
       cs = conn.prepareCall(String.format(
-        "{call register_user_and_get_cookie(%d, ?,?,?)}" 
+        "{call register_user_and_get_cookie(%d, ?,?)}" 
         , user_id));
       cs.setString(1,ip);
-      cs.setString(2,"PASSPHRASE_GOES_HERE");
-      cs.registerOutParameter(3, java.sql.Types.VARCHAR);
+      cs.registerOutParameter(2, java.sql.Types.VARCHAR);
       cs.executeQuery();
-      String cookie = cs.getString(3);
+      String cookie = cs.getString(2);
       return cookie;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
@@ -176,12 +175,11 @@ public final class Security {
       // details on this stored procedure.
       
       cs = conn.prepareCall(
-          "{call decrypt_cookie_and_check_validity(?,?,?)}"); 
+          "{call decrypt_cookie_and_check_validity(?,?)}"); 
       cs.setString(1, cookie_value);
-      cs.setString(2,"PASSPHRASE_GOES_HERE");
-      cs.registerOutParameter(3, java.sql.Types.INTEGER);
+      cs.registerOutParameter(2, java.sql.Types.INTEGER);
       cs.executeQuery();
-      int user_id = cs.getInt(3);
+      int user_id = cs.getInt(2);
       return user_id;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
