@@ -176,3 +176,4 @@
 </form>
 </body>
 </html>
+<script type="text/javascript" src="includes/myscript.js"></script>

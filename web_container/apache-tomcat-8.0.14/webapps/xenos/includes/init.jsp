@@ -12,3 +12,4 @@
   Localization loc  = new Localization(user_id, request.getLocale());
   User user = User_utils.get_user(user_id);
 %>
+<div id="timeout_value" value="<%=user.timeout_seconds%>" />
