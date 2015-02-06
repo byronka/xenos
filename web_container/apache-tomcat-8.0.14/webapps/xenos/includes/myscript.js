@@ -27,7 +27,7 @@
     var recurse_countdown = function(countdown) {
       if (countdown === 0) {
 				//We hit the end of countown - logout.
-				location = 'logged_out.jsp';
+				location = 'logout.jsp';
 				return;
 			}
 			if (halt) {
