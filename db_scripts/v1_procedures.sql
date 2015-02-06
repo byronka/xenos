@@ -138,7 +138,8 @@ CREATE PROCEDURE get_others_requestoffers
   minpoints INT UNSIGNED,
   maxpoints INT UNSIGNED,
   user_id VARCHAR(50), -- can be many INT's separated by commas
-  page INT UNSIGNED
+  page INT UNSIGNED,
+	OUT total_pages INT UNSIGNED
 ) 
 BEGIN 
 	SET @search_clauses = ""; -- all our search clauses go on this.
@@ -203,12 +204,28 @@ BEGIN
     CONCAT(@search_clauses, " AND title LIKE CONCAT('%' , @title , '%') ");
 	END IF;
 
+
+  SET @ruid = ruid;
+  SET @get_requestoffer_count = 
+     CONCAT('SELECT CEIL(COUNT(*)/10) INTO @total_pages
+            FROM requestoffer r 
+            JOIN requestoffer_to_category rtc ON rtc.requestoffer_id = r.requestoffer_id 
+            JOIN requestoffer_category rc 
+              ON rc.category_id = rtc.requestoffer_category_id 
+            JOIN user u ON u.user_id = r.requestoffering_user_id 
+            WHERE requestoffering_user_id <> @ruid
+            ', @search_clauses );
+
+  -- prepare and execute!
+	PREPARE get_requestoffer_count FROM @get_requestoffer_count;
+	EXECUTE get_requestoffer_count; 
+
+	SET total_pages = @total_pages;
+
   -- set up paging.  Right now it's always 10 or less rows on the page.
   SET @first_row = page * 10;
   SET @last_row = (page * 10) + 10;
 
-  -- the prime requestoffer
-  SET @ruid = ruid;
   SET @get_requestoffer = 
      CONCAT('SELECT r.requestoffer_id, 
             r.datetime, 

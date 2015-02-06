@@ -5,9 +5,9 @@
 <%@ page import="com.renomad.xenos.Others_Requestoffer" %>
 <%
 
-  String qs = request.getQueryString();
+  String thequerystring = request.getQueryString();
 
-  java.util.Map<String,String> params = Utils.parse_qs(qs);
+  java.util.Map<String,String> params = Utils.parse_qs(thequerystring);
 
   //extract dates
   String srch_date = params.get("da"); 
@@ -92,11 +92,11 @@
                                       srch_minpts, 
                                       srch_maxpts, 
                                       srch_us);
-  Others_Requestoffer[] others_requestoffers = 
+  Requestoffer_utils.OR_Package or_package = 
     Requestoffer_utils.get_others_requestoffers(user_id, 
                                       so , 
                                       which_page);
-  for (Others_Requestoffer r : others_requestoffers) {
+  for (Others_Requestoffer r : or_package.get_requestoffers()) {
 %>
   <div class="others requestoffer">
     <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>">
@@ -159,20 +159,20 @@
 <% } %>
 </div>
 
-<form method="GET" action="dashboard.jsp">
-  <span><%=loc.get(93, "Page")%></span>
-  <select name="page">
-    <%for (int i = 0; i < 4; i++) {
-    if (which_page == i) {%>
-        <option value="<%=i%>" selected="true"><%=i+1%></option>
-      <% } else {%>
-        <option value="<%=i%>"><%=i+1%></option>
-      <%  }
-      }%>
-  </select>
-  <button type="submit"><%=loc.get(1, "search")%></button>
+  <span><%=loc.get(93, "Page")%>: </span>
+	<% 	
+	String qs_without_page = "";
+	if (!Utils.is_null_or_empty(thequerystring)) {
+		qs_without_page = thequerystring.replaceAll("&{0,1}page=[0-9]+","");
+	}
+	for (int i = 0; i < or_package.page_count; i++) {
+		if (which_page == i) {%>
+		<a href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>" class="current-page"><%=i+1%></a>
+		<% } else {%>
+		<a href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>"><%=i+1%></a>
+		<%  }
+	}%>
 
-</form>
 </div>
 <script type="text/javascript" src="includes/myscript.js"></script>
 </body>

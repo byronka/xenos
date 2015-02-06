@@ -431,6 +431,7 @@ public final class Build_db_schema {
         return result;
       } catch (SQLException ex) {
 				if (ex.getMessage().contains("Can't drop database 'xenos_database'; database doesn't exist")) {
+					System.err.println("Trying to drop database but cannot - it does not exist.");
 					//do nothing
 				} else {
 					handle_sql_exception(ex);

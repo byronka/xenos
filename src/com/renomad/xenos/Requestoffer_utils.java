@@ -1,6 +1,7 @@
 package com.renomad.xenos;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -247,6 +248,31 @@ public final class Requestoffer_utils {
 
   }
 
+	/**
+		* A helper class to get the Requestoffers and page count to their
+		* destination.
+		*/
+	public static class OR_Package {
+
+		private Others_Requestoffer[] or;
+		public int page_count;
+
+		public OR_Package(Others_Requestoffer[] or, int page_count) {
+			this.or = or;
+			this.page_count = page_count;
+		}
+
+		/**
+			* Returns a copy of the Requestoffers array.  Why do this?
+			* to stay immutable.  For thread safety and performance.  If
+			* I am wrong about that, feel free to reconsider this piece.
+			*/
+		public Others_Requestoffer[] get_requestoffers() {
+			Others_Requestoffer[] oro = Arrays.copyOf(or, or.length);
+			return oro;
+		}
+	}
+
 
   /**
     * Gets information necessary for display on the dashboard,
@@ -262,7 +288,7 @@ public final class Requestoffer_utils {
     * by that user, or an empty array of Others_Requestoffers if failure or
     * none.
     */
-  public static Others_Requestoffer[] get_others_requestoffers(
+  public static Requestoffer_utils.OR_Package get_others_requestoffers(
       int ruid, 
       Search_Object so, 
       int page) {
@@ -273,7 +299,7 @@ public final class Requestoffer_utils {
       // see db_scripts/v1_procedures.sql get_others_requestoffers for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
-        "{call get_others_requestoffers(%d,?,?,?,?,?,%d,%d,?,%d)}"
+        "{call get_others_requestoffers(%d,?,?,?,?,?,%d,%d,?,%d,?)}"
         ,ruid, so.minpoints, so.maxpoints, page));
       cs.setNString(1, so.title);
       cs.setString(2, so.startdate);
@@ -281,10 +307,12 @@ public final class Requestoffer_utils {
       cs.setString(4, so.statuses);
       cs.setString(5, so.categories);
       cs.setString(6, so.user_ids);
+      cs.registerOutParameter(7, java.sql.Types.INTEGER);
       ResultSet resultSet = cs.executeQuery();
+      int pages = cs.getInt(7);
 
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return new Others_Requestoffer[0];
+        return new OR_Package(new Others_Requestoffer[0],1);
       }
 
       //keep adding rows of data while there is more data
@@ -310,10 +338,10 @@ public final class Requestoffer_utils {
       //convert arraylist to array
       Others_Requestoffer[] array_of_requestoffers = 
         requestoffers.toArray(new Others_Requestoffer[requestoffers.size()]);
-      return array_of_requestoffers;
+			return new OR_Package(array_of_requestoffers,pages);
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
-      return new Others_Requestoffer[0];
+			return new OR_Package(new Others_Requestoffer[0],1);
     } finally {
       Database_access.close_statement(cs);
     }
