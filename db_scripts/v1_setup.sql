@@ -33,14 +33,14 @@ VALUES ('cookie_passphrase', UUID());
 
 -- create the user table
 
-CREATE TABLE IF NOT EXISTS 
+CREATE TABLE  
   user (
     user_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
     username NVARCHAR(50) UNIQUE,
     email NVARCHAR(200) UNIQUE, 
     password VARCHAR(64),
     points INT UNSIGNED DEFAULT 100, 
-    language INT UNSIGNED NULL DEFAULT 1, -- 1 is English.
+    language INT UNSIGNED NULL DEFAULT 1, -- 1 is English. See languages table.
     is_logged_in BOOL, 
     date_created DATETIME,
     salt VARCHAR(50), -- used when hashing password
@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS
   );
 
 ---DELIMITER---
+
 
 -- create the system user and admin users
 INSERT INTO user (username, email, password, language, rank, is_admin)
@@ -69,7 +70,7 @@ VALUES
 -- which localized value to get.  That is, it will make it easier for
 -- use when we need to translate languages.
 
-CREATE TABLE IF NOT EXISTS
+CREATE TABLE 
 requestoffer_status (
   requestoffer_status_id INT NOT NULL PRIMARY KEY, -- this value maps to localization values
   requestoffer_status_value VARCHAR(20)
@@ -88,7 +89,7 @@ VALUES(76,'OPEN'),(77,'CLOSED'),(78,'TAKEN');
 
 -- create_requestoffer_table
 
-CREATE TABLE IF NOT EXISTS 
+CREATE TABLE  
 requestoffer ( 
   requestoffer_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   datetime DATETIME,
@@ -112,7 +113,7 @@ requestoffer (
 
 -- create a table of known languages
 
-CREATE TABLE IF NOT EXISTS 
+CREATE TABLE  
 languages ( 
   language_id INT NOT NULL PRIMARY KEY,
   language_name NVARCHAR(30),
@@ -134,7 +135,7 @@ VALUES
 -- create a lookup table for words and 
 -- phrases to their localized counterparts, e.g. French, English, etc.
 
-CREATE TABLE IF NOT EXISTS 
+CREATE TABLE  
 localization_lookup ( 
   local_id INT,
   language INT, 
@@ -145,7 +146,7 @@ localization_lookup (
 ---DELIMITER---
 -- create the tables to store categories and assign them to requestoffers.
 
-CREATE TABLE IF NOT EXISTS 
+CREATE TABLE  
 requestoffer_category ( 
   category_id INT UNSIGNED NOT NULL PRIMARY KEY, -- a localization value
   requestoffer_category_value VARCHAR(20)
@@ -169,7 +170,7 @@ VALUES
 -- here, we set up a table to correlate categories to a given
 -- requestoffer.
 
-CREATE TABLE IF NOT EXISTS 
+CREATE TABLE  
 requestoffer_to_category ( 
   requestoffer_id INT UNSIGNED NOT NULL,
   requestoffer_category_id INT UNSIGNED NOT NULL,
@@ -185,7 +186,7 @@ requestoffer_to_category (
 ---DELIMITER---
 -- create a table of meesages for requestoffers
 
-CREATE TABLE IF NOT EXISTS 
+CREATE TABLE  
 requestoffer_message ( 
   requestoffer_id INT UNSIGNED NOT NULL,
   message NVARCHAR(10000),
@@ -206,7 +207,7 @@ requestoffer_message (
 -- create some audit actions.  these are the things we are going to 
 -- track the users doing.
 
-CREATE TABLE IF NOT EXISTS
+CREATE TABLE 
 audit_actions (
   action_id INT UNSIGNED NOT NULL PRIMARY KEY,
   action VARCHAR(255)
@@ -230,7 +231,7 @@ VALUES
 -- actually deleted from the database, permanently.  So we can store
 -- some data about them here just before we delete them, for posterity.
 
-CREATE TABLE IF NOT EXISTS
+CREATE TABLE 
 audit_notes (
   notes_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   notes NVARCHAR(100)
@@ -250,7 +251,7 @@ audit_notes (
 -- Given that this is just the timestamp plus 3 ints, the total size
 -- should be tiny.
 
-CREATE TABLE IF NOT EXISTS
+CREATE TABLE 
 audit (
   datetime DATETIME NOT NULL,
   audit_action_id INT UNSIGNED NOT NULL, -- an enum of actions

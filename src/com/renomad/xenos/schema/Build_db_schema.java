@@ -430,7 +430,11 @@ public final class Build_db_schema {
         boolean result = stmt.execute(sqlText);
         return result;
       } catch (SQLException ex) {
-        handle_sql_exception(ex);
+				if (ex.getMessage().contains("Can't drop database 'xenos_database'; database doesn't exist")) {
+					//do nothing
+				} else {
+					handle_sql_exception(ex);
+				}
       } catch (Exception ex) {
         System.err.println("General exception: " + ex.toString());
       } finally {
