@@ -40,7 +40,7 @@ CREATE TABLE
     email NVARCHAR(200) UNIQUE, 
     password VARCHAR(64),
     points INT UNSIGNED DEFAULT 100, 
-    language INT UNSIGNED NULL DEFAULT 1, -- 1 is English. See languages table.
+    language INT UNSIGNED NULL, 
     is_logged_in BOOL, 
     date_created DATETIME,
     salt VARCHAR(50), -- used when hashing password
