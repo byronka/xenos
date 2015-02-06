@@ -71,7 +71,7 @@
       <%=Utils.safe_render(r.title)%> </a>
     <a 
       class="button" 
-      href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
+      href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
       <%=loc.get(21,"Delete")%>
     </a>
   </div>
@@ -170,10 +170,10 @@
       <%  }
       }%>
   </select>
-  <button type="submit"><%=loc.get(1, "search")%></button></span>
+  <button type="submit"><%=loc.get(1, "search")%></button>
 
-</div>
 </form>
+</div>
+<script type="text/javascript" src="includes/myscript.js"></script>
 </body>
 </html>
-<script type="text/javascript" src="includes/myscript.js"></script>

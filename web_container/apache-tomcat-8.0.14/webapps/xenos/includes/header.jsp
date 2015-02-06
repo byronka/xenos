@@ -16,6 +16,7 @@
   <div class="user-displayname">
     <span id="username"><%=Utils.safe_render(user.username)%></span>
     <span id="points"><%=user.points%> <%=loc.get(11, "points")%></span>
+		<input type="hidden" id="timeout_value" value="<%=user.timeout_seconds%>" ></input>
   </div>
   <a class="advanced search" href="advanced_search.jsp"><%=loc.get(81,"Advanced search")%></a>
 </section>
