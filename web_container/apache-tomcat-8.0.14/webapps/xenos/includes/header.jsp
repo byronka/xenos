@@ -1,6 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <div class="header-container">
-	<section class="header">
+	<div class="header">
 		<nav>
 			<a class="trademark" href="dashboard.jsp">Xenos</a>
 			<a 
@@ -19,12 +19,11 @@
 				type="hidden" 
 				id="timeout_value" 
 				value="<%=user.timeout_seconds%>" >
-			</input>
 		</div>
 		<a 
 			class="advanced search" 
 			href="advanced_search.jsp">
 			<%=loc.get(81,"Advanced search")%>
 		</a>
-	</section>
+	</div>
 </div>

@@ -38,7 +38,7 @@ div.header-container div.spacer {
   height: 40px;
 }
 
-div.header-container section.header {
+div.header-container div.header {
 
   background-color: #5f2d1d;
   color: white;
