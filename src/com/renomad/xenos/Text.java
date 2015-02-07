@@ -66,7 +66,7 @@ public class Text implements javax.servlet.ServletContextListener {
     * @return List of Strings representing language locales or
     * null if failure.
     */
-  public String[] get_language_mappings_from_db() {
+  private String[] get_language_mappings_from_db() {
     String sqlText = 
       "SELECT language_id, locale_id "+
       "FROM languages ORDER BY language_id ASC; ";
