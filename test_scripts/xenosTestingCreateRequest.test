@@ -3,101 +3,75 @@
 # Arg1 = -cmd_log=FILENAME
 # Arg2 = http://localhost:8080/xenos
 key Down Arrow
+key Down Arrow
 key ^J
 key Down Arrow
-key y
-key a
-key y
-key y
-key a
-key y
-key ^J
-key p
-key a
-key s
-key s
-key w
+key c
 key o
-key r
-key d
-key ^J
-key ^J
-key ^J
-key Right Arrow
-key ^J
-key Down Arrow
-key y
-key a
-key y
-key y
-key a
-key y
-key <tab>
-key p
-key a
-key s
-key s
-key w
 key o
-key r
-key d
-key ^J
-key ^J
-key a
-key <space>
-key <space>
-key <space>
-key <space>
-key <space>
-key Down Arrow
-key Down Arrow
-key ^J
-key Down Arrow
-key ^J
-key Down Arrow
-key ^J
-key Down Arrow
-key <space>
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key ^J
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key ^J
-key Down Arrow
-key ^J
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key t
-key h
-key i
-key s
-key <space>
-key s
-key e
-key e
-key m
-key s
-key <space>
 key l
-key i
-key k
-key e
-key <space>
-key a
 key n
-key <space>
+key e
+key w
+key g
+key u
+key y
+key Down Arrow
+key p
+key a
+key s
+key s
+key w
 key o
-key k
+key r
+key d
+key 1
+key Down Arrow
+key ^J
+key ^J
+key Down Arrow
+key c
+key o
+key o
+key l
+key n
+key e
+key w
+key g
+key u
+key y
+key Down Arrow
+key p
+key a
+key s
+key s
+key w
+key o
+key r
+key d
+key 1
+key Down Arrow
+key ^J
+key a
+key Down Arrow
+key ^J
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key T
+key h
+key i
+key s
+key <space>
+key i
+key s
+key <space>
+key t
+key h
+key e
 key <space>
 key d
 key e
@@ -110,126 +84,82 @@ key t
 key i
 key o
 key n
-key .
 key <space>
+key f
+key o
+key r
+key <space>
+key t
+key h
+key e
+key <space>
+key c
+key o
+key o
+key l
+key <space>
+key n
+key e
+key w
+key <space>
+key t
+key h
+key i
+key n
+key g
+key <space>
+key I
 key <space>
 key w
-key h
 key a
+key n
 key t
+key <space>
+key t
+key o
 key <space>
 key d
 key o
+key ,
 key <space>
-key y
-key o
-key u
+key I
 key <space>
-key t
-key h
-key i
-key n
-key k
-key ?
-key ^J
-key 2
-key 0
-key ^J
-key d
-key e
-key c
-key e
-key n
-key t
-key <space>
-key d
-key e
-key s
-key c
-key r
-key i
-key p
-key t
-key i
-key o
-key n
-key ^J
-key e
-key c
-key o
-key n
-key o
-key m
-key i
-key c
-key s
-key <space>
-key p
-key h
-key y
-key s
-key i
-key c
-key s
-key <space>
-key m
 key a
-key t
-key h
-key ^J
-key ^J
+key m
+key <space>
+key s
+key o
+key <space>
+key c
+key o
+key o
+key l
+key !
 key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key ^J
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
+key 3
+key 3
 key Down Arrow
 key b
+key e
+key <space>
+key c
 key o
+key o
+key l
+key Down Arrow
+key m
 key a
 key t
-key ^J
-key ^J
-key ^J
-key ^J
-key ^J
-key ^J
-key ^J
-key ^J
-key ^J
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
+key h
 key Down Arrow
 key ^J
 key Down Arrow
 key Down Arrow
 key Down Arrow
-key Down Arrow
-key Down Arrow
-key Down Arrow
-key <delete>
-key <delete>
-key <delete>
-key <delete>
-key w
+key c
 key o
-key r
-key k
-key ^J
-key ^J
-key ^J
-key ^J
-key ^J
-key ^J
-key ^J
+key o
+key l
 key ^J
 key ^J
 key Down Arrow
@@ -242,17 +172,113 @@ key ^J
 key Left Arrow
 key Down Arrow
 key ^J
-key <space>
-key ^J
-key ^J
-key q
-key n
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
 key Down Arrow
 key Down Arrow
 key ^J
-key Up Arrow
+key ^J
 key Down Arrow
-key Up Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key ^J
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key ^J
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key ^J
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key c
+key o
+key o
+key l
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key Down Arrow
+key ^J
+key Down Arrow
+key Down Arrow
+key ^J
 key ^J
 key ^J
 key q
