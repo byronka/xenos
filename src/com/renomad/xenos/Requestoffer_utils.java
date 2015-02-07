@@ -520,11 +520,10 @@ public final class Requestoffer_utils {
     if (categories_str == null || 
         categories_str.length() == 0) {return new Integer[0];}
 
-    String lower_case_categories_str = categories_str.toLowerCase();
     ArrayList<Integer> selected_categories = new ArrayList<Integer>();
     for (Integer i : all_categories) {
-      String c = loc.get(i,"").toLowerCase();
-      if (lower_case_categories_str.contains(c)) {
+      String c = loc.get(i,"");
+      if (categories_str.contains(c)) {
         selected_categories.add(i);
       }
     }

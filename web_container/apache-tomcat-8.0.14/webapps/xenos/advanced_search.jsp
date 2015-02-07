@@ -4,12 +4,14 @@
 	<head>
 		<title><%=loc.get(81, "Advanced search")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="content-type" value="text/html; charset=UTF8" />
 	</head>
 
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%@ page import="com.renomad.xenos.Utils" %>
 <%
 
+request.setCharacterEncoding("UTF-8");
 String category = "";
 String statuses = "";
 String title = "";
