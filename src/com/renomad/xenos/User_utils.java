@@ -238,12 +238,18 @@ public final class User_utils {
         cs = conn.prepareCall("{call create_new_user(?,?,?)}");
         cs.setNString(1,username);
         //make a salt we'll use for hashing.
-        String salt = Long.toString(ThreadLocalRandom.current().nextLong(Long.MAX_VALUE));
+        String salt = Long.toString(
+						ThreadLocalRandom.current().nextLong(Long.MAX_VALUE));
         String hashed_pwd = hash_password(password, salt);
         cs.setString(2,hashed_pwd);
         cs.setString(3,salt);
         cs.executeQuery();
       } catch (SQLException ex) {
+				String msg = ex.getMessage();
+				if (msg.contains("Duplicate entry") ||
+					msg.contains("username matches existing")) {
+					return false;
+				}
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
