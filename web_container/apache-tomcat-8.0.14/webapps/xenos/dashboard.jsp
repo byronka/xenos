@@ -50,6 +50,7 @@
 <html>                                 
   <head>
     <link rel="stylesheet" href="dashboard.css" >
+    <link rel="stylesheet" href="includes/common.css" >
     <script src="dashboard.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=loc.get(16,"The dashboard")%></title>
