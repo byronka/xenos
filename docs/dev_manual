@@ -4,6 +4,8 @@ transition into a new project.  That is what this document is for.
 
 Contents:
 =========
+Program features
+Backups
 Programming suggestions
 General conventions
 Utilities
@@ -23,6 +25,33 @@ Troubleshooting
 
 
 
+
+Program features
+================
+These are some of the features provided by the system:
+Language localization - shows different languages depending on user locale
+Highly performant
+logs users out after a timeout of 30 minutes 
+All users' passwords are encrypted
+cookies are encrypted
+
+
+
+
+Backups
+=======
+Every time a commit is pushed to the main repo, it automatically
+pushes a separate commit to the backup machine.  By itself this
+constitutes a backup.  Separately, however, there is a script that
+copies the information from there to a third location and then stores
+that onto an SD card monthly.
+
+Furthermore, both SecretServer and YouTrack are backed up monthly, the
+first of the month, by a script on Byron's computer, to an SD card.
+
+Both SecretServer and YouTrack have multiple backups on their server,
+but in case of a hard drive failure or other similar machine failure,
+there will still be a backup.
 
 
 
