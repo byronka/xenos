@@ -16,28 +16,6 @@ import com.renomad.xenos.Database_access;
 
 public class Requestoffer_tests {
 
-  @Test
-  public void testing_get_requestoffer_statuses() {
-    //act and assert
-    Requestoffer_status[] rs_actual = Requestoffer_utils.get_requestoffer_statuses();
-    for (Requestoffer_status rs : rs_actual) {
-      switch(rs.status_id) {
-        case 76:
-          assertEquals("OPEN", rs.status_value);
-          break;
-        case 77:
-          assertEquals("CLOSED", rs.status_value);
-          break;
-        case 78:
-          assertEquals("TAKEN", rs.status_value);
-          break;
-        default:
-          fail("should not get this far");
-          break;
-      }
-    }
-  }
-
 
   @Test
   public void testing_put_requestoffer() {

@@ -147,6 +147,7 @@ if (request.getMethod().equals("POST")) {
     <p>
       <%=loc.get(24,"Status")%>: 
 			<input type="text" name="statuses" placeholder="<%=loc.get(76,"open")%>" value="<%=statuses%>" /> 
+			<%=Requestoffer_utils.get_requestoffer_status_string(loc)%>
       <span><%=stat_error_msg%></span>
     </p>
 
@@ -183,11 +184,7 @@ if (request.getMethod().equals("POST")) {
 
 
       <div id='available-categories'>
-        <%
-          Integer[] local_cat_values = Requestoffer_utils.get_category_local_values();
-          for(Integer val : local_cat_values) { %>
-          <%=loc.get(val,"")%>,
-        <%}%>
+				<%=Requestoffer_utils.get_categories_string(loc)%>
       </div>
       <button type="submit"><%=loc.get(1,"Search")%></button>
     </form>

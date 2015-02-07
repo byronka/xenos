@@ -96,11 +96,7 @@
       </p>
 
       <div id='available-categories'>
-        <%
-        Integer[] local_cat_values = Requestoffer_utils.get_category_local_values();
-        for(Integer val : local_cat_values) { %>
-        <%=loc.get(val,"")%>,
-        <%}%>
+				<%=Requestoffer_utils.get_categories_string(loc)%>
       </div>
 
       <button type="submit"><%=loc.get(14,"Create Requestoffer")%></button>

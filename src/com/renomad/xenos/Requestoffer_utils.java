@@ -500,19 +500,6 @@ public final class Requestoffer_utils {
   }
 
 
-  /**
-    * gets all the requestoffer categories that exist as an
-    * array of their localization values, as Integers.
-    * @return a Integer array of all categories' localization values,
-    * useful for calling to the localization mechanism.  See
-    * com.renomad.xenos.Localization
-    */
-  public static Integer[] get_category_local_values() {
-      List<Integer> c = get_all_categories();
-      Integer[] cat_array = c.toArray(new Integer[c.size()]);
-      return cat_array;
-  }
-
 
   /**
     * Convert a single string containing multiple categories into 
@@ -548,14 +535,47 @@ public final class Requestoffer_utils {
 
 
   /**
-    * gets all the current requestoffer statuses, like OPEN, CLOSED, and TAKEN
-    * @return an array of requestoffer statuses, or null if failure.
+    * gets all the requestoffer categories that exist as 
+    * a comma-delimited string in the locale of the user.
     */
-  public static Requestoffer_status[] get_requestoffer_statuses() {
+  public static String get_categories_string(Localization loc) {
+      List<Integer> c = get_all_categories();
+      Integer[] cat_array = c.toArray(new Integer[c.size()]);
+			StringBuilder sb = new StringBuilder(loc.get(cat_array[0],""));
+			for(int i = 1; i < cat_array.length; i++) {
+				sb
+					.append(",")
+					.append(loc.get(cat_array[i],""));
+			}
+			return sb.toString();
+  }
+
+
+
+	/**
+		* returns a comma-delimited string of requestoffer_statuses
+		*/
+	public static String get_requestoffer_status_string(Localization loc) {
+		Integer[] ros = get_requestoffer_statuses();
+		StringBuilder sb = new StringBuilder(loc.get(ros[0],""));
+		for(int i = 1; i < ros.length; i++) {
+			sb
+				.append(",")
+				.append(loc.get(ros[i],""));
+		}
+		return sb.toString();
+	}
+
+
+  /**
+    * gets all the current requestoffer statuses, like OPEN, CLOSED, and TAKEN
+    * @return an array of requestoffer status id's 
+		* as an Integer array, or null if failure
+    */
+  public static Integer[] get_requestoffer_statuses() {
     // 1. set the sql
     String sqlText = 
-      "SELECT requestoffer_status_id, requestoffer_status_value "+
-      "FROM requestoffer_status;";
+      "SELECT requestoffer_status_id FROM requestoffer_status;";
 
     // 2. set up values we'll need outside the try
     PreparedStatement pstmt = null;
@@ -570,24 +590,19 @@ public final class Requestoffer_utils {
 
       // 5. check that we got results
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return new Requestoffer_status[0];
+        return null;
       }
 
       // 6. get values from database and convert to an object
       //keep adding rows of data while there is more data
-      ArrayList<Requestoffer_status> statuses = 
-        new ArrayList<Requestoffer_status>();
+      ArrayList<Integer> statuses = new ArrayList<Integer>();
       while(resultSet.next()) {
-        int sid = resultSet.getInt("requestoffer_status_id");
-        String sv = resultSet.getString("requestoffer_status_value");
-        Requestoffer_status status = new Requestoffer_status(sid,sv);
-        statuses.add(status);
+        statuses.add(resultSet.getInt("requestoffer_status_id"));
       }
 
-      // 7. if necessary, create array of objects for return
       //convert arraylist to array
-      Requestoffer_status[] my_array = 
-        statuses.toArray(new Requestoffer_status[statuses.size()]);
+      Integer[] my_array = 
+				statuses.toArray(new Integer[statuses.size()]);
       return my_array;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
