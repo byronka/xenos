@@ -4,6 +4,8 @@
 	<head>
 		<title><%=loc.get(15, "Create a requestoffer")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="<%=is_desktop%> stylesheet" href="includes/common.css" title="desktop">
+    <link rel="<%=is_mobile%> stylesheet" href="includes/common_alt.css" title="mobile">
 	</head>
 
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
