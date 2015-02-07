@@ -1,12 +1,11 @@
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <div class="header-container">
-  <link rel="stylesheet" type="text/css" href="includes/header.css">
-  <div class="spacer" ></div>
-<section class="header">
-  <nav class="cl-effect-1">
+	<section class="header">
+  <nav>
     <a class="trademark" href="dashboard.jsp">Xenos</a>
-    <a href="create_requestoffer.jsp" ><%=loc.get(2, "Create Requestoffer")%></a>
+		<a 
+			href="create_requestoffer.jsp" >
+			<%=loc.get(2, "Create Requestoffer")%></a>
     <a href="logout.jsp" ><%=loc.get(3, "Logout")%></a>
   </nav>
   <form class="search" method="GET" action="dashboard.jsp" >
@@ -16,8 +15,16 @@
   <div class="user-displayname">
     <span id="username"><%=Utils.safe_render(user.username)%></span>
     <span id="points"><%=user.points%> <%=loc.get(11, "points")%></span>
-		<input type="hidden" id="timeout_value" value="<%=user.timeout_seconds%>" ></input>
+		<input 
+			type="hidden" 
+			id="timeout_value" 
+			value="<%=user.timeout_seconds%>" >
+		</input>
   </div>
-  <a class="advanced search" href="advanced_search.jsp"><%=loc.get(81,"Advanced search")%></a>
+	<a 
+		class="advanced search" 
+		href="advanced_search.jsp">
+		<%=loc.get(81,"Advanced search")%>
+	</a>
 </section>
 </div>
