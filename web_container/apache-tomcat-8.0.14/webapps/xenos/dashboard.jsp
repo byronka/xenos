@@ -45,12 +45,15 @@
   Integer which_page = Utils.parse_int(params.get("page"));
   if (which_page == null) {which_page = 0;}
 
+ 
+ 
+
 %>
 <!DOCTYPE html>
 <html>                                 
   <head>
-    <link rel="stylesheet" href="includes/common.css" title="primary">
-    <link rel="alternate stylesheet" href="includes/common_alt.css" title="alt1">
+    <link rel="<%=is_desktop%> stylesheet" href="includes/common.css" title="desktop">
+    <link rel="<%=is_mobile%> stylesheet" href="includes/common_alt.css" title="mobile">
     <script src="dashboard.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=loc.get(16,"The dashboard")%></title>
@@ -167,7 +170,9 @@
 	}
 	for (int i = 0; i < or_package.page_count; i++) {
 		if (which_page == i) {%>
-		<a href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>" class="current-page"><%=i+1%></a>
+		<a 
+			href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>" 
+			class="current-page"><%=i+1%></a>
 		<% } else {%>
 		<a href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>"><%=i+1%></a>
 		<%  }

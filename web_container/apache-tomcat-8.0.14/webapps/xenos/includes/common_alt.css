@@ -1,3 +1,14 @@
-* {
-
+div.header-container {
+	border: 1px solid black;
+	margin-bottom: 4px;
 }
+
+div.others.requestoffer span.handle-button-span {
+	float: right;
+}
+
+div.others.requestoffer {
+	border: 1px solid black;
+	margin: 3px;
+}
+

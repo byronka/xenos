@@ -1,3 +1,4 @@
+<%@include file="includes/mobile_check.jsp" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="com.renomad.xenos.Security" %>
 <%@ page import="com.renomad.xenos.Localization" %>
@@ -54,7 +55,8 @@
 	<head>
 		<title><%=loc.get(50,"Login page")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="login.css" />
+    <link rel="<%=is_desktop%> stylesheet" href="login.css" title="desktop">
+    <link rel="<%=is_mobile%> stylesheet" href="includes/common_alt.css" title="mobile">
 	</head>
   <body>
     <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>

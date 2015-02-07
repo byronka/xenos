@@ -1,3 +1,4 @@
+<%@include file="includes/mobile_check.jsp" %>
 <%@ page import="com.renomad.xenos.Localization" %>
 <%
   //set up an object to localize text
@@ -5,8 +6,12 @@
 %>
 <!DOCTYPE html>
 <html>
-  <head><title><%=loc.get(69,"Thanks for registering!")%></title></head>
-  <link rel="stylesheet" href="thanks.css">
+  <head>
+		<title><%=loc.get(69,"Thanks for registering!")%></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="<%=is_desktop%> stylesheet" href="thanks.css" title="desktop">
+    <link rel="<%=is_mobile%> stylesheet" href="includes/common_alt.css" title="mobile">
+	</head>
 <body>
   <div class="trademark">Xenos</div>
   <nav class="cl-effect-1">
