@@ -81,8 +81,8 @@ div.header-container nav a:focus {
 }
 
 /* Effect 1: Brackets */
-div.header-container .cl-effect-1 a::before,
-div.header-container .cl-effect-1 a::after {
+div.header-container  a::before,
+div.header-container  a::after {
   display: inline-block;
   opacity: 0;
   -webkit-transition: -webkit-transform 0.3s, opacity 0.2s;
@@ -90,7 +90,7 @@ div.header-container .cl-effect-1 a::after {
   transition: transform 0.3s, opacity 0.2s;
 }
 
-div.header-container .cl-effect-1 a::before {
+div.header-container  a::before {
   margin-right: 10px;
   content: '[';
   -webkit-transform: translateX(20px);
@@ -98,7 +98,7 @@ div.header-container .cl-effect-1 a::before {
   transform: translateX(20px);
 }
 
-div.header-container .cl-effect-1 a::after {
+div.header-container  a::after {
   margin-left: 10px;
   content: ']';
   -webkit-transform: translateX(-20px);
@@ -106,10 +106,10 @@ div.header-container .cl-effect-1 a::after {
   transform: translateX(-20px);
 }
 
-div.header-container .cl-effect-1 a:hover::before,
-div.header-container .cl-effect-1 a:hover::after,
-div.header-container .cl-effect-1 a:focus::before,
-div.header-container .cl-effect-1 a:focus::after {
+div.header-container  a:hover::before,
+div.header-container  a:hover::after,
+div.header-container  a:focus::before,
+div.header-container  a:focus::after {
   opacity: 1;
   -webkit-transform: translateX(0px);
   -moz-transform: translateX(0px);

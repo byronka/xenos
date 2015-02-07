@@ -172,9 +172,9 @@
 		if (which_page == i) {%>
 		<a 
 			href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>" 
-			class="current-page"><%=i+1%></a>
+			class="page-link current-page"><%=i+1%></a>
 		<% } else {%>
-		<a href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>"><%=i+1%></a>
+		<a class="page-link" href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>"><%=i+1%></a>
 		<%  }
 	}%>
 
