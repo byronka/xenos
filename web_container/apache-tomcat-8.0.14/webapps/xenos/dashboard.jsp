@@ -49,13 +49,12 @@
 <!DOCTYPE html>
 <html>                                 
   <head>
-    <link rel="stylesheet" href="dashboard.css" >
-    <link rel="stylesheet" href="includes/common.css" >
+    <link rel="stylesheet" href="includes/common.css" title="primary">
+    <link rel="alternate stylesheet" href="includes/common_alt.css" title="alt1">
     <script src="dashboard.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=loc.get(16,"The dashboard")%></title>
   </head>
-
 
 <body>
 <%@include file="includes/header.jsp" %>
