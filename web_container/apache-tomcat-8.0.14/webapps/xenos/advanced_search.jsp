@@ -128,6 +128,7 @@ if (request.getMethod().equals("POST")) {
   <body>
   <%@include file="includes/header.jsp" %>
     <form method="POST" action="advanced_search.jsp">
+			<h3><%=loc.get(12,"Title")%></h3>
       <p>
       <div class="help-text">
         <%=loc.get(90,"Enter words to search in a title")%>
@@ -136,7 +137,7 @@ if (request.getMethod().equals("POST")) {
       <input type="text" name="title" value="<%=title%>"/> 
       </p>
 
-    <b><%=loc.get(25,"Date")%></b>
+    <h3><%=loc.get(25,"Date")%></h3>
     <p>
       <%=loc.get(86,"Start date")%>: 
       <input type="text" name="startdate" placeholder="2012-10-31" value="<%=startdate%>" /> 
@@ -148,6 +149,7 @@ if (request.getMethod().equals("POST")) {
       <span><%=end_da_error_msg%></span>
     </p>
 
+		<h3><%=loc.get(24,"Status")%></h3>
     <p>
       <%=loc.get(24,"Status")%>: 
 			<input type="text" name="statuses" placeholder="<%=loc.get(76,"open")%>" value="<%=statuses%>" /> 
@@ -155,7 +157,7 @@ if (request.getMethod().equals("POST")) {
       <span><%=stat_error_msg%></span>
     </p>
 
-    <b><%=loc.get(11,"Points")%></b>
+    <h3><%=loc.get(11,"Points")%></h3>
     <p>
     <%=loc.get(88,"Minimum points")%>: 
     <input type="text" name="minpoints" value="<%=minpoints%>" />
@@ -166,6 +168,7 @@ if (request.getMethod().equals("POST")) {
     <input type="text" name="maxpoints" value="<%=maxpoints%>" />
     </p>
 
+		<h3><%=loc.get(80,"User")%></h3>
     <p>
     <div class="help-text">
       <%=loc.get(91,"Enter one or more usernames separated by spaces")%>
@@ -176,6 +179,7 @@ if (request.getMethod().equals("POST")) {
     </p>
 
 
+		<h3><%=loc.get(13,"Categories")%></h3>
     <p>
     <div class="help-text">
       <%=loc.get(92,"Enter one or more categories separated by spaces")%>
