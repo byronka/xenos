@@ -135,18 +135,18 @@ if (request.getMethod().equals("POST")) {
     <b><%=loc.get(25,"Date")%></b>
     <p>
       <%=loc.get(86,"Start date")%>: 
-      <input type="text" name="startdate" value="<%=startdate%>" /> 
+      <input type="text" name="startdate" placeholder="2012-10-31" value="<%=startdate%>" /> 
       <span><%=st_da_error_msg%></span>
     </p>
     <p>
       <%=loc.get(87,"End date")%>: 
-      <input type="text" name="enddate" value="<%=enddate%>" /> 
+      <input type="text" name="enddate" placeholder="2012-10-31" value="<%=enddate%>" /> 
       <span><%=end_da_error_msg%></span>
     </p>
 
     <p>
       <%=loc.get(24,"Status")%>: 
-      <input type="text" name="statuses" value="<%=statuses%>" /> 
+			<input type="text" name="statuses" placeholder="<%=loc.get(76,"open")%>" value="<%=statuses%>" /> 
       <span><%=stat_error_msg%></span>
     </p>
 
