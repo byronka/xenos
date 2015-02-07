@@ -11,6 +11,7 @@
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%@ page import="com.renomad.xenos.Utils" %>
   <% 
+	request.setCharacterEncoding("UTF-8");
     //get the values straight from the client
     String de = "";
     String t = "";
