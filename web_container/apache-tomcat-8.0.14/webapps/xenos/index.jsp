@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="index.css" >
 </head>
 <body>
-  <div class="trademark">Xenos</div>
+	<div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
   <div class="actions">
     <section>
     <nav class="cl-effect-1">

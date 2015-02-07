@@ -57,9 +57,10 @@ div.signin {
   padding: 30px;
   position: relative;
   top: 100px;
-  left: 100px;
   width: 300px;
   border: 1px solid #999;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 div.password-input {
@@ -105,13 +106,9 @@ button:hover {
   background: linear-gradient(to bottom,  rgba(125,126,125,1) 0%,rgba(14,14,14,1) 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', endColorstr='#0e0e0e',GradientType=0 ); /* IE6-9 */
 }
-button:active {
-  position:relative;
-  top:1px;
-}
+
 
 a {
-
   position: relative;
   display: inline-block;
   margin: 15px 25px;

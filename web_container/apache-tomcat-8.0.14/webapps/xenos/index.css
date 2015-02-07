@@ -5,7 +5,7 @@
   font-family: garamond;
 }
 
-nav a {
+a {
   position: relative;
   display: inline-block;
   margin: 15px 25px;
@@ -77,12 +77,11 @@ body {
 div.trademark {
   text-shadow:6px 7px 4px rgba(34,87,73,0.5);
   font-weight:normal;
-  color:#FF6600;
+  color:#161D33;
   letter-spacing:10pt;
   word-spacing:1pt;
   font-size:36px;
   text-align:left;
-  font-family:impact, sans-serif;
   line-height:1;
   position: absolute;
   top: 10px;

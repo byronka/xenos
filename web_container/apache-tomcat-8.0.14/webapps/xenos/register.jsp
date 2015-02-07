@@ -50,8 +50,8 @@
   <head>
   <title><%=loc.get(58,"Account Creation")%></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  </head>
   <link rel="stylesheet" href="register.css">
+  </head>
 <body>
   <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
   <div class="register">
@@ -71,9 +71,11 @@
         <span class="error"><%=password_error_msg %></span>
       </div>
 
-      <button type="submit">
-        <%=loc.get(64,"Create my new user!")%>
-      </button>
+			<div id="button-wrapper">
+				<button type="submit">
+					<%=loc.get(64,"Create my new user!")%>
+				</button>
+			</div>
 
     </form>
 
