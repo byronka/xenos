@@ -658,7 +658,8 @@ public final class Requestoffer_utils {
       // see db_scripts/v1_procedures.sql for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
-        "{call put_message(?,%d,%d)}" ,user_id, requestoffer_id));
+        "{call put_message(?,%d,%d)}" 
+				,user_id, requestoffer_id));
       cs.setNString(1, msg);
       cs.execute();
     } catch (SQLException ex) {

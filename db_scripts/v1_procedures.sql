@@ -334,22 +334,38 @@ DROP PROCEDURE IF EXISTS put_message;
 CREATE PROCEDURE put_message
 (
   my_message NVARCHAR(10000),
-  uid INT UNSIGNED,
+  fr_uid INT UNSIGNED,
   rid INT UNSIGNED
 ) 
 BEGIN 
-  -- A) The main part - add the requestoffer to that table.
   CALL is_non_empty_string('put_message','my_message',my_message);
   call validate_requestoffer_id(rid);
-  call validate_user_id(uid);
+  call validate_user_id(fr_uid);
 
-  INSERT into requestoffer_message (message, requestoffer_id, user_id, timestamp)
+	-- whoever is the user id in the parameter is doing the talking,
+  -- and we know both parties - a requestoffer owner and its handler.
+	SELECT requestoffering_user_id , handling_user_id INTO @ro_uid,@h_uid
+	FROM requestoffer ro
+	WHERE ro.requestoffer_id = rid;
+
+	IF fr_uid = @ro_uid
+		THEN
+		SET @to_user_id = @h_uid;
+	ELSEIF fr_uid = @h_uid
+		THEN
+		SET @to_user_id = @ro_uid;
+	END IF;
+
+  INSERT into requestoffer_message (
+		message, requestoffer_id, from_user_id, to_user_id, timestamp)
   SELECT 
     CONCAT(username,' says:', my_message), 
     rid, 
-    uid, 
+    fr_uid, 
+    @to_user_id,
     UTC_TIMESTAMP()
-  FROM user WHERE user_id = uid;
+  FROM user WHERE user_id = fr_uid;
+
 END
 
 ---DELIMITER---
