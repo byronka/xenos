@@ -263,7 +263,7 @@ CREATE PROCEDURE put_requestoffer
   my_desc NVARCHAR(10000),
   ruid INT UNSIGNED, -- requestoffering user id
 	ti NVARCHAR(255), -- title
-  pts INT UNSIGNED, -- points
+  pts INT, -- points
   cats VARCHAR(50), -- categories - this cannot be empty or we'll SQLException.
   OUT new_requestoffer_id INT UNSIGNED
 ) 
@@ -279,21 +279,6 @@ BEGIN
   -- check the user exists
   call validate_user_id(ruid);
   
-  -- Check that the user has the points.
-  SELECT points INTO @user_points
-  FROM user 
-  WHERE user_id = ruid;
-  
-  IF (@user_points < @points) THEN
-      SET @msg = CONCAT('user lacks points to make this requestoffer: ', 
-        ruid );
-      ROLLBACK;
-      SIGNAL SQLSTATE '45001' set message_text = msg;
-  END IF;
-
-  -- Prepare a handler in case there is a SQLException, 
-  -- we want to roll back.
-
   -- A) The main part - add the requestoffer to that table.
   SET @status = 76; -- requestoffers always start 'open'
   INSERT into requestoffer (description, datetime, points,
