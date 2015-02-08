@@ -245,7 +245,7 @@ BEGIN
             WHERE requestoffering_user_id <> @ruid
             ', @search_clauses ,'
             GROUP BY r.requestoffer_id 
-            ORDER BY r.requestoffer_id ASC
+            ORDER BY r.datetime DESC
             LIMIT ',@first_row,',',@last_row );
 
 
@@ -268,6 +268,8 @@ CREATE PROCEDURE put_requestoffer
   OUT new_requestoffer_id INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  ROLLBACK;
 
   IF (LENGTH(cats) = 0) THEN
       SET @cat_err_msg = 'categories was empty - not allowed in this proc';
@@ -365,6 +367,9 @@ CREATE PROCEDURE take_requestoffer
   rid INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  ROLLBACK;
+
   call validate_requestoffer_id(rid);
   call validate_user_id(uid);
 
@@ -404,6 +409,8 @@ CREATE PROCEDURE delete_requestoffer
   rid INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  ROLLBACK;
 
   -- check that the requestoffer exists
   call validate_requestoffer_id(rid);
@@ -468,6 +475,8 @@ CREATE PROCEDURE create_new_user
   slt VARCHAR(50)
 ) 
 BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  ROLLBACK;
 
   -- make sure the username and password and salt are non-empty
   call is_non_empty_string('create_new_user','uname',uname);
@@ -515,6 +524,9 @@ CREATE PROCEDURE register_user_and_get_cookie
   OUT new_cookie VARCHAR(200)
 ) 
 BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  ROLLBACK;
+
   call validate_user_id(uid);
   call is_non_empty_string('register_user_and_get_cookie','ip',ip);
 
@@ -629,6 +641,9 @@ uid INT UNSIGNED, -- the user who owns this requestoffer
 rid INT UNSIGNED -- the requestoffer
 )
 BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  ROLLBACK;
+
 	call validate_requestoffer_id(rid);	
 	call validate_user_id(uid);
 
