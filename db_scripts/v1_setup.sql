@@ -39,7 +39,7 @@ CREATE TABLE
     username NVARCHAR(50) UNIQUE,
     email NVARCHAR(200) UNIQUE, 
     password VARCHAR(64),
-    points INT UNSIGNED DEFAULT 100, 
+    points INT NOT NULL DEFAULT 0,
     language INT UNSIGNED NULL, 
     is_logged_in BOOL, 
     date_created DATETIME,
