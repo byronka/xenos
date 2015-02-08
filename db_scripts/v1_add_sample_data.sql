@@ -100,14 +100,14 @@ VALUES
 
 ---DELIMITER---
 -- add some messages for some requestoffers
-INSERT INTO requestoffer_message (requestoffer_id, message, timestamp, user_id)
+INSERT INTO requestoffer_message (requestoffer_id, message, timestamp, from_user_id, to_user_id)
 VALUES 
-(1, "Hi there mom!","2014-12-18 21:22:42",4 ),
-(1, "What do ya know?","2014-12-18 21:22:43",4 ),
-(1, "this sure is fun!","2014-12-18 21:22:44",4 ),
-(2, "<script>alert('neato words')</script>","2014-12-18 21:22:45",4 ),
-(2, "byron: What we could do is to do something or other","2014-12-18 21:22:46",4 ),
-(2, "dan: what do you think about this then?","2014-12-18 21:22:47",5 )
+(1, "Hi there mom!","2014-12-18 21:22:42",4 ,5),
+(1, "What do ya know?","2014-12-18 21:22:43",4,5 ),
+(1, "this sure is fun!","2014-12-18 21:22:44",4,5 ),
+(2, "<script>alert('neato words')</script>","2014-12-18 21:22:45",4,5 ),
+(2, "byron: What we could do is to do something or other","2014-12-18 21:22:46",4,5 ),
+(2, "dan: what do you think about this then?","2014-12-18 21:22:47",5,4 )
 
 
 ---DELIMITER---
