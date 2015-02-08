@@ -672,6 +672,45 @@ public final class Requestoffer_utils {
 
   /**
     * gets all the messages (correspondence between users) for a 
+		* given user - all request offers, one user.
+    * @param user_id the user requesting to see their own messages
+    * @return an array of messages or empty array if failure.
+    */
+  public static String[] get_my_messages(int user_id) {
+    String sqlText = 
+      String.format(
+					"SELECT message FROM requestoffer_message "+
+					"WHERE from_user_id = %d", user_id);
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new String[0];
+      }
+
+      //keep adding rows of data while there is more data
+      ArrayList<String> messages = new ArrayList<String>();
+      while(resultSet.next()) {
+        String msg = resultSet.getNString("message");
+        messages.add(msg);
+      }
+
+      //convert arraylist to array
+      String[] array_of_messages = 
+        messages.toArray(new String[messages.size()]);
+      return array_of_messages;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new String[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+  /**
+    * gets all the messages (correspondence between users) for a 
 		*  requestoffer.  
     * @param requestoffer_id the key for the messages
     * @param user_id the user requesting to see the messages.
