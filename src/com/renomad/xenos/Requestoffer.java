@@ -17,6 +17,7 @@ public class Requestoffer {
   public final int status;
   public final String title;
   public final int requestoffering_user_id;
+  public final int handling_user_id;
   private final Integer[] categories;
 
   /**
@@ -26,9 +27,9 @@ public class Requestoffer {
     */
   public Requestoffer ( String datetime, String description, 
       int points, int status, String title, 
-      int requestoffering_user_id, Integer[] categories) {
+      int requestoffering_user_id, int handling_user_id, Integer[] categories) {
     this(-1, datetime, description, points,
-        status, title, requestoffering_user_id, categories);
+        status, title, requestoffering_user_id, handling_user_id, categories);
   }
 
   /** 
@@ -37,13 +38,13 @@ public class Requestoffer {
     * at the same time, so we don't use it here.
     */
   public Requestoffer ( int requestoffer_id, String datetime, String description, 
-      int points, int status, String title, int requestoffering_user_id) {
+      int points, int status, String title, int requestoffering_user_id, int handling_user_id) {
     this(requestoffer_id, datetime, description, points,
-        status, title, requestoffering_user_id, new Integer[0]);
+        status, title, requestoffering_user_id, handling_user_id, new Integer[0]);
   }
 
   public Requestoffer ( int requestoffer_id, String datetime, String description, 
-      int points, int status, String title, int requestoffering_user_id,
+      int points, int status, String title, int requestoffering_user_id, int handling_user_id,
       Integer[] categories) {
     this.requestoffer_id       =  requestoffer_id;
     this.datetime         =  datetime;
@@ -52,6 +53,7 @@ public class Requestoffer {
     this.status           =  status;
     this.title            =  title;
     this.requestoffering_user_id  =  requestoffering_user_id;
+    this.handling_user_id  =  handling_user_id;
     this.categories       =  Arrays.copyOf(categories, categories.length);
   }
 

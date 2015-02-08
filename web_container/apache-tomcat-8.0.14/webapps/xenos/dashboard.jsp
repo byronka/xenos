@@ -161,6 +161,6 @@
 	}%>
 
 </div>
-<script type="text/javascript" src="includes/myscript.js"></script>
+<script type="text/javascript" src="includes/timeout.js"></script>
 </body>
 </html>

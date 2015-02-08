@@ -17,9 +17,9 @@ public class Others_Requestoffer extends Requestoffer {
   public Others_Requestoffer(
       String title, String date, String desc, int status,
       int rank, int points, int requestoffer_id, int requestoffering_user_id,
-       Integer[] categories) {
+      int handling_user_id, Integer[] categories) {
     super(requestoffer_id, date, desc, points,
-        status, title, requestoffering_user_id, categories);
+        status, title, requestoffering_user_id, handling_user_id, categories);
     this.rank = rank;
   }
 

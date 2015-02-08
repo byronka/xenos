@@ -30,34 +30,34 @@ VALUES
 
 
 INSERT INTO requestoffer 
-(datetime, description, points, status, title, requestoffering_user_id) 
+(datetime, description, points, status, title, requestoffering_user_id, handling_user_id) 
 VALUES 
-("2014-12-31 21:22:42",   "a fine description for a requestoffer", 30, 76, "A great title", 4),
-("2014-10-20 21:22:42",   "Gotta job for ya", 10, 76, "Throw momma from the train", 4),
-("2014-12-18 21:22:42",   "rob the bank, get the money", 50, 76, "rob bank", 5),
-("2014-8-27 21:22:42",    "do my homework", 15, 76, "homework", 5),
-("2014-9-18 21:22:42",    "<script>alert('homework is bad')</script>", 15, 76, "<script>alert('I hate homework')</script>", 5),
-("2012-1-8 5:44:00",      "Do stuff, I don't care, just do it", 15, 76, "do stuff", 5),
-("2010-2-24 2:13:20",     "This is not the end of the end, nor is it the beginning of the end.  It is the end of the beginning", 15, 76, "This is the title", 5),
-("2014-3-8 18:45:02",     "Get me some illegal narcotics, ship them safely to my home", 15, 76, "get drugs", 5),
-("2010-7-27 21:22:42",    "description goes here", 15, 76, "homework A", 5),
-("2011-6-20 21:22:42",    "description goes here", 15, 76, "homework B", 5),
-("2012-5-27 23:22:42",    "description goes here", 15, 76, "homework C", 5),
-("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework D", 5),
-("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework E", 5),
-("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework F", 5),
-("2013-4-10 22:59:59",    "description goes here", 15, 76, "homework G", 5),
-("2013-4-10 21:59:59",    "description goes here", 15, 76, "homework H", 5),
-("2013-4-10 20:59:59",    "description goes here", 15, 76, "homework I", 5),
-("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework J", 5),
-("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework K", 5),
-("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework L", 5),
-("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework M", 5),
-("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework N", 5),
-("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework O", 5),
-("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework P", 5),
-("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework Q", 5),
-("2014-3-27 00:00:01",    "description goes here", 15, 76, "homework R", 5);
+("2014-12-31 21:22:42",   "a fine description for a requestoffer", 30, 76, "A great title", 4,NULL),
+("2014-10-20 21:22:42",   "Gotta job for ya", 10, 76, "Throw momma from the train", 4,NULL),
+("2014-12-18 21:22:42",   "rob the bank, get the money", 50, 78, "rob bank", 5,4),
+("2014-8-27 21:22:42",    "do my homework", 15, 76, "homework", 5,NULL),
+("2014-9-18 21:22:42",    "<script>alert('homework is bad')</script>", 15, 76, "<script>alert('I hate homework')</script>", 5,NULL),
+("2012-1-8 5:44:00",      "Do stuff, I don't care, just do it", 15, 76, "do stuff", 5,NULL),
+("2010-2-24 2:13:20",     "This is not the end of the end, nor is it the beginning of the end.  It is the end of the beginning", 15, 76, "This is the title", 5,NULL),
+("2014-3-8 18:45:02",     "Get me some illegal narcotics, ship them safely to my home", 15, 76, "get drugs", 5,NULL),
+("2010-7-27 21:22:42",    "description goes here", 15, 76, "homework A", 5,NULL),
+("2011-6-20 21:22:42",    "description goes here", 15, 76, "homework B", 5,NULL),
+("2012-5-27 23:22:42",    "description goes here", 15, 76, "homework C", 5,NULL),
+("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework D", 5,NULL),
+("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework E", 5,NULL),
+("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework F", 5,NULL),
+("2013-4-10 22:59:59",    "description goes here", 15, 76, "homework G", 5,NULL),
+("2013-4-10 21:59:59",    "description goes here", 15, 76, "homework H", 5,NULL),
+("2013-4-10 20:59:59",    "description goes here", 15, 76, "homework I", 5,NULL),
+("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework J", 5,NULL),
+("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework K", 5,NULL),
+("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework L", 5,NULL),
+("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework M", 5,NULL),
+("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework N", 5,NULL),
+("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework O", 5,NULL),
+("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework P", 5,NULL),
+("2013-4-10 23:59:59",    "description goes here", 15, 76, "homework Q", 5,NULL),
+("2014-3-27 00:00:01",    "description goes here", 15, 76, "homework R", 5,NULL);
 
 
 
@@ -107,7 +107,13 @@ VALUES
 (1, "this sure is fun!","2014-12-18 21:22:44",4,5 ),
 (2, "<script>alert('neato words')</script>","2014-12-18 21:22:45",4,5 ),
 (2, "byron: What we could do is to do something or other","2014-12-18 21:22:46",4,5 ),
-(2, "dan: what do you think about this then?","2014-12-18 21:22:47",5,4 )
+(2, "dan: what do you think about this then?","2014-12-18 21:22:47",5,4 ),
+(3, "bob says:I want to handle your work" , "2015-02-08 17:21:59" , 4, 5),
+(3, "bob says:What do you think?"         , "2015-02-08 17:22:06" , 4, 5),
+(3, "sally says:pretty goasd"             , "2015-02-08 17:33:55" , 5, 4),
+(3, "sally says:alright!"                 , "2015-02-08 17:33:59" , 5, 4),
+(3, "sally says:yay!"                     , "2015-02-08 17:34:03" , 5, 4)
+
 
 
 ---DELIMITER---

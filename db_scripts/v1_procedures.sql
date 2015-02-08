@@ -235,6 +235,7 @@ BEGIN
             r.title, 
             u.rank, 
             r.requestoffering_user_id, 
+            r.handling_user_id, 
             GROUP_CONCAT(rc.category_id SEPARATOR ",") 
             AS categories 
             FROM requestoffer r 

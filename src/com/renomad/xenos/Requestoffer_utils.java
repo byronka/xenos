@@ -154,7 +154,7 @@ public final class Requestoffer_utils {
     
     String sqlText = 
       "SELECT r.requestoffer_id, r.datetime, r.description, r.points,"+
-      "r.status, r.title, r.requestoffering_user_id, "+
+      "r.status, r.title, r.requestoffering_user_id, r.handling_user_id, "+
       "GROUP_CONCAT(rc.category_id SEPARATOR ',') AS categories "+
       "FROM requestoffer r "+
       "JOIN requestoffer_to_category rtc ON rtc.requestoffer_id = r.requestoffer_id "+
@@ -181,9 +181,10 @@ public final class Requestoffer_utils {
       int s = resultSet.getInt("status");
       String t = resultSet.getNString("title");
       int ru = resultSet.getInt("requestoffering_user_id");
+      int hu = resultSet.getInt("handling_user_id");
       String ca = resultSet.getString("categories");
       Integer[] categories = parse_string_to_int_array(ca);
-      Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,t,ru,categories);
+      Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,t,ru,hu,categories);
 
       return requestoffer;
     } catch (SQLException ex) {
@@ -330,12 +331,13 @@ public final class Requestoffer_utils {
         int s = resultSet.getInt("status");
         String t = resultSet.getNString("title");
         int ru = resultSet.getInt("requestoffering_user_id");
+        int hu = resultSet.getInt("handling_user_id");
         int ra = resultSet.getInt("rank");
         String cats = resultSet.getString("categories");
         Integer[] cat_array = parse_string_to_int_array(cats);
 
         Others_Requestoffer requestoffer = 
-          new Others_Requestoffer(t,dt,d,s,ra,p,rid,ru,cat_array);
+          new Others_Requestoffer(t,dt,d,s,ra,p,rid,ru,hu,cat_array);
         requestoffers.add(requestoffer);
       }
 
@@ -380,7 +382,9 @@ public final class Requestoffer_utils {
     * @return an array of Requestoffers made by that user.
     */
   public static Requestoffer[] get_requestoffers_for_user(int user_id) {
-    String sqlText = "SELECT * FROM requestoffer WHERE requestoffering_user_id = ?";
+    String sqlText = "SELECT requestoffer_id, datetime, description, "+
+      "points, status, title, requestoffering_user_id, handling_user_id "+
+      "FROM requestoffer WHERE requestoffering_user_id = ?";
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
@@ -402,7 +406,8 @@ public final class Requestoffer_utils {
         int s = resultSet.getInt("status");
         String t = resultSet.getNString("title");
         int ru = resultSet.getInt("requestoffering_user_id");
-        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,t,ru);
+        int hu = resultSet.getInt("handling_user_id");
+        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,t,ru,hu);
         requestoffers.add(requestoffer);
       }
 
