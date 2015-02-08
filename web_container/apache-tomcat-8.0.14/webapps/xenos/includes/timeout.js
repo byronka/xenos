@@ -65,7 +65,7 @@ xenos_utils.start_timer = function() {
   var seconds = Number(
       document.getElementById('timeout_value').getAttribute('value')); 
 
-  var seconds = seconds + 5; // give a little wiggle room.
+  var seconds = seconds + 5; // give a little wiggle room - the event fires every 5 seconds.
 
   //kick off the countdown.
   xenos_utils.counter = xenos_utils.timeout_counter();

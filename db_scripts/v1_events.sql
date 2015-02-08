@@ -21,7 +21,7 @@ DROP EVENT IF EXISTS user_timeout;
 SET GLOBAL event_scheduler = ON;
 ---DELIMITER---
 
--- this sql does the following: every minute, run a script to check for
+-- this sql does the following: every 5 seconds, run a script to check for
 -- users whose last action was more than timeout_seconds ago.
 -- compare the current time (UTC_TIMSTAMP()) with their last activity
 -- (last_activity_time) plus the timeout (timeout_seconds).  If the
@@ -29,14 +29,12 @@ SET GLOBAL event_scheduler = ON;
 
 CREATE EVENT user_timeout 
 ON SCHEDULE
-  EVERY 1 MINUTE 
+  EVERY 5 SECOND 
 COMMENT 'logs out users past their timeout period'
 DO
 	BEGIN
-		START TRANSACTION;
 			UPDATE user 
 			SET is_logged_in = 0 
 			WHERE UTC_TIMESTAMP() > 
 					(last_activity_time + INTERVAL timeout_seconds SECOND);
-		COMMIT;
 	END
