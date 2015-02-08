@@ -225,7 +225,8 @@ VALUES
 (2,'User deleted a requestoffer'),
 (3,'User handled a requestoffer'),
 (4,'New user was registered'),
-(5,'cookie authentication failed')
+(5,'cookie authentication failed'),
+(6,'user closed their own requestoffer')
 
 
 ---DELIMITER---

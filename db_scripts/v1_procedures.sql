@@ -629,3 +629,45 @@ BEGIN
   END IF;
  
 END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS complete_ro_transaction;
+
+---DELIMITER---
+
+-- simply sets the state of a requestoffer to closed.
+-- however, first, it checks validity of values it's been given.
+CREATE PROCEDURE complete_ro_transaction
+(
+uid INT UNSIGNED, -- the user who owns this requestoffer
+rid INT UNSIGNED -- the requestoffer
+)
+BEGIN
+	call validate_requestoffer_id(rid);	
+	call validate_user_id(uid);
+
+	SELECT COUNT(*) INTO @is_valid
+	FROM requestoffer
+	WHERE requestoffering_user_id = uid 
+		AND requestoffer_id = rid
+		AND status = 78; -- taken
+
+	IF (@is_valid <> 1) THEN
+		SET @msg = CONCAT('requestoffer ',
+		  rid,' does not have a requestoffering user id of ',
+			uid,' for completion, or it is not in the right status (taken)');
+		SIGNAL SQLSTATE '45000' SET message_text = @msg;
+	END IF;
+
+	-- at this point we are pretty sure it's all cool.
+	START TRANSACTION;
+
+	UPDATE requestoffer
+	SET status = 77 -- 'closed'
+	WHERE requestoffer_id = rid;
+
+	CALL add_audit(6,uid,rid,NULL);
+
+	COMMIT;
+END

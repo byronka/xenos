@@ -671,6 +671,32 @@ public final class Requestoffer_utils {
     return true;
   }
 
+
+	/**
+		* This sets the requestoffer's state to closed.
+		* @param rid the requestoffer id
+		* @param uid the requestoffering_user_id
+		* @return true if successful, false otherwise
+		*/
+	public static boolean complete_transaction(int rid, int uid) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      // see db_scripts/v1_procedures.sql for
+      // details on this stored procedure.
+      cs = conn.prepareCall(String.format(
+        "{call complete_ro_transaction(%d,%d)}" ,uid, rid));
+      cs.execute();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+    return true;
+	}
+
+
   /**
     * gets all the messages (correspondence between users) for a 
 		* given user - all request offers, one user.

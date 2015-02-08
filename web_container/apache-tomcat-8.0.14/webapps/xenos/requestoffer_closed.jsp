@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><%=loc.get(31, "Requestoffer has been deleted")%></title>
+		<title><%=loc.get(99, "Requestoffer has been closed")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<%if (probably_mobile) {%>
 			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
@@ -10,6 +10,7 @@
 			<link rel="stylesheet" href="includes/common.css" title="desktop">
 		<% } %>
 		<meta http-equiv="content-type" value="text/html; charset=UTF8" />
+
 	</head>
 
 <%@ page import="com.renomad.xenos.Utils" %>
@@ -21,9 +22,9 @@
 %>
 
 <body>
-<h2><%=loc.get(32, "Requestoffer")%> <%=requestoffer_id%> <%=loc.get(33, "deleted")%></h2>
+<h2><%=loc.get(32, "Requestoffer")%> <%=requestoffer_id%> <%=loc.get(77, "closed")%></h2>
 <p>
-  <%=loc.get(34, "Requestoffer has been deleted")%>
+  <%=loc.get(99, "Requestoffer has been closed")%>
 </p>
 <p><a href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
 </body>

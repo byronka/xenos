@@ -95,6 +95,7 @@
       <button type="submit"><%=loc.get(36,"Send message")%></button>
     </form>
   <% } %>
+	<a href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(98,"Transaction is complete")%></a>
 
 </body>
 </html>
