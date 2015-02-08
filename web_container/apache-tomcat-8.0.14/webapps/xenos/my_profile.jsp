@@ -1,5 +1,6 @@
 <%@include file="includes/init.jsp" %>
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
+<%@ page import="com.renomad.xenos.Requestoffer" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -14,6 +15,25 @@
 	<body>
   <%@include file="includes/header.jsp" %>
 	<button>Change password</button>
+	<h3 class="my-requestoffers-header">
+		<%=loc.get(18, "Your requestoffers")%>:</h3>
+		<div class="requestoffers mine">
+		<%
+			Requestoffer[] my_requestoffers = 
+				Requestoffer_utils.get_requestoffers_for_user(user_id);
+			for (Requestoffer r : my_requestoffers) {
+		%>
+			<div class="requestoffer mine">
+				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
+					<%=Utils.safe_render(r.title)%> </a>
+				<a 
+					class="button" 
+					href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
+					<%=loc.get(21,"Delete")%>
+				</a>
+			</div>
+		<% } %>
+		</div>
 	<h3><%=loc.get(96, "My Messages")%></h3>
 		<% for (String s : Requestoffer_utils.get_my_messages(user_id)) {%>
 			<p><%=Utils.safe_render(s)%></p>

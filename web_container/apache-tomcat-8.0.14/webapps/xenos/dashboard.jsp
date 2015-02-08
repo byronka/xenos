@@ -65,27 +65,6 @@
 <body>
 <%@include file="includes/header.jsp" %>
 <div class="dashboard-container">
-<h2 class="my-requestoffers-header"><%=loc.get(18, "Your requestoffers")%>:</h2>
-<div class="requestoffers mine">
-<%
-  Requestoffer[] my_requestoffers = 
-    Requestoffer_utils.get_requestoffers_for_user(user_id);
-  for (Requestoffer r : my_requestoffers) {
-%>
-  <div class="requestoffer mine">
-    <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-      <%=Utils.safe_render(r.title)%> </a>
-    <a 
-      class="button" 
-      href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
-      <%=loc.get(21,"Delete")%>
-    </a>
-  </div>
-<% } %>
-</div>
-<h2 class="others-requestoffers-header">
-  <%=loc.get(19, "Other's requestoffers")%>:
-</h2>
 <div class="requestoffers others">
 <%
   Requestoffer_utils.Search_Object so = 
