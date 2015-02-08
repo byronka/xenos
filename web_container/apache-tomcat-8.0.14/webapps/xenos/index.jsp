@@ -10,8 +10,11 @@
 <head>
   <title><%=loc.get(44,"Welcome to Xenos!")%></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="<%=is_desktop%> stylesheet" href="index.css" title="desktop">
-	<link rel="<%=is_mobile%> stylesheet" href="includes/common_alt.css" title="mobile">
+		<%if (probably_mobile) {%>
+			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
+		<% } else { %>
+			<link rel="stylesheet" href="index.css" title="desktop">
+		<% } %>
 </head>
 <body>
 	<div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>

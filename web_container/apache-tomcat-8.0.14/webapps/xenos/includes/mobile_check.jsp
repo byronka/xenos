@@ -9,9 +9,4 @@
     	probably_mobile |= true;
 		}
 	}
-
-  //Use these strings in the stylesheet declarations to determine which is primary.
-	//See dashboard.jsp for an example.
-	String is_desktop = probably_mobile ? "alternate" : "";
-	String is_mobile = probably_mobile ? "" : "alternate";
 %>

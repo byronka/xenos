@@ -10,8 +10,11 @@
 <head>
   <title><%=loc.get(65,"Logged out")%></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="<%=is_desktop%> stylesheet" href="logged_out.css" title="desktop">
-	<link rel="<%=is_mobile%> stylesheet" href="includes/common_alt.css" title="mobile">
+		<%if (probably_mobile) {%>
+			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
+		<% } else { %>
+			<link rel="stylesheet" href="logged_out.css" title="desktop">
+		<% } %>
 </head>
 <body>
   <div class="trademark">Xenos</div>

@@ -2,6 +2,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<%if (probably_mobile) {%>
+			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
+		<% } else { %>
+			<link rel="stylesheet" href="includes/common.css" title="desktop">
+		<% } %>
 		<title><%=loc.get(22,"Requestoffer Details")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
