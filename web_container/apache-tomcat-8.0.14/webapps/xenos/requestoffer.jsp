@@ -78,7 +78,7 @@
       </a>
 
       <%}
-      String[] messages = Requestoffer_utils.get_messages(r.requestoffer_id);
+      String[] messages = Requestoffer_utils.get_messages(r.requestoffer_id, user_id);
        for (String m : messages) { %>
 
       <p><%=Utils.safe_render(m)%></p>
