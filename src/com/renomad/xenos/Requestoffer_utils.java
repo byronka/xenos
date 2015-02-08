@@ -131,6 +131,10 @@ public final class Requestoffer_utils {
         "{call take_requestoffer(%d, %d)}" , user_id, requestoffer_id));
       cs.execute();
     } catch (SQLException ex) {
+			String msg = ex.getMessage();
+			if (msg.contains("cannot take requestoffer")) {
+      	return false;
+			}
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {

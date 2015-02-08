@@ -367,6 +367,16 @@ BEGIN
   call validate_requestoffer_id(rid);
   call validate_user_id(uid);
 
+	SELECT COUNT(*) INTO @can_take
+	FROM requestoffer r
+	WHERE r.status = 76 -- 'open'
+	AND r.requestoffer_id = rid;
+	
+  IF (@can_take <> 1) THEN
+      SET @msg = CONCAT('cannot take requestoffer', rid,', not open');
+      SIGNAL SQLSTATE '45002' SET message_text = @msg;
+  END IF;
+
   START TRANSACTION;
     UPDATE requestoffer 
     SET 
