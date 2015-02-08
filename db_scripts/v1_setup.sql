@@ -191,11 +191,15 @@ requestoffer_message (
   requestoffer_id INT UNSIGNED NOT NULL,
   message NVARCHAR(10000),
   timestamp datetime,
-  user_id INT UNSIGNED NOT NULL,
+  from_user_id INT UNSIGNED NOT NULL, -- person sending the message
+  to_user_id INT UNSIGNED NOT NULL,   -- person receiving the message
   FOREIGN KEY FK_requestoffer_id (requestoffer_id)
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
-  FOREIGN KEY FK_user_id (user_id)
+  FOREIGN KEY FK_from_user_id (from_user_id)
+  REFERENCES user (user_id)
+  ON DELETE CASCADE,
+  FOREIGN KEY FK_to_user_id (to_user_id)
   REFERENCES user (user_id)
   ON DELETE CASCADE
 )

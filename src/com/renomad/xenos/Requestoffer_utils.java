@@ -667,12 +667,14 @@ public final class Requestoffer_utils {
   }
 
   /**
-    * gets all the messages (correspondence between users) for a requestoffer.
+    * gets all the messages (correspondence between users) for a 
+		*  requestoffer.  
     * @param requestoffer_id the key for the messages
+    * @param user_id the user requesting to see the messages.
     * @return an array of messages for this requestoffer, 
     * or empty array if failure.
     */
-  public static String[] get_messages(int requestoffer_id) {
+  public static String[] get_messages(int requestoffer_id, int user_id) {
     String sqlText = 
       "SELECT message FROM requestoffer_message WHERE requestoffer_id = ?";
     PreparedStatement pstmt = null;
