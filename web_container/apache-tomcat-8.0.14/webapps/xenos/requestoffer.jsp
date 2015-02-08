@@ -103,12 +103,11 @@
     </p>
 
     <%} if (show_handle_button) {%>
-
       <a href="handle.jsp?requestoffer=<%=r.requestoffer_id%>">
         <%=loc.get(37,"Handle")%>
       </a>
+    <%}
 
-      <%}
       String[] messages = 
         Requestoffer_utils.get_messages(r.requestoffer_id, user_id);
        for (String m : messages) { %>

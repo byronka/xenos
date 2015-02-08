@@ -750,14 +750,19 @@ public final class Requestoffer_utils {
     * or empty array if failure.
     */
   public static String[] get_messages(int requestoffer_id, int user_id) {
+    //sql here is: get messages for this requestoffer where I (user_id)
+    // am one of the participants in the conversation
     String sqlText = 
-      "SELECT message FROM requestoffer_message WHERE requestoffer_id = ?";
+      String.format(
+      "SELECT message FROM requestoffer_message "+
+      "WHERE requestoffer_id = %d "+
+      "AND (from_user_id = %d OR to_user_id = %d)", requestoffer_id, user_id, user_id);
+
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      pstmt.setInt( 1, requestoffer_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new String[0];
