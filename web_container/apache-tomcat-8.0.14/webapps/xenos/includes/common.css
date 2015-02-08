@@ -27,13 +27,6 @@ div.header-container form.search button {
   height: 30px;
 }
 
-div.header-container div.user-displayname {
-  position: relative;
-  clear: left;
-  top: 13px;
-  left: 20px;
-}
-
 div.header-container div.spacer {
   height: 40px;
 }
@@ -64,7 +57,7 @@ div.header-container div.trademark {
   position: absolute;
 }
 
-div.header-container nav a {
+div.header-container a {
   position: relative;
   display: inline-block;
   outline: none;
@@ -75,8 +68,8 @@ div.header-container nav a {
 }
 
 
-div.header-container nav a:hover,
-div.header-container nav a:focus {
+div.header-container a:hover,
+div.header-container a:focus {
   outline: none;
 }
 
