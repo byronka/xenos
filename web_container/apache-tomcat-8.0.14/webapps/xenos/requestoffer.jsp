@@ -71,7 +71,12 @@
   <p>
     <%=loc.get(101,"Handling User")%>: 
     <%if(is_handling_user) {%><em>You</em>, <%}%>
-    <%=User_utils.get_user(r.handling_user_id).username%>
+    <% User handleuser = User_utils.get_user(r.handling_user_id); 
+    if (handleuser != null) {%>
+      <%=handleuser.username%>
+    <%} else {%>
+      none
+    <%}%>
   </p>
   <p>
     <%=loc.get(26,"Points")%>: <%=r.points%>
