@@ -1,7 +1,16 @@
 <%@include file="includes/init.jsp" %>
 <!DOCTYPE html>
 <html>                                 
-  <head><title><%=loc.get(46,"General Error")%></title></head>
+	<head>
+		<title><%=loc.get(46,"General Error")%></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<%if (probably_mobile) {%>
+			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
+		<% } else { %>
+			<link rel="stylesheet" href="includes/common.css" title="desktop">
+		<% } %>
+		<meta http-equiv="content-type" value="text/html; charset=UTF8" />
+	</head>
 
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%@ page import="com.renomad.xenos.Requestoffer" %>
