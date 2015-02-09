@@ -15,12 +15,31 @@
 	<body>
   <%@include file="includes/header.jsp" %>
 	<button>Change password</button>
+  <h3><%=loc.get(102, "Requests I am handling")%>:</h3>
+		<div class="requestoffers mine">
+		<%
+			Requestoffer[] handling_requestoffers = 
+				Requestoffer_utils.get_requestoffers_I_am_handling(user_id);
+        if (handling_requestoffers.length == 0) {%>
+        <p>(<%=loc.get(103,"None")%>)</p>
+        <% } 
+			for (Requestoffer r : handling_requestoffers) {
+		%>
+			<div class="requestoffer handling">
+				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
+					<%=Utils.safe_render(r.title)%> </a>
+			</div>
+		<% } %>
+
 	<h3 class="my-requestoffers-header">
 		<%=loc.get(18, "Your requestoffers")%>:</h3>
 		<div class="requestoffers mine">
 		<%
 			Requestoffer[] my_requestoffers = 
 				Requestoffer_utils.get_requestoffers_for_user(user_id);
+        if (my_requestoffers.length == 0) {%>
+        <p>(<%=loc.get(103,"None")%>)</p>
+        <% } 
 			for (Requestoffer r : my_requestoffers) {
 		%>
 			<div class="requestoffer mine">
@@ -47,7 +66,9 @@
       </tr>
     </thead>
     <tbody>
-  <% for (Requestoffer_utils.MyMessages mm : Requestoffer_utils.get_my_messages(user_id)) {%>
+   <% Requestoffer_utils.MyMessages[] mms 
+     = Requestoffer_utils.get_my_messages(user_id);
+   for (Requestoffer_utils.MyMessages mm : mms) {%>
     <tr>
       <td><%=mm.timestamp%> </td>
       <td><%=mm.requestoffer_id%> </td>
@@ -58,5 +79,9 @@
 		<% } %>
     </tbody>
   </table>
+    <% if (mms.length == 0) { %>
+      <p>(<%=loc.get(103,"None")%>)</p>
+    <% } %>
+  <script type="text/javascript" src="includes/timeout.js"></script>
 	</body>
 </html>

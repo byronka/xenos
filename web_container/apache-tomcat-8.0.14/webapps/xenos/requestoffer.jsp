@@ -121,8 +121,8 @@
     <%} if (show_message_input || (is_requestoffering_user && r.status == 78)) { %>
       <form method="POST" 
         action="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&service=true">
-        <p><%=loc.get(38,"Message (up to 10,000 characters)")%></p>
-        <input type="text" name="message" maxlength="10000" />
+        <p><%=String.format(loc.get(38,"Message (up to %d characters)"), 200)%></p>
+        <input type="text" name="message" maxlength="200" />
         <button type="submit"><%=loc.get(36,"Send message")%></button>
       </form>
     <% } %>

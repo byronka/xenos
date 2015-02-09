@@ -376,6 +376,55 @@ public final class Requestoffer_utils {
 
 
   /**
+    * Gets all the requestoffers a user is handling
+    * 
+    * @param user_id a particular user's id
+    * @return an array of Requestoffers handled by that user.
+    */
+  public static Requestoffer[] 
+      get_requestoffers_I_am_handling(int user_id) {
+    String sqlText = "SELECT requestoffer_id, datetime, description, "+
+      "points, status, title, requestoffering_user_id, handling_user_id "+
+      "FROM requestoffer WHERE handling_user_id = ?";
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Requestoffer[0];
+      }
+
+      //keep adding rows of data while there is more data
+      ArrayList<Requestoffer> requestoffers = new ArrayList<Requestoffer>();
+      while(resultSet.next()) {
+        int rid = resultSet.getInt("requestoffer_id");
+        String dt = resultSet.getString("datetime");
+        String d = resultSet.getNString("description");
+        int p = resultSet.getInt("points");
+        int s = resultSet.getInt("status");
+        String t = resultSet.getNString("title");
+        int ru = resultSet.getInt("requestoffering_user_id");
+        int hu = resultSet.getInt("handling_user_id");
+        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,t,ru,hu);
+        requestoffers.add(requestoffer);
+      }
+
+      //convert arraylist to array
+      Requestoffer[] array_of_requestoffers = 
+        requestoffers.toArray(new Requestoffer[requestoffers.size()]);
+      return array_of_requestoffers;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+  /**
     * Gets all the requestoffers for the user.
     * 
     * @param user_id a particular user's id

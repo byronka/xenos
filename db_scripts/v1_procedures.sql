@@ -13,7 +13,7 @@ CREATE PROCEDURE is_non_empty_string
 (
   procname VARCHAR(40), -- add here the name of the procedure we're coming from
   fieldname VARCHAR(40), -- add the field we're checking for non-null or empty
-  text_value NVARCHAR(10000) -- here you place the actual text to check
+  text_value NVARCHAR(200) -- here you place the actual text to check
 ) 
 BEGIN
   IF (text_value IS NULL OR text_value = '') THEN
@@ -261,7 +261,7 @@ DROP PROCEDURE IF EXISTS put_requestoffer;
 ---DELIMITER---
 CREATE PROCEDURE put_requestoffer
 (
-  my_desc NVARCHAR(10000),
+  my_desc NVARCHAR(200),
   ruid INT UNSIGNED, -- requestoffering user id
 	ti NVARCHAR(255), -- title
   pts INT, -- points
@@ -319,7 +319,7 @@ DROP PROCEDURE IF EXISTS put_message;
 
 CREATE PROCEDURE put_message
 (
-  my_message NVARCHAR(10000),
+  my_message NVARCHAR(200),
   fr_uid INT UNSIGNED,
   rid INT UNSIGNED
 ) 

@@ -93,7 +93,7 @@ CREATE TABLE
 requestoffer ( 
   requestoffer_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   datetime DATETIME,
-  description NVARCHAR(10000),
+  description NVARCHAR(200),
   points INT UNSIGNED,
   status INT,
   title NVARCHAR(255),
@@ -189,7 +189,7 @@ requestoffer_to_category (
 CREATE TABLE  
 requestoffer_message ( 
   requestoffer_id INT UNSIGNED NOT NULL,
-  message NVARCHAR(10000),
+  message NVARCHAR(200),
   timestamp datetime,
   from_user_id INT UNSIGNED NOT NULL, -- person sending the message
   to_user_id INT UNSIGNED NOT NULL,   -- person receiving the message
