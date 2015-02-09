@@ -60,8 +60,6 @@
       <tr>
         <th>timestamp</th>
         <th>requestoffer</th>
-        <th>from:</th>
-        <th>to:</th>
         <th>message</th>
       </tr>
     </thead>
@@ -72,8 +70,6 @@
     <tr>
       <td><%=mm.timestamp%> </td>
       <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"        ><%=mm.title%></a> </td>
-      <td><%=Utils.safe_render(mm.fname)%> </td>
-      <td><%=Utils.safe_render(mm.tname)%> </td>
       <td><%=Utils.safe_render(mm.message)%></td>
     </tr>
 		<% } %>
