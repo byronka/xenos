@@ -57,7 +57,7 @@ public final class Security {
     String sqlText = 
       "SELECT user_id "+
       "FROM user "+
-      "WHERE username = ? AND password = ?";
+      "WHERE BINARY username = ? AND BINARY password = ?";
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
