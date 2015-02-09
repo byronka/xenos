@@ -44,7 +44,7 @@ BEGIN
       SET @msg = CONCAT('requestoffer does not exist in the system: ', 
         rid);
       ROLLBACK;
-      SIGNAL SQLSTATE '45002' 
+      SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
   END IF;
 END
@@ -68,7 +68,7 @@ BEGIN
       SET @msg = CONCAT('user does not exist in the system: ', 
         uid);
       ROLLBACK;
-      SIGNAL SQLSTATE '45002' 
+      SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
   END IF;
 END
@@ -269,12 +269,10 @@ CREATE PROCEDURE put_requestoffer
   OUT new_requestoffer_id INT UNSIGNED
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  ROLLBACK;
 
   IF (LENGTH(cats) = 0) THEN
       SET @cat_err_msg = 'categories was empty - not allowed in this proc';
-      SIGNAL SQLSTATE '45001' set message_text = @cat_err_msg;
+      SIGNAL SQLSTATE '45000' set message_text = @cat_err_msg;
   END IF;
 
   START TRANSACTION;
@@ -368,8 +366,6 @@ CREATE PROCEDURE take_requestoffer
   rid INT UNSIGNED
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  ROLLBACK;
 
   call validate_requestoffer_id(rid);
   call validate_user_id(uid);
@@ -381,7 +377,7 @@ BEGIN
 	
   IF (@can_take <> 1) THEN
       SET @msg = CONCAT('cannot take requestoffer', rid,', not open');
-      SIGNAL SQLSTATE '45002' SET message_text = @msg;
+      SIGNAL SQLSTATE '45000' SET message_text = @msg;
   END IF;
 
   START TRANSACTION;
@@ -410,8 +406,6 @@ CREATE PROCEDURE delete_requestoffer
   rid INT UNSIGNED
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  ROLLBACK;
 
   -- check that the requestoffer exists
   call validate_requestoffer_id(rid);
@@ -423,7 +417,8 @@ BEGIN
   WHERE requestoffer_id = rid;
 
   -- get a string version of the status
-  SELECT requestoffer_status_value INTO @status
+  SELECT requestoffer_status_id, requestoffer_status_value 
+  INTO @status_id, @status
   FROM requestoffer_status 
   WHERE requestoffer_status_id = 
     (
@@ -431,6 +426,12 @@ BEGIN
       FROM requestoffer 
       WHERE requestoffer_id = rid
     );
+
+  IF (@status_id <> 76) THEN
+    SET @msg = CONCAT('not possible to delete request ',rid,
+    ' since it is not open');
+    SIGNAL SQLSTATE '45000' SET message_text = @msg;
+  END IF;
 
   -- get a message for the deletion audit
   SELECT CONCAT(
@@ -476,8 +477,6 @@ CREATE PROCEDURE create_new_user
   slt VARCHAR(50)
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  ROLLBACK;
 
   -- make sure the username and password and salt are non-empty
   call is_non_empty_string('create_new_user','uname',uname);
@@ -525,8 +524,6 @@ CREATE PROCEDURE register_user_and_get_cookie
   OUT new_cookie VARCHAR(200)
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  ROLLBACK;
 
   call validate_user_id(uid);
   call is_non_empty_string('register_user_and_get_cookie','ip',ip);
@@ -642,8 +639,6 @@ uid INT UNSIGNED, -- the user who owns this requestoffer
 rid INT UNSIGNED -- the requestoffer
 )
 BEGIN
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  ROLLBACK;
 
 	call validate_requestoffer_id(rid);	
 	call validate_user_id(uid);

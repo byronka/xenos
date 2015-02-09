@@ -26,11 +26,12 @@
 			<div class="requestoffer mine">
 				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
 					<%=Utils.safe_render(r.title)%> </a>
-				<a 
-					class="button" 
-					href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
-					<%=loc.get(21,"Delete")%>
-				</a>
+        <%if(r.status == 76) {%>
+          <a class="button" 
+            href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
+            <%=loc.get(21,"Delete")%>
+          </a>
+          <%}%>
 			</div>
 		<% } %>
 		</div>

@@ -7,11 +7,13 @@
   String qs = request.getQueryString();
   int requestoffer_id = 
     Integer.parseInt(Utils.parse_qs(qs).get("requestoffer"));
-  boolean success = Requestoffer_utils.delete_requestoffer(requestoffer_id, user_id);
+  boolean success = 
+    Requestoffer_utils.delete_requestoffer(requestoffer_id, user_id);
   if (!success) {
     response.sendRedirect("error_deleting.jsp");
     } else {
   response.sendRedirect(
-    String.format("requestoffer_deleted.jsp?requestoffer=%d",requestoffer_id));
+    String.format(
+    "requestoffer_deleted.jsp?requestoffer=%d",requestoffer_id));
     }
 %>
