@@ -78,6 +78,7 @@
       <p><%=loc.get(10,"Description")%>: 
         <input 
           type="text" 
+          maxlength=200
           name="description" 
           value="<%=de%>"/> 
         <span><%=desc_error_msg%></span>
