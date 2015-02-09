@@ -35,8 +35,27 @@
 		<% } %>
 		</div>
 	<h3><%=loc.get(96, "My Messages")%></h3>
-		<% for (String s : Requestoffer_utils.get_my_messages(user_id)) {%>
-			<p><%=Utils.safe_render(s)%></p>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>timestamp</th>
+        <th>requestoffer</th>
+        <th>from:</th>
+        <th>to:</th>
+        <th>message</th>
+      </tr>
+    </thead>
+    <tbody>
+  <% for (Requestoffer_utils.MyMessages mm : Requestoffer_utils.get_my_messages(user_id)) {%>
+    <tr>
+      <td><%=mm.timestamp%> </td>
+      <td><%=mm.requestoffer_id%> </td>
+      <td><%=Utils.safe_render(mm.fname)%> </td>
+      <td><%=Utils.safe_render(mm.tname)%> </td>
+      <td><%=Utils.safe_render(mm.message)%></td>
+    </tr>
 		<% } %>
+    </tbody>
+  </table>
 	</body>
 </html>

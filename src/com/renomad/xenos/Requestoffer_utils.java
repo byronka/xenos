@@ -702,17 +702,46 @@ public final class Requestoffer_utils {
 	}
 
 
+  public static class MyMessages {
+
+    public final int requestoffer_id;
+    public final int from_user_id;
+    public final int to_user_id;
+    public String message;
+    public String fname;
+    public String tname;
+    public String timestamp;
+
+    public MyMessages(String timestamp, int rid, int fuid, int tuid, 
+        String msg, String fname, String tname) {
+      this.requestoffer_id = rid;
+      this.from_user_id = fuid;
+      this.to_user_id = tuid;
+      this.message = msg;
+      this.timestamp = timestamp;
+      this.fname = fname;
+      this.tname = tname;
+    }
+  }
+
+
   /**
     * gets all the messages (correspondence between users) for a 
 		* given user - all request offers, one user.
     * @param user_id the user requesting to see their own messages
-    * @return an array of messages or empty array if failure.
+    * @return an array of MyMessages, or empty array otherwise.
     */
-  public static String[] get_my_messages(int user_id) {
+  public static MyMessages[] get_my_messages(int user_id) {
     String sqlText = 
       String.format(
-					"SELECT message FROM requestoffer_message "+
-					"WHERE from_user_id = %d", user_id);
+					"SELECT rm.timestamp, rm.requestoffer_id, rm.message, "+
+            "rm.from_user_id AS fuid, rm.to_user_id AS tuid, "+
+            "from_user.username AS fusername, to_user.username AS tusername "+
+          "FROM requestoffer_message rm "+
+          "JOIN user from_user ON from_user.user_id = rm.from_user_id " +
+          "JOIN user to_user ON to_user.user_id = rm.to_user_id " + 
+					"WHERE from_user_id = %d OR to_user_id = %d " +
+          "ORDER BY timestamp DESC", user_id, user_id);
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
@@ -720,23 +749,29 @@ public final class Requestoffer_utils {
           conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return new String[0];
+        return new MyMessages[0];
       }
 
       //keep adding rows of data while there is more data
-      ArrayList<String> messages = new ArrayList<String>();
+      ArrayList<MyMessages> mms = new ArrayList<MyMessages>();
       while(resultSet.next()) {
+        String timestamp = resultSet.getString("timestamp");
         String msg = resultSet.getNString("message");
-        messages.add(msg);
+        int rid = resultSet.getInt("requestoffer_id");
+        int fuid = resultSet.getInt("fuid");
+        int tuid = resultSet.getInt("tuid");
+        String tname = resultSet.getNString("tusername");
+        String fname = resultSet.getNString("fusername");
+        MyMessages mm = new MyMessages(timestamp, rid,fuid,tuid,msg,fname,tname);
+        mms.add(mm);
       }
+      MyMessages[] array_of_messages = 
+        mms.toArray(new MyMessages[mms.size()]);
 
-      //convert arraylist to array
-      String[] array_of_messages = 
-        messages.toArray(new String[messages.size()]);
       return array_of_messages;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
-      return new String[0];
+      return new MyMessages[0];
     } finally {
       Database_access.close_statement(pstmt);
     }

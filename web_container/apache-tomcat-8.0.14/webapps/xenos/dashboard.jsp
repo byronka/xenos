@@ -87,13 +87,15 @@
     <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>">
       <%=Utils.safe_render(r.title)%> 
     </a>
-    <span class="handle-button-span">
-      <a 
-        class="button" 
-        href="handle.jsp?requestoffer=<%=r.requestoffer_id%>"> 
-        <%=loc.get(20, "Handle")%> 
-      </a>
-    </span>
+    <%if (r.status == 76) {%>
+      <span class="handle-button-span">
+        <a 
+          class="button" 
+          href="handle.jsp?requestoffer=<%=r.requestoffer_id%>"> 
+          <%=loc.get(20, "Handle")%> 
+        </a>
+      </span>
+    <%}%>
     <ul>
       <li class="points">
         <span class="label"><%=loc.get(4, "Points")%>:</span>

@@ -15,10 +15,16 @@
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%@ page import="com.renomad.xenos.Requestoffer" %>
 <%
+
   String qs = request.getQueryString();
+  Requestoffer r = 
+    Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
+  if (r == null || r.status == 78) {
+    response.sendRedirect("general_error.jsp");
+    return;
+  }
+
   java.util.Map<String,String> params = Utils.parse_qs(qs);
-  int r_id = Utils.parse_int(params.get("requestoffer")); 
-  Requestoffer r = Requestoffer_utils.get_a_requestoffer(r_id);
   String is_confirmed = params.get("confirm");
   if (is_confirmed != null && is_confirmed.equals("true")) {
   if (Requestoffer_utils.take_requestoffer(user_id, r.requestoffer_id)) {

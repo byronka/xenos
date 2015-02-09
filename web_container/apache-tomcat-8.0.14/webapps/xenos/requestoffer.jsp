@@ -99,8 +99,7 @@
     </p>
 
     <p>
-      <a href="delete_requestoffer.jsp?requestoffer=
-        <%=r.requestoffer_id%>"><%=loc.get(29, "Yes, delete!")%></a>
+      <a href="delete_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(29, "Yes, delete!")%></a>
     </p>
     <p>
       <a href="dashboard.jsp">
