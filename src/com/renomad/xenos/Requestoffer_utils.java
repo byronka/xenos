@@ -760,9 +760,10 @@ public final class Requestoffer_utils {
     public String fname;
     public String tname;
     public String timestamp;
+    public String title;
 
     public MyMessages(String timestamp, int rid, int fuid, int tuid, 
-        String msg, String fname, String tname) {
+        String msg, String fname, String tname, String title) {
       this.requestoffer_id = rid;
       this.from_user_id = fuid;
       this.to_user_id = tuid;
@@ -770,6 +771,7 @@ public final class Requestoffer_utils {
       this.timestamp = timestamp;
       this.fname = fname;
       this.tname = tname;
+      this.title = title;
     }
   }
 
@@ -784,11 +786,12 @@ public final class Requestoffer_utils {
     String sqlText = 
       String.format(
 					"SELECT rm.timestamp, rm.requestoffer_id, rm.message, "+
-            "rm.from_user_id AS fuid, rm.to_user_id AS tuid, "+
+            "rm.from_user_id AS fuid, rm.to_user_id AS tuid, ro.title, "+
             "from_user.username AS fusername, to_user.username AS tusername "+
           "FROM requestoffer_message rm "+
           "JOIN user from_user ON from_user.user_id = rm.from_user_id " +
           "JOIN user to_user ON to_user.user_id = rm.to_user_id " + 
+          "JOIN requestoffer ro ON ro.requestoffer_id = rm.requestoffer_id " +
 					"WHERE from_user_id = %d OR to_user_id = %d " +
           "ORDER BY timestamp DESC", user_id, user_id);
     PreparedStatement pstmt = null;
@@ -811,7 +814,9 @@ public final class Requestoffer_utils {
         int tuid = resultSet.getInt("tuid");
         String tname = resultSet.getNString("tusername");
         String fname = resultSet.getNString("fusername");
-        MyMessages mm = new MyMessages(timestamp, rid,fuid,tuid,msg,fname,tname);
+        String title = resultSet.getNString("title");
+        MyMessages mm = 
+          new MyMessages(timestamp, rid,fuid,tuid,msg,fname,tname,title);
         mms.add(mm);
       }
       MyMessages[] array_of_messages = 
