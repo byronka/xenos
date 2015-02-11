@@ -17,23 +17,15 @@
 	request.setCharacterEncoding("UTF-8");
     //get the values straight from the client
     String de = "";
-    String t = "";
     String c = "";
     String cat_error_msg = "";
     String desc_error_msg = "";
-    String title_error_msg = "";
 
     if (request.getMethod().equals("POST")) {
       boolean validation_error = false;
       de = request.getParameter("description");
       if (de.length() == 0) {
         desc_error_msg = loc.get(5, "Please enter a description");
-        validation_error |= true;
-      }
-
-      t = request.getParameter("title");
-      if (t.length() == 0) {
-        title_error_msg = loc.get(6, "Please enter a title");
         validation_error |= true;
       }
 
@@ -49,7 +41,7 @@
 
       if (!validation_error) {
         Requestoffer_utils.Requestoffer_response result = 
-          Requestoffer_utils.put_requestoffer(user_id, de, t, cat);
+          Requestoffer_utils.put_requestoffer(user_id, de, cat);
           response.sendRedirect("dashboard.jsp");
       }
     }
@@ -66,11 +58,6 @@
           name="description" 
           value="<%=de%>"/> 
         <span><%=desc_error_msg%></span>
-      </p>
-
-      <p>
-        <%=loc.get(12,"Title")%>: <input type="text" name="title" value="<%=t%>"/> 
-        <span><%=title_error_msg%></span>
       </p>
 
       <p>

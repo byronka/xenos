@@ -23,7 +23,7 @@
     }
   }
 
-  //extract points
+  //extract points - this section deprecated, until further notice.
   Integer srch_minpts = null;
   Integer srch_maxpts = null;
   String srch_pts = params.get("pts"); //points
@@ -38,7 +38,6 @@
   }
 
   String srch_cat = params.get("cat"); //categories
-  String srch_ti = params.get("ti"); //title
   String srch_us = params.get("us"); //users
   String srch_sta = params.get("sta"); //status
 
@@ -71,7 +70,6 @@
     new Requestoffer_utils.Search_Object(  
                                       srch_startdate, 
                                       srch_enddate, 
-                                      srch_ti, 
                                       srch_cat, 
                                       srch_sta, 
                                       srch_minpts, 
@@ -84,9 +82,6 @@
   for (Others_Requestoffer r : or_package.get_requestoffers()) {
 %>
   <div class="others requestoffer">
-    <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>">
-      <%=Utils.safe_render(r.title)%> 
-    </a>
     <%if (r.status == 76) {%>
       <span class="handle-button-span">
         <a 
@@ -97,10 +92,6 @@
       </span>
     <%}%>
     <ul>
-      <li class="points">
-        <span class="label"><%=loc.get(4, "Points")%>:</span>
-        <span class="value"><%=r.points%></span>
-      </li>
       <li class="rank">
         <span class="label"><%=loc.get(79, "Rank")%>:</span>
         <span 

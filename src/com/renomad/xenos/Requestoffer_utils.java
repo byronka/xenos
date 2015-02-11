@@ -154,7 +154,7 @@ public final class Requestoffer_utils {
     
     String sqlText = 
       "SELECT r.requestoffer_id, r.datetime, r.description, r.points,"+
-      "r.status, r.title, r.requestoffering_user_id, r.handling_user_id, "+
+      "r.status, r.requestoffering_user_id, r.handling_user_id, "+
       "GROUP_CONCAT(rc.category_id SEPARATOR ',') AS categories "+
       "FROM requestoffer r "+
       "JOIN requestoffer_to_category rtc ON rtc.requestoffer_id = r.requestoffer_id "+
@@ -179,7 +179,7 @@ public final class Requestoffer_utils {
       String d = resultSet.getNString("description");
       int p = resultSet.getInt("points");
       int s = resultSet.getInt("status");
-      String t = resultSet.getNString("title");
+      String t = ""; //title deprecated
       int ru = resultSet.getInt("requestoffering_user_id");
       int hu = resultSet.getInt("handling_user_id");
       String ca = resultSet.getString("categories");
@@ -205,7 +205,6 @@ public final class Requestoffer_utils {
     public final String startdate;
     public final String enddate;
 
-    public final String title;
 
     /**
       * categories as an array of numbers, delimited by commas
@@ -229,7 +228,6 @@ public final class Requestoffer_utils {
     public Search_Object(
         String startdate,
         String enddate,
-        String title,
         String categories,
         String statuses,
         Integer minpoints,
@@ -237,7 +235,6 @@ public final class Requestoffer_utils {
         String user_ids) {
       this.startdate = startdate;
       this.enddate = enddate;
-      this.title = title;
       this.categories = Utils.is_comma_delimited_numbers(categories) ? 
         categories 
         : "";
@@ -306,7 +303,7 @@ public final class Requestoffer_utils {
       cs = conn.prepareCall(String.format(
         "{call get_others_requestoffers(%d,?,?,?,?,?,%d,%d,?,%d,?)}"
         ,ruid, so.minpoints, so.maxpoints, page));
-      cs.setNString(1, so.title);
+      cs.setNString(1, ""); //title deprecated for now.
       cs.setString(2, so.startdate);
       cs.setString(3, so.enddate);
       cs.setString(4, so.statuses);
@@ -329,7 +326,7 @@ public final class Requestoffer_utils {
         String d = resultSet.getNString("description");
         int p = resultSet.getInt("points");
         int s = resultSet.getInt("status");
-        String t = resultSet.getNString("title");
+        String t =  d.length() < 10 ? d : d.substring(0,10)+"..."; //title deprecated
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
         int ra = resultSet.getInt("rank");
@@ -506,12 +503,10 @@ public final class Requestoffer_utils {
     * given all the data to add a requestoffer, does so.
     * @param user_id the user's id
     * @param desc a description string, the core of the requestoffer
-    * @param points the points are the currency for the requestoffer
-    * @param title the short title for the requestoffer
     * @param categories the various categories for this requestoffer, 
     */
   public static Requestoffer_response put_requestoffer(
-      int user_id, String desc, String title, Integer[] categories) {
+      int user_id, String desc, Integer[] categories) {
 
     int new_requestoffer_id = -1; //need it here to be outside the "try".
     CallableStatement cs = null;
@@ -535,7 +530,7 @@ public final class Requestoffer_utils {
         "{call put_requestoffer(?,%d,?,%d,?,?)}"
         ,user_id, 1)); //we'll make all requestoffers 1 point for now.
       cs.setNString(1, desc);
-      cs.setNString(2, title);
+      cs.setNString(2, ""); //title deprecated
       cs.setString(3, categories_str);
       cs.registerOutParameter(4, java.sql.Types.INTEGER);
       cs.executeQuery();
