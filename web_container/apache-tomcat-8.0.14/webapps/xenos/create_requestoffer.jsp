@@ -18,12 +18,9 @@
     //get the values straight from the client
     String de = "";
     String t = "";
-    String p = "";
     String c = "";
-    String p_error_msg = "";
     String cat_error_msg = "";
     String desc_error_msg = "";
-    String not_enough_points_error_msg = "";
     String title_error_msg = "";
 
     if (request.getMethod().equals("POST")) {
@@ -40,14 +37,6 @@
         validation_error |= true;
       }
 
-      //extract useful information from what the client sent us
-      p = request.getParameter("points");
-      Integer points = Utils.parse_int(p);
-      if (points == null) { 
-        validation_error |= true;
-        p_error_msg = loc.get(7,"Couldn't parse points");
-      }
-
       //parse out the categories from a string the client gave us
       c = request.getParameter("categories");
       
@@ -60,13 +49,8 @@
 
       if (!validation_error) {
         Requestoffer_utils.Requestoffer_response result = 
-          Requestoffer_utils.put_requestoffer(user_id, de, points, t, cat);
-        if (result.status == Requestoffer_utils.Requestoffer_response.Stat.LACK_POINTS) {
-          not_enough_points_error_msg = 
-            loc.get(9,"You don't have enough points to make this requestoffer!");
-        } else {
+          Requestoffer_utils.put_requestoffer(user_id, de, t, cat);
           response.sendRedirect("dashboard.jsp");
-        }
       }
     }
   %>
@@ -82,13 +66,6 @@
           name="description" 
           value="<%=de%>"/> 
         <span><%=desc_error_msg%></span>
-      </p>
-
-      <p>
-        <div><%=not_enough_points_error_msg %></div>
-        <%=loc.get(11,"Points")%>: 
-        <input type="text" name="points" value="<%=p%>"/> 
-        <span><%=p_error_msg%></span>
       </p>
 
       <p>

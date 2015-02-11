@@ -511,8 +511,7 @@ public final class Requestoffer_utils {
     * @param categories the various categories for this requestoffer, 
     */
   public static Requestoffer_response put_requestoffer(
-      int user_id, String desc, int points, 
-      String title, Integer[] categories) {
+      int user_id, String desc, String title, Integer[] categories) {
 
     int new_requestoffer_id = -1; //need it here to be outside the "try".
     CallableStatement cs = null;
@@ -534,7 +533,7 @@ public final class Requestoffer_utils {
 
       cs = conn.prepareCall(String.format(
         "{call put_requestoffer(?,%d,?,%d,?,?)}"
-        ,user_id, points));
+        ,user_id, 1)); //we'll make all requestoffers 1 point for now.
       cs.setNString(1, desc);
       cs.setNString(2, title);
       cs.setString(3, categories_str);
@@ -542,12 +541,6 @@ public final class Requestoffer_utils {
       cs.executeQuery();
       new_requestoffer_id = cs.getInt(4);
     } catch (SQLException ex) {
-      //look for the error from the trigger to check points
-      if (ex.getMessage()
-          .contains("user lacks points to make this requestoffer")) {
-        return new Requestoffer_response(Requestoffer_response.Stat.LACK_POINTS, -1);
-      }
-
       Database_access.handle_sql_exception(ex);
       return new Requestoffer_response(Requestoffer_response.Stat.ERROR, -1);
     } finally {
@@ -889,7 +882,7 @@ public final class Requestoffer_utils {
       * to allow filtering.
       */
     public enum Stat {
-      LACK_POINTS, OK , ERROR
+      OK , ERROR
     }
     public final Stat status;
 
