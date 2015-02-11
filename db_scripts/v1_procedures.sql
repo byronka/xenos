@@ -11,13 +11,14 @@ DROP PROCEDURE IF EXISTS is_non_empty_string;
 
 CREATE PROCEDURE is_non_empty_string
 (
-  procname VARCHAR(40), -- add here the name of the procedure we're coming from
-  fieldname VARCHAR(40), -- add the field we're checking for non-null or empty
-  text_value NVARCHAR(200) -- here you place the actual text to check
+  procname VARCHAR(40), -- the name of the procedure we're coming from
+  fieldname VARCHAR(40), -- the field we're checking for non-null or empty
+  text_value NVARCHAR(200) -- the actual text to check
 ) 
 BEGIN
   IF (text_value IS NULL OR text_value = '') THEN
-      SET @msg = CONCAT(fieldname,' value in ',procname,' was empty or null');
+      SET @msg = CONCAT(
+        fieldname,' value in ',procname,' was empty or null');
       ROLLBACK;
       SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
@@ -258,7 +259,9 @@ END
 ---DELIMITER---
 
 DROP PROCEDURE IF EXISTS put_requestoffer;
+
 ---DELIMITER---
+
 CREATE PROCEDURE put_requestoffer
 (
   my_desc NVARCHAR(200),
@@ -274,6 +277,36 @@ BEGIN
       SET @cat_err_msg = 'categories was empty - not allowed in this proc';
       SIGNAL SQLSTATE '45000' set message_text = @cat_err_msg;
   END IF;
+
+  call put_requestoffer_trans_section(my_desc, ruid, ti, pts, cats, new_requestoffer_id);
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS put_requestoffer_trans_section;
+
+---DELIMITER---
+
+-- this procedure holds just the transactional portion
+-- of the code, so we can declare a handler and know it will
+-- only apply there.
+
+CREATE PROCEDURE put_requestoffer_trans_section
+(
+  my_desc NVARCHAR(200),
+  ruid INT UNSIGNED, -- requestoffering user id
+	ti NVARCHAR(255), -- title
+  pts INT, -- points
+  cats VARCHAR(50), -- this cannot be empty or we'll SQLException.
+  OUT new_requestoffer_id INT UNSIGNED
+)
+BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+      SET message_text = "exception in put_requestoffer_trans_section";
+  END;
 
   START TRANSACTION;
 
@@ -297,7 +330,8 @@ BEGIN
   PREPARE cat_sql FROM @cat_sql;
   EXECUTE cat_sql;
 
-  INSERT INTO requestoffer_to_category (requestoffer_id, requestoffer_category_id)
+  INSERT INTO 
+    requestoffer_to_category (requestoffer_id, requestoffer_category_id)
   SELECT new_requestoffer_id, id FROM CAT_IDS;
   DROP TEMPORARY TABLE CAT_IDS;
 
@@ -309,6 +343,7 @@ BEGIN
   CALL add_audit(1,ruid,new_requestoffer_id,'');
 
   COMMIT;
+
 END
 
 ---DELIMITER---
@@ -380,6 +415,29 @@ BEGIN
       SIGNAL SQLSTATE '45000' SET message_text = @msg;
   END IF;
 
+  call take_requestoffer_trans_section(uid, rid);
+
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS take_requestoffer_trans_section;
+
+---DELIMITER---
+
+CREATE PROCEDURE take_requestoffer_trans_section
+(
+  uid INT UNSIGNED,
+  rid INT UNSIGNED
+) 
+BEGIN 
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+      SET message_text = "exception in take_requestoffer_trans_section";
+  END;
+
   START TRANSACTION;
     UPDATE requestoffer 
     SET 
@@ -447,6 +505,27 @@ BEGIN
     FROM requestoffer
     WHERE requestoffer_id = rid;
 
+    call delete_requestoffer_trans_section(uid, rid);
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS delete_requestoffer_trans_section;
+
+---DELIMITER---
+
+CREATE PROCEDURE delete_requestoffer_trans_section
+(
+  uid INT UNSIGNED,
+  rid INT UNSIGNED
+) 
+BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+      SET message_text = "exception in delete_requestoffer_trans_section";
+  END;
   START TRANSACTION;
 
     -- actually delete the requestoffer here.
@@ -496,6 +575,29 @@ BEGIN
       SET message_text = @msg;
   END IF;
 
+  call create_new_user_trans_section(uname, pword, alt);
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS create_new_user_trans_section;
+
+---DELIMITER---
+
+CREATE PROCEDURE create_new_user_trans_section
+(
+  uname NVARCHAR(50),
+  pword VARCHAR(64),
+  slt VARCHAR(50)
+) 
+BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+      SET message_text = "exception in create_new_user_trans_section";
+  END;
+
   START TRANSACTION;
 
     -- add the user
@@ -527,7 +629,29 @@ BEGIN
 
   call validate_user_id(uid);
   call is_non_empty_string('register_user_and_get_cookie','ip',ip);
+  call register_user_and_get_cookie_trans_section(uid, ip, new_cookie);
+END
 
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS register_user_and_get_cookie_trans_section;
+
+---DELIMITER---
+
+CREATE PROCEDURE register_user_and_get_cookie_trans_section
+(
+  uid INT UNSIGNED,
+  ip VARCHAR(15), -- e.g. "255.255.255.255"
+  OUT new_cookie VARCHAR(200)
+) 
+BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+      SET message_text = 
+      "exception in register_user_and_get_cookie_trans_section";
+  END;
   START TRANSACTION;
 
     SELECT UTC_TIMESTAMP() INTO @timestamp;
@@ -657,6 +781,30 @@ BEGIN
 	END IF;
 
 	-- at this point we are pretty sure it's all cool.
+  call complete_ro_transaction_trans_section(uid, rid);
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS complete_ro_transaction_trans_section;
+
+---DELIMITER---
+
+-- simply sets the state of a requestoffer to closed.
+-- however, first, it checks validity of values it's been given.
+CREATE PROCEDURE complete_ro_transaction_trans_section
+(
+uid INT UNSIGNED, -- the user who owns this requestoffer
+rid INT UNSIGNED -- the requestoffer
+)
+BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+      SET message_text = 
+      "exception in complete_ro_transaction_trans_section";
+  END;
 	START TRANSACTION;
 
 	UPDATE requestoffer
