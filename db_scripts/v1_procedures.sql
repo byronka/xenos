@@ -391,6 +391,70 @@ END
 
 ---DELIMITER---
 
+DROP PROCEDURE IF EXISTS offer_to_take_requestoffer;
+
+---DELIMITER---
+
+CREATE PROCEDURE offer_to_take_requestoffer
+(
+  uid INT UNSIGNED,
+  rid INT UNSIGNED
+) 
+BEGIN 
+
+  call validate_requestoffer_id(rid);
+  call validate_user_id(uid);
+
+	SELECT COUNT(*) INTO @can_take
+	FROM requestoffer r
+	WHERE r.status = 76 -- 'open'
+	AND r.requestoffer_id = rid;
+	
+  IF (@can_take <> 1) THEN
+      SET @msg = CONCAT('cannot take requestoffer', rid,', not open');
+      SIGNAL SQLSTATE '45000' SET message_text = @msg;
+  END IF;
+
+  call offer_to_take_requestoffer_trans_section(uid, rid);
+
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS offer_to_take_requestoffer_trans_section;
+
+---DELIMITER---
+
+CREATE PROCEDURE offer_to_take_requestoffer_trans_section
+(
+  uid INT UNSIGNED,
+  rid INT UNSIGNED
+) 
+BEGIN 
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+      SET message_text = 
+      "exception in offer_to_take_requestoffer_trans_section";
+  END;
+
+  START TRANSACTION;
+
+    INSERT INTO requestoffer_service_request 
+      (requestoffer_id, user_id, date_created)
+    VALUES (rid, uid, UTC_TIMESTAMP());
+
+    -- Add an audit
+    CALL add_audit(7,uid,rid,NULL);
+
+  COMMIT;
+
+END
+
+
+---DELIMITER---
+
 DROP PROCEDURE IF EXISTS take_requestoffer;
 
 ---DELIMITER---

@@ -110,6 +110,45 @@ requestoffer (
 
 ---DELIMITER---
 
+CREATE TABLE  
+requestoffer_service_request_status ( 
+  status_id INT UNSIGNED NOT NULL PRIMARY KEY,
+  description VARCHAR(20)
+)
+
+---DELIMITER---
+
+INSERT INTO requestoffer_service_request_status 
+(status_id, description)
+VALUES 
+(106, 'new'), -- these id's are based on their localization values
+(107, 'accepted'), -- see v1_language_data.sql
+(108, 'rejected') -- this will make it easier to get their localized values
+
+---DELIMITER---
+
+-- a table that stores data about users wanting to service a particular
+-- requestoffer.  When they offer to handle one, it goes into this table.
+-- It is expected that the data here is constantly in flux.
+
+CREATE TABLE  
+requestoffer_service_request ( 
+  requestoffer_id INT UNSIGNED NOT NULL,
+  user_id INT UNSIGNED NOT NULL,
+  date_created DATETIME, -- when a user made the offer to handle
+  date_modified DATETIME, -- when the user takes an action on it
+  status INT,
+  PRIMARY KEY (requestoffer_id, user_id),
+  FOREIGN KEY FK_requestoffer_id (requestoffer_id)
+  REFERENCES requestoffer (requestoffer_id)
+  ON DELETE CASCADE,
+  FOREIGN KEY FK_user_id (user_id)
+  REFERENCES user (user_id)
+  ON DELETE CASCADE
+)
+
+---DELIMITER---
+
 
 -- create a table of known languages
 
@@ -226,7 +265,8 @@ VALUES
 (3,'User handled a requestoffer'),
 (4,'New user was registered'),
 (5,'cookie authentication failed'),
-(6,'user closed their own requestoffer')
+(6,'user closed their own requestoffer'),
+(7,'user offered to take requestoffer')
 
 
 ---DELIMITER---

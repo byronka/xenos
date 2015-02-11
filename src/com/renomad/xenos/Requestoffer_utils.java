@@ -115,12 +115,31 @@ public final class Requestoffer_utils {
     }
   }
 
+  public static boolean
+    offer_to_take_requestoffer(int user_id, int requestoffer_id) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall(String.format(
+        "{call offer_to_take_requestoffer(%d, %d)}" 
+        , user_id, requestoffer_id));
+      cs.execute();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+    return true;
+
+    }
 
   /**
     * sets the status of the requestoffer to taken for a given user.
     * @return true if successful at taking, false otherwise.
     */
-  public static boolean take_requestoffer(int user_id, int requestoffer_id) {
+  public static boolean 
+    take_requestoffer(int user_id, int requestoffer_id) {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();

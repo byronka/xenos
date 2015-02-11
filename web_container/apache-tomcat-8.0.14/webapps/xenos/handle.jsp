@@ -27,12 +27,12 @@
   java.util.Map<String,String> params = Utils.parse_qs(qs);
   String is_confirmed = params.get("confirm");
   if (is_confirmed != null && is_confirmed.equals("true")) {
-  if (Requestoffer_utils.take_requestoffer(user_id, r.requestoffer_id)) {
-    response.sendRedirect(
-      String.format("requestoffer.jsp?requestoffer=%d&service=true",r.requestoffer_id));
+  if (Requestoffer_utils.offer_to_take_requestoffer(
+    user_id, r.requestoffer_id)) {
+    response.sendRedirect("offer_received.jsp");
     return;
     } else {
-      out.println("<script>console.log('help!')</script>");
+      response.sendRedirect("general_error.jsp");
     }
   }
   if (r == null) {
