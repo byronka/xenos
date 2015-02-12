@@ -639,7 +639,7 @@ BEGIN
       SET message_text = @msg;
   END IF;
 
-  call create_new_user_trans_section(uname, pword, alt);
+  call create_new_user_trans_section(uname, pword, slt);
 END
 
 ---DELIMITER---
