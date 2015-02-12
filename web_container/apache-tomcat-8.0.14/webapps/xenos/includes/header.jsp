@@ -7,7 +7,13 @@
 		<a href="logout.jsp" ><%=loc.get(3, "Logout")%></a>
 		<a href="my_profile.jsp" class="user-displayname">
 			<%=Utils.safe_render(user.username)%>
-			<%=user.points%> <%=loc.get(11, "points")%>
+      <%if (user.points > 0) {%>
+			is owed <%=user.points%> favors
+      <% } else if (user.points == 0) {%>
+      owes no one anything.
+      <% } else { %>
+      owes people <%=-user.points%> favors
+      <% } %>
 			<input 
 				type="hidden" 
 				id="timeout_value" 

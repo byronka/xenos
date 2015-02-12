@@ -1,5 +1,5 @@
 div.header-container {
-  height: 65px;
+  height: 75px;
 }
 
 div.header-container a.advanced.search {
@@ -19,6 +19,12 @@ div.header-container .search {
   right: 10px;
 }
 
+div.header-container a.user-displayname {
+  display: block;
+  padding-left: 15px;
+}
+
+
 div.header-container form.search input {
   height:20px;
 }
@@ -36,7 +42,7 @@ div.header-container div.header {
   background-color: #5f2d1d;
   color: white;
   border: 1px solid grey;
-  height: 65px;
+  height: 75px;
   position: fixed;
   top:0px;
   left: 0px;
@@ -45,7 +51,7 @@ div.header-container div.header {
   z-index: 1;
 }
 
-div.header-container div.trademark {
+div.header-container a.trademark {
   text-shadow:6px 7px 4px rgba(34,87,73,0.5);
   font-weight:bold;
   color:white;
@@ -54,7 +60,7 @@ div.header-container div.trademark {
   font-size:36px;
   text-align:left;
   line-height:1;
-  position: absolute;
+  padding-bottom: 10px;
 }
 
 div.header-container a {
