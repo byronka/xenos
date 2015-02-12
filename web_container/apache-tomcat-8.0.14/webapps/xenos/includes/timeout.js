@@ -28,7 +28,7 @@ xenos_utils.timeout_counter = function() {
     if (countdown === 0 || halt) {
       //Whether we halt or we hit the end of countown - refresh the page.  Server 
       // will have logged us out if we passed the timeout time across browsers.
-      location.reload();
+      document.location = 'login.jsp';
       return;
     }
     if (countdown == (60 * 5)) {  //HERE is where we set the point where the alert shows.
