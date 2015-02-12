@@ -39,6 +39,7 @@ xenos_utils.timeout_counter = function() {
     if (alert_displayed) {
       var alert_div = document.getElementById('timeout_dialog');
       document.getElementById('countdown_seconds').textContent = countdown;
+      document.title = 'timeout in ' + countdown + ' seconds';
     }
       
     countdown--;
