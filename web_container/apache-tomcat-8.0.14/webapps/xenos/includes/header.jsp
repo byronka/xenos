@@ -10,7 +10,7 @@
       <%if (user.points > 0) {%>
 			is owed <%=user.points%> favors
       <% } else if (user.points == 0) {%>
-      owes no one anything.
+      owes, and is owed, nothing.
       <% } else { %>
       owes people <%=-user.points%> favors
       <% } %>
