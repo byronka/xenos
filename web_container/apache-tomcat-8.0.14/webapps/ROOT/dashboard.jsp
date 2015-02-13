@@ -56,7 +56,6 @@
 		<% } else { %>
 			<link rel="stylesheet" href="includes/common.css" title="desktop">
 		<% } %>
-    <script src="dashboard.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=loc.get(16,"The dashboard")%></title>
   </head>
@@ -94,10 +93,10 @@
     <ul>
       <li class="rank">
         <span class="label"><%=loc.get(79, "Rank")%>:</span>
-        <span 
-          class='rank value' 
-          title="<%=r.rank%> percent">
-            <%=r.rank%>
+        <span >
+          <%for (int i = 0; i < Math.ceil(r.rank / 20.0); i++) {%>
+           &#x2605; 
+            <%}%>
         </span>
       </li>
       <li class="description">
