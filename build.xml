@@ -201,7 +201,7 @@
   -->
   <target name="install"
     description="move files into web container">
-    <copy todir="${tomcat.webapps.dir}xenos/WEB-INF/classes" >
+    <copy todir="${tomcat.webapps.dir}ROOT/WEB-INF/classes" >
       <!-- Note: **/* will include all sub-directories. -->
       <fileset dir="build/classes" includes="**/*" />
     </copy>
@@ -503,8 +503,8 @@
     <exec executable="${tomcat.home.bin}startup.bat" osfamily="windows" />
     <echo message=""/>
     <echo message="Installing language data."/>
-    <echo message="Xenos is ready at https://localhost:8443/xenos"/>
-    <echo message="or (non-ssl) at http://localhost:8080/xenos"/>
+    <echo message="Xenos is ready at https://localhost:8443"/>
+    <echo message="or (non-ssl) at http://localhost:8080"/>
   </target>
 
   <target name="tomcat-stop" 

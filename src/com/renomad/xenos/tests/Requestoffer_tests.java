@@ -32,7 +32,7 @@ public class Requestoffer_tests {
     // need to clean up at the end of this test to refund those points.
     // deleting the requestoffer at the end includes a piece for refunding points
     Requestoffer_utils.Requestoffer_response response = Requestoffer_utils.put_requestoffer(
-        user_id, desc, points, title, categories);
+        user_id, desc, categories);
 
 		//now we've put a requestoffer in.
 
