@@ -39,7 +39,7 @@ VALUES
 ("2014-9-18 21:22:42",    "<script>alert('homework is bad')</script>", 15, 76, 5,NULL),
 ("2012-1-8 5:44:00",      "Do stuff, I don't care, just do it", 15, 76, 5,NULL),
 ("2010-2-24 2:13:20",     "This is not the end of the end, nor is it the beginning of the end.  It is the end of the beginning", 15, 76, 5,NULL),
-("2014-3-8 18:45:02",     "Get me some illegal narcotics, ship them safely to my home", 15, 76, 5,NULL),
+("2014-3-8 18:45:02",     "Draft:Get me some illegal narcotics, ship them safely to my home", 15, 109, 5,NULL),
 ("2010-7-27 21:22:42",    "description goes here", 15, 76, 5,NULL),
 ("2011-6-20 21:22:42",    "description goes here", 15, 76, 5,NULL),
 ("2012-5-27 23:22:42",    "description goes here", 15, 76, 5,NULL),
@@ -118,4 +118,21 @@ VALUES
 
 ---DELIMITER---
 
-SET FOREIGN_KEY_CHECKS=1;
+INSERT INTO location (location_id, address_line_1, address_line_2, city, state, country, postal_code)
+VALUES
+(1, '2335 Dogwood Meadows Cove','','Germantown','TN','USA','38136'),
+(2, '964 Argonne Avenue','Apt 4','Atlanta','GA','USA','30016'),
+(3, '696 Woodland Avenue','','Atlanta','GA','USA','30016'),
+(4, '950 Herndon Parkway','Suite 301','Herndon','VA','USA','20000')
+
+---DELIMITER---
+
+INSERT INTO location_to_requestoffer (location_id, requestoffer_id)
+VALUES
+(1, 3)
+
+---DELIMITER---
+
+INSERT INTO location_to_user (location_id, user_id)
+VALUES
+(2, 4)

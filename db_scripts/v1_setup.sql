@@ -83,7 +83,7 @@ requestoffer_status (
 -- these are intentionally in all-caps to emphasize they are not
 -- supposed to go straight to the client.  They must be localized first.
 INSERT INTO requestoffer_status (requestoffer_status_id, requestoffer_status_value)
-VALUES(76,'OPEN'),(77,'CLOSED'),(78,'TAKEN');
+VALUES(76,'OPEN'),(77,'CLOSED'),(78,'TAKEN'),(109,'DRAFT');
 
 ---DELIMITER---
 
@@ -265,7 +265,9 @@ VALUES
 (4,'New user was registered'),
 (5,'cookie authentication failed'),
 (6,'user closed their own requestoffer'),
-(7,'user offered to take requestoffer')
+(7,'user offered to take requestoffer'),
+(8,'location was deleted, since there were no related users or requestoffers'),
+(9,'user published a requestoffer (set its status to OPEN)')
 
 
 ---DELIMITER---
@@ -294,7 +296,7 @@ audit_notes (
 
 -- Given that this is just the timestamp plus 3 ints, the total size
 -- should be tiny.
-
+   
 CREATE TABLE 
 audit (
   datetime DATETIME NOT NULL,
@@ -305,3 +307,50 @@ audit (
 )
 
 
+---DELIMITER---
+
+-- creates a table to store locations, which we can use for searching and mapping
+CREATE TABLE
+location (
+  location_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  address_line_1 NVARCHAR(255),
+  address_line_2 NVARCHAR(255),
+  city NVARCHAR(255),
+  state NVARCHAR(255),
+  country NVARCHAR(255),
+  postal_code VARCHAR(30) -- most important value - see http://en.wikipedia.org/wiki/Postal_code for more info!
+)
+
+---DELIMITER---
+
+-- here we create two correlation tables, from location to user and location to requestoffer.
+-- locations can be tied to a user if the user says, "remember this location", and tied to a
+-- requestoffer if that location is used in that requestoffer.
+-- there should be an event running that checks for locations that are not tied to 
+-- either a user or requestoffer and purges them, and audits the purge.
+
+CREATE TABLE
+location_to_user (
+  location_id INT UNSIGNED, 
+  user_id INT UNSIGNED, 
+  FOREIGN KEY FK_user (user_id)
+  REFERENCES user (user_id)
+  ON DELETE CASCADE,
+  FOREIGN KEY FK_location (location_id)
+  REFERENCES location (location_id)
+  ON DELETE CASCADE
+)
+
+---DELIMITER---
+
+CREATE TABLE
+location_to_requestoffer (
+  location_id INT UNSIGNED,
+  requestoffer_id INT UNSIGNED,
+  FOREIGN KEY FK_requestoffer (requestoffer_id)
+  REFERENCES requestoffer (requestoffer_id)
+  ON DELETE CASCADE,
+  FOREIGN KEY FK_location (location_id)
+  REFERENCES location (location_id)
+  ON DELETE CASCADE
+)

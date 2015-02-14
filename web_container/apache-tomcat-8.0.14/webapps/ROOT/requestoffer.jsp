@@ -84,8 +84,11 @@
         <span class="category"><%=loc.get(c,"")%> </span>
       <%}%>
   </p>
-  <%
-  if (show_delete_info) {%>
+  <% if (r.status == 109) { %>
+    <a href="publish_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(6,"Publish")%></a>
+  <% }
+  
+    if (show_delete_info) {%>
 
     <p>
       <%=loc.get(39,"Are you sure you want to delete this requestoffer?")%> <%=r.points%> <%=loc.get(39,"points will be refunded to you")%>
@@ -100,7 +103,9 @@
         <%=loc.get(30,"Nevermind, do not delete it")%></a>
     </p>
 
-    <%} if (show_handle_button) {%>
+    <%} 
+    
+    if (show_handle_button) {%>
       <a href="handle.jsp?requestoffer=<%=r.requestoffer_id%>">
         <%=loc.get(37,"Handle")%>
       </a>

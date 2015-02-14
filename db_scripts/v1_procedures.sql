@@ -235,7 +235,7 @@ BEGIN
             JOIN requestoffer_category rc 
               ON rc.category_id = rtc.requestoffer_category_id 
             JOIN user u ON u.user_id = r.requestoffering_user_id 
-            WHERE requestoffering_user_id <> @ruid
+            WHERE requestoffering_user_id <> @ruid AND r.status <> 109
             ', @search_clauses ,'
             GROUP BY r.requestoffer_id 
             ORDER BY r.datetime DESC
@@ -303,7 +303,7 @@ BEGIN
   call validate_user_id(ruid);
   
   -- A) The main part - add the requestoffer to that table.
-  SET @status = 76; -- requestoffers always start 'open'
+  SET @status = 109; -- requestoffers always start 'draft'
   INSERT into requestoffer (description, datetime, points,
    status, requestoffering_user_id)
    VALUES (my_desc, UTC_TIMESTAMP(), pts, @status, ruid); 
@@ -538,9 +538,9 @@ BEGIN
       WHERE requestoffer_id = rid
     );
 
-  IF (@status_id <> 76) THEN
+  IF (@status_id <> 76 AND @status_id <> 109) THEN
     SET @msg = CONCAT('not possible to delete request ',rid,
-    ' since it is not open');
+    ' since it is not open or draft');
     SIGNAL SQLSTATE '45000' SET message_text = @msg;
   END IF;
 
@@ -866,3 +866,71 @@ BEGIN
 
 	COMMIT;
 END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS publish_requestoffer;
+
+---DELIMITER---
+
+CREATE PROCEDURE publish_requestoffer
+(
+  uid INT UNSIGNED,
+  rid INT UNSIGNED
+) 
+BEGIN 
+	call validate_requestoffer_id(rid);	
+	call validate_user_id(uid);
+
+	SELECT COUNT(*) INTO @is_valid
+	FROM requestoffer
+	WHERE requestoffering_user_id = uid 
+		AND requestoffer_id = rid
+		AND status = 109; -- draft status
+
+	IF (@is_valid <> 1) THEN
+		SET @msg = CONCAT('requestoffer ',
+		  rid,' does not have a requestoffering user id of ',
+			uid,' , or it is not in the right status (draft)');
+		SIGNAL SQLSTATE '45000' SET message_text = @msg;
+	END IF;
+
+	-- at this point we are pretty sure it's all cool.
+  call publish_requestoffer_trans_section(uid, rid);
+
+END
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS publish_requestoffer_trans_section;
+
+---DELIMITER---
+-- just set the status to 'open' which will make it available
+-- for searching by others and handling.
+
+CREATE PROCEDURE publish_requestoffer_trans_section
+(
+  uid INT UNSIGNED,
+  rid INT UNSIGNED
+) 
+BEGIN 
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+      SET message_text = 
+      "exception in offer_to_take_requestoffer_trans_section";
+  END;
+
+  START TRANSACTION;
+
+    UPDATE requestoffer
+    SET status = 76
+    WHERE requestoffer_id = rid;
+
+    -- Add an audit
+    CALL add_audit(9,uid,rid,NULL);
+
+  COMMIT;
+
+END
+

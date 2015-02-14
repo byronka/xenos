@@ -38,3 +38,42 @@ DO
 			WHERE UTC_TIMESTAMP() > 
 					(last_activity_time + INTERVAL timeout_seconds SECOND);
 	END
+
+---DELIMITER---
+
+-- every day, find locations that are not tied to either a user
+-- or a requestoffer and delete them, and add an audit about doing so.
+
+CREATE EVENT location_purge 
+ON SCHEDULE
+  EVERY 1 DAY 
+COMMENT 'deletes locations that are not tied to either a user or a requestoffer'
+DO
+  BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+      SIGNAL SQLSTATE '45000' 
+      SET message_text = "exception in location_purge event";
+    END;
+
+    DROP TEMPORARY TABLE IF EXISTS locations_to_delete;
+
+    CREATE TEMPORARY TABLE locations_to_delete AS ( -- temporary table of id's to delete
+      SELECT l.location_id  -- Get locations that have neither a user nor a requestoffer
+      from location l 
+      LEFT JOIN location_to_user ltu ON ltu.location_id = l.location_id 
+      LEFT JOIN location_to_requestoffer ltr ON ltr.location_id = l.location_id 
+      WHERE ltu.location_id IS NULL AND ltr.location_id IS NULL
+    );
+
+    DELETE FROM location -- here we actually delete
+    WHERE location_id IN (
+      select location_id from locations_to_delete
+    );
+
+    INSERT INTO audit ( -- now, store an audit of what we deleted
+      datetime, audit_action_id, user_id, target_id)
+    SELECT UTC_TIMESTAMP(), 8, 1, location_id
+    FROM locations_to_delete;
+
+  END

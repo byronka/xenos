@@ -75,6 +75,28 @@ public final class Requestoffer_utils {
 
 
   /**
+    * put the requestoffer into an 'open' status,
+    * so people can potentially handle it.
+    */
+  public static boolean publish_requestoffer(int requestoffer_id, int user_id) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall(String.format(
+        "{call publish_requestoffer(%d, %d)}" 
+        , user_id, requestoffer_id));
+      cs.execute();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+    return true;
+  }
+
+
+  /**
     * returns a list of localization values for the categories
     * @return List of Integers representing localization values 
     *   for categories, or null if nothing in db. The

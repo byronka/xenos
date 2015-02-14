@@ -20,6 +20,8 @@ Git events
 Git commit standards
 Version number
 Testing
+Definitions
+Deploy checklist
 Troubleshooting
 
 
@@ -509,6 +511,36 @@ You may want to have the script finish on some page for human review.
 
 
 
+
+Definitions
+===============
+Requestoffer - this thing can be a favor, a purchase, a request, an offer, etc.
+
+
+
+
+
+
+
+
+
+
+
+Deploy checklist
+===============
+Test these features:
+  create requestoffer
+  delete requestoffer
+  handle a requestoffer
+  search for requestoffers
+
+check that audits appeared for those actions
+check that no stacktraces appeared in logs
+
+smoke test the application in Hebrew and French
+smoke test it on Chrome, Firefox, and Iphone, Android
+
+** There can be no known defects at release. **
 
 
 

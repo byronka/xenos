@@ -8,11 +8,11 @@
 		<a href="my_profile.jsp" class="user-displayname">
 			<%=Utils.safe_render(user.username)%>
       <%if (user.points > 0) {%>
-			is owed <%=user.points%> favors
+        <%=String.format(loc.get(9, "is owed %d favors"),user.points)%>
       <% } else if (user.points == 0) {%>
-      owes, and is owed, nothing.
+        <%=loc.get(12, "owes, and is owed, nothing.")%>
       <% } else { %>
-      owes people <%=-user.points%> favors
+        <%=String.format(loc.get(27, "owes people %d favors"), -user.points)%>
       <% } %>
 			<input 
 				type="hidden" 

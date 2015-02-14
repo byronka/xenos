@@ -23,7 +23,6 @@ public class Requestoffer_tests {
     //arrange
     int user_id = 4;
     String desc = "desc";
-    int points = 100; 
     String title = "title"; 
     Integer[] categories = {71,72};
 
@@ -43,8 +42,8 @@ public class Requestoffer_tests {
     assertNotNull(String.format("r2 was null after trying an id of %d", response.id), r2);
     assertTrue(r2.datetime.length() > 0);
     assertEquals(desc, r2.description);
-    assertEquals(points, r2.points);
-    assertEquals(76, r2.status); //always starts OPEN
+    assertEquals(1, r2.points);
+    assertEquals(109, r2.status); //always starts DRAFT
     assertEquals(user_id, r2.requestoffering_user_id);
     assertArrayEquals(categories, r2.get_categories());
 

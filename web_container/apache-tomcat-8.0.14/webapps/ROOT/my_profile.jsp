@@ -46,7 +46,7 @@
 			<div class="requestoffer mine">
 				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
 					<%=Utils.safe_render(r.description.length() < 15 ? r.description : r.description.substring(0,15)+"...")    %> </a>
-        <%if(r.status == 76) {%>
+        <%if(r.status == 76 || r.status == 109) {%>
           <a class="button" 
             href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
             <%=loc.get(21,"Delete")%>
