@@ -198,12 +198,11 @@ public final class Requestoffer_utils {
       String d = resultSet.getNString("description");
       int p = resultSet.getInt("points");
       int s = resultSet.getInt("status");
-      String t = ""; //title deprecated
       int ru = resultSet.getInt("requestoffering_user_id");
       int hu = resultSet.getInt("handling_user_id");
       String ca = resultSet.getString("categories");
       Integer[] categories = parse_string_to_int_array(ca);
-      Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,t,ru,hu,categories);
+      Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,categories);
 
       return requestoffer;
     } catch (SQLException ex) {
@@ -301,7 +300,7 @@ public final class Requestoffer_utils {
     * 
     * @param ruid the id of the user asking for the requestoffers.
     * @param so an object that holds all the ways to search
-    * the requestoffers.  Things like, dates, categories, titles, etc.
+    * the requestoffers.  Things like, dates, categories, etc.
     * @param page This method is used to display requestoffers, and we
     * include paging functionality - splitting the response into
     * pages of data.  Which page are we on?
@@ -320,17 +319,16 @@ public final class Requestoffer_utils {
       // see db_scripts/v1_procedures.sql get_others_requestoffers for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
-        "{call get_others_requestoffers(%d,?,?,?,?,?,%d,%d,?,%d,?)}"
+        "{call get_others_requestoffers(%d,?,?,?,?,%d,%d,?,%d,?)}"
         ,ruid, so.minpoints, so.maxpoints, page));
-      cs.setNString(1, ""); //title deprecated for now.
-      cs.setString(2, so.startdate);
-      cs.setString(3, so.enddate);
-      cs.setString(4, so.statuses);
-      cs.setString(5, so.categories);
-      cs.setString(6, so.user_ids);
-      cs.registerOutParameter(7, java.sql.Types.INTEGER);
+      cs.setString(1, so.startdate);
+      cs.setString(2, so.enddate);
+      cs.setString(3, so.statuses);
+      cs.setString(4, so.categories);
+      cs.setString(5, so.user_ids);
+      cs.registerOutParameter(6, java.sql.Types.INTEGER);
       ResultSet resultSet = cs.executeQuery();
-      int pages = cs.getInt(7);
+      int pages = cs.getInt(6);
 
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new OR_Package(new Others_Requestoffer[0],1);
@@ -345,7 +343,6 @@ public final class Requestoffer_utils {
         String d = resultSet.getNString("description");
         int p = resultSet.getInt("points");
         int s = resultSet.getInt("status");
-        String t =  d.length() < 10 ? d : d.substring(0,10)+"..."; //title deprecated
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
         int ra = resultSet.getInt("rank");
@@ -353,7 +350,7 @@ public final class Requestoffer_utils {
         Integer[] cat_array = parse_string_to_int_array(cats);
 
         Others_Requestoffer requestoffer = 
-          new Others_Requestoffer(t,dt,d,s,ra,p,rid,ru,hu,cat_array);
+          new Others_Requestoffer(dt,d,s,ra,p,rid,ru,hu,cat_array);
         requestoffers.add(requestoffer);
       }
 
@@ -400,7 +397,7 @@ public final class Requestoffer_utils {
   public static Requestoffer[] 
       get_requestoffers_I_am_handling(int user_id) {
     String sqlText = "SELECT requestoffer_id, datetime, description, "+
-      "points, status, title, requestoffering_user_id, handling_user_id "+
+      "points, status, requestoffering_user_id, handling_user_id "+
       "FROM requestoffer WHERE handling_user_id = ?";
     PreparedStatement pstmt = null;
     try {
@@ -421,10 +418,9 @@ public final class Requestoffer_utils {
         String d = resultSet.getNString("description");
         int p = resultSet.getInt("points");
         int s = resultSet.getInt("status");
-        String t = resultSet.getNString("title");
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
-        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,t,ru,hu);
+        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu);
         requestoffers.add(requestoffer);
       }
 
@@ -448,7 +444,7 @@ public final class Requestoffer_utils {
     */
   public static Requestoffer[] get_requestoffers_for_user(int user_id) {
     String sqlText = "SELECT requestoffer_id, datetime, description, "+
-      "points, status, title, requestoffering_user_id, handling_user_id "+
+      "points, status, requestoffering_user_id, handling_user_id "+
       "FROM requestoffer WHERE requestoffering_user_id = ?";
     PreparedStatement pstmt = null;
     try {
@@ -469,10 +465,9 @@ public final class Requestoffer_utils {
         String d = resultSet.getNString("description");
         int p = resultSet.getInt("points");
         int s = resultSet.getInt("status");
-        String t = resultSet.getNString("title");
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
-        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,t,ru,hu);
+        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu);
         requestoffers.add(requestoffer);
       }
 
@@ -545,15 +540,14 @@ public final class Requestoffer_utils {
         categories_str = sb.toString();
       }
 
-      cs = conn.prepareCall(String.format(
-        "{call put_requestoffer(?,%d,?,%d,?,?)}"
-        ,user_id, 1)); //we'll make all requestoffers 1 point for now.
+      cs = conn.prepareCall("{call put_requestoffer(?,?,?,?,?)}");
       cs.setNString(1, desc);
-      cs.setNString(2, ""); //title deprecated
-      cs.setString(3, categories_str);
-      cs.registerOutParameter(4, java.sql.Types.INTEGER);
+      cs.setInt(2, user_id);
+      cs.setInt(3, 1); //we make all requestoffers 1 point for now
+      cs.setString(4, categories_str);
+      cs.registerOutParameter(5, java.sql.Types.INTEGER);
       cs.executeQuery();
-      new_requestoffer_id = cs.getInt(4);
+      new_requestoffer_id = cs.getInt(5);
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return new Requestoffer_response(Requestoffer_response.Stat.ERROR, -1);
@@ -767,10 +761,9 @@ public final class Requestoffer_utils {
     public String fname;
     public String tname;
     public String timestamp;
-    public String title;
 
     public MyMessages(String timestamp, int rid, int fuid, int tuid, 
-        String msg, String fname, String tname, String title) {
+        String msg, String fname, String tname) {
       this.requestoffer_id = rid;
       this.from_user_id = fuid;
       this.to_user_id = tuid;
@@ -778,7 +771,6 @@ public final class Requestoffer_utils {
       this.timestamp = timestamp;
       this.fname = fname;
       this.tname = tname;
-      this.title = title;
     }
   }
 
@@ -793,7 +785,7 @@ public final class Requestoffer_utils {
     String sqlText = 
       String.format(
 					"SELECT rm.timestamp, rm.requestoffer_id, rm.message, "+
-            "rm.from_user_id AS fuid, rm.to_user_id AS tuid, ro.title, "+
+            "rm.from_user_id AS fuid, rm.to_user_id AS tuid,  "+
             "from_user.username AS fusername, to_user.username AS tusername "+
           "FROM requestoffer_message rm "+
           "JOIN user from_user ON from_user.user_id = rm.from_user_id " +
@@ -821,9 +813,8 @@ public final class Requestoffer_utils {
         int tuid = resultSet.getInt("tuid");
         String tname = resultSet.getNString("tusername");
         String fname = resultSet.getNString("fusername");
-        String title = resultSet.getNString("title");
         MyMessages mm = 
-          new MyMessages(timestamp, rid,fuid,tuid,msg,fname,tname,title);
+          new MyMessages(timestamp, rid,fuid,tuid,msg,fname,tname);
         mms.add(mm);
       }
       MyMessages[] array_of_messages = 

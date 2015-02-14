@@ -131,7 +131,6 @@ DROP PROCEDURE IF EXISTS get_others_requestoffers;
 CREATE PROCEDURE get_others_requestoffers
 (
   ruid INT UNSIGNED,
-	title NVARCHAR(255),
   startdate VARCHAR(10),
   enddate VARCHAR(10),
   status VARCHAR(50), -- can be many INT's separated by commas
@@ -198,13 +197,6 @@ BEGIN
       ' AND datetime <= @enddate ');
   END IF;
 
-  -- searching by title
-	IF title <> '' THEN
-		SET @title = title;
-		SET @search_clauses = 
-    CONCAT(@search_clauses, " AND title LIKE CONCAT('%' , @title , '%') ");
-	END IF;
-
 
   SET @ruid = ruid;
   SET @get_requestoffer_count = 
@@ -233,7 +225,6 @@ BEGIN
             r.description, 
             r.status, 
             r.points, 
-            r.title, 
             u.rank, 
             r.requestoffering_user_id, 
             r.handling_user_id, 
@@ -266,7 +257,6 @@ CREATE PROCEDURE put_requestoffer
 (
   my_desc NVARCHAR(200),
   ruid INT UNSIGNED, -- requestoffering user id
-	ti NVARCHAR(255), -- title
   pts INT, -- points
   cats VARCHAR(50), -- categories - this cannot be empty or we'll SQLException.
   OUT new_requestoffer_id INT UNSIGNED
@@ -278,7 +268,7 @@ BEGIN
       SIGNAL SQLSTATE '45000' set message_text = @cat_err_msg;
   END IF;
 
-  call put_requestoffer_trans_section(my_desc, ruid, ti, pts, cats, new_requestoffer_id);
+  call put_requestoffer_trans_section(my_desc, ruid, pts, cats, new_requestoffer_id);
 END
 
 ---DELIMITER---
@@ -295,7 +285,6 @@ CREATE PROCEDURE put_requestoffer_trans_section
 (
   my_desc NVARCHAR(200),
   ruid INT UNSIGNED, -- requestoffering user id
-	ti NVARCHAR(255), -- title
   pts INT, -- points
   cats VARCHAR(50), -- this cannot be empty or we'll SQLException.
   OUT new_requestoffer_id INT UNSIGNED
@@ -316,8 +305,8 @@ BEGIN
   -- A) The main part - add the requestoffer to that table.
   SET @status = 76; -- requestoffers always start 'open'
   INSERT into requestoffer (description, datetime, points,
-   status, title, requestoffering_user_id)
-   VALUES (my_desc, UTC_TIMESTAMP(), pts, @status, ti, ruid); 
+   status, requestoffering_user_id)
+   VALUES (my_desc, UTC_TIMESTAMP(), pts, @status, ruid); 
          
   SET new_requestoffer_id = LAST_INSERT_ID();
 
@@ -558,8 +547,6 @@ BEGIN
   -- get a message for the deletion audit
   SELECT CONCAT(
       SUBSTR(description,1,30),
-      '|',
-      SUBSTR(title,1,20),
       '|',
       'created:', SUBSTR(datetime,1,10),
       '|',

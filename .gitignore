@@ -1,6 +1,6 @@
 build
 build_schema
-web_container/apache-tomcat-8.0.14/webapps/xenos/WEB-INF/classes
+web_container/apache-tomcat-8.0.14/webapps/ROOT/WEB-INF/classes
 web_container/apache-tomcat-8.0.14/webapps/xenos_javadocs
 web_container/apache-tomcat-8.0.14/webapps/lint
 .ant-targets-build.xml

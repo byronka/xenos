@@ -45,7 +45,6 @@ public class Requestoffer_tests {
     assertEquals(desc, r2.description);
     assertEquals(points, r2.points);
     assertEquals(76, r2.status); //always starts OPEN
-    assertEquals(title, r2.title);
     assertEquals(user_id, r2.requestoffering_user_id);
     assertArrayEquals(categories, r2.get_categories());
 
