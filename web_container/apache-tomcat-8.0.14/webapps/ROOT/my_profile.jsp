@@ -70,7 +70,7 @@
    for (Requestoffer_utils.MyMessages mm : mms) {%>
     <tr>
       <td><%=mm.timestamp%> </td>
-      <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"        ><%=mm.title%></a> </td>
+      <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"        ></a> </td>
       <td><%=Utils.safe_render(mm.message)%></td>
     </tr>
 		<% } %>

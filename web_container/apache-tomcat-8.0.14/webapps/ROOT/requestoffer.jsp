@@ -79,12 +79,6 @@
     <%}%>
   </p>
   <p>
-    <%=loc.get(26,"Points")%>: <%=r.points%>
-  </p>
-  <p>
-    <%=loc.get(27,"Title")%>: <%=Utils.safe_render(r.title)%>
-  </p>
-  <p>
     <%=loc.get(28,"Categories")%>: 
       <%for (Integer c : r.get_categories()) {%>
         <span class="category"><%=loc.get(c,"")%> </span>

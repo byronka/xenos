@@ -19,7 +19,6 @@
 request.setCharacterEncoding("UTF-8");
 String category = "";
 String statuses = "";
-String title = "";
 String minpoints = "";
 String maxpoints = "";
 String startdate = "";
@@ -36,9 +35,6 @@ if (request.getMethod().equals("POST")) {
   boolean validation_error = false;
 
   //these guys don't require validation.
-  if ((title = request.getParameter("title")) == null) {
-    title = "";
-  }
 
   if ((minpoints = request.getParameter("minpoints")) == null) {
     minpoints = "";
@@ -119,8 +115,8 @@ if (request.getMethod().equals("POST")) {
 
   if(!validation_error) {
     String dashboard_string = String.format(
-        "dashboard.jsp?da=%s,%s&ti=%s&pts=%s,%s&cat=%s&us=%s&sta=%s",
-         startdate,enddate,title,minpoints,maxpoints,categories,user_ids,Utils.int_array_to_string(status_array) );
+        "dashboard.jsp?da=%s,%s&pts=%s,%s&cat=%s&us=%s&sta=%s",
+         startdate,enddate,minpoints,maxpoints,categories,user_ids,Utils.int_array_to_string(status_array) );
     response.sendRedirect(dashboard_string);
     return;
   }
@@ -131,14 +127,6 @@ if (request.getMethod().equals("POST")) {
   <body>
   <%@include file="includes/header.jsp" %>
     <form method="POST" action="advanced_search.jsp">
-			<h3><%=loc.get(12,"Title")%></h3>
-      <p>
-      <div class="help-text">
-        <%=loc.get(90,"Enter words to search in a title")%>
-      </div>
-      <%=loc.get(12,"Title")%>: 
-      <input type="text" name="title" value="<%=title%>"/> 
-      </p>
 
     <h3><%=loc.get(25,"Date")%></h3>
     <p>
