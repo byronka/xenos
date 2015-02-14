@@ -96,7 +96,6 @@ requestoffer (
   description NVARCHAR(200),
   points INT UNSIGNED,
   status INT,
-  title NVARCHAR(255),
   requestoffering_user_id INT UNSIGNED NOT NULL,
   handling_user_id INT UNSIGNED,
   FOREIGN KEY FK_requestoffering_user_user_id (requestoffering_user_id) 
