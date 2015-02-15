@@ -91,8 +91,7 @@
     if (show_delete_info) {%>
 
     <p>
-      <%=loc.get(39,"Are you sure you want to delete this requestoffer?")%> <%=r.points%> <%=loc.get(39,"points will be refunded to you")%>
-       
+      <%=loc.get(39,"Are you sure you want to delete this requestoffer?")%> 
     </p>
 
     <p>

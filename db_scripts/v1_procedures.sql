@@ -998,7 +998,9 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
 
   START TRANSACTION;
 
-  UPDATE user SET password = new_password;
+  UPDATE user 
+  SET password = new_password
+  WHERE user_id = uid;
 
   CALL add_audit(13,exec_uid,uid,NULL);
 

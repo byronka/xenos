@@ -185,6 +185,139 @@ public final class Requestoffer_utils {
   }
 
 
+  public static class Offer_I_made {
+
+    public final int requestoffer_id;
+    public String description;
+    public String date_created;
+
+    public Offer_I_made(
+        int requestoffer_id, 
+        String description, 
+        String date_created) {
+      this.requestoffer_id = requestoffer_id;
+      this.description = description;
+      this.date_created = date_created;
+    }
+  }
+
+
+  /**
+    * Gets an array of offers I made on requestoffers
+    * 
+    * @param user_id the user who made offers on requestoffers
+    * @return an array of offers, or empty array if failure
+    */
+  public static Offer_I_made[] 
+    get_requestoffers_I_offered_to_service(int user_id) {
+    
+    String sqlText = 
+      "SELECT ro.requestoffer_id, ro.description, "+
+        "rsr.date_created " +
+      "FROM requestoffer_service_request rsr " +
+      "JOIN requestoffer ro "+
+        "ON ro.requestoffer_id = rsr.requestoffer_id " +
+      "WHERE rsr.user_id = ?";
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Offer_I_made[0];
+      }
+
+      ArrayList<Offer_I_made> offers = 
+        new ArrayList<Offer_I_made>();
+      while(resultSet.next()) {
+        int rid = resultSet.getInt("requestoffer_id");
+        String desc = resultSet.getNString("description");
+        String dt = resultSet.getString("date_created");
+        offers.add(new Offer_I_made(rid, desc, dt));
+      }
+
+      //convert arraylist to array
+      Offer_I_made[] array_of_offers = 
+        offers.toArray(new Offer_I_made[offers.size()]);
+
+      return array_of_offers;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new Offer_I_made[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  public static class Service_request {
+
+    public final int requestoffer_id;
+    public final int user_id;
+    public String date_created;
+
+    public Service_request(
+        int requestoffer_id, 
+        int user_id, 
+        String date_created) {
+      this.requestoffer_id = requestoffer_id;
+      this.user_id = user_id;
+    }
+  }
+
+
+  /**
+    * Gets the list of users that have offered to service my request
+    * 
+    * @param user_id the user asking about servicers for their requestoffers
+    * @return an array of service requests, or empty array if failure
+    */
+  public static Service_request[] get_service_requests(int user_id) {
+    
+    String sqlText = 
+      "SELECT rsr.requestoffer_id, rsr.user_id, rsr.date_created " +
+      "FROM requestoffer_service_request rsr " +
+      "JOIN requestoffer ro "+
+        "ON ro.requestoffer_id = rsr.requestoffer_id " +
+      "WHERE ro.requestoffering_user_id = ?";
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Service_request[0];
+      }
+
+      ArrayList<Service_request> service_requests = 
+        new ArrayList<Service_request>();
+      while(resultSet.next()) {
+        int rid = resultSet.getInt("requestoffer_id");
+        int uid = resultSet.getInt("user_id");
+        String dt = resultSet.getString("date_created");
+        service_requests.add(new Service_request(rid, uid, dt));
+      }
+
+      //convert arraylist to array
+      Service_request[] array_of_service_requests = 
+        service_requests.toArray(new Service_request[service_requests.size()]);
+
+      return array_of_service_requests;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new Service_request[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
   /**
     * Gets a specific Requestoffer 
     * 

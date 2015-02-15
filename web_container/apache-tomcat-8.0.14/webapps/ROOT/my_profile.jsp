@@ -15,25 +15,58 @@
 	<body>
   <%@include file="includes/header.jsp" %>
 	<a href="change_password.jsp">Change password</a>
+
+  <h3><%=loc.get(119, "Favors I have offered to service")%></h3>
+		<%
+			Requestoffer_utils.Offer_I_made[] offers = 
+				Requestoffer_utils.get_requestoffers_I_offered_to_service(user_id);
+    %>
+
+    <%if (offers.length == 0) {%>
+        <p>(<%=loc.get(103,"None")%>)</p>
+    <% } %> 
+
+    <%	for (Requestoffer_utils.Offer_I_made o : offers) { %>
+			<div class="requestoffer serviceoffered">
+        requestoffer: <%=o.requestoffer_id%>
+			</div>
+		<% } %>
+
+  <h3><%=loc.get(120, "Offers to service my favors")%></h3>
+		<%
+			Requestoffer_utils.Service_request[] service_requests = 
+				Requestoffer_utils.get_service_requests(user_id);
+    %>
+
+    <%if (service_requests.length == 0) {%>
+        <p>(<%=loc.get(103,"None")%>)</p>
+    <% } %> 
+
+    <%	for (Requestoffer_utils.Service_request sr : service_requests) { %>
+			<div class="servicerequest">
+        user: <%=sr.user_id%> favor: <%=sr.requestoffer_id%>
+			</div>
+		<% } %>
+
   <h3><%=loc.get(102, "Requests I am handling")%>:</h3>
-		<div class="requestoffers mine">
 		<%
 			Requestoffer[] handling_requestoffers = 
 				Requestoffer_utils.get_requestoffers_I_am_handling(user_id);
-        if (handling_requestoffers.length == 0) {%>
+    %>
+
+    <%if (handling_requestoffers.length == 0) {%>
         <p>(<%=loc.get(103,"None")%>)</p>
-        <% } 
-			for (Requestoffer r : handling_requestoffers) {
-		%>
+    <% } %> 
+
+    <%	for (Requestoffer r : handling_requestoffers) { %>
 			<div class="requestoffer handling">
 				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
 					<%=Utils.get_trunc(Utils.safe_render(r.description),15)%> </a>
-     
 			</div>
 		<% } %>
 
 	<h3 class="my-requestoffers-header">
-		<%=loc.get(18, "Your requestoffers")%>:</h3>
+		<%=loc.get(18, "Your favors")%>:</h3>
 		<div class="requestoffers mine">
 		<%
 			Requestoffer[] my_requestoffers = 
@@ -55,6 +88,7 @@
 			</div>
 		<% } %>
 		</div>
+
 	<h3><%=loc.get(96, "My Messages")%></h3>
   <table border="1">
     <thead>
