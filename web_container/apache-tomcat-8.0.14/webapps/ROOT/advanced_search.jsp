@@ -19,8 +19,7 @@
 request.setCharacterEncoding("UTF-8");
 String category = "";
 String statuses = "";
-String minpoints = "";
-String maxpoints = "";
+String desc = "";
 String startdate = "";
 String enddate = "";
 String users = "";
@@ -35,13 +34,10 @@ if (request.getMethod().equals("POST")) {
   boolean validation_error = false;
 
   //these guys don't require validation.
+  if ((desc = request.getParameter("desc")) == null) {
+    desc = "";
+  }
 
-  if ((minpoints = request.getParameter("minpoints")) == null) {
-    minpoints = "";
-  }
-  if ((maxpoints = request.getParameter("maxpoints")) == null) {
-    maxpoints = "";
-  }
 
 
   //parse out the statuses from a string the client gave us
@@ -115,8 +111,13 @@ if (request.getMethod().equals("POST")) {
 
   if(!validation_error) {
     String dashboard_string = String.format(
-        "dashboard.jsp?da=%s,%s&pts=%s,%s&cat=%s&us=%s&sta=%s",
-         startdate,enddate,minpoints,maxpoints,categories,user_ids,Utils.int_array_to_string(status_array) );
+        "dashboard.jsp?da=%s,%s&cat=%s&us=%s&sta=%s&desc=%s",
+         startdate,
+         enddate,
+         categories,
+         user_ids,
+         Utils.int_array_to_string(status_array),
+         desc );
     response.sendRedirect(dashboard_string);
     return;
   }
@@ -127,6 +128,15 @@ if (request.getMethod().equals("POST")) {
   <body>
   <%@include file="includes/header.jsp" %>
     <form method="POST" action="advanced_search.jsp">
+
+    <h3><%=loc.get(10,"Description")%></h3>
+    <p>
+      <div class="help-text">
+        <%=loc.get(90,"Enter words to search in a description")%>
+      </div>
+      <%=loc.get(10,"Description")%>: 
+      <input type="text" name="desc" value="<%=desc%>"/> 
+    </p>
 
     <h3><%=loc.get(25,"Date")%></h3>
     <p>
@@ -146,17 +156,6 @@ if (request.getMethod().equals("POST")) {
 			<input type="text" name="statuses" placeholder="<%=loc.get(76,"open")%>" value="<%=statuses%>" /> 
 			<%=Requestoffer_utils.get_requestoffer_status_string(loc)%>
       <span><%=stat_error_msg%></span>
-    </p>
-
-    <h3><%=loc.get(11,"Points")%></h3>
-    <p>
-    <%=loc.get(88,"Minimum points")%>: 
-    <input type="text" name="minpoints" value="<%=minpoints%>" />
-    </p>
-
-    <p>
-    <%=loc.get(89,"Maximum points")%>: 
-    <input type="text" name="maxpoints" value="<%=maxpoints%>" />
     </p>
 
 		<h3><%=loc.get(80,"User")%></h3>

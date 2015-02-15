@@ -126,7 +126,7 @@
       </form>
     <% } %>
     <%if (is_requestoffering_user && r.status == 78) {%>
-      <a href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(98,"Transaction is complete")%>
+      <a href="check_transaction.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(98,"Transaction is complete")%>
       </a>
     <%}%>
 

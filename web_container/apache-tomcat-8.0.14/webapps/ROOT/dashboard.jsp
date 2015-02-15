@@ -23,21 +23,8 @@
     }
   }
 
-  //extract points - this section deprecated, until further notice.
-  Integer srch_minpts = null;
-  Integer srch_maxpts = null;
-  String srch_pts = params.get("pts"); //points
-  if (srch_pts != null) {
-    String[] srch_pts_array = srch_pts.split(",");
-    if (srch_pts_array.length > 0) {
-      srch_minpts = Utils.parse_int(srch_pts_array[0]);
-    }
-    if (srch_pts_array.length > 1) {
-      srch_maxpts = Utils.parse_int(srch_pts_array[1]);
-    }
-  }
-
   String srch_cat = params.get("cat"); //categories
+  String srch_desc = params.get("desc"); // description
   String srch_us = params.get("us"); //users
   String srch_sta = params.get("sta"); //status
 
@@ -70,9 +57,8 @@
                                       srch_startdate, 
                                       srch_enddate, 
                                       srch_cat, 
+                                      srch_desc,
                                       srch_sta, 
-                                      srch_minpts, 
-                                      srch_maxpts, 
                                       srch_us);
   Requestoffer_utils.OR_Package or_package = 
     Requestoffer_utils.get_others_requestoffers(user_id, 
@@ -81,7 +67,7 @@
   for (Others_Requestoffer r : or_package.get_requestoffers()) {
 %>
   <div class="others requestoffer">
-    <%if (r.status == 76) {%>
+    <%if (r.status == 76 && !r.has_been_offered) {%>
       <span class="handle-button-span">
         <a 
           class="button" 

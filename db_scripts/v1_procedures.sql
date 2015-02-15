@@ -130,37 +130,19 @@ DROP PROCEDURE IF EXISTS get_others_requestoffers;
 ---DELIMITER---
 CREATE PROCEDURE get_others_requestoffers
 (
-  ruid INT UNSIGNED,
+  ruid INT UNSIGNED, -- the user asking to see the request offers
   startdate VARCHAR(10),
   enddate VARCHAR(10),
   status VARCHAR(50), -- can be many INT's separated by commas
   categories VARCHAR(50),
-  minpoints INT UNSIGNED,
-  maxpoints INT UNSIGNED,
   user_id VARCHAR(50), -- can be many INT's separated by commas
   page INT UNSIGNED,
+  description NVARCHAR(50),
 	OUT total_pages INT UNSIGNED
 ) 
 BEGIN 
 	SET @search_clauses = ""; -- all our search clauses go on this.
          
-  -- searching by points
-  IF minpoints > 0 AND maxpoints > 0 THEN
-    SET @minpoints = minpoints;
-    SET @maxpoints = maxpoints;
-    SET @search_clauses = 
-      CONCAT(@search_clauses, 
-        ' AND @minpoints <= r.points AND r.points <= @maxpoints ');
-  ELSEIF minpoints > 0 THEN
-    SET @minpoints = minpoints;
-    SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND @minpoints <= r.points ');
-  ELSEIF maxpoints > 0 THEN
-    SET @maxpoints = maxpoints;
-    SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND @maxpoints >= r.points ');
-  END IF;
-
   -- searching by status
   IF status <> '' THEN
     SET @search_clauses = 
@@ -197,6 +179,14 @@ BEGIN
       ' AND datetime <= @enddate ');
   END IF;
 
+  -- searching by description
+  IF description <> '' THEN
+    SET @desc = description;
+    SET @search_clauses = 
+    CONCAT(@search_clauses, " AND description LIKE CONCAT('%' , @desc , '%') ");
+  END IF;
+
+
 
   SET @ruid = ruid;
   SET @get_requestoffer_count = 
@@ -226,6 +216,7 @@ BEGIN
             r.status, 
             r.points, 
             u.rank, 
+            rsr.user_id AS been_offered,
             r.requestoffering_user_id, 
             r.handling_user_id, 
             GROUP_CONCAT(rc.category_id SEPARATOR ",") 
@@ -235,6 +226,8 @@ BEGIN
             JOIN requestoffer_category rc 
               ON rc.category_id = rtc.requestoffer_category_id 
             JOIN user u ON u.user_id = r.requestoffering_user_id 
+            LEFT JOIN requestoffer_service_request rsr
+              ON r.requestoffer_id = rsr.requestoffer_id AND rsr.user_id = @ruid
             WHERE requestoffering_user_id <> @ruid AND r.status <> 109
             ', @search_clauses ,'
             GROUP BY r.requestoffer_id 
@@ -330,6 +323,7 @@ BEGIN
 
   -- D) Add an audit
   CALL add_audit(1,ruid,new_requestoffer_id,'');
+  CALL add_audit(12,ruid,new_requestoffer_id,'');
 
   COMMIT;
 
@@ -431,8 +425,8 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
   START TRANSACTION;
 
     INSERT INTO requestoffer_service_request 
-      (requestoffer_id, user_id, date_created)
-    VALUES (rid, uid, UTC_TIMESTAMP());
+      (requestoffer_id, user_id, date_created, status)
+    VALUES (rid, uid, UTC_TIMESTAMP(), 106); -- starts with 'new' status
 
     -- Add an audit
     CALL add_audit(7,uid,rid,NULL);
@@ -811,7 +805,8 @@ DROP PROCEDURE IF EXISTS complete_ro_transaction;
 CREATE PROCEDURE complete_ro_transaction
 (
 uid INT UNSIGNED, -- the user who owns this requestoffer
-rid INT UNSIGNED -- the requestoffer
+rid INT UNSIGNED, -- the requestoffer
+satis BOOL -- whether the owner of this RO was satisfied with result
 )
 BEGIN
 
@@ -832,7 +827,7 @@ BEGIN
 	END IF;
 
 	-- at this point we are pretty sure it's all cool.
-  call complete_ro_transaction_trans_section(uid, rid);
+  call complete_ro_transaction_trans_section(uid, rid, satis);
 END
 
 ---DELIMITER---
@@ -846,7 +841,8 @@ DROP PROCEDURE IF EXISTS complete_ro_transaction_trans_section;
 CREATE PROCEDURE complete_ro_transaction_trans_section
 (
 uid INT UNSIGNED, -- the user who owns this requestoffer
-rid INT UNSIGNED -- the requestoffer
+rid INT UNSIGNED, -- the requestoffer
+satis BOOL -- whether the owner of the RO was satisfied
 )
 BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -858,11 +854,28 @@ BEGIN
   END;
 	START TRANSACTION;
 
-	UPDATE requestoffer
-	SET status = 77 -- 'closed'
+	UPDATE requestoffer -- change state of the requestoffer
+	SET 
+    status = 77, -- 'closed'
+    is_satisfied = satis
 	WHERE requestoffer_id = rid;
 
-	CALL add_audit(6,uid,rid,NULL);
+  SELECT handling_user_id INTO @handling_user_id
+  FROM requestoffer 
+  WHERE requestoffer_id = rid;
+
+  UPDATE user
+  SET points = points + 1
+  WHERE user_id = @handling_user_id;
+
+	CALL add_audit(11,@handling_user_id,rid,NULL);
+
+  SET @audit_code = 6;  -- default to satisfied
+  IF (NOT satis) THEN -- if not satisfied, change audit code
+    SET @audit_code = 10;
+  END IF;
+
+	CALL add_audit(@audit_code,uid,rid,NULL);
 
 	COMMIT;
 END

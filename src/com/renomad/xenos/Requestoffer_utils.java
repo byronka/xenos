@@ -244,7 +244,7 @@ public final class Requestoffer_utils {
 
     public final String startdate;
     public final String enddate;
-
+    public final String description;
 
     /**
       * categories as an array of numbers, delimited by commas
@@ -262,27 +262,22 @@ public final class Requestoffer_utils {
     public final String user_ids;
 
 
-    public final Integer minpoints;
-    public final Integer maxpoints;
-
     public Search_Object(
         String startdate,
         String enddate,
         String categories,
+        String description,
         String statuses,
-        Integer minpoints,
-        Integer maxpoints,
         String user_ids) {
       this.startdate = startdate;
       this.enddate = enddate;
       this.categories = Utils.is_comma_delimited_numbers(categories) ? 
         categories 
         : "";
+      this.description = description;
       this.statuses = Utils.is_comma_delimited_numbers(statuses) ? 
         statuses 
         : "";
-      this.minpoints = minpoints;
-      this.maxpoints = maxpoints;
       this.user_ids = Utils.is_comma_delimited_numbers(user_ids) ? 
         user_ids 
         : "";
@@ -341,16 +336,17 @@ public final class Requestoffer_utils {
       // see db_scripts/v1_procedures.sql get_others_requestoffers for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
-        "{call get_others_requestoffers(%d,?,?,?,?,%d,%d,?,%d,?)}"
-        ,ruid, so.minpoints, so.maxpoints, page));
+        "{call get_others_requestoffers(%d,?,?,?,?,?,%d,?,?)}"
+        ,ruid, page));
       cs.setString(1, so.startdate);
       cs.setString(2, so.enddate);
       cs.setString(3, so.statuses);
       cs.setString(4, so.categories);
       cs.setString(5, so.user_ids);
-      cs.registerOutParameter(6, java.sql.Types.INTEGER);
+      cs.setString(6, so.description);
+      cs.registerOutParameter(7, java.sql.Types.INTEGER);
       ResultSet resultSet = cs.executeQuery();
-      int pages = cs.getInt(6);
+      int pages = cs.getInt(7);
 
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new OR_Package(new Others_Requestoffer[0],1);
@@ -368,11 +364,17 @@ public final class Requestoffer_utils {
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
         int ra = resultSet.getInt("rank");
+        int offered_user_id = resultSet.getInt("been_offered");
+        boolean has_been_offered = false;
+        if (offered_user_id > 0) {
+          has_been_offered = true;
+        }
         String cats = resultSet.getString("categories");
         Integer[] cat_array = parse_string_to_int_array(cats);
 
         Others_Requestoffer requestoffer = 
-          new Others_Requestoffer(dt,d,s,ra,p,rid,ru,hu,cat_array);
+          new Others_Requestoffer(
+              dt,d,s,ra,p,rid,ru,hu,cat_array, has_been_offered);
         requestoffers.add(requestoffer);
       }
 
@@ -755,14 +757,16 @@ public final class Requestoffer_utils {
 		* @param uid the requestoffering_user_id
 		* @return true if successful, false otherwise
 		*/
-	public static boolean complete_transaction(int rid, int uid) {
+	public static boolean complete_transaction(
+      int rid, int uid, boolean is_satisfied) {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
       // see db_scripts/v1_procedures.sql for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
-        "{call complete_ro_transaction(%d,%d)}" ,uid, rid));
+        "{call complete_ro_transaction(%d,%d,%b)}" 
+        ,uid, rid, is_satisfied));
       cs.execute();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);

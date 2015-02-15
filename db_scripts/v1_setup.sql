@@ -98,6 +98,7 @@ requestoffer (
   status INT,
   requestoffering_user_id INT UNSIGNED NOT NULL,
   handling_user_id INT UNSIGNED,
+  is_satisfied BOOL,
   FOREIGN KEY FK_requestoffering_user_user_id (requestoffering_user_id) 
     REFERENCES user (user_id) 
     ON DELETE CASCADE,
@@ -264,10 +265,13 @@ VALUES
 (3,'User handled a requestoffer'),
 (4,'New user was registered'),
 (5,'cookie authentication failed'),
-(6,'user closed their own requestoffer'),
+(6,'user closed their own requestoffer - satisfied'),
 (7,'user offered to take requestoffer'),
 (8,'location was deleted, since there were no related users or requestoffers'),
-(9,'user published a requestoffer (set its status to OPEN)')
+(9,'user published a requestoffer (set its status to OPEN)'),
+(10,'user closed their own requestoffer - unsatisfied'),
+(11,'user received a favor point from completing requestoffer'),
+(12,'user lost a favor point from creating a requestoffer')
 
 
 ---DELIMITER---
