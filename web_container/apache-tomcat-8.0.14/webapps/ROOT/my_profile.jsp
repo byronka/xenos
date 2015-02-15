@@ -27,7 +27,7 @@
 		%>
 			<div class="requestoffer handling">
 				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-					<%=Utils.safe_render(r.description.length() < 15 ? r.description : r.description.substring(0,15)+"...")    %> </a>
+					<%=Utils.get_trunc(Utils.safe_render(r.description),15)%> </a>
      
 			</div>
 		<% } %>
@@ -45,7 +45,7 @@
 		%>
 			<div class="requestoffer mine">
 				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-					<%=Utils.safe_render(r.description.length() < 15 ? r.description : r.description.substring(0,15)+"...")    %> </a>
+					<%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> </a>
         <%if(r.status == 76 || r.status == 109) {%>
           <a class="button" 
             href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
@@ -70,7 +70,7 @@
    for (Requestoffer_utils.MyMessages mm : mms) {%>
     <tr>
       <td><%=mm.timestamp%> </td>
-      <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"        ></a> </td>
+      <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"><%=Utils.get_trunc(Utils.safe_render(mm.desc),15)%></a> </td>
       <td><%=Utils.safe_render(mm.message)%></td>
     </tr>
 		<% } %>

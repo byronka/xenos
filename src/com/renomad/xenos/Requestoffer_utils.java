@@ -787,9 +787,10 @@ public final class Requestoffer_utils {
     public String fname;
     public String tname;
     public String timestamp;
+    public String desc;
 
     public MyMessages(String timestamp, int rid, int fuid, int tuid, 
-        String msg, String fname, String tname) {
+        String msg, String fname, String tname, String desc) {
       this.requestoffer_id = rid;
       this.from_user_id = fuid;
       this.to_user_id = tuid;
@@ -797,6 +798,7 @@ public final class Requestoffer_utils {
       this.timestamp = timestamp;
       this.fname = fname;
       this.tname = tname;
+      this.desc = desc;
     }
   }
 
@@ -810,7 +812,7 @@ public final class Requestoffer_utils {
   public static MyMessages[] get_my_messages(int user_id) {
     String sqlText = 
       String.format(
-					"SELECT rm.timestamp, rm.requestoffer_id, rm.message, "+
+					"SELECT ro.description, rm.timestamp, rm.requestoffer_id, rm.message, "+
             "rm.from_user_id AS fuid, rm.to_user_id AS tuid,  "+
             "from_user.username AS fusername, to_user.username AS tusername "+
           "FROM requestoffer_message rm "+
@@ -839,8 +841,9 @@ public final class Requestoffer_utils {
         int tuid = resultSet.getInt("tuid");
         String tname = resultSet.getNString("tusername");
         String fname = resultSet.getNString("fusername");
+        String desc = resultSet.getNString("description");
         MyMessages mm = 
-          new MyMessages(timestamp, rid,fuid,tuid,msg,fname,tname);
+          new MyMessages(timestamp, rid,fuid,tuid,msg,fname,tname, desc);
         mms.add(mm);
       }
       MyMessages[] array_of_messages = 

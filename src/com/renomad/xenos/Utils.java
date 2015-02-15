@@ -26,6 +26,19 @@ public final class Utils {
 
 
   /**
+    * helper method to convert long strings into shortened strings
+    * suffixed with elipses
+    */
+  public static String get_trunc(String mystring, int maxlength) {
+    if (mystring.length() > maxlength) {
+      return mystring.substring(0, maxlength-3) + "...";
+    } else {
+      return mystring;
+    }
+  }
+
+
+  /**
     * Will add an audit record
     * @param action_id the id of the action performed (e.g. 1 for create)
     *  see the database table "audit_actions" for available options.
