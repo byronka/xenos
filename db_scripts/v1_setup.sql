@@ -219,7 +219,8 @@ requestoffer_to_category (
   FOREIGN KEY 
     FK_requestoffer_category_id (requestoffer_category_id)
     REFERENCES requestoffer_category (category_id)
-    ON DELETE CASCADE
+    ON DELETE CASCADE,
+  PRIMARY KEY (requestoffer_id, requestoffer_category_id)
 )
 
 ---DELIMITER---
@@ -271,7 +272,11 @@ VALUES
 (9,'user published a requestoffer (set its status to OPEN)'),
 (10,'user closed their own requestoffer - unsatisfied'),
 (11,'user received a favor point from completing requestoffer'),
-(12,'user lost a favor point from creating a requestoffer')
+(12,'user lost a favor point from creating a requestoffer'),
+(13,'changed password'),
+(14,'failed decrypting cookie'),
+(15,'user logged in'),
+(16,'user logged out')
 
 
 ---DELIMITER---

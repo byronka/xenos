@@ -725,8 +725,33 @@ BEGIN
       AES_ENCRYPT(
         @cookie_val_plaintext, SHA2(@p_phrase,512))) INTO new_cookie;
 
+    CALL add_audit(15, uid, uid, NULL);
   COMMIT;
 
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS user_logout;
+
+---DELIMITER---
+
+CREATE PROCEDURE user_logout
+(
+  uid INT UNSIGNED
+) 
+BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+      SET message_text = 
+      "exception in user_logout";
+  END;
+  START TRANSACTION;
+    UPDATE user SET is_logged_in = false;
+    CALL add_audit(16, uid, uid, NULL);
+  COMMIT;
 END
 
 ---DELIMITER---
@@ -754,13 +779,18 @@ BEGIN
     AES_DECRYPT(UNHEX(enc_cookie), SHA2(@p_phrase,512)) 
     INTO @plaintext_cookie;
 
-  IF (@plaintext_cookie = NULL OR @plaintext_cookie = '')
+  IF (@plaintext_cookie IS NULL OR @plaintext_cookie = '')
     THEN
-      SET @msg = CONCAT(
+      CALL add_audit(14,NULL,NULL,NULL);
+      SET @msg = 
+      CONCAT(
 				'got null when trying to unencrypt cookie '
-        ,IFNULL(enc_cookie,'')
+        ,SUBSTR(IFNULL(enc_cookie,''), 1, 6)
+        ,'...'
         ,' with passphrase: '
-        , IFNULL(@p_phrase,'') );
+        ,SUBSTR(IFNULL(@p_phrase,''), 1, 4)
+        , '...'
+      );
       SIGNAL SQLSTATE '45000' SET message_text = @msg;
   END IF;
 
@@ -917,6 +947,7 @@ END
 DROP PROCEDURE IF EXISTS publish_requestoffer_trans_section;
 
 ---DELIMITER---
+
 -- just set the status to 'open' which will make it available
 -- for searching by others and handling.
 
@@ -947,3 +978,30 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
 
 END
 
+---DELIMITER---
+
+
+CREATE PROCEDURE change_password
+(
+  exec_uid INT UNSIGNED, -- the user carrying out the action
+  uid INT UNSIGNED, -- the user whose password we'll change
+  new_password VARCHAR(64) -- the new password
+) 
+BEGIN 
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+      SET message_text = 
+      "exception in change_password";
+  END;
+
+  START TRANSACTION;
+
+  UPDATE user SET password = new_password;
+
+  CALL add_audit(13,exec_uid,uid,NULL);
+
+  COMMIT;
+
+END

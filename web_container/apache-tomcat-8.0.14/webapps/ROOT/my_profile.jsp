@@ -14,7 +14,7 @@
 	</head>
 	<body>
   <%@include file="includes/header.jsp" %>
-	<button>Change password</button>
+	<a href="change_password.jsp">Change password</a>
   <h3><%=loc.get(102, "Requests I am handling")%>:</h3>
 		<div class="requestoffers mine">
 		<%

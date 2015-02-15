@@ -180,10 +180,41 @@ public final class User_utils {
     }
   }
 
+
+  /**
+    * gets a user's salt
+    *  
+    * @return a salt string for a given user, or null if not found.
+    */
+  public static String get_user_salt(int user_id) {
+    String sqlText = 
+      "SELECT salt FROM user WHERE user_id = ?;";
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return null;
+      }
+
+      resultSet.next(); //move to the first set of results.
+      String salt = resultSet.getString("salt");
+      return salt;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
   
-  /** *
-   * gets a user object
-   *  
+  /**
+    * gets a user object
+    *  
     * @return a User object, or null if not found.
     */
   public static User get_user(int user_id) {
@@ -212,6 +243,38 @@ public final class User_utils {
     } finally {
       Database_access.close_statement(pstmt);
     }
+  }
+
+
+  /**
+    * changes the user's password. This service will change
+    * the user's password no matter what - it is assumed that
+    * the developer has checked beforehand that the user
+    * is indeed valid, like by running check_login() first.
+    * @param executing_user_id the user causing the password change.
+    * @param user_id the user whose password we'll change
+    * @param new_password this will be their new password
+    * @return true if successful at changing the password
+    */
+  public static boolean change_password(
+      int executing_user_id, int user_id, String new_password) {
+    String salt = get_user_salt(user_id);
+    String hashed_pwd = hash_password(new_password, salt);
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall("{call change_password(?,?,?)}");
+      cs.setInt(1,executing_user_id);
+      cs.setInt(2,user_id);
+      cs.setString(3,hashed_pwd);
+      cs.executeQuery();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+    return true;
   }
   
 

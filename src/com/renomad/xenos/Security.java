@@ -182,7 +182,10 @@ public final class Security {
       int user_id = cs.getInt(2);
       return user_id;
     } catch (SQLException ex) {
-      Database_access.handle_sql_exception(ex);
+      String msg = ex.getMessage();
+      if (!msg.contains("null when trying to unencrypt cookie")) {
+        Database_access.handle_sql_exception(ex);
+      }
       return -1;
     } finally {
       Database_access.close_statement(cs);
