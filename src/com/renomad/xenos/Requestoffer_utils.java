@@ -256,15 +256,19 @@ public final class Requestoffer_utils {
   public static class Service_request {
 
     public final int requestoffer_id;
+    public String desc;
     public final int user_id;
     public String date_created;
 
     public Service_request(
         int requestoffer_id, 
         int user_id, 
-        String date_created) {
+        String date_created,
+        String desc) {
       this.requestoffer_id = requestoffer_id;
       this.user_id = user_id;
+      this.date_created = date_created;
+      this.desc = desc;
     }
   }
 
@@ -272,13 +276,15 @@ public final class Requestoffer_utils {
   /**
     * Gets the list of users that have offered to service my request
     * 
-    * @param user_id the user asking about servicers for their requestoffers
+    * @param user_id the user asking about servicers 
+    *   for their requestoffers
     * @return an array of service requests, or empty array if failure
     */
   public static Service_request[] get_service_requests(int user_id) {
     
     String sqlText = 
-      "SELECT rsr.requestoffer_id, rsr.user_id, rsr.date_created " +
+      "SELECT rsr.requestoffer_id, rsr.user_id, rsr.date_created, " +
+      "ro.description " +
       "FROM requestoffer_service_request rsr " +
       "JOIN requestoffer ro "+
         "ON ro.requestoffer_id = rsr.requestoffer_id " +
@@ -301,12 +307,14 @@ public final class Requestoffer_utils {
         int rid = resultSet.getInt("requestoffer_id");
         int uid = resultSet.getInt("user_id");
         String dt = resultSet.getString("date_created");
-        service_requests.add(new Service_request(rid, uid, dt));
+        String desc = resultSet.getString("description");
+        service_requests.add(new Service_request(rid, uid, dt, desc));
       }
 
       //convert arraylist to array
       Service_request[] array_of_service_requests = 
-        service_requests.toArray(new Service_request[service_requests.size()]);
+        service_requests.toArray(
+            new Service_request[service_requests.size()]);
 
       return array_of_service_requests;
     } catch (SQLException ex) {

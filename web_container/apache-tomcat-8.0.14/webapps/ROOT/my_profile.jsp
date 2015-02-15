@@ -28,7 +28,8 @@
 
     <%	for (Requestoffer_utils.Offer_I_made o : offers) { %>
 			<div class="requestoffer serviceoffered">
-        requestoffer: <%=o.requestoffer_id%>
+        favor: <%=o.requestoffer_id%>
+        <a href="#">Cancel service offer</a>
 			</div>
 		<% } %>
 
@@ -44,11 +45,20 @@
 
     <%	for (Requestoffer_utils.Service_request sr : service_requests) { %>
 			<div class="servicerequest">
-        user: <%=sr.user_id%> favor: <%=sr.requestoffer_id%>
+        <%User servicer = User_utils.get_user(sr.user_id);%>
+        
+        <a href="#">
+          <%=servicer.username%> 
+        </a>
+          wants to service 
+        <a href="<%=sr.requestoffer_id%>">
+          <%=Utils.get_trunc(sr.desc,15)%>
+        </a>
+        <a href="#">Choose</a>
 			</div>
 		<% } %>
 
-  <h3><%=loc.get(102, "Requests I am handling")%>:</h3>
+  <h3><%=loc.get(102, "Favors I am handling")%>:</h3>
 		<%
 			Requestoffer[] handling_requestoffers = 
 				Requestoffer_utils.get_requestoffers_I_am_handling(user_id);

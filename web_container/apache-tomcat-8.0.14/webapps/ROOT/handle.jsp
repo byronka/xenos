@@ -50,6 +50,6 @@
 %>
 <body>
   <%@include file="includes/header.jsp" %>
-    <p>If you would like to take this requestoffer, click the confirm button below</p>
+  <p><%=loc.get(121,"If you would like to take this requestoffer, click the confirm button below")%></p>
     <a href="handle.jsp?requestoffer=<%=r.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
 </body>
