@@ -607,16 +607,19 @@ public final class Requestoffer_utils {
     * @param user_id a particular user's id
     * @return an array of Requestoffers made by that user.
     */
-  public static Requestoffer[] get_requestoffers_for_user(int user_id) {
+  public static Requestoffer[] 
+    get_requestoffers_for_user_by_status(int user_id, int status) {
     String sqlText = "SELECT requestoffer_id, datetime, description, "+
       "points, status, requestoffering_user_id, handling_user_id "+
-      "FROM requestoffer WHERE requestoffering_user_id = ?";
+      "FROM requestoffer "+
+      "WHERE requestoffering_user_id = ? AND status = ?";
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
+      pstmt.setInt( 2, status);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Requestoffer[0];
@@ -953,15 +956,18 @@ public final class Requestoffer_utils {
   public static MyMessages[] get_my_messages(int user_id) {
     String sqlText = 
       String.format(
-					"SELECT ro.description, rm.timestamp, rm.requestoffer_id, rm.message, "+
-            "rm.from_user_id AS fuid, rm.to_user_id AS tuid,  "+
-            "from_user.username AS fusername, to_user.username AS tusername "+
-          "FROM requestoffer_message rm "+
-          "JOIN user from_user ON from_user.user_id = rm.from_user_id " +
-          "JOIN user to_user ON to_user.user_id = rm.to_user_id " + 
-          "JOIN requestoffer ro ON ro.requestoffer_id = rm.requestoffer_id " +
-					"WHERE from_user_id = %d OR to_user_id = %d " +
-          "ORDER BY timestamp DESC", user_id, user_id);
+      "SELECT ro.description, rm.timestamp, rm.requestoffer_id, "+
+      "rm.message, "+
+        "rm.from_user_id AS fuid, rm.to_user_id AS tuid,  "+
+        "from_user.username AS fusername, "+
+        "to_user.username AS tusername "+
+      "FROM requestoffer_message rm "+
+      "JOIN user from_user ON from_user.user_id = rm.from_user_id " +
+      "JOIN user to_user ON to_user.user_id = rm.to_user_id " + 
+      "JOIN requestoffer ro "+
+        "ON ro.requestoffer_id = rm.requestoffer_id " +
+      "WHERE from_user_id = %d OR to_user_id = %d " +
+      "ORDER BY timestamp DESC", user_id, user_id);
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
