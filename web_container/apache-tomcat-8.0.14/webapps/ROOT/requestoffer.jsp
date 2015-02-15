@@ -29,6 +29,7 @@
   boolean show_handle_button = 
     (r.status == 76) && //'open'
     !is_requestoffering_user && 
+    !User_utils.has_offered_to_service(r.requestoffer_id, user_id) &&
     !is_deleting;
   boolean show_delete_info = 
       is_requestoffering_user && is_deleting;

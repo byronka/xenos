@@ -88,6 +88,42 @@ public final class User_utils {
 
 
   /**
+    * returns true if this user has already offered to handle
+    * this request, or false if otherwise.
+    */
+  public static boolean 
+    has_offered_to_service(int requestoffer_id, int user_id) {
+    String sqlText = 
+      "SELECT COUNT(*) AS count_of_offered "+
+      "FROM requestoffer_service_request "+
+      "WHERE user_id = ? AND requestoffer_id = ?";
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setInt( 1, user_id);
+      pstmt.setInt( 2, requestoffer_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return false;
+      }
+
+      resultSet.next(); //move to the first set of results.
+      int count = resultSet.getInt("count_of_offered");
+      boolean has_offered = count > 0;
+      return has_offered;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+
+  }
+
+
+  /**
     * gets the salt for a given user.
     * @param username the username for the user
     * @return the salt for the user, used in hashing 

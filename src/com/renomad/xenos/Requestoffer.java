@@ -26,7 +26,8 @@ public class Requestoffer {
     */
   public Requestoffer ( String datetime, String description, 
       int points, int status, 
-      int requestoffering_user_id, int handling_user_id, Integer[] categories) {
+      int requestoffering_user_id, 
+      int handling_user_id, Integer[] categories) {
     this(-1, datetime, description, points,
         status, requestoffering_user_id, handling_user_id, categories);
   }
@@ -36,14 +37,18 @@ public class Requestoffer {
     * data from the database.  It's difficult to get categories
     * at the same time, so we don't use it here.
     */
-  public Requestoffer ( int requestoffer_id, String datetime, String description, 
-      int points, int status, int requestoffering_user_id, int handling_user_id) {
+  public Requestoffer ( 
+      int requestoffer_id, String datetime, String description, 
+      int points, int status, int requestoffering_user_id, 
+      int handling_user_id) {
     this(requestoffer_id, datetime, description, points,
-        status, requestoffering_user_id, handling_user_id, new Integer[0]);
+        status, requestoffering_user_id, 
+        handling_user_id, new Integer[0]);
   }
 
-  public Requestoffer ( int requestoffer_id, String datetime, String description, 
-      int points, int status, int requestoffering_user_id, int handling_user_id,
+  public Requestoffer ( int requestoffer_id, String datetime, 
+      String description, int points, int status, 
+      int requestoffering_user_id, int handling_user_id,
       Integer[] categories) {
     this.requestoffer_id       =  requestoffer_id;
     this.datetime         =  datetime;

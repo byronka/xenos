@@ -30,7 +30,7 @@
 
     <%	for (Requestoffer_utils.Offer_I_made o : offers) { %>
 			<div class="requestoffer serviceoffered">
-        favor: <%=o.requestoffer_id%>
+        <a href="requestoffer.jsp?requestoffer=<%=o.requestoffer_id%>"><%=Utils.get_trunc(Utils.safe_render(o.description), 15)%></a>
         <a href="#">Cancel service offer</a>
 			</div>
 		<% } %>
@@ -54,7 +54,7 @@
         </a>
           wants to service 
         <a href="<%=sr.requestoffer_id%>">
-          <%=Utils.get_trunc(sr.desc,15)%>
+          <%=Utils.get_trunc(Utils.safe_render(sr.desc),15)%>
         </a>
         <a href="#">Choose</a>
 			</div>

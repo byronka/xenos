@@ -339,7 +339,8 @@ public final class Requestoffer_utils {
       "r.status, r.requestoffering_user_id, r.handling_user_id, "+
       "GROUP_CONCAT(rc.category_id SEPARATOR ',') AS categories "+
       "FROM requestoffer r "+
-      "JOIN requestoffer_to_category rtc ON rtc.requestoffer_id = r.requestoffer_id "+
+      "JOIN requestoffer_to_category rtc "+
+        "ON rtc.requestoffer_id = r.requestoffer_id "+
       "JOIN requestoffer_category rc "+
         "ON rc.category_id = rtc.requestoffer_category_id "+
       "WHERE r.requestoffer_id = ? GROUP BY requestoffer_id";

@@ -192,7 +192,8 @@ BEGIN
   SET @get_requestoffer_count = 
      CONCAT('SELECT CEIL(COUNT(*)/10) INTO @total_pages
             FROM requestoffer r 
-            JOIN requestoffer_to_category rtc ON rtc.requestoffer_id = r.requestoffer_id 
+            JOIN requestoffer_to_category rtc 
+              ON rtc.requestoffer_id = r.requestoffer_id 
             JOIN requestoffer_category rc 
               ON rc.category_id = rtc.requestoffer_category_id 
             JOIN user u ON u.user_id = r.requestoffering_user_id 
@@ -222,12 +223,14 @@ BEGIN
             GROUP_CONCAT(rc.category_id SEPARATOR ",") 
             AS categories 
             FROM requestoffer r 
-            JOIN requestoffer_to_category rtc ON rtc.requestoffer_id = r.requestoffer_id 
+            JOIN requestoffer_to_category rtc 
+              ON rtc.requestoffer_id = r.requestoffer_id 
             JOIN requestoffer_category rc 
               ON rc.category_id = rtc.requestoffer_category_id 
             JOIN user u ON u.user_id = r.requestoffering_user_id 
             LEFT JOIN requestoffer_service_request rsr
-              ON r.requestoffer_id = rsr.requestoffer_id AND rsr.user_id = @ruid
+              ON r.requestoffer_id = rsr.requestoffer_id 
+              AND rsr.user_id = @ruid
             WHERE requestoffering_user_id <> @ruid AND r.status <> 109
             ', @search_clauses ,'
             GROUP BY r.requestoffer_id 
