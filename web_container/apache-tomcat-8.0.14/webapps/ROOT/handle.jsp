@@ -24,6 +24,13 @@
     return;
   }
 
+  //handle bad scenario - if the offering user *is* the owning user.
+
+  if (user_id == r.requestoffering_user_id) {
+    response.sendRedirect("general_error.jsp");
+    return;
+  }
+
   java.util.Map<String,String> params = Utils.parse_qs(qs);
   String is_confirmed = params.get("confirm");
   if (is_confirmed != null && is_confirmed.equals("true")) {
@@ -40,12 +47,6 @@
     return;
   }
 
-  //handle bad scenarios
-
-  if (user_id == r.requestoffering_user_id) {
-    response.sendRedirect("general_error.jsp");
-    return;
-  }
 
 %>
 <body>

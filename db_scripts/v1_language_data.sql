@@ -135,6 +135,7 @@ VALUES
 (126, 1,  'Cancel an active Favor'),
 (127, 1,  'Favor canceled'),
 (128, 1,  'Your transaction has been canceled'),
+(129, 1,  'If you would like to cancel this active Favor, click the confirm button below.  This will give you the chance provide a grade for the other person, as well as giving them a chance to grade you.'),
 (1,   2,  'Recherche'),
 (2,   2,  'Créer demande'),
 (3,   2,  'Déconnexion'),
@@ -263,6 +264,7 @@ VALUES
 (126, 2,  'FRENCHCancel an active Favor'),
 (127, 2,  'FRENCHFavor canceled'),
 (128, 2,  'FRENCHYour transaction has been canceled'),
+(129, 2,  'FRENCHIf you would like to cancel this active Favor, click the confirm button below.  This will give you the chance provide a grade for the other person, as well as giving them a chance to grade you.'),
 (1,   3,  'Búsqueda'),
 (2,   3,  'Crear solicitud'),
 (3,   3,  'Cerrar sesión'),
@@ -391,6 +393,7 @@ VALUES
 (126, 3,  'SPANISHCancel an active Favor'),
 (127, 3,  'SPANISHFavor canceled'),
 (128, 3,  'SPANISHYour transaction has been canceled'),
+(129, 3,  'SPANISHIf you would like to cancel this active Favor, click the confirm button below.  This will give you the chance provide a grade for the other person, as well as giving them a chance to grade you.'),
 (1,   4,  '搜索'),
 (2,   4,  '创建请求'),
 (3,   4,  '注销'),
@@ -519,6 +522,7 @@ VALUES
 (126, 4,  'CHINESECancel an active Favor'),
 (127, 4,  'CHINESEFavor canceled'),
 (128, 4,  'CHINESEYour transaction has been canceled'),
+(129, 4,  'CHINESEIF you would like to cancel this active Favor, click the confirm button below.  This will give you the chance provide a grade for the other person, as well as giving them a chance to grade you.'),
 (1,   5,  'חיפוש'),
 (2,   5,  'צור'),
 (3,   5,  'התנתקות'),
@@ -646,4 +650,5 @@ VALUES
 (125, 5,  'HEBREWMy draft Favors.'),
 (126, 5,  'HEBREWCancel an active Favor'),
 (127, 5,  'HEBREWFavor canceled'),
-(128, 5,  'HEBREWYour transaction has been canceled');
+(128, 5,  'HEBREWYour transaction has been canceled'),
+(129, 5,  'HEBREWIF you would like to cancel this active Favor, click the confirm button below.  This will give you the chance provide a grade for the other person, as well as giving them a chance to grade you.');

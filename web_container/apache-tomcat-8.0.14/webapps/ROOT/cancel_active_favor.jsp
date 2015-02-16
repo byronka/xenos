@@ -24,6 +24,14 @@
     return;
   }
 
+  //handle bad scenario - if this user is not either the handler or owner.
+
+  if (user_id != r.requestoffering_user_id && 
+      user_id != r.handling_user_id) {
+    response.sendRedirect("general_error.jsp");
+    return;
+  }
+
   java.util.Map<String,String> params = Utils.parse_qs(qs);
   String is_confirmed = params.get("confirm");
   if (is_confirmed != null && is_confirmed.equals("true")) {
@@ -40,16 +48,11 @@
     return;
   }
 
-  //handle bad scenarios
-
-  if (user_id == r.requestoffering_user_id) {
-    response.sendRedirect("general_error.jsp");
-    return;
-  }
-
 %>
 <body>
   <%@include file="includes/header.jsp" %>
-  <p><%=loc.get(121,"If you would like to take this requestoffer, click the confirm button below")%></p>
-    <a href="handle.jsp?requestoffer=<%=r.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
+  <p>
+    <%=loc.get(129,"If you would like to cancel this active Favor, click the confirm button below.  This will give you the chance provide a grade for the other person, as well as giving them a chance to grade you.")%>
+  </p>
+    <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
 </body>
