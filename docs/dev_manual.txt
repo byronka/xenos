@@ -555,3 +555,8 @@ is failing somehow:
 
 out_of_index: 18
 
+2) You may occasionally see vague errors when hitting pages.  This is
+sometimes caused by stale data.  Tomcat processes all JSP files into class
+files and stores them in its work directory.  If these files are
+out-of-date, then you might see weirdness like this.  In that case, remove
+all the work files.  You may do this by running ant clean-everything

@@ -80,7 +80,7 @@
       <li class="rank">
         <span class="label"><%=loc.get(79, "Rank")%>:</span>
         <span >
-          <%for (int i = 0; i < Math.ceil(r.rank / 20.0); i++) {%>
+          <%for (int i = 0; i < Math.ceil(r.rank * 5); i++) {%>
            &#x2605; 
             <%}%>
         </span>

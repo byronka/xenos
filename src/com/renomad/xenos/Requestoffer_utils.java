@@ -532,7 +532,7 @@ public final class Requestoffer_utils {
         int s = resultSet.getInt("status");
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
-        int ra = resultSet.getInt("rank");
+        float ra = resultSet.getFloat("rank");
         int offered_user_id = resultSet.getInt("been_offered");
         boolean has_been_offered = false;
         if (offered_user_id > 0) {

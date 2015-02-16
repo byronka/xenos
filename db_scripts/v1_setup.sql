@@ -48,7 +48,7 @@ CREATE TABLE
     last_activity_time DATETIME,
     timeout_seconds INT NOT NULL DEFAULT 1800, -- 30 minutes in seconds
     last_ip_logged_in VARCHAR(40),
-    rank INT UNSIGNED NOT NULL DEFAULT 50, -- how they are ranked (like, in stars)
+    rank FLOAT NOT NULL DEFAULT 0.5, -- how they are ranked (like, in stars)
     is_admin BOOL NOT NULL DEFAULT FALSE
   );
 
@@ -58,9 +58,9 @@ CREATE TABLE
 -- create the system user and admin users
 INSERT INTO user (username, email, password, language, rank, is_admin)
 VALUES 
-('xenos_system',NULL,NULL,1,100, true),
-('admin_bk','byron@renomad.com','password',1,100, true),
-('admin_ds','dan@renomad.com','password',1,100, true)
+('xenos_system',NULL,NULL,1,1.0, true),
+('admin_bk','byron@renomad.com','password',1,1.0, true),
+('admin_ds','dan@renomad.com','password',1,1.0, true)
 
 
 ---DELIMITER---
@@ -277,7 +277,8 @@ VALUES
 (14,'failed decrypting cookie'),
 (15,'user logged in'),
 (16,'user logged out'),
-(17,'user canceled a taken-status requestoffer')
+(17,'user canceled a taken-status requestoffer - satisfied'),
+(18,'user canceled a taken-status requestoffer - unsatisfied')
 
 
 ---DELIMITER---
@@ -333,11 +334,14 @@ location (
 
 ---DELIMITER---
 
--- here we create two correlation tables, from location to user and location to requestoffer.
--- locations can be tied to a user if the user says, "remember this location", and tied to a
+-- here we create two correlation tables, 
+-- from location to user and location to requestoffer.
+-- locations can be tied to a user if the user says,
+-- "remember this location", and tied to a
 -- requestoffer if that location is used in that requestoffer.
--- there should be an event running that checks for locations that are not tied to 
--- either a user or requestoffer and purges them, and audits the purge.
+-- there should be an event running that checks for locations
+-- that are not tied to either a user or requestoffer and 
+-- purges them, and audits the purge.
 
 CREATE TABLE
 location_to_user (
@@ -348,7 +352,8 @@ location_to_user (
   ON DELETE CASCADE,
   FOREIGN KEY FK_location (location_id)
   REFERENCES location (location_id)
-  ON DELETE CASCADE
+  ON DELETE CASCADE,
+  PRIMARY KEY (location_id, user_id)
 )
 
 ---DELIMITER---
@@ -362,5 +367,23 @@ location_to_requestoffer (
   ON DELETE CASCADE,
   FOREIGN KEY FK_location (location_id)
   REFERENCES location (location_id)
-  ON DELETE CASCADE
+  ON DELETE CASCADE,
+  PRIMARY KEY (location_id, requestoffer_id)
+)
+
+---DELIMITER---
+
+CREATE TABLE
+user_rank_data_point (
+  date_entered DATE, -- only 3 bytes!
+  user_id INT UNSIGNED,
+  requestoffer_id INT UNSIGNED,
+  is_thumbs_up BOOL, -- thumbs up being "good"
+  FOREIGN KEY FK_requestoffer (requestoffer_id)
+  REFERENCES requestoffer (requestoffer_id)
+  ON DELETE CASCADE,
+  FOREIGN KEY FK_user (user_id)
+  REFERENCES user (user_id)
+  ON DELETE CASCADE,
+  PRIMARY KEY (user_id, requestoffer_id)
 )

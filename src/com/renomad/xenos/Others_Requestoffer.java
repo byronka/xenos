@@ -12,13 +12,15 @@ public class Others_Requestoffer extends Requestoffer {
   /**
     * rank is the rank of the user who created the requestoffer.
     */
-  public final int rank;
+  public final float rank;
   public final boolean has_been_offered; // if the user requesting to see the requestoffers has already offered to handle this.
 
   public Others_Requestoffer(
       String date, String desc, int status,
-      int rank, int points, int requestoffer_id, int requestoffering_user_id,
-      int handling_user_id, Integer[] categories, boolean has_been_offered) {
+      float rank, int points, int requestoffer_id, 
+      int requestoffering_user_id,
+      int handling_user_id, Integer[] categories, 
+      boolean has_been_offered) {
     super(requestoffer_id, date, desc, points,
         status, requestoffering_user_id, handling_user_id, categories);
     this.rank = rank;

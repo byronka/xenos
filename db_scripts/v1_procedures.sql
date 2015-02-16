@@ -27,6 +27,58 @@ END
 
 ---DELIMITER---
 
+DROP PROCEDURE IF EXISTS recalculate_rank_on_user;
+
+---DELIMITER---
+
+-- This procedure calculates and applies the rank calculation for users.
+-- it operates on a 6-month rolling schedule.  Every input, thumbs-up
+-- or thumbs-down, will be inserted into the table and averaged out.
+
+-- inputs that are more than 6 months old will be deleted and not applied
+-- in this average.
+
+-- this procedure does not double-check the user or requestoffer id, 
+-- because it is assumed that by the time the calling procedure 
+-- gets to this one,
+-- that will have already been validated.
+
+CREATE PROCEDURE recalculate_rank_on_user
+(
+  uid INT UNSIGNED, -- the user id
+  rid INT UNSIGNED, -- the requestoffer id
+  is_thumbs_up BOOL
+) 
+BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    RESIGNAL;
+  END;
+
+  INSERT INTO user_rank_data_point
+  (
+    date_entered, 
+    user_id, 
+    requestoffer_id, 
+    is_thumbs_up
+  ) 
+  VALUES (UTC_TIMESTAMP(), uid, rid, is_thumbs_up);
+  
+  -- get the number of rankings that are less than 60 days old
+  UPDATE user
+  SET rank = 
+  (
+    SELECT AVG(is_thumbs_up)
+    FROM user_rank_data_point
+    WHERE UTC_TIMESTAMP() < (date_entered + INTERVAL 60 DAY)
+  )
+  WHERE user_id = uid;
+
+END
+
+---DELIMITER---
+
 DROP PROCEDURE IF EXISTS validate_requestoffer_id;
 
 ---DELIMITER---
@@ -289,8 +341,7 @@ BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' 
-      SET message_text = "exception in put_requestoffer_trans_section";
+    RESIGNAL;
   END;
 
   START TRANSACTION;
@@ -420,9 +471,7 @@ BEGIN
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' 
-      SET message_text = 
-      "exception in offer_to_take_requestoffer_trans_section";
+    RESIGNAL;
   END;
 
   START TRANSACTION;
@@ -484,8 +533,7 @@ BEGIN
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' 
-      SET message_text = "exception in take_requestoffer_trans_section";
+    RESIGNAL;
   END;
 
   START TRANSACTION;
@@ -571,8 +619,7 @@ BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' 
-      SET message_text = "exception in delete_requestoffer_trans_section";
+    RESIGNAL;
   END;
   START TRANSACTION;
 
@@ -642,8 +689,7 @@ BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' 
-      SET message_text = "exception in create_new_user_trans_section";
+    RESIGNAL;
   END;
 
   START TRANSACTION;
@@ -696,9 +742,7 @@ BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' 
-      SET message_text = 
-      "exception in register_user_and_get_cookie_trans_section";
+    RESIGNAL;
   END;
   START TRANSACTION;
 
@@ -747,10 +791,9 @@ BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' 
-      SET message_text = 
-      "exception in user_logout";
+    RESIGNAL;
   END;
+
   START TRANSACTION;
     UPDATE user SET is_logged_in = false;
     CALL add_audit(16, uid, uid, NULL);
@@ -881,10 +924,9 @@ BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' 
-      SET message_text = 
-      "exception in complete_ro_transaction_trans_section";
+    RESIGNAL;
   END;
+
 	START TRANSACTION;
 
 	UPDATE requestoffer -- change state of the requestoffer
@@ -902,13 +944,12 @@ BEGIN
   WHERE user_id = @handling_user_id;
 
 	CALL add_audit(11,@handling_user_id,rid,NULL);
-
-  SET @audit_code = 6;  -- default to satisfied
-  IF (NOT satis) THEN -- if not satisfied, change audit code
-    SET @audit_code = 10;
+  CALL recalculate_rank_on_user(@handling_user_id, rid, satis);
+  IF (satis) THEN
+    CALL add_audit(6,uid,rid,NULL);
+  ELSE
+    CALL add_audit(10,uid,rid,NULL);
   END IF;
-
-	CALL add_audit(@audit_code,uid,rid,NULL);
 
 	COMMIT;
 END
@@ -963,9 +1004,7 @@ BEGIN
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' 
-      SET message_text = 
-      "exception in offer_to_take_requestoffer_trans_section";
+    RESIGNAL;
   END;
 
   START TRANSACTION;
@@ -994,9 +1033,7 @@ BEGIN
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' 
-      SET message_text = 
-      "exception in change_password";
+    RESIGNAL;
   END;
 
   START TRANSACTION;
@@ -1016,21 +1053,30 @@ END
 
 CREATE PROCEDURE cancel_taken_requestoffer
 (
-  uid INT UNSIGNED, -- the user making the request
+  uid INT UNSIGNED, -- the user making the choice to cancel
   rid INT UNSIGNED, -- the requestoffer
+  is_thumbs_up BOOL -- thumbs up on the cancellation
 ) 
 BEGIN 
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
     ROLLBACK;
-    SIGNAL SQLSTATE '45000' 
-      SET message_text = 
-      "exception in cancel_taken_requestoffer";
+    RESIGNAL;
   END;
 
   START TRANSACTION;
+    CALL validate_user_id(uid);
+    CALL validate_requestoffer_id(rid);
 
-    CALL add_audit(17,uid,rid,NULL);
+    UPDATE requestoffer
+    SET status = 76 -- OPEN
+    WHERE requestoffer_id = rid;
+    CALL recalculate_rank_on_user(uid, rid, is_thumbs_up);
+    IF (is_thumbs_up) THEN
+      CALL add_audit(17,uid,rid,NULL);
+    ELSE
+      CALL add_audit(18, uid, rid,NULL);
+    END IF;
 
   COMMIT;
 
