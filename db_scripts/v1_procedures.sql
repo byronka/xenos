@@ -1010,3 +1010,28 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
   COMMIT;
 
 END
+
+---DELIMITER---
+
+
+CREATE PROCEDURE cancel_taken_requestoffer
+(
+  uid INT UNSIGNED, -- the user making the request
+  rid INT UNSIGNED, -- the requestoffer
+) 
+BEGIN 
+DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+      SET message_text = 
+      "exception in cancel_taken_requestoffer";
+  END;
+
+  START TRANSACTION;
+
+    CALL add_audit(17,uid,rid,NULL);
+
+  COMMIT;
+
+END

@@ -276,7 +276,8 @@ VALUES
 (13,'changed password'),
 (14,'failed decrypting cookie'),
 (15,'user logged in'),
-(16,'user logged out')
+(16,'user logged out'),
+(17,'user canceled a taken-status requestoffer')
 
 
 ---DELIMITER---

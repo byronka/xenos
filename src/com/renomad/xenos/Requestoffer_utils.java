@@ -137,6 +137,33 @@ public final class Requestoffer_utils {
     }
   }
 
+  /**
+    * this will cancel a transaction in "taken" status, that is, a
+    * requestoffer that has someone servicing it.
+    */
+  public static boolean
+    cancel_taken_requestoffer(int user_id, int requestoffer_id) {
+      CallableStatement cs = null;
+      try {
+        Connection conn = Database_access.get_a_connection();
+        cs = conn.prepareCall(String.format(
+          "{call cancel_taken_requestoffer(%d, %d)}" 
+          , user_id, requestoffer_id));
+        cs.execute();
+      } catch (SQLException ex) {
+        Database_access.handle_sql_exception(ex);
+        return false;
+      } finally {
+        Database_access.close_statement(cs);
+      }
+      return true;
+    }
+
+
+  /**
+    * indicate that you are interested in handling a particular
+    * requestoffer.  This enters an item in service_requestoffer
+    */
   public static boolean
     offer_to_take_requestoffer(int user_id, int requestoffer_id) {
     CallableStatement cs = null;
