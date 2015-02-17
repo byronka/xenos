@@ -142,13 +142,14 @@ public final class Requestoffer_utils {
     * requestoffer that has someone servicing it.
     */
   public static boolean
-    cancel_taken_requestoffer(int user_id, int requestoffer_id) {
+    cancel_taken_requestoffer(
+        int user_id, int requestoffer_id, boolean is_satisfied) {
       CallableStatement cs = null;
       try {
         Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall(String.format(
-          "{call cancel_taken_requestoffer(%d, %d)}" 
-          , user_id, requestoffer_id));
+          "{call cancel_taken_requestoffer(%d, %d, %b)}" 
+          , user_id, requestoffer_id, is_satisfied));
         cs.execute();
       } catch (SQLException ex) {
         Database_access.handle_sql_exception(ex);
@@ -604,7 +605,8 @@ public final class Requestoffer_utils {
       }
 
       //keep adding rows of data while there is more data
-      ArrayList<Requestoffer> requestoffers = new ArrayList<Requestoffer>();
+      ArrayList<Requestoffer> requestoffers = 
+        new ArrayList<Requestoffer>();
       while(resultSet.next()) {
         int rid = resultSet.getInt("requestoffer_id");
         String dt = resultSet.getString("datetime");

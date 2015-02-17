@@ -34,7 +34,6 @@
           href="requestoffer.jsp?requestoffer=<%=o.requestoffer_id%>">
           <%=Utils.get_trunc(Utils.safe_render(o.description), 15)%>
         </a>
-        <a href="#">Cancel service offer</a>
 			</div>
 		<% } %>
 
@@ -56,7 +55,7 @@
           <%=servicer.username%> 
         </a>
           wants to service 
-        <a href="<%=sr.requestoffer_id%>">
+        <a href="requestoffer.jsp?requestoffer=<%=sr.requestoffer_id%>">
           <%=Utils.get_trunc(Utils.safe_render(sr.desc),15)%>
         </a>
         <a href="#">Choose</a>
@@ -76,7 +75,11 @@
     <%	for (Requestoffer r : handling_requestoffers) { %>
 			<div class="requestoffer handling">
 				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-					<%=Utils.get_trunc(Utils.safe_render(r.description),15)%> </a>
+					<%=Utils.get_trunc(Utils.safe_render(r.description),15)%> 
+        </a>
+        <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>">
+          <%=loc.get(130,"Cancel")%>
+        </a>
 			</div>
 		<% } %>
 
@@ -115,6 +118,9 @@
 			<div class="requestoffer mine">
 				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
 					<%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> 
+        </a>
+        <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>">
+          <%=loc.get(130,"Cancel")%>
         </a>
 			</div>
 		<% } %>

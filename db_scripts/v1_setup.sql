@@ -278,7 +278,8 @@ VALUES
 (15,'user logged in'),
 (16,'user logged out'),
 (17,'user canceled a taken-status requestoffer - satisfied'),
-(18,'user canceled a taken-status requestoffer - unsatisfied')
+(18,'user canceled a taken-status requestoffer - unsatisfied'),
+(19,'user was removed from handling a requestoffer by a cancel action')
 
 
 ---DELIMITER---

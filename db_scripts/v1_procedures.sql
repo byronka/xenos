@@ -45,9 +45,9 @@ DROP PROCEDURE IF EXISTS recalculate_rank_on_user;
 
 CREATE PROCEDURE recalculate_rank_on_user
 (
-  uid INT UNSIGNED, -- the user id
+  uid INT UNSIGNED, -- the user id having his rank recalculated
   rid INT UNSIGNED, -- the requestoffer id
-  is_thumbs_up BOOL
+  is_thumbs_up BOOL -- the opinion of the other party
 ) 
 BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -1022,6 +1022,9 @@ END
 
 ---DELIMITER---
 
+DROP PROCEDURE IF EXISTS change_password;   
+
+---DELIMITER---
 
 CREATE PROCEDURE change_password
 (
@@ -1050,6 +1053,9 @@ END
 
 ---DELIMITER---
 
+DROP PROCEDURE IF EXISTS cancel_taken_requestoffer;   
+
+---DELIMITER---
 
 CREATE PROCEDURE cancel_taken_requestoffer
 (
@@ -1068,10 +1074,35 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     CALL validate_user_id(uid);
     CALL validate_requestoffer_id(rid);
 
-    UPDATE requestoffer
-    SET status = 76 -- OPEN
+    -- get the other party on this requestoffer.
+    -- if we are the owner, get the handler, and vice versa
+    SELECT handling_user_id, requestoffering_user_id 
+    INTO @handling_user_id, @requestoffering_user_id
+    FROM requestoffer
     WHERE requestoffer_id = rid;
-    CALL recalculate_rank_on_user(uid, rid, is_thumbs_up);
+    
+    -- here we will set the id for the other member
+    -- of this transaction
+    SET @other_party = -1;
+    IF (uid = @handling_user_id) THEN
+      SET @other_party = @requestoffering_user_id;
+    ELSE
+      SET @other_party = @handling_user_id;
+    END IF;
+
+    -- change the status on the requestoffer
+    UPDATE requestoffer
+    SET 
+      status = 76 -- OPEN
+      ,handling_user_id = NULL  -- clear out the handling user
+    WHERE requestoffer_id = rid;
+
+    
+    -- set audit for removal of handling user 
+    CALL add_audit(19,uid,@other_party,NULL); 
+
+    -- recalculate the ranking on the other party
+    CALL recalculate_rank_on_user(@other_party, rid, is_thumbs_up);
     IF (is_thumbs_up) THEN
       CALL add_audit(17,uid,rid,NULL);
     ELSE

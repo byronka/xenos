@@ -32,21 +32,6 @@
     return;
   }
 
-  java.util.Map<String,String> params = Utils.parse_qs(qs);
-  String is_confirmed = params.get("confirm");
-  if (is_confirmed != null && is_confirmed.equals("true")) {
-    if (Requestoffer_utils.cancel_taken_requestoffer(
-      user_id, r.requestoffer_id)) {
-      response.sendRedirect("offer_canceled.jsp");
-      return;
-    } else {
-        response.sendRedirect("general_error.jsp");
-    }
-  }
-  if (r == null) {
-    response.sendRedirect("general_error.jsp");
-    return;
-  }
 
 %>
 <body>
@@ -54,5 +39,14 @@
   <p>
     <%=loc.get(129,"If you would like to cancel this active Favor, click the confirm button below.  This will give you the chance provide a grade for the other person, as well as giving them a chance to grade you.")%>
   </p>
-    <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
+  <p>
+    <a href="transaction_cancel.jsp?requestoffer=<%=r.requestoffer_id%>&amp;satisfied=true">
+      <%=loc.get(95, "Confirm")%> Happy
+    </a>
+  </p>
+  <p>
+    <a href="transaction_cancel.jsp?requestoffer=<%=r.requestoffer_id%>&amp;satisfied=false">
+      <%=loc.get(95, "Confirm")%> Unhappy
+    </a>
+  </p>
 </body>
