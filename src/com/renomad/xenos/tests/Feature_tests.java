@@ -3,6 +3,9 @@ package com.renomad.xenos.tests;
 import java.nio.charset.StandardCharsets;
 import java.net.HttpURLConnection;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.net.URL;
 
 import org.junit.Test;
@@ -40,6 +43,40 @@ public class Feature_tests {
     }
   }
 
+
+  private String getString(InputStream is) throws Exception {
+    StringBuilder sb = new StringBuilder();
+    byte[] buffer = new byte[1000];
+    while ((is.read(buffer, 0, 1000)) != -1) {
+      String converted = new String(buffer, StandardCharsets.UTF_8);
+      sb.append(converted);
+    }
+    return sb.toString();
+  }
+
+
+  private String do_post(String culture, String body) {
+    try {
+      HttpURLConnection huc = create_basic_browser();
+      huc.setRequestMethod("POST");
+      huc.setRequestProperty("Accept-Language",culture);
+      huc.setDoOutput(true);
+      OutputStream os = huc.getOutputStream();
+      setStringToPostContent(os, body);
+      InputStream is = huc.getInputStream();
+      String response = getString(is);
+      return response;
+    } catch (Exception ex) {
+      System.out.println(ex);
+      return "";
+    }
+  }
+
+  @Test
+  public void testee() {
+    String result = do_post("en", "username=bob&password=password");
+    System.out.println(result);
+  }
 
   @Test
   public void test_login_page_french() {
@@ -87,14 +124,11 @@ public class Feature_tests {
   }
 
 
-  private String getString(InputStream is) throws Exception {
-    StringBuilder sb = new StringBuilder();
-    byte[] buffer = new byte[1000];
-    while ((is.read(buffer, 0, 1000)) != -1) {
-      String converted = new String(buffer, StandardCharsets.UTF_8);
-      sb.append(converted);
-    }
-    return sb.toString();
+  private void setStringToPostContent(
+      OutputStream os, String content) throws Exception {
+    final PrintStream printStream = new PrintStream(os);
+    printStream.print(content);
+    printStream.close();
   }
 
 }
