@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.PrintStream;
 import java.net.URL;
+import java.net.Socket;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.impl.client.HttpClients;
+
 public class Feature_tests {
 
   private HttpURLConnection create_basic_browser() throws Exception {
@@ -186,5 +188,60 @@ public class Feature_tests {
     printStream.print(content);
     printStream.close();
   }
+
+
+	//INTERESTING!!
+
+	@Test
+	public void trythisout() throws Exception{
+
+		String text = 
+			"GET http://localhost:8080/login.jsp HTTP/1.1\n" +
+			"Host: localhost:8080\n" +
+			"Connection: keep-alive\n" +
+			"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n" +
+			"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36\n" +
+			"Referer: http://localhost:8080/\n" +
+			"Accept-Encoding: gzip, deflate, sdch\n" +
+			"Accept-Language: en-US,en;q=0.8\n" +
+			"\n";
+
+
+
+		String response = talk(text);
+		System.out.println(response);
+	}
+
+	private String talk(String text) throws Exception {
+		// will connect to loopback on 8080
+		Socket s = new Socket("localhost", 8080, null, 0);
+		InputStream is = s.getInputStream();
+		OutputStream os = s.getOutputStream();
+		
+		sendText(os, text);
+		String response = getResponse(is);
+		return response;
+	}
+
+  private String getResponse(InputStream is) throws Exception {
+    StringBuilder sb = new StringBuilder();
+    byte[] buffer = new byte[1000];
+		int read = -2;
+    while ((read = is.read(buffer, 0, 1000)) != -1) {
+			System.out.println(read);
+      String converted = new String(buffer, StandardCharsets.UTF_8);
+      sb.append(converted);
+    }
+    return sb.toString();
+  }
+  
+   private void sendText(
+      OutputStream os, String content) throws Exception {
+    final PrintStream printStream = new PrintStream(os);
+    printStream.print(content);
+    //printStream.close();
+  }
+
+
 
 }
