@@ -385,9 +385,41 @@ END
 
 ---DELIMITER---
 
+DROP PROCEDURE IF EXISTS put_system_to_user_message;
+
+---DELIMITER---
+
+-- a message sent from the system to a user
+-- requires localization
+
+CREATE PROCEDURE put_system_to_user_message
+(
+  the_message_id INT UNSIGNED, -- the id to a localization value
+  to_uid INT UNSIGNED, -- user we are sending this to
+  rid INT UNSIGNED -- referenced requestoffer, if that applies
+) 
+BEGIN 
+
+  INSERT into system_to_user_message (
+		text_id, requestoffer_id, to_user_id, timestamp)
+  VALUES 
+    (
+      the_message_id,
+      rid, 
+      to_uid, 
+      UTC_TIMESTAMP()
+    );
+
+END
+
+---DELIMITER---
+
 DROP PROCEDURE IF EXISTS put_message;
 
 ---DELIMITER---
+
+-- a message sent from one user to another within
+-- the context of a requestoffer
 
 CREATE PROCEDURE put_message
 (
@@ -1083,7 +1115,6 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     
     -- here we will set the id for the other member
     -- of this transaction
-    SET @other_party = -1;
     IF (uid = @handling_user_id) THEN
       SET @other_party = @requestoffering_user_id;
     ELSE
@@ -1097,9 +1128,15 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
       ,handling_user_id = NULL  -- clear out the handling user
     WHERE requestoffer_id = rid;
 
+    -- inform the other user the transaction is canceled.
+    CALL put_system_to_user_message(131, @other_party, rid);
+
+    -- inform the acting user they have canceled the transaction
+    CALL put_system_to_user_message(136, uid, rid);
     
-    -- set audit for removal of handling user 
-    CALL add_audit(19,uid,@other_party,NULL); 
+    -- set audit for removal of handling user - 
+    -- either way, they get removed as handler
+    CALL add_audit(19,uid,@handling_user_id,NULL); 
 
     -- recalculate the ranking on the other party
     CALL recalculate_rank_on_user(@other_party, rid, is_thumbs_up);

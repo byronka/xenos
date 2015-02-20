@@ -225,6 +225,8 @@ requestoffer_to_category (
 
 ---DELIMITER---
 -- create a table of meesages for requestoffers
+-- it is expected that these be written by users, to other users.
+-- messages sent by the system will be in table user_message
 
 CREATE TABLE  
 requestoffer_message ( 
@@ -387,4 +389,23 @@ user_rank_data_point (
   REFERENCES user (user_id)
   ON DELETE CASCADE,
   PRIMARY KEY (user_id, requestoffer_id)
+)
+
+---DELIMITER---
+-- this table holds messages sent by the system to users.
+-- for example, for being selected to handle a requestoffer, or
+-- the other person cancelling, anything where we are the mediator
+-- and the text has to be localized.
+
+CREATE TABLE  
+system_to_user_message ( 
+  stu_message_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  requestoffer_id INT UNSIGNED, 
+  text_id INT UNSIGNED NOT NULL, -- corresponds to localization ids
+  timestamp DATETIME,
+  to_user_id INT UNSIGNED NOT NULL,   -- person receiving the message
+  has_been_viewed BOOL DEFAULT FALSE, -- if the user has viewed this message
+  FOREIGN KEY FK_to_user_id (to_user_id)
+  REFERENCES user (user_id)
+  ON DELETE CASCADE
 )
