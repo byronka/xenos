@@ -18,179 +18,26 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.junit.Assert.*;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.apache.http.impl.client.HttpClients;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Feature_tests {
 
-  private HttpURLConnection create_basic_browser() throws Exception {
-    URL my_url = new URL("http://localhost:8080/login.jsp");
-    HttpURLConnection huc = (HttpURLConnection)my_url.openConnection();
-    huc.setRequestProperty("User-Agent","Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0");
-    huc.setRequestProperty("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-    huc.setRequestProperty("Accept-Language","en");
-    huc.setRequestProperty("Accept-Encoding","gzip, deflate");
-    huc.setRequestProperty("Referer","http://localhost:8080/");
-    huc.setRequestProperty("Connection","keep-alive");
-    huc.setRequestProperty("Cache-Control","max-age=0");
-    return huc;
-  }
+    String get_cookie = 
+			"POST http://localhost:8080/login.jsp HTTP/1.1\n" +
+      "Host: localhost:8080\n" +
+      "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0\n" +
+      "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\n" +
+      "Accept-Language: en\n" +
+      "Accept-Encoding: gzip, deflate\n" +
+      "Referer: http://localhost:8080/login.jsp\n" +
+      "Connection: keep-alive\n" +
+      "Content-Type: application/x-www-form-urlencoded\n" +
+      "Content-Length: 30\n" +
+      "\n" +
+      "username=bob&password=password\n" +
+      "\n";
 
-
-  private String test_login_fields(String culture) {
-    try {
-      HttpURLConnection huc = create_basic_browser();
-      huc.setRequestProperty("Accept-Language",culture);
-      InputStream is = huc.getInputStream();
-      String response = getString(is);
-      return response;
-    } catch (Exception ex) {
-      System.out.println(ex);
-      return "";
-    }
-  }
-
-
-  private String getString(InputStream is) throws Exception {
-    StringBuilder sb = new StringBuilder();
-    byte[] buffer = new byte[1000];
-    while ((is.read(buffer, 0, 1000)) != -1) {
-      String converted = new String(buffer, StandardCharsets.UTF_8);
-      sb.append(converted);
-    }
-    return sb.toString();
-  }
-
-
-  private String do_post(String culture, String body) {
-    try {
-      HttpURLConnection huc = create_basic_browser();
-      huc.setRequestMethod("POST");
-      huc.setRequestProperty("Accept-Language",culture);
-      huc.setFollowRedirects(false);
-      huc.connect();
-      //OutputStream os = huc.getOutputStream();
-      //setStringToPostContent(os, body);
-      InputStream is = huc.getInputStream();
-      String response = getString(is);
-      return response;
-    } catch (Exception ex) {
-      System.out.println(ex);
-      return "";
-    }
-  }
-
-  @Test
-  public void testee() {
-    String result = do_post("en", "username=bob&password=password");
-    System.out.println(result);
-  }
-
-  @Test
-  public void testee_yumiee() throws Exception {
-    HttpGet httpget = new HttpGet("http://localhost:8080");
-    CloseableHttpClient httpclient = HttpClients.createDefault();
-    HttpGet httpGet = new HttpGet("http://localhost:8080");
-    CloseableHttpResponse response1 = httpclient.execute(httpGet);
-    // The underlying HTTP connection is still held by the response object
-    // to allow the response content to be streamed directly from the network socket.
-    // In order to ensure correct deallocation of system resources
-    // the user MUST call CloseableHttpResponse#close() from a finally clause.
-    // Please note that if response content is not fully consumed the underlying
-    // connection cannot be safely re-used and will be shut down and discarded
-    // by the connection manager. 
-    try {
-        System.out.println(response1.getStatusLine());
-        HttpEntity entity1 = response1.getEntity();
-        // do something useful with the response body
-        // and ensure it is fully consumed
-        EntityUtils.consume(entity1);
-    } finally {
-        response1.close();
-    }
-
-    HttpPost httpPost = new HttpPost("http://localhost:8080/login.jsp");
-    List <NameValuePair> nvps = new ArrayList <NameValuePair>();
-    nvps.add(new BasicNameValuePair("username", "bob"));
-    nvps.add(new BasicNameValuePair("password", "password"));
-    httpPost.setEntity(new UrlEncodedFormEntity(nvps));
-    CloseableHttpResponse response2 = httpclient.execute(httpPost);
-
-    try {
-        System.out.println(response2.getStatusLine());
-        HttpEntity entity2 = response2.getEntity();
-        // do something useful with the response body
-        // and ensure it is fully consumed
-        EntityUtils.consume(entity2);
-    } finally {
-        response2.close();
-    }
-  }
-
-  @Test
-  public void test_login_page_french() {
-    String login_page_text = test_login_fields("fr");
-    assertTrue(login_page_text.contains("Mot de passe"));
-    assertTrue(login_page_text.contains("Nom d'utilisateur"));
-    assertTrue(login_page_text.contains("Page de connexion"));
-    assertTrue(login_page_text.contains("S'identifier"));
-  }          
-
-  @Test
-  public void test_login_page_spanish() {
-    String login_page_text = test_login_fields("es");
-    assertTrue(login_page_text.contains("Contraseña"));
-    assertTrue(login_page_text.contains("Nombre de usuario"));
-    assertTrue(login_page_text.contains("Página de registro"));
-    assertTrue(login_page_text.contains("Iniciar Sesión"));
-  }
-
-  @Test
-  public void test_login_page_hebrew() {
-    String login_page_text = test_login_fields("he");
-    assertTrue(login_page_text.contains("דף כניסה"));
-    assertTrue(login_page_text.contains("שם משתמש"));
-    assertTrue(login_page_text.contains("סיסמא"));
-    assertTrue(login_page_text.contains("כניסה"));
-  }
-
-  @Test
-  public void test_login_page_chinese() {
-    String login_page_text = test_login_fields("zh");
-    assertTrue(login_page_text.contains("登录页面"));
-    assertTrue(login_page_text.contains("用户名"));
-    assertTrue(login_page_text.contains("密码"));
-    assertTrue(login_page_text.contains("登录"));
-  }
-
-  @Test
-  public void test_login_page_english() {
-    String login_page_text = test_login_fields("en");
-    assertTrue(login_page_text.contains("Login page"));
-    assertTrue(login_page_text.contains("Username"));
-    assertTrue(login_page_text.contains("Password"));
-    assertTrue(login_page_text.contains("Login"));
-  }
-
-
-  private void setStringToPostContent(
-      OutputStream os, String content) throws Exception {
-    final PrintStream printStream = new PrintStream(os);
-    printStream.print(content);
-    printStream.close();
-  }
-
-
-	//INTERESTING!!
 
 	@Test
 	public void trythisout() throws Exception{
@@ -206,11 +53,41 @@ public class Feature_tests {
 			"Accept-Language: en-US,en;q=0.8\n" +
 			"\n";
 
-
-
 		String response = talk(text);
 		System.out.println(response);
 	}
+
+  @Test
+  public void trylogin() throws Exception {
+    String response = talk(get_cookie);
+    System.out.println(response);
+  }
+
+
+	@Test
+	public void trydashboard() throws Exception{
+
+		String get_dashboard = 
+			"GET http://localhost:8080/dashboard.jsp HTTP/1.1\n" +
+			"Host: localhost:8080\n" +
+			"Connection: keep-alive\n" +
+			"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n" +
+			"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36\n" +
+			"Referer: http://localhost:8080/\n" +
+			"Accept-Encoding: gzip, deflate, sdch\n" +
+      "Cookie: %s" +
+			"Accept-Language: en-US,en;q=0.8\n" +
+			"\n";
+
+		String get_cookie_response = talk(get_cookie);
+    String cookie = find_cookie(get_cookie_response);
+		String response = talk(String.format(get_dashboard, cookie));
+		System.out.println(response);
+	}
+
+
+
+
 
 	private String talk(String text) throws Exception {
 		// will connect to loopback on 8080
@@ -219,27 +96,103 @@ public class Feature_tests {
 		OutputStream os = s.getOutputStream();
 		
 		sendText(os, text);
-		String response = getResponse(is);
-		return response;
+    String content = getContent(is);
+		return content;
 	}
 
-  private String getResponse(InputStream is) throws Exception {
+
+  /**
+    * takes a count of the bytes from the first to the second
+    * consecutive carriage return (/n/n)
+    * or returns -1 if not found.
+    */
+  private String find_cookie(String headers) {
+    String cookie_search = "Set-Cookie: ([a-zA-Z_0-9]+?)";
+    Pattern p = Pattern.compile(cookie_search); 
+    Matcher m = p.matcher(headers);
+    if (m.find()) {
+      String cookie = m.group(1);
+      return cookie;
+    }
+    return "";
+  }
+
+  /**
+    * takes a count of the bytes from the first to the second
+    * consecutive carriage return (/n/n)
+    * or returns -1 if not found.
+    */
+  private int find_header_length(String headers) {
+    String end_of_headers = "\r\n\r\n|\n\n"; 
+    Pattern p = Pattern.compile(end_of_headers, Pattern.MULTILINE);
+    Matcher m = p.matcher(headers);
+    if (m.find()) {
+      Integer length_of_headers_region = m.end();
+      return length_of_headers_region;
+    }
+    return -1;
+  }
+
+  /**
+    * looks for "content-length: 123" in the string given
+    * if it find anything, returns that value, otherwise, -1
+    */
+  private int find_content_length(String headers) {
+    String content_length = "Content-Length: ([0-9]+)"; 
+    Pattern p = Pattern.compile(content_length);
+    Matcher m = p.matcher(headers);
+    if (m.find()) {
+      Integer size = Integer.parseInt(m.group(1));
+      return size;
+    }
+    return -1;
+  }
+
+
+  private String 
+    getContent(InputStream is) throws Exception {
     StringBuilder sb = new StringBuilder();
     byte[] buffer = new byte[1000];
-		int read = -2;
-    while ((read = is.read(buffer, 0, 1000)) != -1) {
-			System.out.println(read);
-      String converted = new String(buffer, StandardCharsets.UTF_8);
-      sb.append(converted);
+    int read = 0;
+    int total_read = 0;
+    int content_length = -1;
+    int header_length = -1;
+    int count = 0;
+    while (true) {
+      if ((read = is.read(buffer, 0, 1000)) < 1) {
+        System.out.println("breaking because we read " + read + " bytes");
+        break;
+      }
+
+      total_read += read;
+      count++;
+      String read_string = new String(buffer, StandardCharsets.UTF_8);
+      sb.append(read_string);
+      if (content_length == -1) {  //First, did we get content-length? 
+        content_length = find_content_length(read_string);
+      }
+      if (header_length == -1) {  //Then, do we know the length of the headers section?
+        header_length = find_header_length(read_string);
+      }
+      if (content_length > -1 && //if we have everything, and have exceeded the length, break.
+          header_length > -1 && 
+          total_read <= (content_length + header_length)) {
+        System.out.println("response fully read. total_length: " + total_read);
+        break;
+      }
+      if (count > 5) {   // safety - we don't want to get in an infinite loop
+        System.out.println("*** breaking after count of 5 ***");
+        break;
+      }
     }
     return sb.toString();
   }
+
   
    private void sendText(
       OutputStream os, String content) throws Exception {
     final PrintStream printStream = new PrintStream(os);
-    printStream.print(content);
-    //printStream.close();
+    printStream.print(content); //send our request to server
   }
 
 
