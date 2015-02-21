@@ -464,11 +464,11 @@ requestoffer_service_status (
 -- once that period is up, it goes into complete and it's no longer
 -- possible to enter feedback.
 
-INSERT INTO TABLE requestoffer_service_status(state_id, state)
+INSERT INTO requestoffer_service_status(state_id, state)
 VALUES 
 (1, 'HANDLING'), -- <-- we go here when we first start servicing a RO
 (2, 'COMPLETE_FEEDBACK_POSSIBLE'), -- <-- right after a RO gets completed or canceled
-(3, 'COMPLETE'), -- <-- no longer possible to leave feedback.
+(3, 'COMPLETE') -- <-- no longer possible to leave feedback.
 
 ---DELIMITER---
 
