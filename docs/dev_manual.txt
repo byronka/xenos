@@ -342,13 +342,18 @@ SQL standards
   @query to print out the resulting SQL so you can understand what the
   database is thinking.
 6) Great reasons to use stored procedures: if you are doing something
-	that requires multiple conversations with the database, that might be
-	a good time to use stored procedures.  For example, you want to delete
-	a requestoffer.  So first, check that the requestoffer exists, then delete the
-	requestoffer, then add an audit.  If you do that in code, there is a lot of
-	boiler plate required to tie things together - checking for errors,
-	rolling back if necessary, etc. Whereas, if you do it in a stored
-	procedure, all that boiler plate disappears.
+  that requires multiple conversations with the database, that might
+  be a good time to use stored procedures.  For example, you want to
+  delete a requestoffer.  So first, check that the requestoffer exists,
+  then delete the requestoffer, then add an audit.  If you do that in
+  code, there is a lot of boiler plate required to tie things together -
+  checking for errors, rolling back if necessary, etc. Whereas, if you
+  do it in a stored procedure, all that boiler plate disappears.
+7) Adding sample data: there needs to be sample data for every table
+  in the system that receives user data (not enum tables like
+  audit_actions).  Not having sample data is a defect.  Reason being,
+  that it provides us with a way of keeping tight control on the system
+  state when we run the "build-sample-data" script.
 
 
 
