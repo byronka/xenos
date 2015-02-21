@@ -659,7 +659,7 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     CALL add_audit(3,uid,rid,NULL);
 
     -- Add an audit for the losing users
-    INSERT INTO audit ( -- now, store an audit of what we deleted
+    INSERT INTO audit (
       datetime, audit_action_id, user_id, target_id)
     SELECT UTC_TIMESTAMP(), 20, user_id, rid
     FROM requestoffer_service_request 
