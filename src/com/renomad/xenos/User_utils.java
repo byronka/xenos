@@ -255,7 +255,7 @@ public final class User_utils {
     */
   public static User get_user(int user_id) {
     String sqlText = 
-      "SELECT username,points, timeout_seconds "+
+      "SELECT username,points, timeout_seconds, rank "+
       "FROM user WHERE user_id = ?;";
     PreparedStatement pstmt = null;
     try {
@@ -272,7 +272,8 @@ public final class User_utils {
       String username = resultSet.getNString("username");
       int points = resultSet.getInt("points");
       int timeout_seconds = resultSet.getInt("timeout_seconds");
-      return new User(username, "", points, timeout_seconds);
+      float rank = resultSet.getFloat("rank");
+      return new User(username, "", points, timeout_seconds, rank);
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return null;

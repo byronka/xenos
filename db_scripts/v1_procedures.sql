@@ -519,8 +519,8 @@ DROP PROCEDURE IF EXISTS offer_to_take_requestoffer;
 
 CREATE PROCEDURE offer_to_take_requestoffer
 (
-  uid INT UNSIGNED,
-  rid INT UNSIGNED
+  uid INT UNSIGNED, -- the user who will handle the requestoffer
+  rid INT UNSIGNED -- the id of the requestoffer
 ) 
 BEGIN 
 
@@ -581,8 +581,8 @@ DROP PROCEDURE IF EXISTS take_requestoffer;
 
 CREATE PROCEDURE take_requestoffer
 (
-  uid INT UNSIGNED,
-  rid INT UNSIGNED
+  uid INT UNSIGNED, -- the user who will handle the requestoffer
+  rid INT UNSIGNED -- the id of the requestoffer
 ) 
 BEGIN 
 
@@ -635,14 +635,35 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     WHERE requestoffer_id = rid;
     
     -- indicate that this user is in "ACTIVE" state on this requestoffer
-    INSERT INTO requestoffer_servicer_state
+    INSERT INTO requestoffer_user_state
     (user_id, requestoffer_id, requestoffer_service_status_id)
     VALUES 
     (@owner_id, rid, 1), 
     (uid, rid, 1); 
 
-    -- Add an audit
+    -- change the service request to accepted for the winning user
+    UPDATE requestoffer_service_request 
+    SET 
+      status = 107, -- "accepted"
+      date_modified = UTC_TIMESTAMP()
+    WHERE requestoffer_id = rid AND user_id = uid;
+
+    -- change the service request to rejected for the losing users
+    UPDATE requestoffer_service_request 
+    SET 
+      status = 108, -- "rejected"
+      date_modified = UTC_TIMESTAMP()
+    WHERE requestoffer_id = rid AND user_id <> uid;
+
+    -- Add an audit for the winning user
     CALL add_audit(3,uid,rid,NULL);
+
+    -- Add an audit for the losing users
+    INSERT INTO audit ( -- now, store an audit of what we deleted
+      datetime, audit_action_id, user_id, target_id)
+    SELECT UTC_TIMESTAMP(), 20, user_id, rid
+    FROM requestoffer_service_request 
+    WHERE requestoffer_id <> rid;
 
   COMMIT;
 
@@ -1195,13 +1216,13 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     WHERE requestoffer_id = rid;
 
     -- change the state for the servicer to COMPLETE_FEEDBACK_POSSIBLE
-    UPDATE requestoffer_servicer_state
+    UPDATE requestoffer_user_state
     SET state_id = 2 -- COMPLETE_FEEDBACK_POSSIBLE
     WHERE user_id = @other_party AND requestoffer_id = rid;
 
     -- change the state for the acting user to COMPLETE - they already
     -- gave us their feedback
-    UPDATE requestoffer_servicer_state
+    UPDATE requestoffer_user_state
     SET state_id = 3 -- COMPLETE
     WHERE user_id = uid AND requestoffer_id = rid;
 

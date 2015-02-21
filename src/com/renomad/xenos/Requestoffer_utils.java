@@ -188,10 +188,12 @@ public final class Requestoffer_utils {
 
   /**
     * sets the status of the requestoffer to taken for a given user.
+    * @param new_handler_id the id of the user who will now handle this.
+    * @param requestoffer_id the id of the requestoffer they will handle.
     * @return true if successful at taking, false otherwise.
     */
   public static boolean 
-    take_requestoffer(int user_id, int requestoffer_id) {
+    choose_handler(int new_handler_id, int requestoffer_id) {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
@@ -199,7 +201,7 @@ public final class Requestoffer_utils {
       // details on this stored procedure.
       
       cs = conn.prepareCall(String.format(
-        "{call take_requestoffer(%d, %d)}" , user_id, requestoffer_id));
+        "{call take_requestoffer(%d, %d)}" , new_handler_id, requestoffer_id));
       cs.execute();
     } catch (SQLException ex) {
 			String msg = ex.getMessage();
@@ -305,6 +307,7 @@ public final class Requestoffer_utils {
 
   /**
     * Gets the list of users that have offered to service my request
+    * that are not selected or rejected.
     * 
     * @param user_id the user asking about servicers 
     *   for their requestoffers
@@ -318,7 +321,7 @@ public final class Requestoffer_utils {
       "FROM requestoffer_service_request rsr " +
       "JOIN requestoffer ro "+
         "ON ro.requestoffer_id = rsr.requestoffer_id " +
-      "WHERE ro.requestoffering_user_id = ?";
+      "WHERE ro.requestoffering_user_id = ? AND rsr.status = 106";
 
     PreparedStatement pstmt = null;
     try {

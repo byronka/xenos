@@ -54,11 +54,13 @@
         <a href="#">
           <%=servicer.username%> 
         </a>
-          wants to service 
+        <%=loc.get(138,"wants to service")%>
         <a href="requestoffer.jsp?requestoffer=<%=sr.requestoffer_id%>">
           <%=Utils.get_trunc(Utils.safe_render(sr.desc),15)%>
         </a>
-        <a href="#">Choose</a>
+        <a href="choose_handler.jsp?requestoffer=<%=sr.requestoffer_id%>&user=<%=sr.user_id%>">
+          <%=loc.get(137,"Choose")%>
+        </a>
 			</div>
 		<% } %>
 
@@ -142,7 +144,7 @@
 				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
 					<%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> </a>
           <a class="button" 
-            href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
+            href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
             <%=loc.get(21,"Delete")%>
           </a>
 			</div>
@@ -165,7 +167,7 @@
 				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
 					<%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> </a>
           <a class="button" 
-            href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
+            href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
             <%=loc.get(21,"Delete")%>
           </a>
 			</div>

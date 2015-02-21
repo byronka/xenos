@@ -265,7 +265,7 @@ INSERT INTO audit_actions (action_id,action)
 VALUES
 (1,'User created a requestoffer'),
 (2,'User deleted a requestoffer'),
-(3,'User handled a requestoffer'),
+(3,'User was accepted on a requestoffer'),
 (4,'New user was registered'),
 (5,'cookie authentication failed'),
 (6,'user closed their own requestoffer - satisfied'),
@@ -281,7 +281,8 @@ VALUES
 (16,'user logged out'),
 (17,'user canceled a taken-status requestoffer - satisfied'),
 (18,'user canceled a taken-status requestoffer - unsatisfied'),
-(19,'user was removed from handling a requestoffer by a cancel action')
+(19,'user was removed from handling a requestoffer by a cancel action'),
+(20,'User was rejected on a requestoffer')
 
 
 ---DELIMITER---

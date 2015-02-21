@@ -13,13 +13,16 @@ public class User {
   public final String password;
   public final int points;
   public final int timeout_seconds;
+  public final float rank;
+
 
   public User (
-      String username, String password, int points, int timeout_seconds) {
+      String username, String password, int points, int timeout_seconds, float rank) {
     this.username = username;
     this.password = password;
     this.points = points;
     this.timeout_seconds = timeout_seconds;
+    this.rank = rank;
   }
   
   
