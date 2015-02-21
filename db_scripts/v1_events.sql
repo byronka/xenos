@@ -15,10 +15,10 @@
 -- check with "show processlist;".  If you don't see event_scheduler under
 -- User column, it's not running.
 
-DROP EVENT IF EXISTS user_timeout;
 
----DELIMITER---
 SET GLOBAL event_scheduler = ON;
+---DELIMITER---
+DROP EVENT IF EXISTS user_timeout;
 ---DELIMITER---
 
 -- this sql does the following: every 5 seconds, run a script to check for
@@ -40,6 +40,8 @@ DO
 	END
 
 ---DELIMITER---
+DROP EVENT IF EXISTS location_purge;
+---DELIMITER---
 
 -- every day, find locations that are not tied to either a user
 -- or a requestoffer and delete them, and add an audit about doing so.
@@ -58,11 +60,14 @@ DO
 
     DROP TEMPORARY TABLE IF EXISTS locations_to_delete;
 
-    CREATE TEMPORARY TABLE locations_to_delete AS ( -- temporary table of id's to delete
-      SELECT l.location_id  -- Get locations that have neither a user nor a requestoffer
+   -- temporary table of id's to delete
+   -- Get locations that have neither a user nor a requestoffer
+    CREATE TEMPORARY TABLE locations_to_delete AS ( 
+      SELECT l.location_id  
       from location l 
       LEFT JOIN location_to_user ltu ON ltu.location_id = l.location_id 
-      LEFT JOIN location_to_requestoffer ltr ON ltr.location_id = l.location_id 
+      LEFT JOIN location_to_requestoffer ltr 
+        ON ltr.location_id = l.location_id 
       WHERE ltu.location_id IS NULL AND ltr.location_id IS NULL
     );
 
@@ -77,3 +82,24 @@ DO
     FROM locations_to_delete;
 
   END
+
+---DELIMITER---
+DROP EVENT IF EXISTS clear_out_old_messages;
+---DELIMITER---
+
+-- this sql does the following: every 5 minutes, run a script to delete
+-- messages whose creation time was more than 24 hours ago.
+-- note: this should also clear out the text messages stored in
+-- temporary_message_text table, which should "ON DELETE CASCADE"
+
+CREATE EVENT clear_out_old_messages
+ON SCHEDULE
+  EVERY 5 MINUTE 
+COMMENT 'Removes old messages from the temporary message table'
+DO
+	BEGIN
+			DELETE FROM temporary_message 
+			WHERE UTC_TIMESTAMP() > 
+					(timestamp + INTERVAL 24 HOUR);
+	END
+

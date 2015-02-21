@@ -410,6 +410,59 @@ BEGIN
       UTC_TIMESTAMP()
     );
 
+  CALL put_temporary_message(uid, the_message_id, NULL);
+
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS put_temporary_message;
+
+---DELIMITER---
+
+-- stores a message in a table.  Messages over
+-- 24 hours old get deleted from this table.
+
+CREATE PROCEDURE put_temporary_message
+(
+  uid INT UNSIGNED, 
+  message_id INT UNSIGNED,
+  message_text NVARCHAR(1000)
+) 
+BEGIN 
+  CALL validate_user_id(uid);
+
+  -- check if we got an id to a message or a message string
+
+  IF (message_id > 0) THEN
+
+    -- just insert a row of data holding the message id
+    INSERT INTO temporary_message
+    (timestamp, viewed, user_id, message_localization_id)
+    VALUES(UTC_TIMESTAMP(), false, uid, message_id);
+
+  ELSEIF (message_text IS NOT NULL AND message_text <> '') THEN
+
+      -- add the first piece
+      INSERT INTO temporary_message
+      (timestamp, viewed, user_id)
+      VALUES(UTC_TIMESTAMP(), false, uid);
+
+      -- add the text piece that ties back to the first piece
+      INSERT INTO temporary_message_text
+      (message_id, text)
+      VALUES(LAST_INSERT_ID(), message_text);
+
+  ELSE
+
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' 
+    SET message_text =
+      'exceptional situation - no message text or message id provided';
+
+  END IF;
+
+
 END
 
 ---DELIMITER---

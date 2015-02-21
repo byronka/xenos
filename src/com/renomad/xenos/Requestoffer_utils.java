@@ -137,6 +137,7 @@ public final class Requestoffer_utils {
     }
   }
 
+
   /**
     * this will cancel a transaction in "taken" status, that is, a
     * requestoffer that has someone servicing it.
@@ -151,6 +152,7 @@ public final class Requestoffer_utils {
           "{call cancel_taken_requestoffer(%d, %d, %b)}" 
           , user_id, requestoffer_id, is_satisfied));
         cs.execute();
+
       } catch (SQLException ex) {
         Database_access.handle_sql_exception(ex);
         return false;

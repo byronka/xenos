@@ -409,3 +409,41 @@ system_to_user_message (
   REFERENCES user (user_id)
   ON DELETE CASCADE
 )
+
+---DELIMITER---
+
+-- this table will hold messages that are up to 24 hours old for users.
+-- that means the table should never get too large, and if we plan
+-- to hit it a lot (as we do) there won't be any performance problems
+-- from it.
+
+-- This table should have either a message_localization_id or a
+-- message_text_id, not both.  One should be set, the other null.
+-- otherwise, it's an exceptional situation.
+
+CREATE TABLE  
+temporary_message ( 
+  message_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  timestamp DATETIME,
+  viewed BOOL, -- if the user has seen this message
+  user_id INT UNSIGNED, -- who the message is for
+  message_localization_id INT UNSIGNED -- this being not null means the message is system-generated and has a localization lookup
+)
+
+---DELIMITER---
+
+-- By creating a separate table to hold string messages, it enables
+-- us to continue using integers for a majority of our messages and
+-- only use text when it comes from a non-system user, and in that case
+-- for us to use the memory for the text only when necessary.  For all
+-- the system-generated messages, we'll just pass integers around.
+
+CREATE TABLE
+temporary_message_text (
+  message_id INT UNSIGNED NOT NULL,
+  text NVARCHAR(1000),
+  FOREIGN KEY FK_temporary_message (message_id)
+  REFERENCES temporary_message (message_id)
+  ON DELETE CASCADE
+)
+
