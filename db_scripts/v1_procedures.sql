@@ -663,7 +663,7 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
       datetime, audit_action_id, user_id, target_id)
     SELECT UTC_TIMESTAMP(), 20, user_id, rid
     FROM requestoffer_service_request 
-    WHERE requestoffer_id <> rid;
+    WHERE requestoffer_id = rid AND user_id <> uid;
 
   COMMIT;
 
