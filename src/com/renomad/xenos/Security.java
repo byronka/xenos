@@ -24,22 +24,27 @@ public final class Security {
   }
 
   /**
-		* simply sets "is_logged_in" to false in the database for the
-		* given user.
-    * @param user_id the user in question to set logged_in to false.
+    * tries logging out the user.  If successful, return true
+    * @param user_id the user id in question
+    * @return true if successful
     */
-  public static boolean set_user_not_logged_in(int user_id) {
-    String sqlText = "UPDATE user SET is_logged_in = false;";
-    PreparedStatement pstmt = null;
+  public static boolean logout_user(int user_id) {
+    if (user_id < 0) {
+      System.err.println("error: user id was " + user_id + 
+          " logout_user ");
+      return false;
+    }
+    CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      pstmt = conn.prepareStatement(
-					sqlText, Statement.RETURN_GENERATED_KEYS);     
+      cs = conn.prepareCall(
+          String.format("{call user_logout(%d)}" , user_id));
+      cs.execute();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
-      return false; //if a failure occurred.
+      return false;
     } finally {
-      Database_access.close_statement(pstmt);
+      Database_access.close_statement(cs);
     }
     return true;
   }
@@ -139,19 +144,6 @@ public final class Security {
   }
 
 
-  /**
-    * tries logging out the user.  If successful, return true
-    * @param user_id the user id in question
-    * @return true if successful
-    */
-  public static boolean logout_user(int user_id) {
-    if (user_id < 0) {
-      System.err.println("error: user id was " + user_id + 
-          " in set_user_not_logged_in()");
-      return false;
-    }
-    return set_user_not_logged_in(user_id);
-  }
 
   /**
     * We go looking for the cookie.  Once we get that, we send it

@@ -49,9 +49,13 @@
   //check if this is the last stage and we are confirmed to set a user
   Boolean confirm = Boolean.parseBoolean(Utils.parse_qs(qs).get("confirm"));
   if (confirm != null && confirm == true) {
-    Requestoffer_utils.choose_handler(huid, r.requestoffer_id);
-    response.sendRedirect("handler_chosen.jsp");
-    return;
+    if (Requestoffer_utils.choose_handler(huid, r.requestoffer_id)) {
+      response.sendRedirect("handler_chosen.jsp");
+      return;
+    } else {
+      response.sendRedirect("general_error.jsp");
+      return;
+    }
   }
 
 
