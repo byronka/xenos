@@ -611,8 +611,8 @@ DROP PROCEDURE IF EXISTS take_requestoffer_trans_section;
 
 CREATE PROCEDURE take_requestoffer_trans_section
 (
-  uid INT UNSIGNED,
-  rid INT UNSIGNED
+  uid INT UNSIGNED, -- user servicing the requestoffer
+  rid INT UNSIGNED -- the requestoffer id
 ) 
 BEGIN 
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -622,11 +622,17 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
   END;
 
   START TRANSACTION;
+    -- modify the requestoffer to indicate this user has taken it
     UPDATE requestoffer 
     SET 
       status = 78,  -- 'taken'
       handling_user_id = uid  
     WHERE requestoffer_id = rid;
+    
+    -- indicate that this user is in "HANDLING" state on this requestoffer
+    INSERT INTO requestoffer_servicer_state
+    (user_id, requestoffer_id, requestoffer_service_status_id)
+    VALUES (uid, rid, 1); -- "HANDLING"
 
     -- Add an audit
     CALL add_audit(3,uid,rid,NULL);
