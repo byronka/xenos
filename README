@@ -1,6 +1,6 @@
 If you have already set up everything, just type:
 
-  ant run
+  ant run-dev
 
 
 
