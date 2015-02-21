@@ -410,7 +410,7 @@ BEGIN
       UTC_TIMESTAMP()
     );
 
-  CALL put_temporary_message(uid, the_message_id, NULL);
+  CALL put_temporary_message(to_uid, the_message_id, NULL);
 
 END
 
@@ -913,10 +913,9 @@ BEGIN
     RESIGNAL;
   END;
 
-  
-    UPDATE user SET is_logged_in = false;
-    CALL add_audit(16, uid, uid, NULL);
-  
+    UPDATE user SET is_logged_in = false WHERE user_id = uid;
+
+    CALL add_audit(16, uid, NULL, NULL);
 END
 
 ---DELIMITER---

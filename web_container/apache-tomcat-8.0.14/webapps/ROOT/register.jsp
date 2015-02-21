@@ -26,13 +26,13 @@
 
     username = request.getParameter("username");
     if (username.length() == 0) {
-      username_error_msg = loc.get(47,"Please enter a username");
+      username_error_msg = loc.get(48,"Please enter a username");
       validation_error |= true;
     }
 
     password = request.getParameter("password");
     if (password.length() == 0) {
-      password_error_msg = loc.get(48,"Please enter a password");
+      password_error_msg = loc.get(47,"Please enter a password");
       validation_error |= true;
     }
 
