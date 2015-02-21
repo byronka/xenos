@@ -3,8 +3,14 @@
 	<div class="header">
 		<a class="trademark" href="dashboard.jsp">Xenos</a>
 		<a href="create_requestoffer.jsp" >
-			<%=loc.get(2, "Create Requestoffer")%></a>
-		<a href="logout.jsp" ><%=loc.get(3, "Logout")%></a>
+			<%=loc.get(2, "Request Favor")%>
+    </a>
+		<a href="create_requestoffer.jsp" >
+			<%=loc.get(146, "Offer Favor")%>
+    </a>
+		<a href="logout.jsp" >
+      <%=loc.get(3, "Logout")%>
+    </a>
 		<a href="my_profile.jsp" class="user-displayname">
 			<%=Utils.safe_render(user.username)%>
       <%if (user.points > 0) {%>
