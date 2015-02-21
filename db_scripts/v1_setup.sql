@@ -203,7 +203,10 @@ VALUES
 (72,'PHYSICS'),
 (73,'ECONOMICS'),
 (74,'HISTORY'),
-(75,'ENGLISH');
+(75,'ENGLISH'),
+(143,'BABYSITTING'),
+(144,'DOG-WALKING'),
+(145,'TAXI');
 
 ---DELIMITER---
 -- here, we set up a table to correlate categories to a given
