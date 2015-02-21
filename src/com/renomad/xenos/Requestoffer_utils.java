@@ -249,7 +249,7 @@ public final class Requestoffer_utils {
       "FROM requestoffer_service_request rsr " +
       "JOIN requestoffer ro "+
         "ON ro.requestoffer_id = rsr.requestoffer_id " +
-      "WHERE rsr.user_id = ?";
+      "WHERE rsr.user_id = ? AND rsr.status = 106";
 
     PreparedStatement pstmt = null;
     try {
