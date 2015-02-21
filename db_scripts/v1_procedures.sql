@@ -19,7 +19,7 @@ BEGIN
   IF (text_value IS NULL OR text_value = '') THEN
       SET @msg = CONCAT(
         fieldname,' value in ',procname,' was empty or null');
-      ROLLBACK;
+      
       SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
   END IF;
@@ -52,7 +52,7 @@ CREATE PROCEDURE recalculate_rank_on_user
 BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
 
@@ -96,7 +96,7 @@ BEGIN
   IF (@valid_rid <> 1) THEN
       SET @msg = CONCAT('requestoffer does not exist in the system: ', 
         rid);
-      ROLLBACK;
+      
       SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
   END IF;
@@ -120,7 +120,7 @@ BEGIN
   IF (@valid_uid <> 1) THEN
       SET @msg = CONCAT('user does not exist in the system: ', 
         uid);
-      ROLLBACK;
+      
       SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
   END IF;
@@ -340,11 +340,11 @@ CREATE PROCEDURE put_requestoffer_trans_section
 BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
 
-  START TRANSACTION;
+  
 
   -- check the user exists
   call validate_user_id(ruid);
@@ -379,7 +379,7 @@ BEGIN
   CALL add_audit(1,ruid,new_requestoffer_id,'');
   CALL add_audit(12,ruid,new_requestoffer_id,'');
 
-  COMMIT;
+  
 
 END
 
@@ -455,7 +455,7 @@ BEGIN
 
   ELSE
 
-    ROLLBACK;
+    
     SIGNAL SQLSTATE '45000' 
     SET message_text =
       'exceptional situation - no message text or message id provided';
@@ -555,11 +555,11 @@ CREATE PROCEDURE offer_to_take_requestoffer_trans_section
 BEGIN 
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
 
-  START TRANSACTION;
+  
 
     INSERT INTO requestoffer_service_request 
       (requestoffer_id, user_id, date_created, status)
@@ -568,7 +568,7 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     -- Add an audit
     CALL add_audit(7,uid,rid,NULL);
 
-  COMMIT;
+  
 
 END
 
@@ -617,11 +617,11 @@ CREATE PROCEDURE take_requestoffer_trans_section
 BEGIN 
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
 
-  START TRANSACTION;
+  
     -- modify the requestoffer to indicate this user has taken it
     UPDATE requestoffer 
     SET 
@@ -682,7 +682,7 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     WHERE requestoffer_id = rid AND user_id <> uid;
 
 
-  COMMIT;
+  
 
 END
 
@@ -700,7 +700,7 @@ CREATE PROCEDURE delete_requestoffer
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
 
@@ -742,7 +742,7 @@ BEGIN
     FROM requestoffer
     WHERE requestoffer_id = rid;
 
-    START TRANSACTION;
+    
       -- actually delete the requestoffer here.
       DELETE FROM requestoffer WHERE requestoffer_id = rid;
 
@@ -754,7 +754,7 @@ BEGIN
       -- Add an audit
       CALL add_audit(2,uid,rid,@delete_msg);
 
-    COMMIT;
+    
 END
 
 ---DELIMITER---
@@ -784,7 +784,7 @@ BEGIN
   IF (@count_email_username > 0) THEN
       SET @msg = CONCAT(
 				'username matches existing email during insert: ', uname );
-      ROLLBACK;
+      
       SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
   END IF;
@@ -807,11 +807,11 @@ CREATE PROCEDURE create_new_user_trans_section
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
 
-  START TRANSACTION;
+  
 
     -- add the user
     INSERT INTO user (username, password, salt, date_created)
@@ -822,7 +822,7 @@ BEGIN
     -- Add an audit
     CALL add_audit(4,@new_user_id,NULL,NULL);
 
-  COMMIT;
+  
 
 END
 
@@ -860,10 +860,10 @@ CREATE PROCEDURE register_user_and_get_cookie_trans_section
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
-  START TRANSACTION;
+  
 
     SELECT UTC_TIMESTAMP() INTO @timestamp;
 
@@ -892,7 +892,7 @@ BEGIN
         @cookie_val_plaintext, SHA2(@p_phrase,512))) INTO new_cookie;
 
     CALL add_audit(15, uid, uid, NULL);
-  COMMIT;
+  
 
 END
 
@@ -909,14 +909,14 @@ CREATE PROCEDURE user_logout
 BEGIN 
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
 
-  START TRANSACTION;
+  
     UPDATE user SET is_logged_in = false;
     CALL add_audit(16, uid, uid, NULL);
-  COMMIT;
+  
 END
 
 ---DELIMITER---
@@ -1042,11 +1042,11 @@ satis BOOL -- whether the owner of the RO was satisfied
 BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
 
-	START TRANSACTION;
+	
 
 	UPDATE requestoffer -- change state of the requestoffer
 	SET 
@@ -1070,7 +1070,7 @@ BEGIN
     CALL add_audit(10,uid,rid,NULL);
   END IF;
 
-	COMMIT;
+	
 END
 
 ---DELIMITER---
@@ -1122,11 +1122,11 @@ CREATE PROCEDURE publish_requestoffer_trans_section
 BEGIN 
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
 
-  START TRANSACTION;
+  
 
     UPDATE requestoffer
     SET status = 76
@@ -1135,7 +1135,7 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     -- Add an audit
     CALL add_audit(9,uid,rid,NULL);
 
-  COMMIT;
+  
 
 END
 
@@ -1154,11 +1154,11 @@ CREATE PROCEDURE change_password
 BEGIN 
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
 
-  START TRANSACTION;
+  
 
   UPDATE user 
   SET password = new_password
@@ -1166,7 +1166,7 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
 
   CALL add_audit(13,exec_uid,uid,NULL);
 
-  COMMIT;
+  
 
 END
 
@@ -1185,11 +1185,11 @@ CREATE PROCEDURE cancel_taken_requestoffer
 BEGIN 
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
-    ROLLBACK;
+    
     RESIGNAL;
   END;
 
-  START TRANSACTION;
+  
     CALL validate_user_id(uid);
     CALL validate_requestoffer_id(rid);
 
@@ -1244,6 +1244,6 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
       CALL add_audit(18, uid, rid,NULL);
     END IF;
 
-  COMMIT;
+  
 
 END
