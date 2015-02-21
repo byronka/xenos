@@ -628,11 +628,18 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
       status = 78,  -- 'taken'
       handling_user_id = uid  
     WHERE requestoffer_id = rid;
+
+    -- get the owner's user id
+    SELECT requestoffering_user_id INTO @owner_id
+    FROM requestoffer
+    WHERE requestoffer_id = rid;
     
-    -- indicate that this user is in "HANDLING" state on this requestoffer
+    -- indicate that this user is in "ACTIVE" state on this requestoffer
     INSERT INTO requestoffer_servicer_state
     (user_id, requestoffer_id, requestoffer_service_status_id)
-    VALUES (uid, rid, 1); -- "HANDLING"
+    VALUES 
+    (@owner_id, rid, 1), 
+    (uid, rid, 1); 
 
     -- Add an audit
     CALL add_audit(3,uid,rid,NULL);
@@ -1186,6 +1193,17 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
       status = 76 -- OPEN
       ,handling_user_id = NULL  -- clear out the handling user
     WHERE requestoffer_id = rid;
+
+    -- change the state for the servicer to COMPLETE_FEEDBACK_POSSIBLE
+    UPDATE requestoffer_servicer_state
+    SET state_id = 2 -- COMPLETE_FEEDBACK_POSSIBLE
+    WHERE user_id = @other_party AND requestoffer_id = rid;
+
+    -- change the state for the acting user to COMPLETE - they already
+    -- gave us their feedback
+    UPDATE requestoffer_servicer_state
+    SET state_id = 3 -- COMPLETE
+    WHERE user_id = uid AND requestoffer_id = rid;
 
     -- inform the other user the transaction is canceled.
     CALL put_system_to_user_message(131, @other_party, rid);
