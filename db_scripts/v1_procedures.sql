@@ -665,6 +665,9 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     FROM requestoffer_service_request 
     WHERE requestoffer_id = rid AND user_id <> uid;
 
+    -- send a message to the winnng user
+    CALL put_system_to_user_message(132, uid, rid);
+
     -- send a message to other users they were rejected
     INSERT into system_to_user_message (
       text_id, requestoffer_id, to_user_id, timestamp)
@@ -695,6 +698,11 @@ CREATE PROCEDURE delete_requestoffer
   rid INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    RESIGNAL;
+  END;
 
   -- check that the requestoffer exists
   call validate_requestoffer_id(rid);
@@ -734,41 +742,19 @@ BEGIN
     FROM requestoffer
     WHERE requestoffer_id = rid;
 
-    call delete_requestoffer_trans_section(uid, rid);
-END
+    START TRANSACTION;
+      -- actually delete the requestoffer here.
+      DELETE FROM requestoffer WHERE requestoffer_id = rid;
 
----DELIMITER---
+      -- give points back to the user
+      UPDATE user 
+      SET points = points + @points 
+      WHERE user_id = uid;
 
-DROP PROCEDURE IF EXISTS delete_requestoffer_trans_section;
+      -- Add an audit
+      CALL add_audit(2,uid,rid,@delete_msg);
 
----DELIMITER---
-
-CREATE PROCEDURE delete_requestoffer_trans_section
-(
-  uid INT UNSIGNED,
-  rid INT UNSIGNED
-) 
-BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    ROLLBACK;
-    RESIGNAL;
-  END;
-  START TRANSACTION;
-
-    -- actually delete the requestoffer here.
-    DELETE FROM requestoffer WHERE requestoffer_id = rid;
-
-    -- give points back to the user
-    UPDATE user 
-    SET points = points + @points 
-    WHERE user_id = uid;
-
-    -- Add an audit
-    CALL add_audit(2,uid,rid,@delete_msg);
-
-  COMMIT;
-
+    COMMIT;
 END
 
 ---DELIMITER---

@@ -5,9 +5,6 @@
 		<a href="create_requestoffer.jsp" >
 			<%=loc.get(2, "Request Favor")%>
     </a>
-		<a href="create_requestoffer.jsp" >
-			<%=loc.get(146, "Offer Favor")%>
-    </a>
 		<a href="logout.jsp" >
       <%=loc.get(3, "Logout")%>
     </a>

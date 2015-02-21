@@ -152,7 +152,6 @@ VALUES
 (143, 1,  'Babysitting'),
 (144, 1,  'Dog-walking'),
 (145, 1,  'Taxi'),
-(146, 1,  'Offer Favor'),
 (1,   2,  'Recherche'),
 (2,   2,  'Créer demande'),
 (3,   2,  'Déconnexion'),
@@ -298,7 +297,6 @@ VALUES
 (143, 2,  'FRENCHBabysitting'),
 (144, 2,  'FRENCHDog-walking'),
 (145, 2,  'FRENCHTaxi'),
-(146, 2,  'FRENCHOffer Favor'),
 (1,   3,  'Búsqueda'),
 (2,   3,  'Crear solicitud'),
 (3,   3,  'Cerrar sesión'),
@@ -444,7 +442,6 @@ VALUES
 (143, 3,  'SPANISHBabysitting'),
 (144, 3,  'SPANISHDog-walking'),
 (145, 3,  'SPANISHTaxi'),
-(146, 3,  'SPANISHOffer Favor'),
 (1,   4,  '搜索'),
 (2,   4,  '创建请求'),
 (3,   4,  '注销'),
@@ -590,7 +587,6 @@ VALUES
 (143, 4,  'CHINESEBabysitting'),
 (144, 4,  'CHINESEDog-walking'),
 (145, 4,  'CHINESETaxi'),
-(146, 4,  'CHINESEOffer Favor'),
 (1,   5,  'חיפוש'),
 (2,   5,  'צור'),
 (3,   5,  'התנתקות'),
@@ -735,5 +731,4 @@ VALUES
 (142, 5,  'HEBREWYou have now selected someone to handle your favor.  That user will be informed, and we will also inform the other users (if any) that they have not been selected.'),
 (143, 5,  'HEBREWBabysitting'),
 (144, 5,  'HEBREWDog-walking'),
-(145, 5,  'HEBREWTaxi'),
-(146, 5,  'HEBREWOffer Favor');
+(145, 5,  'HEBREWTaxi');

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>                                 
 	<head>
-		<title><%=loc.get(15, "Create a requestoffer")%></title>
+		<title><%=loc.get(2, "Request Favor")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 		<%if (probably_mobile) {%>
 			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
@@ -70,7 +70,7 @@
 				<%=Requestoffer_utils.get_categories_string(loc)%>
       </div>
 
-      <button type="submit"><%=loc.get(14,"Create Requestoffer")%></button>
+      <button type="submit"><%=loc.get(2,"Request Favor")%></button>
 
     </form>
   </body>

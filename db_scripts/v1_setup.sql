@@ -94,7 +94,7 @@ requestoffer (
   requestoffer_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   datetime DATETIME,
   description NVARCHAR(200),
-  points INT UNSIGNED,
+  points INT,
   status INT,
   requestoffering_user_id INT UNSIGNED NOT NULL,
   handling_user_id INT UNSIGNED,
