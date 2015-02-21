@@ -8,8 +8,10 @@ SET FOREIGN_KEY_CHECKS=0;
 
  ------------*/
 
+TRUNCATE TABLE user;
+---DELIMITER---
 
-REPLACE INTO user
+INSERT INTO user
 (user_id, username, email , password                                                         , points , language , is_logged_in , date_created        , salt                , last_time_logged_in , last_ip_logged_in , rank , is_admin )
 VALUES
 (4, 'bob'    , NULL  ,'389EA2EDD0D01B416CCA07D7E5EB36D7E98A4D7406F98559AAE0082CD4943C2A',    100 ,        NULL ,         NULL ,'2015-01-31 04:05:54','4647350076936507137', NULL                , NULL              ,   0.5 ,        0 ),
@@ -22,6 +24,9 @@ VALUES
 
 ---DELIMITER---
 
+TRUNCATE TABLE requestoffer;
+
+---DELIMITER---
 
 /*------------
  
@@ -29,7 +34,7 @@ VALUES
 
  ------------*/
 
-REPLACE INTO requestoffer 
+INSERT INTO requestoffer 
 (requestoffer_id, datetime, description, points, status, requestoffering_user_id, handling_user_id) 
 VALUES 
 (1,"2014-12-31 21:22:42",   "a fine description for a requestoffer", 1, 76, 4,NULL),
@@ -42,7 +47,7 @@ VALUES
 (8,"2014-3-8 18:45:02",     "Draft:Get me some illegal narcotics, ship them safely to my home", 1, 109, 5,NULL),
 (9,"2010-7-27 21:22:42",    "description goes here", 1, 76, 5,NULL),
 (10,"2011-6-20 21:22:42",    "description goes here", 1, 76, 5,NULL),
-(11,"2012-5-27 23:22:42",    "description goes here", 1, 76, 5,NULL),
+-- Requestoffer 11 is deleted - see audit and audit_notes
 (12,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
 (13,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
 (14,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
@@ -63,8 +68,12 @@ VALUES
 
 ---DELIMITER---
 
+TRUNCATE TABLE requestoffer_to_category;
+
+---DELIMITER---
+
 -- Here we set up all the requestoffers to have some categories.
-REPLACE INTO requestoffer_to_category (requestoffer_id, requestoffer_category_id)
+INSERT INTO requestoffer_to_category (requestoffer_id, requestoffer_category_id)
 VALUES
 (1,71),
 (1,73),
@@ -100,8 +109,12 @@ VALUES
 
 ---DELIMITER---
 
+TRUNCATE TABLE requestoffer_message;
+
+---DELIMITER---
+
 -- add some messages for some requestoffers
-REPLACE INTO requestoffer_message (requestoffer_id, message, timestamp, from_user_id, to_user_id)
+INSERT INTO requestoffer_message (requestoffer_id, message, timestamp, from_user_id, to_user_id)
 VALUES 
 (1, "Hi there mom!","2014-12-18 21:22:42",4 ,5),
 (1, "What do ya know?","2014-12-18 21:22:43",4,5 ),
@@ -118,7 +131,11 @@ VALUES
 
 ---DELIMITER---
 
-REPLACE INTO location (location_id, address_line_1, address_line_2, city, state, country, postal_code)
+TRUNCATE TABLE location;
+
+---DELIMITER---
+
+INSERT INTO location (location_id, address_line_1, address_line_2, city, state, country, postal_code)
 VALUES
 (1, '2335 Dogwood Meadows Cove','','Germantown','TN','USA','38136'),
 (2, '964 Argonne Avenue','Apt 4','Atlanta','GA','USA','30016'),
@@ -127,12 +144,62 @@ VALUES
 
 ---DELIMITER---
 
-REPLACE INTO location_to_requestoffer (location_id, requestoffer_id)
+TRUNCATE TABLE location_to_requestoffer;
+
+---DELIMITER---
+
+INSERT INTO location_to_requestoffer (location_id, requestoffer_id)
 VALUES
 (1, 3)
 
 ---DELIMITER---
 
-REPLACE INTO location_to_user (location_id, user_id)
+TRUNCATE TABLE location_to_user;
+
+---DELIMITER---
+
+INSERT INTO location_to_user (location_id, user_id)
 VALUES
 (2, 4)
+
+---DELIMITER---
+
+TRUNCATE TABLE requestoffer_service_request;
+
+---DELIMITER---
+
+INSERT INTO requestoffer_service_request
+( requestoffer_id , user_id , date_created        , date_modified       , status )
+VALUES
+(               5 ,       4 , '2015-02-21 13:01:30' , '2015-02-21 13:01:47' ,    107 ),
+(               5 ,       6 , '2015-02-21 13:01:39' , '2015-02-21 13:01:47' ,    108 )
+
+
+---DELIMITER---
+TRUNCATE TABLE audit;
+---DELIMITER---
+
+INSERT INTO audit
+( datetime            , audit_action_id , user_id , target_id , notes_id )
+VALUES
+('2015-02-21 13:27:50' ,               2 ,       5 ,        11 ,       1)
+
+---DELIMITER---
+TRUNCATE TABLE audit_notes;
+---DELIMITER---
+
+INSERT INTO audit_notes
+(notes_id, notes)
+VALUES
+(1,'description goes here|created:2012-05-27|pts:1|st:OPEN')
+
+---DELIMITER---
+
+TRUNCATE TABLE user_rank_data_point;
+
+---DELIMITER---
+
+INSERT INTO user_rank_data_point
+(notes_id, notes)
+VALUES
+(1,'description goes here|created:2012-05-27|pts:1|st:OPEN')
