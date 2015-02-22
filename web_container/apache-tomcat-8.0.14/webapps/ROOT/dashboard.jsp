@@ -52,12 +52,16 @@
 <div class="dashboard-container">
 <div class="requestoffers others">
 <%
+  String decoded_srch_desc = "";
+  if (srch_desc != null) {
+    decoded_srch_desc = java.net.URLDecoder.decode(srch_desc, "UTF-8");
+  }
   Requestoffer_utils.Search_Object so = 
     new Requestoffer_utils.Search_Object(  
                                       srch_startdate, 
                                       srch_enddate, 
                                       srch_cat, 
-                                      srch_desc,
+                                      decoded_srch_desc,
                                       srch_sta, 
                                       srch_us);
   Requestoffer_utils.OR_Package or_package = 
