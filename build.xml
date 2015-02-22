@@ -356,7 +356,6 @@
 		</classpath>
 		<formatter type="plain" usefile="false"/>
 		<test name="com.renomad.xenos.tests.Requestoffer_tests"/>
-		<test name="com.renomad.xenos.tests.Feature_tests"/>
 	</junit>
     <echo message=""/>
     <echo message="*** Make sure you compiled or rebuilt the schema if neccessary."/>
