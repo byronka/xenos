@@ -175,6 +175,7 @@
 		</div>
 
 	<h3><%=loc.get(96, "My conversations")%></h3>
+
   <table border="1">
     <thead>
       <tr>
@@ -196,6 +197,32 @@
     </tbody>
   </table>
     <% if (mms.length == 0) { %>
+      <p>(<%=loc.get(103,"None")%>)</p>
+    <% } %>
+
+	<h3><%=loc.get(146, "My system messages")%></h3>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>timestamp</th>
+        <th>requestoffer</th>
+        <th>message</th>
+      </tr>
+    </thead>
+    <tbody>
+   <% Requestoffer_utils.MyMessages[] system_mms 
+     = Requestoffer_utils.get_my_system_messages(user_id, loc);
+   for (Requestoffer_utils.MyMessages mm : system_mms) {%>
+    <tr>
+      <td><%=mm.timestamp%> </td>
+      <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"><%=Utils.get_trunc(Utils.safe_render(mm.desc),15)%></a> </td>
+      <td><%=Utils.safe_render(mm.message)%></td>
+    </tr>
+		<% } %>
+    </tbody>
+  </table>
+    <% if (system_mms.length == 0) { %>
       <p>(<%=loc.get(103,"None")%>)</p>
     <% } %>
   <script type="text/javascript" src="includes/timeout.js"></script>

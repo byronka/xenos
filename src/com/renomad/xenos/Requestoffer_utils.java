@@ -988,21 +988,17 @@ public final class Requestoffer_utils {
     * @param user_id the user requesting to see their own messages
     * @return an array of MyMessages, or empty array otherwise.
     */
-  public static MyMessages[] get_my_conversations(int user_id) {
+  public static MyMessages[] 
+    get_my_system_messages(int user_id, Localization loc) {
     String sqlText = 
       String.format(
-      "SELECT ro.description, rm.timestamp, rm.requestoffer_id, "+
-      "rm.message, "+
-        "rm.from_user_id AS fuid, rm.to_user_id AS tuid,  "+
-        "from_user.username AS fusername, "+
-        "to_user.username AS tusername "+
+      "SELECT ro.description, stum.timestamp, stum.requestoffer_id, "+
+      "stum.text_id " +
       "FROM system_to_user_message stum "+
-      "JOIN user from_user ON from_user.user_id = rm.from_user_id " +
-      "JOIN user to_user ON to_user.user_id = rm.to_user_id " + 
       "JOIN requestoffer ro "+
         "ON ro.requestoffer_id = rm.requestoffer_id " +
-      "WHERE from_user_id = %d OR to_user_id = %d " +
-      "ORDER BY timestamp DESC", user_id, user_id);
+      "WHERE to_user_id = %d " +
+      "ORDER BY timestamp DESC", user_id);
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
@@ -1017,15 +1013,15 @@ public final class Requestoffer_utils {
       ArrayList<MyMessages> mms = new ArrayList<MyMessages>();
       while(resultSet.next()) {
         String timestamp = resultSet.getString("timestamp");
-        String msg = resultSet.getNString("message");
+        int text_id = resultSet.getInt("text_id");
         int rid = resultSet.getInt("requestoffer_id");
-        int fuid = resultSet.getInt("fuid");
-        int tuid = resultSet.getInt("tuid");
-        String tname = resultSet.getNString("tusername");
-        String fname = resultSet.getNString("fusername");
         String desc = resultSet.getNString("description");
+        int fuid = 1; // the system user
+        String fname = "System";
+        String text = loc.get(text_id,"");
+        String tname = "You";
         MyMessages mm = 
-          new MyMessages(timestamp, rid,fuid,tuid,msg,fname,tname, desc);
+          new MyMessages(timestamp, rid,fuid,user_id,text,fname,tname, desc);
         mms.add(mm);
       }
       MyMessages[] array_of_messages = 
