@@ -247,6 +247,19 @@ public final class Utils {
     return values;
   }
 
+ 
+  /**
+    * handy helper method to always return a string, even
+    * it what it's given is a null.
+    */
+  public static String get_string_no_null(String value) {
+    if (Utils.is_null_or_empty(value)) {
+      return "";
+    } else {
+      return value;
+    }
+  }
+
 
   /**
     * gets an integer from the value, avoiding boilerplate.
