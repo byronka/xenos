@@ -316,12 +316,12 @@ BEGIN
       SIGNAL SQLSTATE '45000' set message_text = @cat_err_msg;
   END IF;
 
-  call put_requestoffer_trans_section(my_desc, ruid, pts, cats, new_requestoffer_id);
+  call put_requestoffer_second_section(my_desc, ruid, pts, cats, new_requestoffer_id);
 END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS put_requestoffer_trans_section;
+DROP PROCEDURE IF EXISTS put_requestoffer_second_section;
 
 ---DELIMITER---
 
@@ -329,7 +329,7 @@ DROP PROCEDURE IF EXISTS put_requestoffer_trans_section;
 -- of the code, so we can declare a handler and know it will
 -- only apply there.
 
-CREATE PROCEDURE put_requestoffer_trans_section
+CREATE PROCEDURE put_requestoffer_second_section
 (
   my_desc NVARCHAR(200),
   ruid INT UNSIGNED, -- requestoffering user id
@@ -537,17 +537,17 @@ BEGIN
       SIGNAL SQLSTATE '45000' SET message_text = @msg;
   END IF;
 
-  call offer_to_take_requestoffer_trans_section(uid, rid);
+  call offer_to_take_requestoffer_second_section(uid, rid);
 
 END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS offer_to_take_requestoffer_trans_section;
+DROP PROCEDURE IF EXISTS offer_to_take_requestoffer_second_section;
 
 ---DELIMITER---
 
-CREATE PROCEDURE offer_to_take_requestoffer_trans_section
+CREATE PROCEDURE offer_to_take_requestoffer_second_section
 (
   uid INT UNSIGNED,
   rid INT UNSIGNED
@@ -599,17 +599,17 @@ BEGIN
       SIGNAL SQLSTATE '45000' SET message_text = @msg;
   END IF;
 
-  call take_requestoffer_trans_section(uid, rid);
+  call take_requestoffer_second_section(uid, rid);
 
 END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS take_requestoffer_trans_section;
+DROP PROCEDURE IF EXISTS take_requestoffer_second_section;
 
 ---DELIMITER---
 
-CREATE PROCEDURE take_requestoffer_trans_section
+CREATE PROCEDURE take_requestoffer_second_section
 (
   uid INT UNSIGNED, -- user servicing the requestoffer
   rid INT UNSIGNED -- the requestoffer id
@@ -789,16 +789,16 @@ BEGIN
       SET message_text = @msg;
   END IF;
 
-  call create_new_user_trans_section(uname, pword, slt);
+  call create_new_user_second_section(uname, pword, slt);
 END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS create_new_user_trans_section;
+DROP PROCEDURE IF EXISTS create_new_user_second_section;
 
 ---DELIMITER---
 
-CREATE PROCEDURE create_new_user_trans_section
+CREATE PROCEDURE create_new_user_second_section
 (
   uname NVARCHAR(50),
   pword VARCHAR(64),
@@ -842,16 +842,16 @@ BEGIN
 
   call validate_user_id(uid);
   call is_non_empty_string('register_user_and_get_cookie','ip',ip);
-  call register_user_and_get_cookie_trans_section(uid, ip, new_cookie);
+  call register_user_and_get_cookie_second_section(uid, ip, new_cookie);
 END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS register_user_and_get_cookie_trans_section;
+DROP PROCEDURE IF EXISTS register_user_and_get_cookie_second_section;
 
 ---DELIMITER---
 
-CREATE PROCEDURE register_user_and_get_cookie_trans_section
+CREATE PROCEDURE register_user_and_get_cookie_second_section
 (
   uid INT UNSIGNED,
   ip VARCHAR(15), -- e.g. "255.255.255.255"
@@ -1021,18 +1021,18 @@ BEGIN
 	END IF;
 
 	-- at this point we are pretty sure it's all cool.
-  call complete_ro_transaction_trans_section(uid, rid, satis);
+  call complete_ro_transaction_second_section(uid, rid, satis);
 END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS complete_ro_transaction_trans_section;
+DROP PROCEDURE IF EXISTS complete_ro_transaction_second_section;
 
 ---DELIMITER---
 
 -- simply sets the state of a requestoffer to closed.
 -- however, first, it checks validity of values it's been given.
-CREATE PROCEDURE complete_ro_transaction_trans_section
+CREATE PROCEDURE complete_ro_transaction_second_section
 (
 uid INT UNSIGNED, -- the user who owns this requestoffer
 rid INT UNSIGNED, -- the requestoffer
@@ -1101,19 +1101,19 @@ BEGIN
 	END IF;
 
 	-- at this point we are pretty sure it's all cool.
-  call publish_requestoffer_trans_section(uid, rid);
+  call publish_requestoffer_second_section(uid, rid);
 
 END
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS publish_requestoffer_trans_section;
+DROP PROCEDURE IF EXISTS publish_requestoffer_second_section;
 
 ---DELIMITER---
 
 -- just set the status to 'open' which will make it available
 -- for searching by others and handling.
 
-CREATE PROCEDURE publish_requestoffer_trans_section
+CREATE PROCEDURE publish_requestoffer_second_section
 (
   uid INT UNSIGNED,
   rid INT UNSIGNED

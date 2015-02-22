@@ -983,6 +983,65 @@ public final class Requestoffer_utils {
 
 
   /**
+    * gets all the system messages (messages from system to me)
+		* for a given user.
+    * @param user_id the user requesting to see their own messages
+    * @return an array of MyMessages, or empty array otherwise.
+    */
+  public static MyMessages[] get_my_conversations(int user_id) {
+    String sqlText = 
+      String.format(
+      "SELECT ro.description, rm.timestamp, rm.requestoffer_id, "+
+      "rm.message, "+
+        "rm.from_user_id AS fuid, rm.to_user_id AS tuid,  "+
+        "from_user.username AS fusername, "+
+        "to_user.username AS tusername "+
+      "FROM system_to_user_message stum "+
+      "JOIN user from_user ON from_user.user_id = rm.from_user_id " +
+      "JOIN user to_user ON to_user.user_id = rm.to_user_id " + 
+      "JOIN requestoffer ro "+
+        "ON ro.requestoffer_id = rm.requestoffer_id " +
+      "WHERE from_user_id = %d OR to_user_id = %d " +
+      "ORDER BY timestamp DESC", user_id, user_id);
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new MyMessages[0];
+      }
+
+      //keep adding rows of data while there is more data
+      ArrayList<MyMessages> mms = new ArrayList<MyMessages>();
+      while(resultSet.next()) {
+        String timestamp = resultSet.getString("timestamp");
+        String msg = resultSet.getNString("message");
+        int rid = resultSet.getInt("requestoffer_id");
+        int fuid = resultSet.getInt("fuid");
+        int tuid = resultSet.getInt("tuid");
+        String tname = resultSet.getNString("tusername");
+        String fname = resultSet.getNString("fusername");
+        String desc = resultSet.getNString("description");
+        MyMessages mm = 
+          new MyMessages(timestamp, rid,fuid,tuid,msg,fname,tname, desc);
+        mms.add(mm);
+      }
+      MyMessages[] array_of_messages = 
+        mms.toArray(new MyMessages[mms.size()]);
+
+      return array_of_messages;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new MyMessages[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
     * gets all the messages (correspondence between users) for a 
 		* given user - all request offers, one user.
     * @param user_id the user requesting to see their own messages
@@ -1039,6 +1098,8 @@ public final class Requestoffer_utils {
       Database_access.close_statement(pstmt);
     }
   }
+
+
   /**
     * gets all the messages (correspondence between users) for a 
 		*  requestoffer.  
