@@ -715,14 +715,95 @@ public final class Requestoffer_utils {
   }
 
 
+  /**
+    * Gets all the saved locations for a given user
+    * 
+    * @return all their saved locations, or empty array otherwise.
+    */
+  public static User_location[] get_my_saved_locations(int user_id) {
+    
+    String sqlText = 
+"SELECT l.location_id, l.address_line_1, l.address_line_2, l.city," + 
+"      l.state, l.postal_code, l.country                          " + 
+"FROM location l                                                  " + 
+"JOIN location_to_user ltu                                        " + 
+"  ON ltu.location_id = l.location_id AND user_id = ?             ";
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new User_location[0];
+      }
+
+      ArrayList<User_location> locations = new ArrayList<User_location>();
+      while(resultSet.next()) {
+        int lid = resultSet.getInt("location_id");
+        String sa1 = resultSet.getNString("address_line_1");
+        String sa2 = resultSet.getNString("address_line_2");
+        String city = resultSet.getNString("city");
+        String state = resultSet.getNString("state");
+        String post = resultSet.getString("postal_code"); // non-unicode on purpose
+        String country = resultSet.getNString("country");
+        locations.add(new User_location(lid,sa1,sa2,city,state,post,country));
+      }
+
+      User_location[] array_of_user_locations = 
+        locations.toArray(new User_location[locations.size()]);
+      return array_of_user_locations;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new User_location[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
+    * add a location to the database.  That's an address.
+    * We also link it to a requestoffer or user if provided.
+    * returns true if all is well, false otherwise.
+    */
+  public static boolean 
+    put_location(int user_id, int requestoffer_id, 
+        String str_addr_1, String str_addr_2, String city, 
+        String state, String postcode, String country) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall("{call put_user_location(?,?,?,?,?,?,?,?)}");
+      cs.setInt(1, user_id);
+      cs.setInt(2, requestoffer_id);
+      cs.setNString(3, str_addr_1);
+      cs.setNString(4, str_addr_2);
+      cs.setNString(5, city);
+      cs.setNString(6, state);
+      cs.setString(7, postcode); // postal code uses latin characters.
+      cs.setNString(8, country);
+      cs.executeQuery();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+    return true;
+  }
+
 
   /**
     * given all the data to add a requestoffer, does so.
     * @param user_id the user's id
     * @param desc a description string, the core of the requestoffer
     * @param categories the various categories for this requestoffer, 
+    * @return an integer, the id of the new requestoffer.  -1 if failure.
     */
-  public static Requestoffer_response put_requestoffer(
+  public static int put_requestoffer(
       int user_id, String desc, Integer[] categories) {
 
     int new_requestoffer_id = -1; //need it here to be outside the "try".
@@ -753,12 +834,11 @@ public final class Requestoffer_utils {
       new_requestoffer_id = cs.getInt(5);
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
-      return new Requestoffer_response(Requestoffer_response.Stat.ERROR, -1);
+      return -1;
     } finally {
       Database_access.close_statement(cs);
     }
-    //indicate all is well, along with the new id
-    return new Requestoffer_response(Requestoffer_response.Stat.OK, new_requestoffer_id);
+    return new_requestoffer_id;
   }
 
 
@@ -1140,35 +1220,6 @@ public final class Requestoffer_utils {
     } finally {
       Database_access.close_statement(pstmt);
     }
-  }
-
-  
-  /**
-    * a type solely used to set the response from putting a requestoffer
-    */
-  public static class Requestoffer_response { 
-
-    /**
-      * an enum demarcating the general status
-      * of a response from making a requestoffer.
-      * This gets included in Requestoffer_response
-      * to allow filtering.
-      */
-    public enum Stat {
-      OK , ERROR
-    }
-    public final Stat status;
-
-    /**
-      * the id of the newly-created requestoffer.
-      */
-    public final int id;
-
-    public Requestoffer_response(Stat s, int id) {
-      this.status = s;
-      this.id = id;
-    }
-  
   }
 
 

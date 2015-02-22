@@ -50,12 +50,6 @@ CREATE PROCEDURE recalculate_rank_on_user
   is_thumbs_up BOOL -- the opinion of the other party
 ) 
 BEGIN
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-
   INSERT INTO user_rank_data_point
   (
     date_entered, 
@@ -349,8 +343,6 @@ BEGIN
   CALL add_audit(1,ruid,new_requestoffer_id,'');
   CALL add_audit(12,ruid,new_requestoffer_id,'');
 
-  
-
 END
 
 ---DELIMITER---
@@ -625,12 +617,6 @@ CREATE PROCEDURE delete_requestoffer
   rid INT UNSIGNED
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-
   -- check that the requestoffer exists
   call validate_requestoffer_id(rid);
   call validate_user_id(uid);
@@ -788,14 +774,7 @@ CREATE PROCEDURE user_logout
   uid INT UNSIGNED
 ) 
 BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-
     UPDATE user SET is_logged_in = false WHERE user_id = uid;
-
     CALL add_audit(16, uid, NULL, NULL);
 END
 
@@ -979,13 +958,6 @@ CREATE PROCEDURE change_password
   new_password VARCHAR(64) -- the new password
 ) 
 BEGIN 
-DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-
-  
 
   UPDATE user 
   SET password = new_password
@@ -1010,13 +982,6 @@ CREATE PROCEDURE cancel_taken_requestoffer
   is_thumbs_up BOOL -- thumbs up on the cancellation
 ) 
 BEGIN 
-DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-
-  
     CALL validate_user_id(uid);
     CALL validate_requestoffer_id(rid);
 
@@ -1072,5 +1037,50 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION
     END IF;
 
   
+
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS put_user_location;   
+
+---DELIMITER---
+
+CREATE PROCEDURE put_user_location
+(
+  uid INT UNSIGNED, -- if this is > 0, user wants it saved for themselves
+  rid INT UNSIGNED, -- if this > 0, it accompanies a requestoffer
+  addr1 NVARCHAR(255),
+  addr2 NVARCHAR(255),
+  my_city NVARCHAR(255),
+  my_state NVARCHAR(255),
+  my_postcode VARCHAR(30), -- most important value - see http://en.wikipedia.org/wiki/Postal_code for more info!
+  my_country NVARCHAR(255)
+) 
+BEGIN 
+
+  INSERT INTO location 
+    (address_line_1, address_line_2, city, state, postal_code, country)
+  VALUES
+    (addr1, addr2, my_city, my_state, my_postcode, my_country);
+
+  SET @new_location_id = LAST_INSERT_ID();
+
+  -- link it to a user, if they asked to save it
+  IF uid > 0 THEN
+    CALL validate_user_id(uid); -- it's a valid user, right?
+    INSERT INTO location_to_user (location_id, user_id)
+    VALUES (@new_location_id, uid);
+  END IF;
+
+  -- link it to a requestoffer, if that's the situation
+  IF rid > 0 THEN
+    CALL validate_requestoffer_id(rid); -- valid requestoffer, right?
+    INSERT INTO location_to_requestoffer (location_id, requestoffer_id)
+    VALUES (@new_location_id, rid);
+  END IF;
+
+  -- audit: we just created a new location
+  CALL add_audit(21, uid, @new_location_id, NULL);
 
 END

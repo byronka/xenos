@@ -285,7 +285,8 @@ VALUES
 (17,'user canceled a taken-status requestoffer - satisfied'),
 (18,'user canceled a taken-status requestoffer - unsatisfied'),
 (19,'user was removed from handling a requestoffer by a cancel action'),
-(20,'User was rejected on a requestoffer')
+(20,'User was rejected on a requestoffer'),
+(21,'New location was created')
 
 
 ---DELIMITER---
@@ -335,8 +336,8 @@ location (
   address_line_2 NVARCHAR(255),
   city NVARCHAR(255),
   state NVARCHAR(255),
-  country NVARCHAR(255),
-  postal_code VARCHAR(30) -- most important value - see http://en.wikipedia.org/wiki/Postal_code for more info!
+  postal_code VARCHAR(30), -- most important value - see http://en.wikipedia.org/wiki/Postal_code for more info!
+  country NVARCHAR(255)
 )
 
 ---DELIMITER---

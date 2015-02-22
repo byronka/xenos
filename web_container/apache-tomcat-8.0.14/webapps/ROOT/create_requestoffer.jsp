@@ -12,6 +12,7 @@
 	</head>
 
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
+<%@ page import="com.renomad.xenos.User_location" %>
 <%@ page import="com.renomad.xenos.Utils" %>
   <% 
 
@@ -92,9 +93,17 @@
       }
 
       if (!validation_error) {
-        Requestoffer_utils.Requestoffer_response result = 
-          Requestoffer_utils.put_requestoffer(user_id, de, cat);
-          response.sendRedirect("dashboard.jsp");
+        int new_ro_id = 0;
+        if ((new_ro_id = Requestoffer_utils.put_requestoffer(user_id, de, cat)) == -1) {
+          response.sendRedirect("general_error.jsp");
+          return;
+        }
+        Requestoffer_utils.put_location(
+          user_id, new_ro_id,
+          strt_addr_1_val, strt_addr_2_val, 
+          city_val, state_val, postal_val, country_val);
+        response.sendRedirect("dashboard.jsp");
+        return;
       }
     }
   %>
@@ -124,6 +133,33 @@
 
       <% if (need_loc) { %>
               
+        <% 
+          User_location[] locations = 
+            Requestoffer_utils.get_my_saved_locations(user_id);
+          if (locations.length > 0) {
+        %>
+            <p>Select one of your saved locations:</p>
+            <select name="savedlocation">
+        <%
+          for (User_location loca : locations) {
+        %>
+        <option>
+          <%=loca.id%>
+          <%=loca.str_addr_1%>
+          <%=loca.str_addr_2%>
+          <%=loca.city%>
+          <%=loca.state%>
+          <%=loca.postcode%>
+          <%=loca.country%>
+        </option>
+        <%
+            }
+        %>
+            </select>
+        <%
+          }
+        %>
+
         <p>
           <%=loc.get(152,"Street Address 1")%>: 
           <input 
@@ -171,5 +207,6 @@
       <button type="submit"><%=loc.get(2,"Request Favor")%></button>
 
     </form>
+    <script type="text/javascript" src="includes/timeout.js"></script>
   </body>
 </html>

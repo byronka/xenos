@@ -29,17 +29,18 @@ public class Requestoffer_tests {
     //act
     // this will cause user 4 to issue a 100 point requestoffer.  we will
     // need to clean up at the end of this test to refund those points.
-    // deleting the requestoffer at the end includes a piece for refunding points
-    Requestoffer_utils.Requestoffer_response response = Requestoffer_utils.put_requestoffer(
-        user_id, desc, categories);
+    // deleting the requestoffer at the end includes a piece 
+    //for refunding points
+    int response = 
+      Requestoffer_utils.put_requestoffer(user_id, desc, categories);
 
 		//now we've put a requestoffer in.
 
     //assert
 		//let's get back that requestoffer we just added and check it out.
 		//make sure that what we get back is what we put in.
-    Requestoffer r2 = Requestoffer_utils.get_a_requestoffer(response.id);
-    assertNotNull(String.format("r2 was null after trying an id of %d", response.id), r2);
+    Requestoffer r2 = Requestoffer_utils.get_a_requestoffer(response);
+    assertNotNull(String.format("r2 was null after trying an id of %d", response), r2);
     assertTrue(r2.datetime.length() > 0);
     assertEquals(desc, r2.description);
     assertEquals(1, r2.points);
@@ -49,7 +50,7 @@ public class Requestoffer_tests {
 
     //cleanup
 		//delete the requestoffer.  This will give our user back his 100 points
-    Requestoffer_utils.delete_requestoffer(response.id, user_id);
+    Requestoffer_utils.delete_requestoffer(response, user_id);
     int refunded_points = User_utils.get_user_points(user_id);
 
     //we should have gotten refunded when deleting the requestoffer.
