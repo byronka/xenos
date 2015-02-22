@@ -511,6 +511,16 @@ BEGIN
     (requestoffer_id, user_id, date_created, status)
   VALUES (rid, uid, UTC_TIMESTAMP(), 106); -- starts with 'new' status
 
+	SELECT r.requestoffering_user_id INTO @ro_owner
+	FROM requestoffer r
+	WHERE r.requestoffer_id = rid;
+
+  -- send a message to the owner of that requestoffer
+  CALL put_system_to_user_message(148, @ro_owner, rid);
+
+  -- send a message to the potential servicer
+  CALL put_system_to_user_message(147, uid, rid);
+
   -- Add an audit
   CALL add_audit(7,uid,rid,NULL);
 

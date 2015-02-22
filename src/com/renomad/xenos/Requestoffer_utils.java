@@ -996,7 +996,7 @@ public final class Requestoffer_utils {
       "stum.text_id " +
       "FROM system_to_user_message stum "+
       "JOIN requestoffer ro "+
-        "ON ro.requestoffer_id = rm.requestoffer_id " +
+        "ON ro.requestoffer_id = stum.requestoffer_id " +
       "WHERE to_user_id = %d " +
       "ORDER BY timestamp DESC", user_id);
     PreparedStatement pstmt = null;

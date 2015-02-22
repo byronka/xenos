@@ -193,13 +193,3 @@ INSERT INTO audit_notes
 VALUES
 (1,'description goes here|created:2012-05-27|pts:1|st:OPEN')
 
----DELIMITER---
-
-TRUNCATE TABLE user_rank_data_point;
-
----DELIMITER---
-
-INSERT INTO user_rank_data_point
-(notes_id, notes)
-VALUES
-(1,'description goes here|created:2012-05-27|pts:1|st:OPEN')

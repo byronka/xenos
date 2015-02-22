@@ -396,6 +396,27 @@ user_rank_data_point (
 )
 
 ---DELIMITER---
+
+CREATE TABLE
+system_to_user_message_text (
+  stu_message_text_id INT UNSIGNED NOT NULL PRIMARY KEY,
+  text VARCHAR(1000)
+)
+
+---DELIMITER---
+
+INSERT INTO system_to_user_message_text(stu_message_text_id, text)
+VALUES
+(131,'Your transaction on a favor has been canceled by the other party.  Check out your profile page to enter feedback on that transaction.'),
+(132,'Congratulations! You have been awarded the right to service a Favor.  Check your profile for more information.'),
+(133,'Unfortunately, you were not accepted to handle a Favor.'),
+(134,'A Favor which you were handling has been completed.'),
+(135,'A Favor which you were owner of has been completed.'),
+(136,'You have canceled an active transaction.'),
+(147,'You have made an offer to handle a Favor'),
+(148,'You have recieved an offer to handle a Favor');
+
+---DELIMITER---
 -- this table holds messages sent by the system to users.
 -- for example, for being selected to handle a requestoffer, or
 -- the other person cancelling, anything where we are the mediator
@@ -411,6 +432,9 @@ system_to_user_message (
   has_been_viewed BOOL DEFAULT FALSE, -- if the user has viewed this message
   FOREIGN KEY FK_to_user_id (to_user_id)
   REFERENCES user (user_id)
+  ON DELETE CASCADE,
+  FOREIGN KEY FK_message_text (text_id)
+  REFERENCES system_to_user_message_text (stu_message_text_id)
   ON DELETE CASCADE
 )
 
