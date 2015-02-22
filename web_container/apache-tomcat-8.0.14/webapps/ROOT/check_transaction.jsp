@@ -7,7 +7,7 @@
 		<% } else { %>
 			<link rel="stylesheet" href="includes/common.css" title="desktop">
 		<% } %>
-		<title><%=loc.get(22,"Requestoffer Details")%></title>
+		<title><%=loc.get(22,"Favor Details")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
