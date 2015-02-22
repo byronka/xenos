@@ -88,7 +88,6 @@
     <antcall target="build-events" />
 		<antcall target="build-language-data" />
     <antcall target="install" />
-    <antcall target="tomcat-restart" />
   </target>
 
   <target name="clean-everything" depends="compile-schema-code"
