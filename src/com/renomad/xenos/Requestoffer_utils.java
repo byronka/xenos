@@ -988,7 +988,7 @@ public final class Requestoffer_utils {
     * @param user_id the user requesting to see their own messages
     * @return an array of MyMessages, or empty array otherwise.
     */
-  public static MyMessages[] get_my_messages(int user_id) {
+  public static MyMessages[] get_my_conversations(int user_id) {
     String sqlText = 
       String.format(
       "SELECT ro.description, rm.timestamp, rm.requestoffer_id, "+

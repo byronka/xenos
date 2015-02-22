@@ -174,7 +174,7 @@
 		<% } %>
 		</div>
 
-	<h3><%=loc.get(96, "My Messages")%></h3>
+	<h3><%=loc.get(96, "My conversations")%></h3>
   <table border="1">
     <thead>
       <tr>
@@ -185,7 +185,7 @@
     </thead>
     <tbody>
    <% Requestoffer_utils.MyMessages[] mms 
-     = Requestoffer_utils.get_my_messages(user_id);
+     = Requestoffer_utils.get_my_conversations(user_id);
    for (Requestoffer_utils.MyMessages mm : mms) {%>
     <tr>
       <td><%=mm.timestamp%> </td>
