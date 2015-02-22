@@ -316,36 +316,6 @@ BEGIN
       SIGNAL SQLSTATE '45000' set message_text = @cat_err_msg;
   END IF;
 
-  call put_requestoffer_second_section(my_desc, ruid, pts, cats, new_requestoffer_id);
-END
-
----DELIMITER---
-
-DROP PROCEDURE IF EXISTS put_requestoffer_second_section;
-
----DELIMITER---
-
--- this procedure holds just the transactional portion
--- of the code, so we can declare a handler and know it will
--- only apply there.
-
-CREATE PROCEDURE put_requestoffer_second_section
-(
-  my_desc NVARCHAR(200),
-  ruid INT UNSIGNED, -- requestoffering user id
-  pts INT, -- points
-  cats VARCHAR(50), -- this cannot be empty or we'll SQLException.
-  OUT new_requestoffer_id INT UNSIGNED
-)
-BEGIN
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-
-  
-
   -- check the user exists
   call validate_user_id(ruid);
   
@@ -537,41 +507,14 @@ BEGIN
       SIGNAL SQLSTATE '45000' SET message_text = @msg;
   END IF;
 
-  call offer_to_take_requestoffer_second_section(uid, rid);
+  INSERT INTO requestoffer_service_request 
+    (requestoffer_id, user_id, date_created, status)
+  VALUES (rid, uid, UTC_TIMESTAMP(), 106); -- starts with 'new' status
+
+  -- Add an audit
+  CALL add_audit(7,uid,rid,NULL);
 
 END
-
----DELIMITER---
-
-DROP PROCEDURE IF EXISTS offer_to_take_requestoffer_second_section;
-
----DELIMITER---
-
-CREATE PROCEDURE offer_to_take_requestoffer_second_section
-(
-  uid INT UNSIGNED,
-  rid INT UNSIGNED
-) 
-BEGIN 
-DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-
-  
-
-    INSERT INTO requestoffer_service_request 
-      (requestoffer_id, user_id, date_created, status)
-    VALUES (rid, uid, UTC_TIMESTAMP(), 106); -- starts with 'new' status
-
-    -- Add an audit
-    CALL add_audit(7,uid,rid,NULL);
-
-  
-
-END
-
 
 ---DELIMITER---
 
@@ -599,90 +542,64 @@ BEGIN
       SIGNAL SQLSTATE '45000' SET message_text = @msg;
   END IF;
 
-  call take_requestoffer_second_section(uid, rid);
+  -- modify the requestoffer to indicate this user has taken it
+  UPDATE requestoffer 
+  SET 
+    status = 78,  -- 'taken'
+    handling_user_id = uid  
+  WHERE requestoffer_id = rid;
 
-END
-
----DELIMITER---
-
-DROP PROCEDURE IF EXISTS take_requestoffer_second_section;
-
----DELIMITER---
-
-CREATE PROCEDURE take_requestoffer_second_section
-(
-  uid INT UNSIGNED, -- user servicing the requestoffer
-  rid INT UNSIGNED -- the requestoffer id
-) 
-BEGIN 
-DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-
+  -- get the owner's user id
+  SELECT requestoffering_user_id INTO @owner_id
+  FROM requestoffer
+  WHERE requestoffer_id = rid;
   
-    -- modify the requestoffer to indicate this user has taken it
-    UPDATE requestoffer 
-    SET 
-      status = 78,  -- 'taken'
-      handling_user_id = uid  
-    WHERE requestoffer_id = rid;
+  -- indicate that this user is in "ACTIVE" state on this requestoffer
+  INSERT INTO requestoffer_user_state
+  (user_id, requestoffer_id, requestoffer_service_status_id)
+  VALUES 
+  (@owner_id, rid, 1), 
+  (uid, rid, 1); 
 
-    -- get the owner's user id
-    SELECT requestoffering_user_id INTO @owner_id
-    FROM requestoffer
-    WHERE requestoffer_id = rid;
-    
-    -- indicate that this user is in "ACTIVE" state on this requestoffer
-    INSERT INTO requestoffer_user_state
-    (user_id, requestoffer_id, requestoffer_service_status_id)
-    VALUES 
-    (@owner_id, rid, 1), 
-    (uid, rid, 1); 
+  -- change the service request to accepted for the winning user
+  UPDATE requestoffer_service_request 
+  SET 
+    status = 107, -- "accepted"
+    date_modified = UTC_TIMESTAMP()
+  WHERE requestoffer_id = rid AND user_id = uid;
 
-    -- change the service request to accepted for the winning user
-    UPDATE requestoffer_service_request 
-    SET 
-      status = 107, -- "accepted"
-      date_modified = UTC_TIMESTAMP()
-    WHERE requestoffer_id = rid AND user_id = uid;
+  -- change the service request to rejected for the losing users
+  UPDATE requestoffer_service_request 
+  SET 
+    status = 108, -- "rejected"
+    date_modified = UTC_TIMESTAMP()
+  WHERE requestoffer_id = rid AND user_id <> uid;
 
-    -- change the service request to rejected for the losing users
-    UPDATE requestoffer_service_request 
-    SET 
-      status = 108, -- "rejected"
-      date_modified = UTC_TIMESTAMP()
-    WHERE requestoffer_id = rid AND user_id <> uid;
+  -- Add an audit for the winning user
+  CALL add_audit(3,uid,rid,NULL);
 
-    -- Add an audit for the winning user
-    CALL add_audit(3,uid,rid,NULL);
+  -- Add an audit for the losing users
+  INSERT INTO audit (
+    datetime, audit_action_id, user_id, target_id)
+  SELECT UTC_TIMESTAMP(), 20, user_id, rid
+  FROM requestoffer_service_request 
+  WHERE requestoffer_id = rid AND user_id <> uid;
 
-    -- Add an audit for the losing users
-    INSERT INTO audit (
-      datetime, audit_action_id, user_id, target_id)
-    SELECT UTC_TIMESTAMP(), 20, user_id, rid
-    FROM requestoffer_service_request 
-    WHERE requestoffer_id = rid AND user_id <> uid;
+  -- send a message to the winnng user
+  CALL put_system_to_user_message(132, uid, rid);
 
-    -- send a message to the winnng user
-    CALL put_system_to_user_message(132, uid, rid);
+  -- send a message to other users they were rejected
+  INSERT into system_to_user_message (
+    text_id, requestoffer_id, to_user_id, timestamp)
+  SELECT 133, rid, user_id, UTC_TIMESTAMP()
+  FROM requestoffer_service_request 
+  WHERE requestoffer_id = rid AND user_id <> uid;
 
-    -- send a message to other users they were rejected
-    INSERT into system_to_user_message (
-      text_id, requestoffer_id, to_user_id, timestamp)
-    SELECT 133, rid, user_id, UTC_TIMESTAMP()
-    FROM requestoffer_service_request 
-    WHERE requestoffer_id = rid AND user_id <> uid;
-
-    INSERT INTO temporary_message
-    (timestamp, viewed, user_id, message_localization_id)
-    SELECT UTC_TIMESTAMP(), false, user_id, 133
-    FROM requestoffer_service_request 
-    WHERE requestoffer_id = rid AND user_id <> uid;
-
-
-  
+  INSERT INTO temporary_message
+  (timestamp, viewed, user_id, message_localization_id)
+  SELECT UTC_TIMESTAMP(), false, user_id, 133
+  FROM requestoffer_service_request 
+  WHERE requestoffer_id = rid AND user_id <> uid;
 
 END
 
@@ -789,38 +706,15 @@ BEGIN
       SET message_text = @msg;
   END IF;
 
-  call create_new_user_second_section(uname, pword, slt);
-END
 
----DELIMITER---
+  -- add the user
+  INSERT INTO user (username, password, salt, date_created)
+  VALUES (uname, pword, slt, UTC_TIMESTAMP());
 
-DROP PROCEDURE IF EXISTS create_new_user_second_section;
+  SET @new_user_id = LAST_INSERT_ID();
 
----DELIMITER---
-
-CREATE PROCEDURE create_new_user_second_section
-(
-  uname NVARCHAR(50),
-  pword VARCHAR(64),
-  slt VARCHAR(50)
-) 
-BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-
-  
-
-    -- add the user
-    INSERT INTO user (username, password, salt, date_created)
-    VALUES (uname, pword, slt, UTC_TIMESTAMP());
-
-    SET @new_user_id = LAST_INSERT_ID();
-
-    -- Add an audit
-    CALL add_audit(4,@new_user_id,NULL,NULL);
+  -- Add an audit
+  CALL add_audit(4,@new_user_id,NULL,NULL);
 
   
 
@@ -842,57 +736,34 @@ BEGIN
 
   call validate_user_id(uid);
   call is_non_empty_string('register_user_and_get_cookie','ip',ip);
-  call register_user_and_get_cookie_second_section(uid, ip, new_cookie);
-END
 
----DELIMITER---
+  SELECT UTC_TIMESTAMP() INTO @timestamp;
 
-DROP PROCEDURE IF EXISTS register_user_and_get_cookie_second_section;
+  -- set registration values
+  UPDATE user
+  SET is_logged_in = 1, last_time_logged_in = @timestamp,
+  last_ip_logged_in = ip
+  WHERE user_id = uid;
 
----DELIMITER---
+  -- takes the user id, the ip, and a timestamp and encrypts
+  -- that into a string value which we will use as the cookie.
+  -- the value to encrypt will look like this:
+  -- USER_ID|IP|TIMESTAMP
+  -- for example:
+  -- "123|108.91.12.198|2014-01-02 13:04:19"
+  -- Notice the delimiter is a pipe symbol.
+  SELECT CONCAT(uid,'|',ip,'|',@timestamp) 
+    INTO @cookie_val_plaintext;
 
-CREATE PROCEDURE register_user_and_get_cookie_second_section
-(
-  uid INT UNSIGNED,
-  ip VARCHAR(15), -- e.g. "255.255.255.255"
-  OUT new_cookie VARCHAR(200)
-) 
-BEGIN 
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-  
+  SELECT config_value INTO @p_phrase 
+  FROM config
+  WHERE config_item = 'cookie_passphrase';
 
-    SELECT UTC_TIMESTAMP() INTO @timestamp;
+  SELECT HEX(
+    AES_ENCRYPT(
+      @cookie_val_plaintext, SHA2(@p_phrase,512))) INTO new_cookie;
 
-    -- set registration values
-    UPDATE user
-    SET is_logged_in = 1, last_time_logged_in = @timestamp,
-    last_ip_logged_in = ip
-    WHERE user_id = uid;
-
-    -- takes the user id, the ip, and a timestamp and encrypts
-    -- that into a string value which we will use as the cookie.
-    -- the value to encrypt will look like this:
-    -- USER_ID|IP|TIMESTAMP
-    -- for example:
-    -- "123|108.91.12.198|2014-01-02 13:04:19"
-    -- Notice the delimiter is a pipe symbol.
-    SELECT CONCAT(uid,'|',ip,'|',@timestamp) 
-      INTO @cookie_val_plaintext;
-
-    SELECT config_value INTO @p_phrase 
-    FROM config
-    WHERE config_item = 'cookie_passphrase';
-
-    SELECT HEX(
-      AES_ENCRYPT(
-        @cookie_val_plaintext, SHA2(@p_phrase,512))) INTO new_cookie;
-
-    CALL add_audit(15, uid, uid, NULL);
-  
+  CALL add_audit(15, uid, uid, NULL);
 
 END
 
@@ -1021,31 +892,6 @@ BEGIN
 	END IF;
 
 	-- at this point we are pretty sure it's all cool.
-  call complete_ro_transaction_second_section(uid, rid, satis);
-END
-
----DELIMITER---
-
-DROP PROCEDURE IF EXISTS complete_ro_transaction_second_section;
-
----DELIMITER---
-
--- simply sets the state of a requestoffer to closed.
--- however, first, it checks validity of values it's been given.
-CREATE PROCEDURE complete_ro_transaction_second_section
-(
-uid INT UNSIGNED, -- the user who owns this requestoffer
-rid INT UNSIGNED, -- the requestoffer
-satis BOOL -- whether the owner of the RO was satisfied
-)
-BEGIN
-  DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-
-	
 
 	UPDATE requestoffer -- change state of the requestoffer
 	SET 
@@ -1068,7 +914,6 @@ BEGIN
   ELSE
     CALL add_audit(10,uid,rid,NULL);
   END IF;
-
 	
 END
 
@@ -1101,40 +946,13 @@ BEGIN
 	END IF;
 
 	-- at this point we are pretty sure it's all cool.
-  call publish_requestoffer_second_section(uid, rid);
 
-END
----DELIMITER---
+  UPDATE requestoffer
+  SET status = 76
+  WHERE requestoffer_id = rid;
 
-DROP PROCEDURE IF EXISTS publish_requestoffer_second_section;
-
----DELIMITER---
-
--- just set the status to 'open' which will make it available
--- for searching by others and handling.
-
-CREATE PROCEDURE publish_requestoffer_second_section
-(
-  uid INT UNSIGNED,
-  rid INT UNSIGNED
-) 
-BEGIN 
-DECLARE EXIT HANDLER FOR SQLEXCEPTION
-  BEGIN
-    
-    RESIGNAL;
-  END;
-
-  
-
-    UPDATE requestoffer
-    SET status = 76
-    WHERE requestoffer_id = rid;
-
-    -- Add an audit
-    CALL add_audit(9,uid,rid,NULL);
-
-  
+  -- Add an audit
+  CALL add_audit(9,uid,rid,NULL);
 
 END
 
