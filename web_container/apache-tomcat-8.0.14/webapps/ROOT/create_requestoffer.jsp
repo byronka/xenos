@@ -35,6 +35,8 @@
     String state_val       = "";
     String postal_val      = "";
     String country_val     = "";
+    String savedlocation_val = "";
+    String save_loc_to_user_checked = "";
 
     if (request.getMethod().equals("POST")) {
 
@@ -47,7 +49,9 @@
       request.getParameter("city")        != null ||
       request.getParameter("state")       != null ||
       request.getParameter("postal")      != null ||
-      request.getParameter("country")     != null 
+      request.getParameter("country")     != null ||
+      request.getParameter("savedlocation") != null ||
+      request.getParameter("save_loc_to_user") != null
       ) {
       need_loc = true;
     }
@@ -72,7 +76,12 @@
       country_val = 
         Utils.get_string_no_null(request.getParameter("country"));
 
+      savedlocation_val =
+        Utils.get_string_no_null(request.getParameter("savedlocation"));
 
+      if (request.getParameter("save_loc_to_user") != null) {
+        save_loc_to_user_checked = "checked";
+      }
 
 
       boolean validation_error = false;
@@ -93,15 +102,25 @@
       }
 
       if (!validation_error) {
+
         int new_ro_id = 0;
+
+        //try adding the new requestoffer - if failed, go to error page
         if ((new_ro_id = Requestoffer_utils.put_requestoffer(user_id, de, cat)) == -1) {
           response.sendRedirect("general_error.jsp");
           return;
         }
-        Requestoffer_utils.put_location(
-          user_id, new_ro_id,
-          strt_addr_1_val, strt_addr_2_val, 
-          city_val, state_val, postal_val, country_val);
+
+        Integer location_id = 0;
+        if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
+          Requestoffer_utils.assign_location_to_requestoffer(location_id, new_ro_id);
+        } else {
+          int uid = request.getParameter("save_loc_to_user") != null ? user_id : 0;
+          Requestoffer_utils.put_location(
+            uid, new_ro_id,
+            strt_addr_1_val, strt_addr_2_val, 
+            city_val, state_val, postal_val, country_val);
+        }
         response.sendRedirect("dashboard.jsp");
         return;
       }
@@ -112,7 +131,10 @@
   <%@include file="includes/header.jsp" %>
     <form method="POST" action="create_requestoffer.jsp">
 
-      <p><%=loc.get(10,"Description")%>: 
+      <p>
+        <label for="description">
+          <%=loc.get(10,"Description")%>: 
+        </label>
         <input 
           type="text" 
           maxlength=200
@@ -122,7 +144,9 @@
       </p>
 
       <p>
-        <%=loc.get(13,"Categories")%>: 
+        <label for="categories">
+          <%=loc.get(13,"Categories")%>: 
+        </label>
         <input type="text" name="categories" value="<%=c%>"/>
         <span><%=cat_error_msg%></span>
       </p>
@@ -138,65 +162,92 @@
             Requestoffer_utils.get_my_saved_locations(user_id);
           if (locations.length > 0) {
         %>
-            <p>Select one of your saved locations:</p>
+        <p><%=loc.get(158,"Select one of your saved locations")%>:</p>
             <select name="savedlocation">
+              <option>No address selected</option>
         <%
           for (User_location loca : locations) {
         %>
-        <option>
-          <%=loca.id%>
-          <%=loca.str_addr_1%>
-          <%=loca.str_addr_2%>
-          <%=loca.city%>
-          <%=loca.state%>
-          <%=loca.postcode%>
-          <%=loca.country%>
-        </option>
+          <%if(Integer.toString(loca.id).equals(savedlocation_val)){%>
+            <option selected value="<%=loca.id%>">
+          <%} else { %>
+            <option value="<%=loca.id%>">
+          <% } %>
+                <%=loca.str_addr_1%>
+                <%=loca.str_addr_2%>
+                <%=loca.city%>
+                <%=loca.state%>
+                <%=loca.postcode%>
+                <%=loca.country%>
+              </option>
         <%
             }
         %>
-            </select>
+            </select>                       
         <%
           }
         %>
 
+        <p><%=loc.get(159,"Or enter a new address")%>:</p>
         <p>
-          <%=loc.get(152,"Street Address 1")%>: 
+          <input 
+            id="save_loc_to_user" 
+            name="save_loc_to_user" 
+            <%=save_loc_to_user_checked%>
+            type="checkbox" />
+            <label for="save_loc_to_user">
+              <%=loc.get(160,"Save to my favorites")%>
+            </label>
+        </p>
+        <p>
+          <label for="strt_addr_1">
+            <%=loc.get(152,"Street Address 1")%>: 
+          </label>
           <input 
             type="text" name="strt_addr_1" 
             maxlength="100" value="<%=strt_addr_1_val%>"/>
         </p>
               
         <p>
-          <%=loc.get(153,"Street Address 2")%>: 
+          <label for="strt_addr_2">
+            <%=loc.get(153,"Street Address 2")%>:
+          </label>
           <input 
             type="text" name="strt_addr_2" 
             maxlength="100" value="<%=strt_addr_2_val%>"/>
         </p>
               
         <p>
-          <%=loc.get(154,"City")%>: 
+          <label for="city">
+            <%=loc.get(154,"City")%>: 
+          </label>
           <input 
             type="text" name="city" maxlength="40" 
             value="<%=city_val%>"/>
         </p>
               
         <p>
-          <%=loc.get(155,"State")%>: 
+          <label for="state">
+            <%=loc.get(155,"State")%>: 
+          </label>
           <input 
             type="text" name="state" 
             maxlength="30" value="<%=state_val%>"/>
         </p>
               
         <p>
-          <%=loc.get(156,"Postal code")%>: 
+          <label for="postal">
+            <%=loc.get(156,"Postal code")%>: 
+          </label>
           <input 
             type="text" name="postal" 
             maxlength="20" value="<%=postal_val%>"/>
         </p>
               
         <p>
-          <%=loc.get(157,"Country")%>: 
+          <label for="country">
+            <%=loc.get(157,"Country")%>: 
+          </label>
           <input 
             type="text" name="country" 
             maxlength="40" value="<%=country_val%>"/>

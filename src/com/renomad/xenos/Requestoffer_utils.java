@@ -764,10 +764,34 @@ public final class Requestoffer_utils {
   }
 
 
+  public static boolean
+    assign_location_to_requestoffer(int location_id, int requestoffer_id) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall("{call assign_location_to_requestoffer(?,?)}");
+      cs.setInt(1, location_id);
+      cs.setInt(2, requestoffer_id);
+      cs.executeQuery();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+    return true;
+
+    }
+
+
   /**
     * add a location to the database.  That's an address.
     * We also link it to a requestoffer or user if provided.
     * returns true if all is well, false otherwise.
+    * @param user_id if user_id is given, the new location will be associated
+    * with that user.
+    * @param requestoffer_id if requestoffer_id is given, the new location will be
+    * associated with that requestoffer
     */
   public static boolean 
     put_location(int user_id, int requestoffer_id, 

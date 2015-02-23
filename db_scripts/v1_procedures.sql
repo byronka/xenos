@@ -1084,3 +1084,36 @@ BEGIN
   CALL add_audit(21, uid, @new_location_id, NULL);
 
 END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS assign_location_to_requestoffer;   
+
+---DELIMITER---
+
+CREATE PROCEDURE assign_location_to_requestoffer
+(
+  lid INT UNSIGNED, -- the location id
+  rid INT UNSIGNED -- the requestoffer id
+) 
+BEGIN 
+
+  SELECT COUNT(*) INTO @lid_count
+  FROM location
+  WHERE location_id = lid;
+
+  IF (@lid_count <> 1) THEN
+      SET @msg = CONCAT(
+        'location_id ',lid,' does not exist in the location table');
+      SIGNAL SQLSTATE '45000' 
+      SET message_text = @msg;
+  END IF;
+
+  CALL validate_requestoffer_id(rid); -- valid requestoffer, right?
+  INSERT INTO location_to_requestoffer (location_id, requestoffer_id)
+  VALUES (lid, rid);
+
+  -- audit: we just attached a location to a requestoffer. 
+  CALL add_audit(22, NULL, rid, NULL);
+
+END
