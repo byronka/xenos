@@ -541,6 +541,8 @@ public final class Requestoffer_utils {
         float ra = resultSet.getFloat("rank");
         int offered_user_id = resultSet.getInt("been_offered");
         boolean has_been_offered = false;
+        String po = resultSet.getString("postcodes");
+        String ci = resultSet.getNString("cities");
         if (offered_user_id > 0) {
           has_been_offered = true;
         }
@@ -549,7 +551,7 @@ public final class Requestoffer_utils {
 
         Others_Requestoffer requestoffer = 
           new Others_Requestoffer(
-              dt,d,s,ra,p,rid,ru,hu,cat_array, has_been_offered);
+              dt,d,s,ra,p,rid,ru,hu,cat_array, has_been_offered,po,ci);
         requestoffers.add(requestoffer);
       }
 
@@ -716,6 +718,55 @@ public final class Requestoffer_utils {
 
 
   /**
+    * Gets all the locations for a given requestoffer
+    * 
+    * @return the locations, or empty array otherwise.
+    */
+  public static User_location[] get_locations_for_requestoffer(int requestoffer_id) {
+    
+    String sqlText = 
+    "SELECT l.location_id, l.address_line_1, l.address_line_2, l.city," + 
+    "      l.state, l.postal_code, l.country                          " + 
+    "FROM location l                                                  " + 
+    "JOIN location_to_requestoffer ltr                                " + 
+    "  ON ltr.location_id = l.location_id AND requestoffer_id = ?     ";
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setInt( 1, requestoffer_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new User_location[0];
+      }
+
+      ArrayList<User_location> locations = new ArrayList<User_location>();
+      while(resultSet.next()) {
+        int lid = resultSet.getInt("location_id");
+        String sa1 = resultSet.getNString("address_line_1");
+        String sa2 = resultSet.getNString("address_line_2");
+        String city = resultSet.getNString("city");
+        String state = resultSet.getNString("state");
+        String post = resultSet.getString("postal_code"); // non-unicode on purpose
+        String country = resultSet.getNString("country");
+        locations.add(new User_location(lid,sa1,sa2,city,state,post,country));
+      }
+
+      User_location[] array_of_user_locations = 
+        locations.toArray(new User_location[locations.size()]);
+      return array_of_user_locations;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new User_location[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
     * Gets all the saved locations for a given user
     * 
     * @return all their saved locations, or empty array otherwise.
@@ -764,6 +815,9 @@ public final class Requestoffer_utils {
   }
 
 
+  /**
+    * assign an existing location to a requestoffer
+    */
   public static boolean
     assign_location_to_requestoffer(int location_id, int requestoffer_id) {
     CallableStatement cs = null;

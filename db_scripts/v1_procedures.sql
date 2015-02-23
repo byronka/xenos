@@ -266,6 +266,8 @@ BEGIN
             rsr.user_id AS been_offered,
             r.requestoffering_user_id, 
             r.handling_user_id, 
+            GROUP_CONCAT(DISTINCT l.postal_code SEPARATOR ",") AS postcodes,
+            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities,
             GROUP_CONCAT(rc.category_id SEPARATOR ",") 
             AS categories 
             FROM requestoffer r 
@@ -277,9 +279,13 @@ BEGIN
             LEFT JOIN requestoffer_service_request rsr
               ON r.requestoffer_id = rsr.requestoffer_id 
               AND rsr.user_id = @ruid
+            LEFT JOIN location_to_requestoffer ltr
+              ON r.requestoffer_id = ltr.requestoffer_id
+            LEFT JOIN location l
+              ON l.location_id = ltr.location_id
             WHERE requestoffering_user_id <> @ruid AND r.status <> 109
             ', @search_clauses ,'
-            GROUP BY r.requestoffer_id 
+            GROUP BY r.requestoffer_id , l.city, l.postal_code
             ORDER BY r.datetime DESC
             LIMIT ',@first_row,',',@last_row );
 

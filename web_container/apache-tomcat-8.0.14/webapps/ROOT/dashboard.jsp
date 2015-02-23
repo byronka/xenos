@@ -121,6 +121,21 @@
           <%}%>               
         </span>
       </li>
+
+      <% if (r.postcodes != null) { %>
+        <li>
+          <span class="label"><%=loc.get(156, "Postal code")%>:</span>
+          <%=r.postcodes%>
+        </li>
+      <% } %>
+
+      <% if (r.cities != null) { %>
+      <li>
+        <span class="label"><%=loc.get(154, "City")%>:</span>
+        <%=r.cities%>
+      </li>
+      <% } %>
+
     </ul>
   </div>
 <% } %>

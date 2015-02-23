@@ -13,6 +13,7 @@
 
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%@ page import="com.renomad.xenos.User_utils" %>
+<%@ page import="com.renomad.xenos.User_location" %>
 <%@ page import="com.renomad.xenos.Requestoffer" %>
 <%
   String qs = request.getQueryString();
@@ -22,6 +23,9 @@
     response.sendRedirect("general_error.jsp");
     return;
   }
+
+  User_location[] locations = Requestoffer_utils.get_locations_for_requestoffer(r.requestoffer_id);
+
   boolean is_requestoffering_user = user_id == r.requestoffering_user_id;
   boolean is_handling_user = user_id == r.handling_user_id;
   boolean is_deleting = qs.indexOf("delete=true") > 0;
@@ -85,6 +89,16 @@
         <span class="category"><%=loc.get(c,"")%> </span>
       <%}%>
   </p>
+  <%for (User_location lo : locations) { %>
+    <p>
+      <%=lo.str_addr_1%>
+      <%=lo.str_addr_2%>
+      <%=lo.city%>
+      <%=lo.state%>
+      <%=lo.country%>
+      <%=lo.postcode%>
+    </p>
+  <% } %>
   <% if (r.status == 109) { %>
     <a href="publish_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(6,"Publish")%></a>
   <% }
