@@ -89,16 +89,28 @@
         <span class="category"><%=loc.get(c,"")%> </span>
       <%}%>
   </p>
-  <%for (User_location lo : locations) { %>
+  <% 
+      for (User_location lo : locations) { 
+  %>
     <p>
+      <%
+        if (user_id == r.handling_user_id || 
+        user_id == r.requestoffering_user_id) { 
+      %>
       <%=lo.str_addr_1%>
       <%=lo.str_addr_2%>
-      <%=lo.city%>
       <%=lo.state%>
       <%=lo.country%>
+      <% 
+          } 
+      %>
+      <%=lo.city%>
       <%=lo.postcode%>
     </p>
-  <% } %>
+  <% 
+      } 
+  %>
+
   <% if (r.status == 109) { %>
     <a href="publish_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(6,"Publish")%></a>
   <% }

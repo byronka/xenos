@@ -150,7 +150,10 @@ TRUNCATE TABLE location_to_requestoffer;
 
 INSERT INTO location_to_requestoffer (location_id, requestoffer_id)
 VALUES
-(1, 3)
+(1, 3),
+(1,4),
+(2,5),
+(3,6)
 
 ---DELIMITER---
 
