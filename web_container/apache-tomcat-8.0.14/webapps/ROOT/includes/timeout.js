@@ -1,6 +1,6 @@
-var xenos_utils = {};
+var xenos_timeout = {};
 
-xenos_utils.timeout_counter = function() {
+xenos_timeout.timeout_counter = function() {
 
   var halt = false;
   var alert_displayed = false;
@@ -17,7 +17,7 @@ xenos_utils.timeout_counter = function() {
     "   you are automatically logged out.                                          " + 
     "   <button style='margin-top:10px;margin-bottom:10px;margin-left:auto;        " + 
     "   margin-right:auto;width:130px;display:block;padding-top:10px;              " + 
-    "   padding-bottom:10px;font-size: 18px' onclick='xenos_utils.counter.halt();'>" + 
+    "   padding-bottom:10px;font-size: 18px' onclick='xenos_timeout.counter.halt();'>" + 
     "   I am not done!                                                             " + 
     "   </button>                                                                  " + 
     " </div>                                                                       " + 
@@ -61,7 +61,7 @@ xenos_utils.timeout_counter = function() {
 }
 
 //a helper method to run the command in the timeout_counter.
-xenos_utils.start_timer = function() {
+xenos_timeout.start_timer = function() {
   //get the number of seconds by looking at the value stored in "timeout_value"
   var seconds = Number(
       document.getElementById('timeout_value').getAttribute('value')); 
@@ -69,9 +69,9 @@ xenos_utils.start_timer = function() {
   var seconds = seconds + 5; // give a little wiggle room - the event fires every 5 seconds.
 
   //kick off the countdown.
-  xenos_utils.counter = xenos_utils.timeout_counter();
-  xenos_utils.counter.start(seconds);
+  xenos_timeout.counter = xenos_timeout.timeout_counter();
+  xenos_timeout.counter.start(seconds);
 };   
 
-xenos_utils.start_timer();
+xenos_timeout.start_timer();
 

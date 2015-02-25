@@ -166,5 +166,6 @@
 
 </div>
 <script type="text/javascript" src="includes/timeout.js"></script>
+<script type="text/javascript" src="includes/user_notify.js"></script>
 </body>
 </html>
