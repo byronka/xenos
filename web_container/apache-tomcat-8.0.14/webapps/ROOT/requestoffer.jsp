@@ -16,6 +16,7 @@
 <%@ page import="com.renomad.xenos.User_location" %>
 <%@ page import="com.renomad.xenos.Requestoffer" %>
 <%
+	request.setCharacterEncoding("UTF-8");
   String qs = request.getQueryString();
   Requestoffer r = 
     Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
