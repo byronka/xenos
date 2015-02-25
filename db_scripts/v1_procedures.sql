@@ -184,6 +184,9 @@ CREATE PROCEDURE get_others_requestoffers
   user_id VARCHAR(50), -- can be many INT's separated by commas
   page INT UNSIGNED,
   description NVARCHAR(50),
+  minrank FLOAT, -- must be between 0 and 1, or null
+  maxrank FLOAT, -- must be between 0 and 1, or null
+  postcode VARCHAR(50), 
 	OUT total_pages INT UNSIGNED
 ) 
 BEGIN 
@@ -194,6 +197,7 @@ BEGIN
     SET @search_clauses = 
       CONCAT(@search_clauses, ' AND status IN (',status,') ');
   END IF;
+
 
   -- searching by categories
   IF categories <> '' THEN
@@ -232,7 +236,29 @@ BEGIN
     CONCAT(@search_clauses, " AND description LIKE CONCAT('%' , @desc , '%') ");
   END IF;
 
+  -- searching by rank
+  IF minrank > 0.0 AND maxrank > 0.0 THEN
+    SET @minrank = minrank;
+    SET @maxrank = maxrank;
+    SET @search_clauses = 
+      CONCAT(@search_clauses, 
+        ' AND @minrank <= u.rank AND u.rank <= @maxrank ');
+  ELSEIF minrank > 0 THEN
+    SET @minrank = minrank;
+    SET @search_clauses = 
+      CONCAT(@search_clauses, ' AND @minrank <= u.rank ');
+  ELSEIF maxrank > 0 THEN
+    SET @maxrank = maxrank;
+    SET @search_clauses = 
+      CONCAT(@search_clauses, ' AND @maxrank >= u.rank ');
+  END IF;
 
+  -- searching by postcode - right now, only an exact match
+  IF postcode <> '' THEN
+    SET @postcode = postcode;
+    SET @search_clauses = 
+      CONCAT(@search_clauses, ' AND l.postal_code = @postcode ');
+  END IF;
 
   SET @ruid = ruid;
   SET @get_requestoffer_count = 
@@ -243,7 +269,14 @@ BEGIN
             JOIN requestoffer_category rc 
               ON rc.category_id = rtc.requestoffer_category_id 
             JOIN user u ON u.user_id = r.requestoffering_user_id 
-            WHERE requestoffering_user_id <> @ruid
+            LEFT JOIN requestoffer_service_request rsr
+              ON r.requestoffer_id = rsr.requestoffer_id 
+              AND rsr.user_id = @ruid
+            LEFT JOIN location_to_requestoffer ltr
+              ON r.requestoffer_id = ltr.requestoffer_id
+            LEFT JOIN location l
+              ON l.location_id = ltr.location_id
+            WHERE requestoffering_user_id <> @ruid AND r.status <> 109
             ', @search_clauses );
 
   -- prepare and execute!

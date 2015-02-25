@@ -11,8 +11,8 @@
 
   //extract dates
   String srch_date = params.get("da"); 
-  String srch_startdate = "";
-  String srch_enddate = "";
+  String srch_startdate = null;
+  String srch_enddate = null;
   if (srch_date != null) {
     String[] srch_dates = srch_date.split(",");
     if (srch_dates.length > 0) {
@@ -27,6 +27,9 @@
   String srch_desc = params.get("desc"); // description
   String srch_us = params.get("us"); //users
   String srch_sta = params.get("sta"); //status
+  String srch_minrank = params.get("minrank"); //rank
+  String srch_maxrank = params.get("maxrank"); //rank
+  String srch_postcode = params.get("postcode"); //postcode
 
   Integer which_page = Utils.parse_int(params.get("page"));
   if (which_page == null) {which_page = 0;}
@@ -63,7 +66,11 @@
                                       srch_cat, 
                                       decoded_srch_desc,
                                       srch_sta, 
-                                      srch_us);
+                                      srch_us,
+                                      srch_minrank,
+                                      srch_maxrank,
+                                      srch_postcode
+                                      );
   Requestoffer_utils.OR_Package or_package = 
     Requestoffer_utils.get_others_requestoffers(user_id, 
                                       so , 

@@ -334,4 +334,18 @@ public final class Utils {
   }
 
 
+  /**
+    * Helper method to get a float or else returns null;
+    */
+  public static Float parse_float(String value) {
+    try {
+      return Float.valueOf(value);
+    } catch (Exception ex) {
+      return null;
+    }
+  }
+
+
+
+
 }

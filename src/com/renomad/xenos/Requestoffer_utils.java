@@ -436,6 +436,11 @@ public final class Requestoffer_utils {
       */
     public final String user_ids;
 
+    public final Float minrank; //the user's ranking - might be null.
+    public final Float maxrank; //the user's ranking - might be null.
+
+    public final String postcode; // postal code
+
 
     public Search_Object(
         String startdate,
@@ -443,19 +448,26 @@ public final class Requestoffer_utils {
         String categories,
         String description,
         String statuses,
-        String user_ids) {
+        String user_ids,
+        String minrank,
+        String maxrank,
+        String postcode
+        ) {
       this.startdate = startdate;
       this.enddate = enddate;
       this.categories = Utils.is_comma_delimited_numbers(categories) ? 
         categories 
-        : "";
+        : null;
       this.description = description;
       this.statuses = Utils.is_comma_delimited_numbers(statuses) ? 
         statuses 
-        : "";
+        : null;
       this.user_ids = Utils.is_comma_delimited_numbers(user_ids) ? 
         user_ids 
-        : "";
+        : null;
+      this.minrank = Utils.parse_float(minrank);
+      this.maxrank = Utils.parse_float(maxrank);
+      this.postcode = postcode;
     }
 
   }
@@ -511,17 +523,30 @@ public final class Requestoffer_utils {
       // see db_scripts/v1_procedures.sql get_others_requestoffers for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
-        "{call get_others_requestoffers(%d,?,?,?,?,?,%d,?,?)}"
+        "{call get_others_requestoffers(?,?,?,?,?,?,?,?,?,?,?,?)}"
         ,ruid, page));
-      cs.setString(1, so.startdate);
-      cs.setString(2, so.enddate);
-      cs.setString(3, so.statuses);
-      cs.setString(4, so.categories);
-      cs.setString(5, so.user_ids);
-      cs.setString(6, so.description);
-      cs.registerOutParameter(7, java.sql.Types.INTEGER);
+      cs.setInt(1, ruid);
+      cs.setString(2, so.startdate);
+      cs.setString(3, so.enddate);
+      cs.setString(4, so.statuses);
+      cs.setString(5, so.categories);
+      cs.setString(6, so.user_ids);
+      cs.setInt(7, page);
+      cs.setString(8, so.description);
+      if (so.minrank != null) {
+        cs.setFloat(9, so.minrank);
+      } else {
+        cs.setNull(9, java.sql.Types.FLOAT);
+      }
+      if (so.maxrank != null) {
+        cs.setFloat(10, so.maxrank);
+      } else {
+        cs.setNull(10, java.sql.Types.FLOAT);
+      }
+      cs.setString(11, so.postcode);
+      cs.registerOutParameter(12, java.sql.Types.INTEGER);
       ResultSet resultSet = cs.executeQuery();
-      int pages = cs.getInt(7);
+      int pages = cs.getInt(12);
 
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new OR_Package(new Others_Requestoffer[0],1);
