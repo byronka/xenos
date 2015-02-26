@@ -47,7 +47,7 @@ var xenos_user_notify = {};
 
 
   //Modele 1a: a message queue.  Takes in new messages and 
-  //displays them in a timely manner.
+  //displays them in an even, timely manner.
   var message_queue = function() {
 
     var the_queue = [];
@@ -55,6 +55,18 @@ var xenos_user_notify = {};
     var add_new_msg = function(msg) {
       the_queue.push(msg);
     };
+
+    var process_queue = function() {
+      while (the_queue.length > 0) {
+        var mytext = the_queue.pop();
+        var displayer = message_displayer(mytext);
+        displayer.display();
+        setTimeout(function(){displayer.hide()}, 3000);
+      }
+      setTimeout(process_queue,4000);
+    };
+
+    process_queue(); //start up the processing
 
     return {
       add_msg: add_new_msg
@@ -70,7 +82,7 @@ var xenos_user_notify = {};
     var request = new XMLHttpRequest(); 
     var mq = message_queue();
 
-    var success_function = function() {
+    var response_handler = function() {
         if (request.readyState != 4 || request.status != 200) {
           return;  //if not the state we want, ignore.
         }
@@ -79,9 +91,7 @@ var xenos_user_notify = {};
         var text_messages = mydoc.getElementsByTagName('div');
         for (var index = 0; index < text_messages.length;index++) {
           var mytext = text_messages[index].innerHTML;
-          var displayer = message_displayer(mytext);
-          displayer.display();
-          setTimeout(function(){displayer.hide()}, 3000);
+          mq.add_msg(mytext);
         }
     };
 
@@ -89,7 +99,7 @@ var xenos_user_notify = {};
     var call_to_server = function() {
       request.open("GET", "temporary_messages.jsp", true); 
       request.responseType = "document";
-      request.onreadystatechange = success_function;
+      request.onreadystatechange = response_handler;
       request.send();
     };
 
@@ -100,8 +110,10 @@ var xenos_user_notify = {};
 
   };
 
+  var mc = message_checker();
+
   var run_me = function() {
-    message_checker().call_server();
+    mc.call_server();
     setTimeout(run_me, 30 * 1000);
   };
 
