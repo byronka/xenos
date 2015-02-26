@@ -481,15 +481,15 @@ BEGIN
 		SET @to_user_id = @ro_uid;
 	END IF;
 
+  SELECT 
+    CONCAT(username,' says:', my_message) INTO @full_msg
+  FROM user WHERE user_id = fr_uid;
+
   INSERT into requestoffer_message (
 		message, requestoffer_id, from_user_id, to_user_id, timestamp)
-  SELECT 
-    CONCAT(username,' says:', my_message), 
-    rid, 
-    fr_uid, 
-    @to_user_id,
-    UTC_TIMESTAMP()
-  FROM user WHERE user_id = fr_uid;
+  VALUES (@full_msg, rid, fr_uid, @to_user_id, UTC_TIMESTAMP());
+
+  CALL put_temporary_message(@to_user_id, NULL, @full_msg);
 
 END
 
@@ -615,8 +615,8 @@ BEGIN
   WHERE requestoffer_id = rid AND user_id <> uid;
 
   INSERT INTO temporary_message
-  (timestamp, viewed, user_id, message_localization_id)
-  SELECT UTC_TIMESTAMP(), false, user_id, 133
+  (timestamp, user_id, message_localization_id)
+  SELECT UTC_TIMESTAMP(), user_id, 133
   FROM requestoffer_service_request 
   WHERE requestoffer_id = rid AND user_id <> uid;
 

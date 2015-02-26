@@ -12,9 +12,9 @@ var xenos_user_notify = {};
     var display_dialog = function() {
       var notification_dialog = 
         "<div id='notification_dialog' " +                    
-        " style='font-size: 20px;width: 200px; height: 120px;" +                    
-        "   top: 5px;right:10px; background-color: gold;" + 
-        "   z-index: 2; position: fixed;'>" + 
+        " style='font-size: 20px;width: 200px; height: 120px;" +
+        "   top: 5px;right:10px; background-color: gold;" +
+        "   z-index: 2; position: fixed;'>" +
         text_to_show +
         "</div>";
 
@@ -28,7 +28,8 @@ var xenos_user_notify = {};
       dialog.style.opacity = 1; 
       var fade = function() {
         if ((dialog.style.opacity-=.1) < 0) { 
-          document.body.removeChild(dialog);
+          var dialog_kill = document.getElementById('notification_dialog');
+          document.body.removeChild(dialog_kill);
         } else {
           setTimeout(fade,40);
         }
@@ -45,11 +46,29 @@ var xenos_user_notify = {};
   }
 
 
+  //Modele 1a: a message queue.  Takes in new messages and 
+  //displays them in a timely manner.
+  var message_queue = function() {
+
+    var the_queue = [];
+
+    var add_new_msg = function(msg) {
+      the_queue.push(msg);
+    };
+
+    return {
+      add_msg: add_new_msg
+    };
+
+  };
+
+
   //Module 2: calls periodically to the server to check
   // on new messages.  
   var message_checker = function() {
 
     var request = new XMLHttpRequest(); 
+    var mq = message_queue();
 
     var success_function = function() {
         if (request.readyState != 4 || request.status != 200) {
@@ -83,7 +102,7 @@ var xenos_user_notify = {};
 
   var run_me = function() {
     message_checker().call_server();
-    setTimeout(run_me, 2 * 1000);
+    setTimeout(run_me, 30 * 1000);
   };
 
   run_me();

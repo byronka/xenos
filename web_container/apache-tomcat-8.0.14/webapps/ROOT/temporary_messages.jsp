@@ -10,7 +10,7 @@
   for (String msg : msgs) { 
 %>
 
-<div><%=msg%></div>
+<div><%=com.renomad.xenos.Utils.safe_render(msg)%></div>
 
 <% } %>
 
