@@ -153,7 +153,7 @@ VALUES
 (144, 1,  'Dog-walking'),
 (145, 1,  'Taxi'),
 (146, 1,  'My system messages'),
-(147, 1,  'You have made an offer to handle a Favor'),
+(147, 1,  'EMPTY_NOT_USED'),
 (148, 1,  'You have recieved an offer to handle a Favor.'),
 (149, 1,  'Does this Favor need a location?'),
 (150, 1,  'Yes'),

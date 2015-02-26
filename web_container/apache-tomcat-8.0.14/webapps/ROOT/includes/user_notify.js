@@ -1,28 +1,92 @@
 var xenos_user_notify = {};
 
-xenos_user_notify.message_displayer = function() {
 
-  var md = {}; //an object to remind us where we are.
+//xenos_user_notify.user_message_handler = function() {
 
-  md.display_dialog = function() {
-    var notification_dialog = 
-      "<div id='notification_dialog' " +                    
-      " style='font-size: 20px;width: 200px; height: 120px;" +                    
-      "   top: 5px;right:10px; background-color: gold;" + 
-      "   z-index: 2; position: fixed;'>" + 
-      " Hi mom! " +
-      "</div>";
 
-    document.body.insertAdjacentHTML('afterbegin', notification_dialog);
+  //Module 1: simply shows and kills a dialog.
+  //It takes some text that it will display to the user.
+  var message_displayer = function(text_to_show) {
+
+    //This sets up the actual element, and puts it on the page.
+    var display_dialog = function() {
+      var notification_dialog = 
+        "<div id='notification_dialog' " +                    
+        " style='font-size: 20px;width: 200px; height: 120px;" +                    
+        "   top: 5px;right:10px; background-color: gold;" + 
+        "   z-index: 2; position: fixed;'>" + 
+        text_to_show +
+        "</div>";
+
+      document.body.insertAdjacentHTML('afterbegin', notification_dialog);
+    }    
+
+    //This fades out the dialog until invisible, then removes it from
+    // the DOM
+    var message_hider = function() {
+      var dialog = document.getElementById('notification_dialog');
+      dialog.style.opacity = 1; 
+      var fade = function() {
+        if ((dialog.style.opacity-=.1) < 0) { 
+          document.body.removeChild(dialog);
+        } else {
+          setTimeout(fade,40);
+        }
+      };
+      fade(); //kick it off.
+    }
+
+    //This part is the interface
+    return {
+      display: display_dialog,
+      hide: message_hider
+    };
+
   }
 
-  return {
-    display: md.display_dialog,
-    hide: function() {
-      var dialog = document.getElementById('notification_dialog');
-      document.body.removeChild(dialog)
-    }
+
+  //Module 2: calls periodically to the server to check
+  // on new messages.  
+  var message_checker = function() {
+
+    var request = new XMLHttpRequest(); 
+
+    var success_function = function() {
+        if (request.readyState != 4 || request.status != 200) {
+          return;  //if not the state we want, ignore.
+        }
+        //otherwise, success!
+        var mydoc = request.responseXML;
+        var text_messages = mydoc.getElementsByTagName('div');
+        for (var index = 0; index < text_messages.length;index++) {
+          var mytext = text_messages[index].innerHTML;
+          var displayer = message_displayer(mytext);
+          displayer.display();
+          setTimeout(function(){displayer.hide()}, 3000);
+        }
+    };
+
+
+    var call_to_server = function() {
+      request.open("GET", "temporary_messages.jsp", true); 
+      request.responseType = "document";
+      request.onreadystatechange = success_function;
+      request.send();
+    };
+
+    //This part is the interface
+    return {
+      call_server: call_to_server
+    };
+
   };
 
-}
+  var run_me = function() {
+    message_checker().call_server();
+    setTimeout(run_me, 2 * 1000);
+  };
+
+  run_me();
+
+//}
 

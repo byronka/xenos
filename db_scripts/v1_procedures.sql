@@ -233,7 +233,8 @@ BEGIN
   IF description <> '' THEN
     SET @desc = description;
     SET @search_clauses = 
-    CONCAT(@search_clauses, " AND description LIKE CONCAT('%' , @desc , '%') ");
+    CONCAT(@search_clauses, 
+      " AND description LIKE CONCAT('%' , @desc , '%') ");
   END IF;
 
   -- searching by rank
@@ -261,36 +262,13 @@ BEGIN
   END IF;
 
   SET @ruid = ruid;
-  SET @get_requestoffer_count = 
-     CONCAT('SELECT CEIL(COUNT(*)/10) INTO @total_pages
-            FROM requestoffer r 
-            JOIN requestoffer_to_category rtc 
-              ON rtc.requestoffer_id = r.requestoffer_id 
-            JOIN requestoffer_category rc 
-              ON rc.category_id = rtc.requestoffer_category_id 
-            JOIN user u ON u.user_id = r.requestoffering_user_id 
-            LEFT JOIN requestoffer_service_request rsr
-              ON r.requestoffer_id = rsr.requestoffer_id 
-              AND rsr.user_id = @ruid
-            LEFT JOIN location_to_requestoffer ltr
-              ON r.requestoffer_id = ltr.requestoffer_id
-            LEFT JOIN location l
-              ON l.location_id = ltr.location_id
-            WHERE requestoffering_user_id <> @ruid AND r.status <> 109
-            ', @search_clauses );
-
-  -- prepare and execute!
-	PREPARE get_requestoffer_count FROM @get_requestoffer_count;
-	EXECUTE get_requestoffer_count; 
-
-	SET total_pages = @total_pages;
 
   -- set up paging.  Right now it's always 10 or less rows on the page.
   SET @first_row = page * 10;
   SET @last_row = (page * 10) + 10;
 
   SET @get_requestoffer = 
-     CONCAT('SELECT r.requestoffer_id, 
+     CONCAT('SELECT SQL_CALC_FOUND_ROWS r.requestoffer_id, 
             r.datetime, 
             r.description, 
             r.status, 
@@ -326,6 +304,9 @@ BEGIN
   -- prepare and execute!
 	PREPARE get_requestoffer FROM @get_requestoffer;
 	EXECUTE get_requestoffer; 
+
+	SET total_pages = CEIL(FOUND_ROWS()/10);
+
 END
 
 ---DELIMITER---
@@ -439,15 +420,15 @@ BEGIN
 
     -- just insert a row of data holding the message id
     INSERT INTO temporary_message
-    (timestamp, viewed, user_id, message_localization_id)
-    VALUES(UTC_TIMESTAMP(), false, uid, message_id);
+    (timestamp, user_id, message_localization_id)
+    VALUES(UTC_TIMESTAMP(), uid, message_id);
 
   ELSEIF (message_text IS NOT NULL AND message_text <> '') THEN
 
       -- add the first piece
       INSERT INTO temporary_message
-      (timestamp, viewed, user_id)
-      VALUES(UTC_TIMESTAMP(), false, uid);
+      (timestamp, user_id)
+      VALUES(UTC_TIMESTAMP(), uid);
 
       -- add the text piece that ties back to the first piece
       INSERT INTO temporary_message_text
@@ -548,9 +529,6 @@ BEGIN
 
   -- send a message to the owner of that requestoffer
   CALL put_system_to_user_message(148, @ro_owner, rid);
-
-  -- send a message to the potential servicer
-  CALL put_system_to_user_message(147, uid, rid);
 
   -- Add an audit
   CALL add_audit(7,uid,rid,NULL);
@@ -1154,5 +1132,47 @@ BEGIN
 
   -- audit: we just attached a location to a requestoffer. 
   CALL add_audit(22, NULL, rid, NULL);
+
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS get_my_temporary_msgs;   
+
+---DELIMITER---
+
+CREATE PROCEDURE get_my_temporary_msgs
+(
+  uid INT UNSIGNED -- the user id
+) 
+BEGIN 
+
+  CALL validate_user_id(uid);
+
+  -- check that we have some temporary messages for this user
+  SELECT COUNT(*) INTO @count_msgs
+  FROM temporary_message
+  WHERE user_id = uid;
+
+  -- only if we actually have messages, do we keep going
+  IF @count_msgs > 0 THEN
+
+    -- select the messages
+    SELECT tm.message_localization_id, tmt.text
+    FROM temporary_message tm
+    LEFT JOIN temporary_message_text tmt
+      ON tm.message_id = tmt.message_id
+    WHERE tm.user_id = uid;
+
+    -- delete them
+    DELETE FROM temporary_message
+    WHERE user_id = uid;
+  ELSE
+    SELECT tm.message_localization_id, tmt.text
+    FROM temporary_message tm
+    LEFT JOIN temporary_message_text tmt
+      ON tm.message_id = tmt.message_id
+    WHERE tm.user_id = uid;
+  END IF;
 
 END

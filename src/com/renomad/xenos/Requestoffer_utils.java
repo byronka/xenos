@@ -64,7 +64,8 @@ public final class Requestoffer_utils {
           status_ids_found.add(rsid);
         }
       }
-      return status_ids_found.toArray(new Integer[status_ids_found.size()]);
+      return status_ids_found.toArray(
+          new Integer[status_ids_found.size()]);
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return new Integer[0];
@@ -78,7 +79,8 @@ public final class Requestoffer_utils {
     * put the requestoffer into an 'open' status,
     * so people can potentially handle it.
     */
-  public static boolean publish_requestoffer(int requestoffer_id, int user_id) {
+  public static boolean 
+    publish_requestoffer(int requestoffer_id, int user_id) {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
@@ -95,6 +97,52 @@ public final class Requestoffer_utils {
     return true;
   }
 
+
+  /**
+    * returns unviewed messages, localized
+    *  from the temporary_messages table
+    * or an empty String array if there are none.
+    */
+  public static String[] 
+    get_my_temporary_msgs(int user_id, Localization loc) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall(String.format(
+        "{call get_my_temporary_msgs(%d)}" , user_id ));
+      ResultSet resultSet = cs.executeQuery();
+
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new String[0];
+      }
+
+      //keep adding rows of data while there is more data
+      ArrayList<String> temp_msgs = new ArrayList<String>();
+      while(resultSet.next()) {
+        Integer msg_id = resultSet.getInt("message_localization_id");
+        String text = resultSet.getNString("text");
+
+        if (!Utils.is_null_or_empty(text)) { // a user message
+          temp_msgs.add(text);
+        } else if (msg_id != null && msg_id > 0) { // a system message
+          temp_msgs.add(loc.get(msg_id,""));
+        } else {    // an exceptional situation - shouldn't happen
+          temp_msgs.add("ERROR_GETTING_TEMP_MSG");
+        }
+
+      }
+
+      //convert arraylist to array
+      String[] array_of_msgs = 
+        temp_msgs.toArray(new String[temp_msgs.size()]);
+			return array_of_msgs;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new String[0];
+    } finally {
+      Database_access.close_statement(cs);
+    }
+  }
 
   /**
     * returns a list of localization values for the categories

@@ -455,7 +455,6 @@ CREATE TABLE
 temporary_message ( 
   message_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   timestamp DATETIME,
-  viewed BOOL, -- if the user has seen this message
   user_id INT UNSIGNED, -- who the message is for
   message_localization_id INT UNSIGNED -- this being not null means the message is system-generated and has a localization lookup
 )
