@@ -150,9 +150,15 @@ public final class Security {
     * to a stored procedure which checks that it is valid, and if
     * so, it returns the user id.  if failed, return -1;
     * @param r the requestoffer object
+    * @param update_last_activity if this is true, then running this
+    * command will update the timestamp for the last activity on the user
+    * this is used to work with timeout on users.  It should be false
+    * in cases like getting temporary messages, where it's the script
+    * running the command, not the user taking action.
     * @return a valid user id if allowd.  -1 otherwise.
     */
-  public static int check_if_allowed(HttpServletRequest r) {
+  public static int 
+    check_if_allowed(HttpServletRequest r, boolean update_last_activity) {
     Cookie[] cookies = r.getCookies();
     Cookie c = find_security_cookie(cookies);
     if (c == null) {
@@ -167,11 +173,12 @@ public final class Security {
       // details on this stored procedure.
       
       cs = conn.prepareCall(
-          "{call decrypt_cookie_and_check_validity(?,?)}"); 
+          "{call decrypt_cookie_and_check_validity(?,?,?)}"); 
       cs.setString(1, cookie_value);
-      cs.registerOutParameter(2, java.sql.Types.INTEGER);
+      cs.setBoolean(2, update_last_activity);
+      cs.registerOutParameter(3, java.sql.Types.INTEGER);
       cs.executeQuery();
-      int user_id = cs.getInt(2);
+      int user_id = cs.getInt(3);
       return user_id;
     } catch (SQLException ex) {
       String msg = ex.getMessage();

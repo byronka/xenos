@@ -804,6 +804,7 @@ DROP PROCEDURE IF EXISTS decrypt_cookie_and_check_validity;
 CREATE PROCEDURE decrypt_cookie_and_check_validity
 (
   enc_cookie VARCHAR(200), -- The cookie encrypted
+  update_last_activity BOOL, -- whether to update the activity timestamp
   OUT user_id_out INT
 ) 
 BEGIN 
@@ -858,7 +859,11 @@ BEGIN
       ,' timestamp: ',IFNULL(@timestamp, ''));
     CALL add_audit(5,@user_id,NULL,@msg);
     SET user_id_out = -1;
-  ELSE -- if we got here, the user's info is good.
+  -- if we got here, the user's info is good.
+  ELSEIF update_last_activity = 1 THEN
+    -- here, we update the last activity time.  This is used by
+    -- the timeout mechanism to see if the user has gone idle, and needs
+    -- to be logged out automatically.
     UPDATE user SET last_activity_time = UTC_TIMESTAMP() WHERE user_id = @my_user_id;
     SET user_id_out = @my_user_id;
   END IF;
