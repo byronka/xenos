@@ -29,11 +29,20 @@ xenos_timeout.timeout_counter = function() {
   //this calls itself to countdown, once a second.
 
   var recurse_countdown = function(countdown) {
-    if (countdown === 0 || halt) {
-      //Whether we halt or we hit the end of countown - 
-      // refresh the page.  Server 
-      // will have logged us out if we passed the 
-      // timeout time across browsers.
+    if (halt) {
+      //simply calls to a secured page that updates the 
+      //last activity to now
+      var request = new XMLHttpRequest(); 
+      request.open("GET", "wake_up.jsp"); 
+      request.send();
+      //reset the countdown to what it started at
+      message_hider();
+      xenos_timeout.start_timer();
+      return;
+    }
+    //if we hit countdown of 0, we are already logged out on the
+    // server.  Just refresh the page to the login screen.
+    if (countdown == 0) {
       document.location = 'login.jsp';
       return;
     }
@@ -53,6 +62,22 @@ xenos_timeout.timeout_counter = function() {
     countdown--;
     setTimeout(recurse_countdown, 1000, countdown);
   };
+
+  //This fades out the dialog until invisible, then removes it from
+  // the DOM
+  var message_hider = function() {
+    var dialog = document.getElementById('timeout_dialog');
+    dialog.style.opacity = 1; 
+    var fade = function() {
+      if ((dialog.style.opacity-=.1) < 0) { 
+        var dialog_kill = document.getElementById('timeout_dialog');
+        document.body.removeChild(dialog_kill);
+      } else {
+        setTimeout(fade,40);
+      }
+    };
+    fade(); //kick it off.
+  }
 
   var start_countdown = function(count) {
     halt = false;

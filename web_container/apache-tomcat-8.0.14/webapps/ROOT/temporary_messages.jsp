@@ -1,6 +1,5 @@
 <%@ page import="com.renomad.xenos.Localization" %>
 <%@ page import="com.renomad.xenos.Utils" %>
-<%@include file="mobile_check.jsp" %>
 <% 
   int user_id = com.renomad.xenos.Security.check_if_allowed(request, false);
   Localization loc  = new Localization(user_id, request.getLocale());
