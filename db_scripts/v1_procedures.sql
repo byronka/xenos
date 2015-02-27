@@ -805,6 +805,7 @@ CREATE PROCEDURE decrypt_cookie_and_check_validity
 (
   enc_cookie VARCHAR(200), -- The cookie encrypted
   update_last_activity BOOL, -- whether to update the activity timestamp
+  ip_address VARCHAR(40), -- ip address of the requestor
   OUT user_id_out INT
 ) 
 BEGIN 
@@ -823,7 +824,7 @@ BEGIN
 
   IF (@plaintext_cookie IS NULL OR @plaintext_cookie = '')
     THEN
-      CALL add_audit(14,NULL,NULL,NULL);
+      CALL add_audit(14,NULL,NULL,ip_address);
       SET @msg = 
       CONCAT(
 				'got null when trying to unencrypt cookie '

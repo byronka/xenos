@@ -165,6 +165,7 @@ public final class Security {
       return -1;
     }
     String cookie_value = c.getValue();
+    String ip_address = r.getRemoteAddr();
 
     CallableStatement cs = null;
     try {
@@ -173,12 +174,13 @@ public final class Security {
       // details on this stored procedure.
       
       cs = conn.prepareCall(
-          "{call decrypt_cookie_and_check_validity(?,?,?)}"); 
+          "{call decrypt_cookie_and_check_validity(?,?,?,?)}"); 
       cs.setString(1, cookie_value);
       cs.setBoolean(2, update_last_activity);
-      cs.registerOutParameter(3, java.sql.Types.INTEGER);
+      cs.setString(3, ip_address);
+      cs.registerOutParameter(4, java.sql.Types.INTEGER);
       cs.executeQuery();
-      int user_id = cs.getInt(3);
+      int user_id = cs.getInt(4);
       return user_id;
     } catch (SQLException ex) {
       String msg = ex.getMessage();
