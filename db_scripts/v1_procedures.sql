@@ -865,9 +865,12 @@ BEGIN
     -- here, we update the last activity time.  This is used by
     -- the timeout mechanism to see if the user has gone idle, and needs
     -- to be logged out automatically.
-    UPDATE user SET last_activity_time = UTC_TIMESTAMP() WHERE user_id = @my_user_id;
-    SET user_id_out = @my_user_id;
+    UPDATE user 
+    SET last_activity_time = UTC_TIMESTAMP() 
+    WHERE user_id = @my_user_id;
   END IF;
+
+  SET user_id_out = @my_user_id;
  
 END
 
