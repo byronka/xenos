@@ -868,9 +868,11 @@ BEGIN
     UPDATE user 
     SET last_activity_time = UTC_TIMESTAMP() 
     WHERE user_id = @my_user_id;
+    SET user_id_out = @my_user_id;
+  ELSE
+    SET user_id_out = @my_user_id;
   END IF;
 
-  SET user_id_out = @my_user_id;
  
 END
 
