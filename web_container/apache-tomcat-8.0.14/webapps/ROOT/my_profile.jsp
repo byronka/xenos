@@ -24,7 +24,7 @@
       Requestoffer_utils.get_rank_detail(user_id);
   %>
 
-  <%if (offers.length == 0) {%>
+  <%if (rank_details.length == 0) {%>
       <p>(<%=loc.get(103,"None")%>)</p>
   <% } %> 
 
@@ -50,7 +50,7 @@
         <%=Utils.safe_render(rd.judged_username)%>
       </a>
 
-      <%=loc.get(170,"for the favor"%>
+      <%=loc.get(170,"for the favor")%>
       <span><a href="<%=rd.ro_id%>"><%=rd.ro_desc%></a></span>
 
     </div>

@@ -45,6 +45,7 @@ DROP PROCEDURE IF EXISTS recalculate_rank_on_user;
 
 CREATE PROCEDURE recalculate_rank_on_user
 (
+  j_uid INT UNSIGNED, -- ther user judging the other user
   uid INT UNSIGNED, -- the user id having his rank recalculated
   rid INT UNSIGNED, -- the requestoffer id
   is_thumbs_up BOOL -- the opinion of the other party
@@ -53,17 +54,18 @@ BEGIN
   INSERT INTO user_rank_data_point
   (
     date_entered, 
-    user_id, 
+    judge_user_id, 
+    judged_user_id, 
     requestoffer_id, 
     meritorious
   ) 
-  VALUES (UTC_TIMESTAMP(), uid, rid, is_thumbs_up);
+  VALUES (UTC_TIMESTAMP(), j_uid, uid, rid, is_thumbs_up);
   
   -- get the number of rankings that are less than 60 days old
   UPDATE user
   SET rank = 
   (
-    SELECT AVG(is_thumbs_up)
+    SELECT AVG(meritorious)
     FROM user_rank_data_point
     WHERE UTC_TIMESTAMP() < (date_entered + INTERVAL 60 DAY)
   )
@@ -923,7 +925,7 @@ BEGIN
   WHERE user_id = @handling_user_id;
 
 	CALL add_audit(11,@handling_user_id,rid,NULL);
-  CALL recalculate_rank_on_user(@handling_user_id, rid, satis);
+  CALL recalculate_rank_on_user(uid,@handling_user_id, rid, satis);
   IF (satis) THEN
     CALL add_audit(6,uid,rid,NULL);
   ELSE
@@ -1001,6 +1003,8 @@ DROP PROCEDURE IF EXISTS cancel_taken_requestoffer;
 
 ---DELIMITER---
 
+-- Note that either party may cancel at any time.
+
 CREATE PROCEDURE cancel_taken_requestoffer
 (
   uid INT UNSIGNED, -- the user making the choice to cancel
@@ -1055,7 +1059,7 @@ BEGIN
     CALL add_audit(19,uid,@handling_user_id,NULL); 
 
     -- recalculate the ranking on the other party
-    CALL recalculate_rank_on_user(@other_party, rid, is_thumbs_up);
+    CALL recalculate_rank_on_user(uid,@other_party, rid, is_thumbs_up);
     IF (is_thumbs_up) THEN
       CALL add_audit(17,uid,rid,NULL);
     ELSE

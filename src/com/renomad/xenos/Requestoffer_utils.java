@@ -1342,7 +1342,8 @@ public final class Requestoffer_utils {
       String.format(
       "SELECT message FROM requestoffer_message "+
       "WHERE requestoffer_id = %d "+
-      "AND (from_user_id = %d OR to_user_id = %d)", 
+      "AND (from_user_id = %d OR to_user_id = %d) " +
+      "ORDER BY timestamp DESC ", 
         requestoffer_id, user_id, user_id);
 
     PreparedStatement pstmt = null;
@@ -1374,6 +1375,100 @@ public final class Requestoffer_utils {
     }
   }
 
+
+  /**
+    * encapsulates the information needed by the view when showing
+    * information about rankings between users
+    */
+  public static class Rank_detail {
+
+    public int judging_user_id;
+    public String judging_username;
+    public int judged_user_id;
+    public String judged_username;
+    public boolean meritorious; // whether it was thumbs-up
+    public int ro_id; // the requestoffer id
+    public String ro_desc; //the description of the requestoffer
+
+    public Rank_detail(
+      int judging_user_id,
+      String judging_username,
+      int judged_user_id,
+      String judged_username,
+      boolean meritorious,
+      int ro_id,
+      String ro_desc
+        ) {
+      this.judging_user_id  = judging_user_id;
+      this.judging_username = judging_username;
+      this.judged_user_id   = judged_user_id;
+      this.judged_username  = judged_username;
+      this.meritorious      = meritorious;
+      this.ro_id            = ro_id;
+      this.ro_desc          = ro_desc;
+
+    }
+  }
+
+
+  /**
+    * gets all the rankings associated with a given user, for display
+    * @param user_id the user whose rankings we'll see.
+    * @return an array of Rank_detail - see that class, or empty
+    * array otherwise.
+    */
+  public static Rank_detail[] get_rank_detail(int user_id) {
+    String sqlText = 
+
+      String.format(
+      "SELECT ju.username AS jusername, ju.user_id AS         "+
+      "juser_id, u.username, u.user_id,                       "+
+      "       urdp.meritorious,urdp.requestoffer_id,          "+
+      "       ro.description                                  "+
+      "FROM user_rank_data_point urdp                         "+
+      "   JOIN user ju ON ju.user_id = urdp.judge_user_id     "+
+      "   JOIN user u ON u.user_id = urdp.judged_user_id      "+
+      "   JOIN requestoffer ro                                "+
+      "     ON ro.requestoffer_id = urdp.requestoffer_id      "+
+      "WHERE ju.user_id = %d OR u.user_id = %d                ",
+        user_id, user_id);
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Rank_detail[0];
+      }
+
+      //keep adding rows of data while there is more data
+      ArrayList<Rank_detail> rds = new ArrayList<Rank_detail>();
+      while(resultSet.next()) {
+        int juser_id = resultSet.getInt("juser_id");
+        String jusername = resultSet.getNString("jusername");
+        int uid = resultSet.getInt("user_id");
+        String username = resultSet.getNString("username");
+        boolean meritorious = resultSet.getBoolean("meritorious");
+        String desc = resultSet.getNString("description");
+        int ro_id = resultSet.getInt("requestoffer_id");
+
+        rds.add(new Rank_detail(juser_id, jusername, uid, username, meritorious, ro_id, desc));
+      }
+
+      //convert arraylist to array
+      Rank_detail[] array_of_rds = 
+        rds.toArray(new Rank_detail[rds.size()]);
+      return array_of_rds;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new Rank_detail[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
 
 
 }

@@ -390,16 +390,19 @@ location_to_requestoffer (
 CREATE TABLE
 user_rank_data_point (
   date_entered DATETIME,
-  user_id INT UNSIGNED,
+  judge_user_id INT UNSIGNED, -- the user doing the judging
+  judged_user_id INT UNSIGNED, -- the user being judged
   requestoffer_id INT UNSIGNED,
   meritorious BOOL,
   FOREIGN KEY FK_requestoffer (requestoffer_id)
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
-  FOREIGN KEY FK_user (user_id)
+  FOREIGN KEY FK_user (judged_user_id)
   REFERENCES user (user_id)
   ON DELETE CASCADE,
-  PRIMARY KEY (user_id, requestoffer_id)
+  FOREIGN KEY FK_j_user (judge_user_id)
+  REFERENCES user (user_id)
+  ON DELETE CASCADE
 )
 
 ---DELIMITER---
