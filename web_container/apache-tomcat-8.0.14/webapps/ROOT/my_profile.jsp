@@ -246,9 +246,9 @@
   <table border="1">
     <thead>
       <tr>
-        <th>timestamp</th>
-        <th>requestoffer</th>
-        <th>message</th>
+        <th><%=loc.get(172,"Timestamp")%></th>
+        <th><%=loc.get(32,"Favor")%></th>
+        <th><%=loc.get(171,"Message")%></th>
       </tr>
     </thead>
     <tbody>
@@ -272,9 +272,9 @@
   <table border="1">
     <thead>
       <tr>
-        <th>timestamp</th>
-        <th>requestoffer</th>
-        <th>message</th>
+        <th><%=loc.get(172,"Timestamp")%></th>
+        <th><%=loc.get(32,"Favor")%></th>
+        <th><%=loc.get(171,"Message")%></th>
       </tr>
     </thead>
     <tbody>

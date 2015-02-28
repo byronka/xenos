@@ -1,4 +1,3 @@
--- clear the table before we start.
 truncate localization_lookup;
 
 ---DELIMITER---
@@ -177,6 +176,9 @@ VALUES
 (168, 1,  'the reputation of'),
 (169, 1,  'your reputation'),
 (170, 1,  'for the favor'),
+(171, 1,  'Message'),
+(172, 1,  'Timestamp'),
+(173, 1,  'Their open favors'),
 (1, 2, 'Recherche'),
 (2, 2, 'Demande Favor '),
 (3, 2, 'Quitter'),
@@ -347,6 +349,9 @@ VALUES
 (168, 2, 'FRENCHthe reputation of'),
 (169, 2, 'FRENCHyour reputation'),
 (170, 2, 'FRENCHfor the favor'),
+(171, 2, 'FRENCHMessage'),
+(172, 2, 'FRENCHTimestamp'),
+(173, 2,  'FRENCHTheir open favors'),
 (1, 3, 'Buscar'),
 (2, 3, 'Solicitud favor '),
 (3, 3, 'Salir'),
@@ -517,6 +522,9 @@ VALUES
 (168, 3, 'SPANISHthe reputation of'),
 (169, 3, 'SPANISHyour reputation'),
 (170, 3, 'SPANISHfor the favor'),
+(171, 3, 'SPANISHMessage'),
+(172, 3, 'SPANISHTimestamp'),
+(173, 3,  'SPANISHTheir open favors'),
 (1,4,'搜索'),
 (2,4,'请求青睐'),
 (3,4,'退出'),
@@ -687,6 +695,9 @@ VALUES
 (168, 4, 'CHINESEthe reputation of'),
 (169, 4, 'CHINESEyour reputation'),
 (170, 4, 'CHINESEfor the favor'),
+(171, 4, 'CHINESEMessage'),
+(172, 4, 'CHINESETimestamp'),
+(173, 4,  'CHINESETheir open favors'),
 (1, 5, 'חיפוש'),
 (2, 5, 'בעד בקשה '),
 (3, 5, 'התנתקות'),
@@ -856,4 +867,7 @@ VALUES
 (167, 5, 'HEBREWdecreased'),
 (168, 5, 'HEBREWthe reputation of'),
 (169, 5, 'HEBREWyour reputation'),
-(170, 5, 'HEBREWfor the favor');
+(170, 5, 'HEBREWfor the favor'),
+(171, 5, 'HEBREWMessage'),
+(172, 5, 'HEBREWTimestamp'),
+(173, 5,  'HEBREWTheir open favors');
