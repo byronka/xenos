@@ -55,7 +55,7 @@ BEGIN
     date_entered, 
     user_id, 
     requestoffer_id, 
-    is_thumbs_up
+    meritorious
   ) 
   VALUES (UTC_TIMESTAMP(), uid, rid, is_thumbs_up);
   

@@ -17,6 +17,73 @@
   <%@include file="includes/header.jsp" %>
 	<a href="change_password.jsp">Change password</a>
 
+
+  <h3><%=loc.get(79, "Rank")%></h3>
+  <%
+    Requestoffer_utils.Rank_detail[] rank_details = 
+      Requestoffer_utils.get_rank_detail(user_id);
+  %>
+
+  <%if (offers.length == 0) {%>
+      <p>(<%=loc.get(103,"None")%>)</p>
+  <% } %> 
+
+  <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
+
+  <%
+  //there's two parties here: the judging and the judged
+  if (rd.judging_user_id == user_id) { // if we are the judge
+  %>
+
+    <div class="rank-detail">
+      <%=loc.get(165,"You")%>
+
+      <% if (rd.meritorious) { %>
+      <%=loc.get(166,"increased")%>
+      <% } else { %>
+      <%=loc.get(167,"decreased")%>
+      <% } %>
+
+      <%=loc.get(168,"the reputation of")%>
+
+      <a href="user.jsp?user_id=<%=rd.judged_user_id%>">
+        <%=Utils.safe_render(rd.judged_username)%>
+      </a>
+
+      <%=loc.get(170,"for the favor"%>
+      <span><a href="<%=rd.ro_id%>"><%=rd.ro_desc%></a></span>
+
+    </div>
+
+  <%
+  } else { //if we are the judged
+  %>
+
+    <div class="rank-detail">
+      <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
+        <%=Utils.safe_render(rd.judging_username)%>
+      </a>
+
+      <% if (rd.meritorious) { %>
+      <%=loc.get(166,"increased")%>
+      <% } else { %>
+      <%=loc.get(167,"decreased")%>
+      <% } %>
+      
+      <%=loc.get(169,"your reputation")%>
+      
+      <%=loc.get(170,"for the favor")%>
+
+      <span><a href="<%=rd.ro_id%>"><%=rd.ro_desc%></a></span>
+
+    </div>
+
+  <%
+  }
+  %>
+
+  <% } %>
+
   <h3><%=loc.get(119, "Favors I have offered to service")%></h3>
 		<%
 			Requestoffer_utils.Offer_I_made[] offers = 
