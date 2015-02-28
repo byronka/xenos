@@ -129,14 +129,14 @@
         </span>
       </li>
 
-      <% if (r.postcodes != null) { %>
+      <% if (!Utils.is_null_or_empty(r.postcodes)) { %>
         <li>
           <span class="label"><%=loc.get(156, "Postal code")%>:</span>
           <%=r.postcodes%>
         </li>
       <% } %>
 
-      <% if (r.cities != null) { %>
+      <% if (!Utils.is_null_or_empty(r.cities)) { %>
       <li>
         <span class="label"><%=loc.get(154, "City")%>:</span>
         <%=r.cities%>
