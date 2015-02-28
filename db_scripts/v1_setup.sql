@@ -98,7 +98,6 @@ requestoffer (
   status INT,
   requestoffering_user_id INT UNSIGNED NOT NULL,
   handling_user_id INT UNSIGNED,
-  is_satisfied BOOL,
   FOREIGN KEY FK_requestoffering_user_user_id (requestoffering_user_id) 
     REFERENCES user (user_id) 
     ON DELETE CASCADE,
@@ -382,12 +381,18 @@ location_to_requestoffer (
 
 ---DELIMITER---
 
+-- This table holds information related to the outcome of a 
+-- requestoffer.  Whether it's the owner or handler, it's all
+-- the same as far as this table is concerned - it only knows
+-- that a particular user was associated with a requestoffer, and 
+-- how they were ranked by the other party.
+
 CREATE TABLE
 user_rank_data_point (
-  date_entered DATE, -- only 3 bytes!
+  date_entered DATETIME,
   user_id INT UNSIGNED,
   requestoffer_id INT UNSIGNED,
-  is_thumbs_up BOOL, -- thumbs up being "good"
+  meritorious BOOL,
   FOREIGN KEY FK_requestoffer (requestoffer_id)
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,

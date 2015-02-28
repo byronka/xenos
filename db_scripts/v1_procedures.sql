@@ -911,9 +911,7 @@ BEGIN
 	-- at this point we are pretty sure it's all cool.
 
 	UPDATE requestoffer -- change state of the requestoffer
-	SET 
-    status = 77, -- 'closed'
-    is_satisfied = satis
+	SET status = 77 -- 'closed'
 	WHERE requestoffer_id = rid;
 
   SELECT handling_user_id INTO @handling_user_id

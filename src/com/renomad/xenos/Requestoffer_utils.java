@@ -1342,7 +1342,8 @@ public final class Requestoffer_utils {
       String.format(
       "SELECT message FROM requestoffer_message "+
       "WHERE requestoffer_id = %d "+
-      "AND (from_user_id = %d OR to_user_id = %d)", requestoffer_id, user_id, user_id);
+      "AND (from_user_id = %d OR to_user_id = %d)", 
+        requestoffer_id, user_id, user_id);
 
     PreparedStatement pstmt = null;
     try {
@@ -1372,6 +1373,7 @@ public final class Requestoffer_utils {
       Database_access.close_statement(pstmt);
     }
   }
+
 
 
 }
