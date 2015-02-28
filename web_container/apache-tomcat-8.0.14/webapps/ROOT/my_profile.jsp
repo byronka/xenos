@@ -118,7 +118,7 @@
 			<div class="servicerequest">
         <%User servicer = User_utils.get_user(sr.user_id);%>
         
-        <a href="#">
+        <a href="user.jsp?user_id=<%=sr.user_id%>">
           <%=servicer.username%> 
         </a>
         <%=loc.get(138,"wants to service")%>
