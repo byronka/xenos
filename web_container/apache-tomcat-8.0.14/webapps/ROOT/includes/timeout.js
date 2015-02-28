@@ -4,6 +4,7 @@ xenos_timeout.timeout_counter = function() {
 
   var halt = false;
   var alert_displayed = false;
+  var old_title = document.title;
 
   var alert_text =                                                
     "<div id='timeout_dialog'                               " +
@@ -37,6 +38,7 @@ xenos_timeout.timeout_counter = function() {
       request.send();
       //reset the countdown to what it started at
       message_hider();
+      document.title = old_title;
       xenos_timeout.start_timer();
       return;
     }
