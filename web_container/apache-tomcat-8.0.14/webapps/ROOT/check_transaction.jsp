@@ -28,13 +28,13 @@
 <body>
 
 <p>
-  <a href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>&amp;satisfied=true" >
-    Thumbs down
+  <a href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>&satisfied=true" >
+    Thumbs up
   </a>
 </p>
 <p>
-  <a href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>&amp;satisfied=false" >
-    Thumbs up
+  <a href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>&satisfied=false" >
+    Thumbs down
   </a>
 </p>
 </body>
