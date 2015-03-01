@@ -300,7 +300,8 @@ VALUES
 (19,'user was removed from handling a requestoffer by a cancel action'),
 (20,'User was rejected on a requestoffer'),
 (21,'New location was created'),
-(22,'Location was attached to requestoffer');
+(22,'Location was attached to requestoffer'),
+(23,'failed login for user');
 
 
 ---DELIMITER---

@@ -806,6 +806,33 @@ END
 
 ---DELIMITER---
 
+DROP PROCEDURE IF EXISTS check_login;
+
+---DELIMITER---
+
+CREATE PROCEDURE check_login
+(
+  their_username NVARCHAR(50),
+  their_password VARCHAR(64), -- a hash of their password
+  their_ip_address VARCHAR(40) -- ip address of the requestor
+) 
+BEGIN 
+
+  SELECT user_id into @user_id_found
+  FROM user
+  WHERE BINARY username = their_username AND BINARY password = their_password;
+
+  IF @user_id_found IS null THEN
+    SET @pass = SUBSTR(IFNULL(their_password,'WAS_NULL'), 1, 10);
+    SET @message = CONCAT('ip: ',their_ip_address,' name: ',their_username,' pass: ',@pass);
+    CALL add_audit(23,NULL,NULL,@message);
+  END IF;
+
+  SELECT @user_id_found as user_id;
+
+END
+---DELIMITER---
+
 DROP PROCEDURE IF EXISTS decrypt_cookie_and_check_validity;
 
 ---DELIMITER---

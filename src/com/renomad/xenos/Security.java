@@ -56,21 +56,17 @@ public final class Security {
     * @return the user id if the password is correct for that 
 		*  username, 0 otherwise
     */
-  public static int check_login(String username, String password) {
+  public static int check_login(String username, String password, String ip_address) {
     String salt = User_utils.get_user_salt(username);
     String hashed_pwd = User_utils.hash_password(password, salt);
-    String sqlText = 
-      "SELECT user_id "+
-      "FROM user "+
-      "WHERE BINARY username = ? AND BINARY password = ?";
-    PreparedStatement pstmt = null;
+    CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      pstmt = conn.prepareStatement(
-					sqlText, Statement.RETURN_GENERATED_KEYS);     
-      pstmt.setNString( 1, username);
-      pstmt.setString( 2, hashed_pwd);
-      ResultSet resultSet = pstmt.executeQuery();
+      cs = conn.prepareCall("{call check_login(?,?,?)}");
+      cs.setNString( 1, username);
+      cs.setString( 2, hashed_pwd);
+      cs.setString( 3, ip_address);
+      ResultSet resultSet = cs.executeQuery();
 
       if(Database_access.resultset_is_null_or_empty(resultSet)) {
         return 0; // no results on query - return user "0";
@@ -83,7 +79,7 @@ public final class Security {
       Database_access.handle_sql_exception(ex);
       return 0;
     } finally {
-      Database_access.close_statement(pstmt);
+      Database_access.close_statement(cs);
     }
   }
 
