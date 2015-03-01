@@ -18,7 +18,7 @@
   Integer uid = Utils.parse_int(Utils.parse_qs(qs).get("user_id"));
 
   User the_user = User_utils.get_user(uid);
-  if (potential_handler == null) {
+  if (the_user == null) {
     response.sendRedirect("general_error.jsp");
     return;
   }
