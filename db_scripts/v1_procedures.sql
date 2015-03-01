@@ -894,6 +894,7 @@ satis BOOL -- whether the owner of this RO was satisfied with result
 )
 BEGIN
 
+  -- first some guard clauses
 	call validate_requestoffer_id(rid);	
 	call validate_user_id(uid);
 
@@ -916,13 +917,29 @@ BEGIN
 	SET status = 77 -- 'closed'
 	WHERE requestoffer_id = rid;
 
+  -- get the handling user's id
   SELECT handling_user_id INTO @handling_user_id
   FROM requestoffer 
   WHERE requestoffer_id = rid;
 
+  -- give the handling user their points
   UPDATE user
   SET points = points + 1
   WHERE user_id = @handling_user_id;
+
+  -- only the owner of the requestoffer can "COMPLETE" one.
+  
+  -- we need the servicer to provide input, so...
+  -- change the state for the servicer to COMPLETE_FEEDBACK_POSSIBLE
+  UPDATE requestoffer_user_state
+  SET requestoffer_service_status_id = 2 -- COMPLETE_FEEDBACK_POSSIBLE
+  WHERE user_id = @handling_user_id;
+
+  -- change the state for the owner to COMPLETE - they already
+  -- gave us their feedback
+  UPDATE requestoffer_user_state
+  SET requestoffer_service_status_id = 3 -- COMPLETE
+  WHERE user_id = uid;
 
 	CALL add_audit(11,@handling_user_id,rid,NULL);
   CALL recalculate_rank_on_user(uid,@handling_user_id, rid, satis);
@@ -1039,13 +1056,13 @@ BEGIN
 
     -- change the state for the servicer to COMPLETE_FEEDBACK_POSSIBLE
     UPDATE requestoffer_user_state
-    SET state_id = 2 -- COMPLETE_FEEDBACK_POSSIBLE
+    SET requestoffer_service_status_id = 2 -- COMPLETE_FEEDBACK_POSSIBLE
     WHERE user_id = @other_party AND requestoffer_id = rid;
 
     -- change the state for the acting user to COMPLETE - they already
     -- gave us their feedback
     UPDATE requestoffer_user_state
-    SET state_id = 3 -- COMPLETE
+    SET requestoffer_service_status_id = 3 -- COMPLETE
     WHERE user_id = uid AND requestoffer_id = rid;
 
     -- inform the other user the transaction is canceled.

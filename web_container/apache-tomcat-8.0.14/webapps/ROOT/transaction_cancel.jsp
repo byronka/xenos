@@ -7,7 +7,7 @@
   //get query string information
   String qs = request.getQueryString();
   java.util.Map<String, String> qs_params = Utils.parse_qs(qs);
-  boolean is_satisfied = Boolean.getBoolean(qs_params.get("satisfied"));
+  boolean is_satisfied = Boolean.parseBoolean(qs_params.get("satisfied"));
   Requestoffer r = Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
   if (r == null) {
     response.sendRedirect("general_error.jsp");
