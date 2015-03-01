@@ -26,8 +26,8 @@
 	<body>
   <%@include file="includes/header.jsp" %>
 
+  <h3><%=the_user.username%></h3>
   <ul>
-    <li>Name: <%=the_user.username%></li>
     <li>Rank: <%=the_user.rank%></li>
     <li>Points: <%=the_user.points%></li>
   </ul>
@@ -44,12 +44,14 @@
 
   <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
 
+
   <%
   //there's two parties here: the judging and the judged
   if (rd.judging_user_id == uid) { // if this user is the judge
   %>
 
     <div class="rank-detail">
+      <%=rd.timestamp%>
       <%=Utils.safe_render(rd.judging_username)%>
 
       <% if (rd.meritorious) { %>
@@ -65,7 +67,11 @@
       </a>
 
       <%=loc.get(170,"for the favor")%>
-      <span><a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=rd.ro_desc%></a></span>
+      <span>
+        <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
+          <%=rd.ro_desc%>
+        </a>
+      </span>
 
     </div>
 
@@ -74,10 +80,10 @@
   %>
 
     <div class="rank-detail">
+      <%=rd.timestamp%>
       <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
         <%=Utils.safe_render(rd.judging_username)%>
       </a>
-      <%=Utils.safe_render(rd.judging_username)%>
 
       <% if (rd.meritorious) { %>
       <%=loc.get(166,"increased")%>
@@ -91,7 +97,11 @@
 
       <%=loc.get(170,"for the favor")%>
 
-      <span><a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=rd.ro_desc%></a></span>
+      <span>
+        <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
+          <%=rd.ro_desc%>
+        </a>
+      </span>
 
     </div>
 

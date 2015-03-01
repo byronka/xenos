@@ -913,6 +913,10 @@ BEGIN
 
 	-- at this point we are pretty sure it's all cool.
 
+  -- notice that we don't remove the handling user, that's intentional.
+  -- if we've completed this requestoffer, then it's done, it's not going
+  -- up again to be reused.  We can go ahead and leave this information
+  -- here as an auditing-type artifact.
 	UPDATE requestoffer -- change state of the requestoffer
 	SET status = 77 -- 'closed'
 	WHERE requestoffer_id = rid;

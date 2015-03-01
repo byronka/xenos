@@ -17,6 +17,11 @@
   <%@include file="includes/header.jsp" %>
 	<a href="change_password.jsp">Change password</a>
 
+  <h3><%=user.username%></h3>
+  <ul>
+    <li>Rank: <%=user.rank%></li>
+    <li>Points: <%=user.points%></li>
+  </ul>
 
   <h3><%=loc.get(79, "Rank")%></h3>
   <%
@@ -36,6 +41,7 @@
   %>
 
     <div class="rank-detail">
+      <%=rd.timestamp%>
       <%=loc.get(165,"You")%>
 
       <% if (rd.meritorious) { %>
@@ -51,7 +57,7 @@
       </a>
 
       <%=loc.get(170,"for the favor")%>
-      <span><a href="<%=rd.ro_id%>"><%=rd.ro_desc%></a></span>
+      <span><a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=rd.ro_desc%></a></span>
 
     </div>
 
@@ -60,6 +66,7 @@
   %>
 
     <div class="rank-detail">
+      <%=rd.timestamp%>
       <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
         <%=Utils.safe_render(rd.judging_username)%>
       </a>
@@ -74,7 +81,7 @@
       
       <%=loc.get(170,"for the favor")%>
 
-      <span><a href="<%=rd.ro_id%>"><%=rd.ro_desc%></a></span>
+      <span><a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=rd.ro_desc%></a></span>
 
     </div>
 

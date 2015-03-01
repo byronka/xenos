@@ -670,9 +670,13 @@ public final class Requestoffer_utils {
     */
   public static Requestoffer[] 
       get_requestoffers_I_am_handling(int user_id) {
-    String sqlText = "SELECT requestoffer_id, datetime, description, "+
+    String sqlText = 
+      
+      "SELECT requestoffer_id, datetime, description, "+
       "points, status, requestoffering_user_id, handling_user_id "+
-      "FROM requestoffer WHERE handling_user_id = ?";
+      "FROM requestoffer "+
+      "WHERE handling_user_id = ? AND status <> 77"; // 77 is closed.
+
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
@@ -722,14 +726,15 @@ public final class Requestoffer_utils {
     String sqlText = "SELECT requestoffer_id, datetime, description, "+
       "points, status, requestoffering_user_id, handling_user_id "+
       "FROM requestoffer "+
-      "WHERE requestoffering_user_id = ? AND status = ?";
+      "WHERE (requestoffering_user_id = ? OR handling_user_id = ?) AND status = ?";
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      pstmt.setInt( 2, status);
+      pstmt.setInt( 2, user_id);
+      pstmt.setInt( 3, status);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Requestoffer[0];
@@ -1389,6 +1394,7 @@ public final class Requestoffer_utils {
     public boolean meritorious; // whether it was thumbs-up
     public int ro_id; // the requestoffer id
     public String ro_desc; //the description of the requestoffer
+    public String timestamp;
 
     public Rank_detail(
       int judging_user_id,
@@ -1397,7 +1403,8 @@ public final class Requestoffer_utils {
       String judged_username,
       boolean meritorious,
       int ro_id,
-      String ro_desc
+      String ro_desc,
+      String timestamp
         ) {
       this.judging_user_id  = judging_user_id;
       this.judging_username = judging_username;
@@ -1406,7 +1413,7 @@ public final class Requestoffer_utils {
       this.meritorious      = meritorious;
       this.ro_id            = ro_id;
       this.ro_desc          = ro_desc;
-
+      this.timestamp        = timestamp;
     }
   }
 
@@ -1422,7 +1429,7 @@ public final class Requestoffer_utils {
 
       String.format(
       "SELECT ju.username AS jusername, ju.user_id AS         "+
-      "juser_id, u.username, u.user_id,                       "+
+      "juser_id, u.username, u.user_id, urdp.date_entered,    "+
       "       urdp.meritorious,urdp.requestoffer_id,          "+
       "       ro.description                                  "+
       "FROM user_rank_data_point urdp                         "+
@@ -1454,8 +1461,9 @@ public final class Requestoffer_utils {
         boolean meritorious = resultSet.getBoolean("meritorious");
         String desc = resultSet.getNString("description");
         int ro_id = resultSet.getInt("requestoffer_id");
+        String timestamp = resultSet.getString("date_entered");
 
-        rds.add(new Rank_detail(juser_id, jusername, uid, username, meritorious, ro_id, desc));
+        rds.add(new Rank_detail(juser_id, jusername, uid, username, meritorious, ro_id, desc, timestamp));
       }
 
       //convert arraylist to array
