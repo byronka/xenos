@@ -72,7 +72,7 @@ VALUES
 
 CREATE TABLE 
 requestoffer_status (
-  requestoffer_status_id INT NOT NULL PRIMARY KEY, -- this value maps to localization values
+  requestoffer_status_id INT UNSIGNED NOT NULL PRIMARY KEY, -- this value maps to localization values
   requestoffer_status_value VARCHAR(20)
 );
 
@@ -92,20 +92,34 @@ VALUES(76,'OPEN'),(77,'CLOSED'),(78,'TAKEN'),(109,'DRAFT');
 CREATE TABLE  
 requestoffer ( 
   requestoffer_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  datetime DATETIME,
+  datetime DATETIME,  -- when this requestoffer was created
   description NVARCHAR(200),
   points INT,
-  status INT,
   requestoffering_user_id INT UNSIGNED NOT NULL,
   handling_user_id INT UNSIGNED,
   FOREIGN KEY FK_requestoffering_user_user_id (requestoffering_user_id) 
     REFERENCES user (user_id) 
-    ON DELETE CASCADE,
-  FOREIGN KEY FK_status_requestoffer_status_id (status)
-    REFERENCES requestoffer_status (requestoffer_status_id)
     ON DELETE CASCADE
 );
 
+
+---DELIMITER---
+
+-- a separate table to track the status of a requestoffer
+-- so we can store a date associated with the last change of status.
+
+CREATE TABLE
+requestoffer_state (
+  requestoffer_id INT UNSIGNED NOT NULL PRIMARY KEY,
+  status INT UNSIGNED NOT NULL,
+  datetime DATETIME,
+  FOREIGN KEY FK_requestoffer_id (requestoffer_id)
+    REFERENCES requestoffer (requestoffer_id)
+    ON DELETE CASCADE,
+  FOREIGN KEY FK_status (status)
+    REFERENCES requestoffer_status (requestoffer_status_id)
+    ON DELETE CASCADE
+)
 
 ---DELIMITER---
 

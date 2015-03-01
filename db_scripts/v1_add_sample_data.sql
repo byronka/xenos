@@ -35,34 +35,34 @@ TRUNCATE TABLE requestoffer;
  ------------*/
 
 INSERT INTO requestoffer 
-(requestoffer_id, datetime, description, points, status, requestoffering_user_id, handling_user_id) 
+(requestoffer_id, datetime, description, points, requestoffering_user_id, handling_user_id) 
 VALUES 
-(1,"2014-12-31 21:22:42",   "a fine description for a requestoffer", 1, 76, 4,NULL),
-(2,"2014-10-20 21:22:42",   "Gotta job for ya", 1, 76, 4,NULL),
-(3,"2014-12-18 21:22:42",   "rob the bank, get the money", 1, 78, 5,4),
-(4,"2014-8-27 21:22:42",    "do my homework", 1, 76, 5,NULL),
-(5,"2014-9-18 21:22:42",    "<script>alert('homework is bad')</script>", 1, 76, 5,NULL),
-(6,"2012-1-8 5:44:00",      "Do stuff, I don't care, just do it", 1, 76, 5,NULL),
-(7,"2010-2-24 2:13:20",     "This is not the end of the end, nor is it the beginning of the end.  It is the end of the beginning", 1, 76, 5,NULL),
-(8,"2014-3-8 18:45:02",     "Draft:Get me some illegal narcotics, ship them safely to my home", 1, 109, 5,NULL),
-(9,"2010-7-27 21:22:42",    "description goes here", 1, 76, 5,NULL),
-(10,"2011-6-20 21:22:42",    "description goes here", 1, 76, 5,NULL),
+(1,"2014-12-31 21:22:42",   "a fine description for a requestoffer", 1, 4,NULL),
+(2,"2014-10-20 21:22:42",   "Gotta job for ya", 1, 4,NULL),
+(3,"2014-12-18 21:22:42",   "rob the bank, get the money", 1, 5,4),
+(4,"2014-8-27 21:22:42",    "do my homework", 1, 5,NULL),
+(5,"2014-9-18 21:22:42",    "<script>alert('homework is bad')</script>", 1, 5,NULL),
+(6,"2012-1-8 5:44:00",      "Do stuff, I don't care, just do it", 1, 5,NULL),
+(7,"2010-2-24 2:13:20",     "This is not the end of the end, nor is it the beginning of the end.  It is the end of the beginning", 1, 5,NULL),
+(8,"2014-3-8 18:45:02",     "Draft:Get me some illegal narcotics, ship them safely to my home", 1, 5,NULL),
+(9,"2010-7-27 21:22:42",    "description goes here", 1, 5,NULL),
+(10,"2011-6-20 21:22:42",    "description goes here", 1, 5,NULL),
 -- Requestoffer 11 is deleted - see audit and audit_notes
-(12,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
-(13,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
-(14,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
-(15,"2013-4-10 22:59:59",    "description goes here", 1, 76, 5,NULL),
-(16,"2013-4-10 21:59:59",    "description goes here", 1, 76, 5,NULL),
-(17,"2013-4-10 20:59:59",    "description goes here", 1, 76, 5,NULL),
-(18,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
-(19,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
-(20,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
-(21,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
-(22,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
-(23,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
-(24,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
-(25,"2013-4-10 23:59:59",    "description goes here", 1, 76, 5,NULL),
-(26,"2014-3-27 00:00:01",    "description goes here", 1, 76, 5,NULL);
+(12,"2013-4-10 23:59:59",    "description goes here", 1, 5,NULL),
+(13,"2013-4-10 23:59:59",    "description goes here", 1, 5,NULL),
+(14,"2013-4-10 23:59:59",    "description goes here", 1, 5,NULL),
+(15,"2013-4-10 22:59:59",    "description goes here", 1, 5,NULL),
+(16,"2013-4-10 21:59:59",    "description goes here", 1, 5,NULL),
+(17,"2013-4-10 20:59:59",    "description goes here", 1, 5,NULL),
+(18,"2013-4-10 23:59:59",    "description goes here", 1, 5,NULL),
+(19,"2013-4-10 23:59:59",    "description goes here", 1, 5,NULL),
+(20,"2013-4-10 23:59:59",    "description goes here", 1, 5,NULL),
+(21,"2013-4-10 23:59:59",    "description goes here", 1, 5,NULL),
+(22,"2013-4-10 23:59:59",    "description goes here", 1, 5,NULL),
+(23,"2013-4-10 23:59:59",    "description goes here", 1, 5,NULL),
+(24,"2013-4-10 23:59:59",    "description goes here", 1, 5,NULL),
+(25,"2013-4-10 23:59:59",    "description goes here", 1, 5,NULL),
+(26,"2014-3-27 00:00:01",    "description goes here", 1, 5,NULL);
 
 
 

@@ -197,7 +197,7 @@ BEGIN
   -- searching by status
   IF status <> '' THEN
     SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND status IN (',status,') ');
+      CONCAT(@search_clauses, ' AND rs.status IN (',status,') ');
   END IF;
 
 
@@ -273,7 +273,7 @@ BEGIN
      CONCAT('SELECT SQL_CALC_FOUND_ROWS r.requestoffer_id, 
             r.datetime, 
             r.description, 
-            r.status, 
+            rs.status, 
             r.points, 
             u.rank, 
             rsr.user_id AS been_offered,
@@ -284,6 +284,8 @@ BEGIN
             GROUP_CONCAT(rc.category_id SEPARATOR ",") 
             AS categories 
             FROM requestoffer r 
+            JOIN requestoffer_state rs
+              ON rs.requestoffer_id = r.requestoffer_id
             JOIN requestoffer_to_category rtc 
               ON rtc.requestoffer_id = r.requestoffer_id 
             JOIN requestoffer_category rc 
@@ -296,7 +298,7 @@ BEGIN
               ON r.requestoffer_id = ltr.requestoffer_id
             LEFT JOIN location l
               ON l.location_id = ltr.location_id
-            WHERE requestoffering_user_id <> @ruid AND r.status <> 109
+            WHERE requestoffering_user_id <> @ruid AND rs.status <> 109
             ', @search_clauses ,'
             GROUP BY r.requestoffer_id , l.city, l.postal_code
             ORDER BY r.datetime DESC
@@ -336,12 +338,15 @@ BEGIN
   call validate_user_id(ruid);
   
   -- A) The main part - add the requestoffer to that table.
-  SET @status = 109; -- requestoffers always start 'draft'
   INSERT into requestoffer (description, datetime, points,
-   status, requestoffering_user_id)
-   VALUES (my_desc, UTC_TIMESTAMP(), pts, @status, ruid); 
+   requestoffering_user_id)
+   VALUES (my_desc, UTC_TIMESTAMP(), pts, ruid); 
          
   SET new_requestoffer_id = LAST_INSERT_ID();
+  SET @status = 109; -- requestoffers always start 'draft'
+
+  INSERT INTO requestoffer_state (requestoffer_id, status, datetime)
+  VALUES (new_requestoffer_id, @status, UTC_TIMESTAMP());
 
 
   -- B) Add categories.
@@ -512,9 +517,9 @@ BEGIN
   call validate_user_id(uid);
 
 	SELECT COUNT(*) INTO @can_take
-	FROM requestoffer r
-	WHERE r.status = 76 -- 'open'
-	AND r.requestoffer_id = rid;
+	FROM requestoffer_state rs
+	WHERE rs.status = 76 -- 'open'
+	AND rs.requestoffer_id = rid;
 	
   IF (@can_take <> 1) THEN
       SET @msg = CONCAT('cannot take requestoffer', rid,', not open');
@@ -554,9 +559,9 @@ BEGIN
   call validate_user_id(uid);
 
 	SELECT COUNT(*) INTO @can_take
-	FROM requestoffer r
-	WHERE r.status = 76 -- 'open'
-	AND r.requestoffer_id = rid;
+	FROM requestoffer_state rs
+	WHERE rs.status = 76 -- 'open'
+	AND rs.requestoffer_id = rid;
 	
   IF (@can_take <> 1) THEN
       SET @msg = CONCAT('cannot take requestoffer', rid,', not open');
@@ -565,9 +570,11 @@ BEGIN
 
   -- modify the requestoffer to indicate this user has taken it
   UPDATE requestoffer 
-  SET 
-    status = 78,  -- 'taken'
-    handling_user_id = uid  
+  SET handling_user_id = uid  
+  WHERE requestoffer_id = rid;
+
+  UPDATE requestoffer_state
+  SET status = 78 -- "taken"
   WHERE requestoffer_id = rid;
 
   -- get the owner's user id
@@ -652,7 +659,7 @@ BEGIN
   WHERE requestoffer_status_id = 
     (
       SELECT status
-      FROM requestoffer 
+      FROM requestoffer_state
       WHERE requestoffer_id = rid
     );
 
@@ -899,10 +906,11 @@ BEGIN
 	call validate_user_id(uid);
 
 	SELECT COUNT(*) INTO @is_valid
-	FROM requestoffer
-	WHERE requestoffering_user_id = uid 
-		AND requestoffer_id = rid
-		AND status = 78; -- taken
+	FROM requestoffer r
+  JOIN requestoffer_state rs ON rs.requestoffer_id = r.requestoffer_id
+	WHERE r.requestoffering_user_id = uid 
+		AND r.requestoffer_id = rid
+		AND rs.status = 78; -- taken
 
 	IF (@is_valid <> 1) THEN
 		SET @msg = CONCAT('requestoffer ',
@@ -917,7 +925,7 @@ BEGIN
   -- if we've completed this requestoffer, then it's done, it's not going
   -- up again to be reused.  We can go ahead and leave this information
   -- here as an auditing-type artifact.
-	UPDATE requestoffer -- change state of the requestoffer
+	UPDATE requestoffer_state -- change state of the requestoffer
 	SET status = 77 -- 'closed'
 	WHERE requestoffer_id = rid;
 
@@ -971,10 +979,11 @@ BEGIN
 	call validate_user_id(uid);
 
 	SELECT COUNT(*) INTO @is_valid
-	FROM requestoffer
-	WHERE requestoffering_user_id = uid 
-		AND requestoffer_id = rid
-		AND status = 109; -- draft status
+	FROM requestoffer r
+  JOIN requestoffer_state rs ON rs.requestoffer_id = r.requestoffer_id
+	WHERE r.requestoffering_user_id = uid 
+		AND r.requestoffer_id = rid
+		AND rs.status = 109; -- draft status
 
 	IF (@is_valid <> 1) THEN
 		SET @msg = CONCAT('requestoffer ',
@@ -985,7 +994,7 @@ BEGIN
 
 	-- at this point we are pretty sure it's all cool.
 
-  UPDATE requestoffer
+  UPDATE requestoffer_state
   SET status = 76
   WHERE requestoffer_id = rid;
 
@@ -1053,9 +1062,11 @@ BEGIN
 
     -- change the status on the requestoffer
     UPDATE requestoffer
-    SET 
-      status = 76 -- OPEN
-      ,handling_user_id = NULL  -- clear out the handling user
+    SET handling_user_id = NULL  -- clear out the handling user
+    WHERE requestoffer_id = rid;
+
+    UPDATE requestoffer_state
+    SET status = 76 -- "OPEN"
     WHERE requestoffer_id = rid;
 
     -- change the state for the servicer to COMPLETE_FEEDBACK_POSSIBLE

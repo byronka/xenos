@@ -417,14 +417,17 @@ public final class Requestoffer_utils {
     
     String sqlText = 
       "SELECT r.requestoffer_id, r.datetime, r.description, r.points,"+
-      "r.status, r.requestoffering_user_id, r.handling_user_id, "+
+      "rs.status, r.requestoffering_user_id, r.handling_user_id, "+
       "GROUP_CONCAT(rc.category_id SEPARATOR ',') AS categories "+
       "FROM requestoffer r "+
+      "JOIN requestoffer_state rs "+
+        "ON rs.requestoffer_id = r.requestoffer_id " +
       "JOIN requestoffer_to_category rtc "+
         "ON rtc.requestoffer_id = r.requestoffer_id "+
       "JOIN requestoffer_category rc "+
         "ON rc.category_id = rtc.requestoffer_category_id "+
-      "WHERE r.requestoffer_id = ? GROUP BY requestoffer_id";
+      "WHERE r.requestoffer_id = ? "+
+      "GROUP BY requestoffer_id";
 
     PreparedStatement pstmt = null;
     try {
@@ -672,10 +675,12 @@ public final class Requestoffer_utils {
       get_requestoffers_I_am_handling(int user_id) {
     String sqlText = 
       
-      "SELECT requestoffer_id, datetime, description, "+
-      "points, status, requestoffering_user_id, handling_user_id "+
-      "FROM requestoffer "+
-      "WHERE handling_user_id = ? AND status <> 77"; // 77 is closed.
+      "SELECT r.requestoffer_id, r.datetime, r.description, "+
+      "r.points, rs.status, r.requestoffering_user_id, r.handling_user_id "+
+      "FROM requestoffer r "+
+      "JOIN requestoffer_state rs "+
+        "ON rs.requestoffer_id = r.requestoffer_id " +
+      "WHERE r.handling_user_id = ? AND rs.status <> 77"; // 77 is closed.
 
     PreparedStatement pstmt = null;
     try {
@@ -723,18 +728,24 @@ public final class Requestoffer_utils {
     */
   public static Requestoffer[] 
     get_requestoffers_for_user_by_status(int user_id, int status) {
-    String sqlText = "SELECT requestoffer_id, datetime, description, "+
-      "points, status, requestoffering_user_id, handling_user_id "+
-      "FROM requestoffer "+
-      "WHERE (requestoffering_user_id = ? OR handling_user_id = ?) AND status = ?";
+    String sqlText = 
+      
+      "SELECT r.requestoffer_id, r.datetime, r.description, "+
+      "r.points, rs.status, r.requestoffering_user_id, r.handling_user_id "+
+      "FROM requestoffer r "+
+      "JOIN requestoffer_state rs ON "+
+        "rs.requestoffer_id = r.requestoffer_id " +
+      "WHERE "+
+        "r.requestoffering_user_id = ? "+
+        " AND rs.status = ?";
+
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      pstmt.setInt( 2, user_id);
-      pstmt.setInt( 3, status);
+      pstmt.setInt( 2, status);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Requestoffer[0];
@@ -1348,7 +1359,7 @@ public final class Requestoffer_utils {
       "SELECT message FROM requestoffer_message "+
       "WHERE requestoffer_id = %d "+
       "AND (from_user_id = %d OR to_user_id = %d) " +
-      "ORDER BY timestamp DESC ", 
+      "ORDER BY timestamp ASC ", 
         requestoffer_id, user_id, user_id);
 
     PreparedStatement pstmt = null;

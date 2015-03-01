@@ -32,12 +32,12 @@ ON SCHEDULE
   EVERY 5 SECOND 
 COMMENT 'logs out users past their timeout period'
 DO
-	BEGIN
-			UPDATE user 
-			SET is_logged_in = 0 
-			WHERE UTC_TIMESTAMP() > 
-					(last_activity_time + INTERVAL timeout_seconds SECOND);
-	END
+  BEGIN
+      UPDATE user 
+      SET is_logged_in = 0 
+      WHERE UTC_TIMESTAMP() > 
+          (last_activity_time + INTERVAL timeout_seconds SECOND);
+  END
 
 ---DELIMITER---
 DROP EVENT IF EXISTS location_purge;
@@ -97,9 +97,48 @@ ON SCHEDULE
   EVERY 5 MINUTE 
 COMMENT 'Removes old messages from the temporary message table'
 DO
-	BEGIN
-			DELETE FROM temporary_message 
-			WHERE UTC_TIMESTAMP() > 
-					(timestamp + INTERVAL 24 HOUR);
-	END
+  BEGIN
+      DELETE FROM temporary_message 
+      WHERE UTC_TIMESTAMP() > 
+          (timestamp + INTERVAL 24 HOUR);
+  END
+
+---DELIMITER---
+DROP EVENT IF EXISTS revert_open_requestoffers_to_draft;
+---DELIMITER---
+
+-- this sql does the following: every 5 minutes, run a script to revert
+-- any requestoffers more than a day old that have not been taken to the draft status.
+
+CREATE EVENT revert_open_requestoffers_to_draft
+ON SCHEDULE
+  EVERY 1 HOUR 
+COMMENT 'moves stale requestoffers back to draft status'
+DO
+  BEGIN
+
+    DROP TEMPORARY TABLE IF EXISTS requestoffers_to_change_status;
+
+    -- get all the requestoffers that need to have their status changed
+    CREATE TEMPORARY TABLE requestoffers_to_change_status AS ( 
+      SELECT requestoffer_id
+      FROM requestoffer_state
+      WHERE status = 76
+        AND UTC_TIMESTAMP() > (datetime + INTERVAL 24 HOUR)
+    );
+
+    -- update the requestoffer to be draft status
+      UPDATE requestoffer_state rs
+      JOIN requestoffers_to_change_status rtcs 
+        ON rtcs.requestoffer_id = rs.requestoffer_id
+      SET rs.status = 109; -- 109 is "DRAFT"
+
+    -- set associated service request statuses to "rejected"
+      UPDATE requestoffer_service_request rsr 
+      JOIN requestoffers_to_change_status rtcs
+        ON rtcs.requestoffer_id = rsr.requestoffer_id
+      SET rsr.status = 108, rsr.date_modified = UTC_TIMESTAMP(); -- 108 is "REJECTED"
+
+
+  END
 

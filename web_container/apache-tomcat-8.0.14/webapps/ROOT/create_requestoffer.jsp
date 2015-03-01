@@ -184,11 +184,12 @@
             }
         %>
             </select>                       
+          <p><%=loc.get(159,"Or enter a new address")%>:</p>
+
         <%
           }
         %>
 
-        <p><%=loc.get(159,"Or enter a new address")%>:</p>
         <p>
           <input 
             id="save_loc_to_user" 

@@ -93,37 +93,49 @@
   <% 
       for (User_location lo : locations) { 
   %>
-    <p>
-      <%
-        if (user_id == r.handling_user_id || 
-        user_id == r.requestoffering_user_id) { 
-      %>
+      <p>
+        <%
+          if (user_id == r.handling_user_id || 
+          user_id == r.requestoffering_user_id) { 
+        %>
 
-        <%if (!Utils.is_null_or_empty(lo.str_addr_1)) {%>
-          <%=loc.get(152,"Street address 1")%>: <%=lo.str_addr_1%>
-        <%}%>
+        <p>
+          <%if (!Utils.is_null_or_empty(lo.str_addr_1)) {%>
+            <%=loc.get(152,"Street address 1")%>: <%=lo.str_addr_1%>
+          <%}%>
+        </p>
 
-        <%if (!Utils.is_null_or_empty(lo.str_addr_2)) {%>
-          <%=loc.get(153,"Street address 2")%>: <%=lo.str_addr_2%>
-        <%}%>
+        <p>
+          <%if (!Utils.is_null_or_empty(lo.str_addr_2)) {%>
+            <%=loc.get(153,"Street address 2")%>: <%=lo.str_addr_2%>
+          <%}%>
+        </p>
 
-        <%if (!Utils.is_null_or_empty(lo.state)) {%>
-          <%=loc.get(155,"State")%>: <%=lo.state%>
-        <%}%>
+        <p>
+          <%if (!Utils.is_null_or_empty(lo.state)) {%>
+            <%=loc.get(155,"State")%>: <%=lo.state%>
+          <%}%>
+        </p>
 
-        <%if (!Utils.is_null_or_empty(lo.country)) {%>
-          <%=loc.get(157,"Country")%>: <%=lo.country%>
-        <%}%>
+        <p>
+          <%if (!Utils.is_null_or_empty(lo.country)) {%>
+            <%=loc.get(157,"Country")%>: <%=lo.country%>
+          <%}%>
+        </p>
 
       <% } %>
 
-      <%if (!Utils.is_null_or_empty(lo.city)) {%>
-        <%=loc.get(154,"City")%>: <%=lo.city%>
-      <%}%>
+      <p>
+        <%if (!Utils.is_null_or_empty(lo.city)) {%>
+          <%=loc.get(154,"City")%>: <%=lo.city%>
+        <%}%>
+      </p>
 
-      <%if (!Utils.is_null_or_empty(lo.postcode)) {%>
-        <%=loc.get(156,"Postal code")%>: <%=lo.postcode%>
-      <%}%>
+      <p>
+        <%if (!Utils.is_null_or_empty(lo.postcode)) {%>
+          <%=loc.get(156,"Postal code")%>: <%=lo.postcode%>
+        <%}%>
+      </p>
 
     </p>
   <% 
