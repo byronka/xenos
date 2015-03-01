@@ -15,9 +15,9 @@
 	</head>
 	<body>
   <%@include file="includes/header.jsp" %>
-	<a href="change_password.jsp">Change password</a>
+  <a href="change_password.jsp"><%=loc.get(113,"Change password")%></a>
 
-  <h3><%=user.username%></h3>
+  <h3><%=Utils.safe_render(user.username)%></h3>
   <ul>
     <li>Rank: <%=user.rank%></li>
     <li>Points: <%=user.points%></li>
@@ -57,7 +57,7 @@
       </a>
 
       <%=loc.get(170,"for the favor")%>
-      <span><a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=rd.ro_desc%></a></span>
+      <span><a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=Utils.safe_render(rd.ro_desc)%></a></span>
 
     </div>
 
@@ -81,7 +81,7 @@
       
       <%=loc.get(170,"for the favor")%>
 
-      <span><a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=rd.ro_desc%></a></span>
+      <span><a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=Utils.safe_render(rd.ro_desc)%></a></span>
 
     </div>
 
@@ -126,7 +126,7 @@
         <%User servicer = User_utils.get_user(sr.user_id);%>
         
         <a href="user.jsp?user_id=<%=sr.user_id%>">
-          <%=servicer.username%> 
+          <%=Utils.safe_render(servicer.username)%> 
         </a>
         <%=loc.get(138,"wants to service")%>
         <a href="requestoffer.jsp?requestoffer=<%=sr.requestoffer_id%>">
@@ -243,6 +243,9 @@
           <a class="button" 
             href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
             <%=loc.get(21,"Delete")%>
+          </a>
+          <a class="button" href="publish_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+            <%=loc.get(6,"Publish")%>
           </a>
 			</div>
 		<% } %>

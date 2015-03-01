@@ -61,11 +61,11 @@
     <span><%=error_msg %></span>
     <form method="POST" action="change_password.jsp">
       <div>
-        Old password: 
+        <%=loc.get(174,"Old password")%>: 
         <input autofocus="autofocus" type="password" name="old_password" />
       </div>
       <div>
-        New password:
+        <%=loc.get(175,"New password")%>: 
         <input type="password" name="new_password" />
       </div>
       <button type="submit">

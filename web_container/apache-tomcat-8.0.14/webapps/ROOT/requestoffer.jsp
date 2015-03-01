@@ -71,17 +71,17 @@
   </p>
   <p>
     <%=loc.get(100,"Owning User")%>: 
-    <%if(is_requestoffering_user) {%><em>You</em>, <%}%>
+    <%if(is_requestoffering_user) {%><em><%=loc.get(165,"You")%></em>, <%}%>
     <%=User_utils.get_user(r.requestoffering_user_id).username%>
   </p>
   <p>
     <%=loc.get(101,"Handling User")%>: 
-    <%if(is_handling_user) {%><em>You</em>, <%}%>
+    <%if(is_handling_user) {%><em><%=loc.get(165,"You")%></em>, <%}%>
     <% User handleuser = User_utils.get_user(r.handling_user_id); 
     if (handleuser != null) {%>
       <%=handleuser.username%>
     <%} else {%>
-      none
+      <%=loc.get(103,"None")%>
     <%}%>
   </p>
   <p>
@@ -101,25 +101,29 @@
 
         <p>
           <%if (!Utils.is_null_or_empty(lo.str_addr_1)) {%>
-            <%=loc.get(152,"Street address 1")%>: <%=lo.str_addr_1%>
+            <%=loc.get(152,"Street address 1")%>: 
+            <%=Utils.safe_render(lo.str_addr_1)%>
           <%}%>
         </p>
 
         <p>
           <%if (!Utils.is_null_or_empty(lo.str_addr_2)) {%>
-            <%=loc.get(153,"Street address 2")%>: <%=lo.str_addr_2%>
+            <%=loc.get(153,"Street address 2")%>: 
+            <%=Utils.safe_render(lo.str_addr_2)%>
           <%}%>
         </p>
 
         <p>
           <%if (!Utils.is_null_or_empty(lo.state)) {%>
-            <%=loc.get(155,"State")%>: <%=lo.state%>
+            <%=loc.get(155,"State")%>: 
+            <%=Utils.safe_render(lo.state)%>
           <%}%>
         </p>
 
         <p>
           <%if (!Utils.is_null_or_empty(lo.country)) {%>
-            <%=loc.get(157,"Country")%>: <%=lo.country%>
+            <%=loc.get(157,"Country")%>:
+            <%=Utils.safe_render(lo.country)%>
           <%}%>
         </p>
 
@@ -127,13 +131,15 @@
 
       <p>
         <%if (!Utils.is_null_or_empty(lo.city)) {%>
-          <%=loc.get(154,"City")%>: <%=lo.city%>
+          <%=loc.get(154,"City")%>:
+          <%=Utils.safe_render(lo.city)%>
         <%}%>
       </p>
 
       <p>
         <%if (!Utils.is_null_or_empty(lo.postcode)) {%>
-          <%=loc.get(156,"Postal code")%>: <%=lo.postcode%>
+          <%=loc.get(156,"Postal code")%>: 
+          <%=Utils.safe_render(lo.postcode)%>
         <%}%>
       </p>
 

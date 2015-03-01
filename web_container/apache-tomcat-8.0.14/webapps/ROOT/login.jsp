@@ -6,6 +6,7 @@
   //check if they are already logged in.  If so, just skip to dashboard.
   //it just checks the user cookie to see if we are good to go.  It doesn't use
   //username and password.
+	request.setCharacterEncoding("UTF-8");
   int user_id = Security.check_if_allowed(request, true);
   if (user_id > 0) { response.sendRedirect("dashboard.jsp");return; }
 
