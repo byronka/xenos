@@ -16,9 +16,21 @@
 <%
   String qs = request.getQueryString();
   Integer uid = Utils.parse_int(Utils.parse_qs(qs).get("user_id"));
+
+  User the_user = User_utils.get_user(uid);
+  if (potential_handler == null) {
+    response.sendRedirect("general_error.jsp");
+    return;
+  }
 %>
 	<body>
   <%@include file="includes/header.jsp" %>
+
+  <ul>
+    <li>Name: <%=the_user.username%></li>
+    <li>Rank: <%=the_user.rank%></li>
+    <li>Points: <%=the_user.points%></li>
+  </ul>
 
   <h3><%=loc.get(79, "Rank")%></h3>
   <%
