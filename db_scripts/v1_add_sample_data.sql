@@ -35,7 +35,7 @@ and end.  A little testing, frustration, and poof we're done!
 */
 SET FOREIGN_KEY_CHECKS=0;
 ---DELIMITER---
--- note: all users have the password "password1" except pierre, which is sacrébleu and 恩惠 has the password 斯我提供
+-- note: all users have the password "password" except pierre, which is sacrébleu and 恩惠 has the password 斯我提供
 INSERT INTO user (user_id, username, email, password, points, language, is_logged_in, date_created, salt, last_time_logged_in, last_activity_time, timeout_seconds, last_ip_logged_in, rank, is_admin) VALUES 
 (4,'bob',NULL,'0ADF2248300C0A4A5DD9C7916EDD9D5533AD82A518274E53238EB8B13F3C2710',0,NULL,0,'2015-03-01 19:27:08','4219374898085072381','2015-03-01 20:42:43','2015-03-01 20:42:55',1800,'127.0.0.1',1,0),
 (5,'sally',NULL,'258720BC19200E7A75D1FE9C241CAA3B4EB5C5A7688DBBC7748E31F1078044E8',-1,NULL,0,'2015-03-01 19:42:01','9137586857250951948','2015-03-01 20:41:17','2015-03-01 20:41:57',1800,'127.0.0.1',1,0),
