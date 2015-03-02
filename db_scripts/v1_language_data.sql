@@ -181,6 +181,7 @@ VALUES
 (173, 1,  'Their open favors'),
 (174, 1,  'Old password'),
 (175, 1,  'New password'),
+(176, 1,  'Favor Resolution'),
 (1, 2, 'Recherche'),
 (2, 2, 'Demande Favor '),
 (3, 2, 'Quitter'),
@@ -356,6 +357,7 @@ VALUES
 (173, 2,  'FRENCHTheir open favors'),
 (174, 2,  'FRENCHOld password'),
 (175, 2,  'FRENCHNew password'),
+(176, 2,  'FRENCHFavor Resolution'),
 (1, 3, 'Buscar'),
 (2, 3, 'Solicitud favor '),
 (3, 3, 'Salir'),
@@ -531,6 +533,7 @@ VALUES
 (173, 3,  'SPANISHTheir open favors'),
 (174, 3,  'SPANISHOld password'),
 (175, 3,  'SPANISHNew password'),
+(176, 3,  'SPANISHFavor Resolution'),
 (1,4,'搜索'),
 (2,4,'请求青睐'),
 (3,4,'退出'),
@@ -706,6 +709,7 @@ VALUES
 (173, 4,  'CHINESETheir open favors'),
 (174, 4,  'CHINESEOld password'),
 (175, 4,  'CHINESENew password'),
+(176, 4,  'CHINESEFavor Resolution'),
 (1, 5, 'חיפוש'),
 (2, 5, 'בעד בקשה '),
 (3, 5, 'התנתקות'),
@@ -880,4 +884,5 @@ VALUES
 (172, 5, 'HEBREWTimestamp'),
 (173, 5,  'HEBREWTheir open favors'),
 (174, 5,  'HEBREWOld password'),
-(175, 5,  'HEBREWNew password');
+(175, 5,  'HEBREWNew password'),
+(176, 5,  'HEBREWFavor Resolution');

@@ -1490,4 +1490,84 @@ public final class Requestoffer_utils {
   }
 
 
+
+  /**
+    * encapsulates the information needed by the view when showing
+    * information about needing to rank the other party in a Favor.
+    */
+  public static class Resolution_detail {
+
+    public int user_id;
+    public String username;
+    public int ro_id; // the requestoffer id
+    public String ro_desc; //the description of the requestoffer
+
+    public Rank_detail(
+      int user_id,
+      String username,
+      int ro_id,
+      String ro_desc,
+        ) {
+      this.user_id   = user_id;
+      this.username  = username;
+      this.ro_id            = ro_id;
+      this.ro_desc          = ro_desc;
+    }
+  }
+
+
+  /**
+    * This returns information related to those situations where a user
+    * needs to rank the other user on a favor, either because the favor
+    * was completed or canceled.
+    *
+    * It will basically provide information to render sentences like,
+    * "You need to rank JoeBob for Do my Math homework 
+    *
+    */
+  public static Resolution_detail get_favor_resolutions(int user_id) {
+
+    String sqlText = 
+      String.format(
+    " SELECT u.username, u.user_id, r.requestoffer_id,                   " +
+    "        r.description                                               " +
+    " FROM requestoffer_user_state rus                                   " +
+    " JOIN user u ON u.user_id = rus.user_id                             " +
+    " JOIN requestoffer r ON r.requestoffer_id = rus.requestoffer_id     " +
+    " WHERE rus.requestoffer_service_status_id = 2 AND u.user_id = %d    ", user_id);
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Resolution_detail[0];
+      }
+
+      //keep adding rows of data while there is more data
+      ArrayList<Resolution_detail> rds = new ArrayList<Resolution_detail>();
+      while(resultSet.next()) {
+        int uid = resultSet.getInt("user_id");
+        String username = resultSet.getNString("username");
+        String desc = resultSet.getNString("description");
+        int ro_id = resultSet.getInt("requestoffer_id");
+        rds.add(new Resolution_detail(uid, username, ro_id, desc));
+      }
+
+      //convert arraylist to array
+      Resolution_detail[] array_of_rds = 
+        rds.toArray(new Resolution_detail[rds.size()]);
+      return array_of_rds;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new Resolution_detail[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+
+  }
+
 }

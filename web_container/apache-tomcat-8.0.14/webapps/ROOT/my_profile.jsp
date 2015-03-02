@@ -23,6 +23,10 @@
     <li>Points: <%=user.points%></li>
   </ul>
 
+  <h3><%=loc.get(176, "Favor Resolution")%></h3>
+  <%
+  %>
+
   <h3><%=loc.get(79, "Rank")%></h3>
   <%
     Requestoffer_utils.Rank_detail[] rank_details = 
