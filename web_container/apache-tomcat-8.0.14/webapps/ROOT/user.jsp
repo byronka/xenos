@@ -26,7 +26,7 @@
 	<body>
   <%@include file="includes/header.jsp" %>
 
-  <h3><%=the_user.username%></h3>
+  <h3><%=Utils.safe_render(the_user.username)%></h3>
   <ul>
     <li>Rank: <%=the_user.rank%></li>
     <li>Points: <%=the_user.points%></li>
@@ -69,7 +69,7 @@
       <%=loc.get(170,"for the favor")%>
       <span>
         <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
-          <%=rd.ro_desc%>
+          <%=Utils.safe_render(rd.ro_desc)%>
         </a>
       </span>
 
@@ -99,7 +99,7 @@
 
       <span>
         <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
-          <%=rd.ro_desc%>
+          <%=Utils.safe_render(rd.ro_desc)%>
         </a>
       </span>
 
