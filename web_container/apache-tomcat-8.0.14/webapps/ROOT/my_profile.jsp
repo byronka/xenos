@@ -45,11 +45,15 @@
       <%=rd.timestamp%>
       <%=loc.get(165,"You")%>
 
-      <% if (rd.meritorious) { %>
-      <%=loc.get(166,"increased")%>
-      <% } else { %>
-      <%=loc.get(167,"decreased")%>
-      <% } %>
+      <% if(rd.meritorious != null) {%>
+        <% if (rd.meritorious) { %>
+          <%=loc.get(166,"increased")%>
+        <% } else { %>
+          <%=loc.get(167,"decreased")%>
+        <% } %>
+        <% } else { %>
+        has not yet determined
+        <% }  %>
 
       <%=loc.get(168,"the reputation of")%>
 
@@ -59,6 +63,7 @@
 
       <%=loc.get(170,"for the favor")%>
       <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=Utils.safe_render(rd.ro_desc)%></a>
+      <span>StatusID: <%=rd.status_id%></span>
 
     </div>
 
@@ -72,17 +77,22 @@
         <%=Utils.safe_render(rd.judging_username)%>
       </a>
 
-      <% if (rd.meritorious) { %>
-      <%=loc.get(166,"increased")%>
+      <% if(rd.meritorious != null) {%>
+        <% if (rd.meritorious) { %>
+          <%=loc.get(166,"increased")%>
+        <% } else { %>
+          <%=loc.get(167,"decreased")%>
+        <% } %>
       <% } else { %>
-      <%=loc.get(167,"decreased")%>
-      <% } %>
+      has not yet determined
+      <% }  %>
       
       <%=loc.get(169,"your reputation")%>
       
       <%=loc.get(170,"for the favor")%>
 
       <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=Utils.safe_render(rd.ro_desc)%></a>
+      <span>StatusID: <%=rd.status_id%></span>
 
     </div>
 

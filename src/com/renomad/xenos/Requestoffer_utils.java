@@ -1402,7 +1402,7 @@ public final class Requestoffer_utils {
     public String judging_username;
     public int judged_user_id;
     public String judged_username;
-    public boolean meritorious; // whether it was thumbs-up
+    public Boolean meritorious; // whether it was thumbs-up, null, thumbs-down
     public int ro_id; // the requestoffer id
     public String ro_desc; //the description of the requestoffer
     public String timestamp;
@@ -1413,7 +1413,7 @@ public final class Requestoffer_utils {
       String judging_username,
       int judged_user_id,
       String judged_username,
-      boolean meritorious,
+      Boolean meritorious,
       int ro_id,
       String ro_desc,
       String timestamp,
@@ -1472,7 +1472,10 @@ public final class Requestoffer_utils {
         String jusername = resultSet.getNString("jusername");
         int uid = resultSet.getInt("user_id");
         String username = resultSet.getNString("username");
-        boolean meritorious = resultSet.getBoolean("meritorious");
+        Boolean meritorious = resultSet.getBoolean("meritorious");
+        if (resultSet.wasNull()) {
+          meritorious = null;
+        }
         String desc = resultSet.getNString("description");
         int ro_id = resultSet.getInt("requestoffer_id");
         String timestamp = resultSet.getString("date_entered");
