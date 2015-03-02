@@ -54,11 +54,15 @@
       <%=rd.timestamp%>
       <%=Utils.safe_render(rd.judging_username)%>
 
-      <% if (rd.meritorious) { %>
-      <%=loc.get(166,"increased")%>
+      <% if(rd.meritorious != null) {%>
+        <% if (rd.meritorious) { %>
+          <%=loc.get(166,"increased")%>
+        <% } else { %>
+          <%=loc.get(167,"decreased")%>
+        <% } %>
       <% } else { %>
-      <%=loc.get(167,"decreased")%>
-      <% } %>
+      has not yet determined
+      <% }  %>
 
       <%=loc.get(168,"the reputation of")%>
 
@@ -85,11 +89,15 @@
         <%=Utils.safe_render(rd.judging_username)%>
       </a>
 
-      <% if (rd.meritorious) { %>
-      <%=loc.get(166,"increased")%>
+      <% if(rd.meritorious != null) {%>
+        <% if (rd.meritorious) { %>
+          <%=loc.get(166,"increased")%>
+        <% } else { %>
+          <%=loc.get(167,"decreased")%>
+        <% } %>
       <% } else { %>
-      <%=loc.get(167,"decreased")%>
-      <% } %>
+      has not yet determined
+      <% }  %>
       
       <%=loc.get(168,"the reputation of")%>
       
