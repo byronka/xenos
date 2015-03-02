@@ -313,6 +313,7 @@
     <% if (system_mms.length == 0) { %>
       <p>(<%=loc.get(103,"None")%>)</p>
     <% } %>
-  <script type="text/javascript" src="includes/timeout.js"></script>
+
+  <%@include file="includes/timeout.jsp" %>
 	</body>
 </html>
