@@ -67,10 +67,8 @@ INSERT INTO requestoffer_state (requestoffer_id, status, datetime) VALUES (1,77,
 ---DELIMITER---
 INSERT INTO requestoffer_to_category (requestoffer_id, requestoffer_category_id) VALUES (1,144),(2,73),(4,145),(5,72),(6,74),(7,72),(8,75),(9,71),(10,73),(11,74),(12,144),(13,73),(14,145),(15,73),(16,74),(17,143),(18,73);
 ---DELIMITER---
-INSERT INTO requestoffer_user_state (user_id, requestoffer_id, requestoffer_service_status_id) VALUES (4,1,2),(4,2,2),(4,6,2),(5,1,2),(5,2,2),(6,6,3),(12,18,3),(13,18,2);
----DELIMITER---
 INSERT INTO system_to_user_message (stu_message_id, requestoffer_id, text_id, timestamp, to_user_id, has_been_viewed) VALUES (1,2,148,'2015-03-01 19:43:07',5,0),(2,1,148,'2015-03-01 19:43:11',4,0),(3,2,132,'2015-03-01 19:45:39',4,0),(4,1,132,'2015-03-01 19:45:40',5,0),(5,6,148,'2015-03-01 20:10:23',6,0),(6,6,132,'2015-03-01 20:10:35',4,0),(7,18,148,'2015-03-01 20:42:20',12,0),(8,18,148,'2015-03-01 20:42:51',12,0),(9,18,148,'2015-03-01 20:43:14',12,0),(10,18,132,'2015-03-01 20:43:26',13,0),(11,18,133,'2015-03-01 20:43:26',4,0),(12,18,133,'2015-03-01 20:43:26',10,0);
 ---DELIMITER---
-INSERT INTO user_rank_data_point (date_entered, judge_user_id, judged_user_id, requestoffer_id, meritorious) VALUES ('2015-03-01 19:53:57',5,4,2,1),('2015-03-01 19:58:43',4,5,1,1),('2015-03-01 20:11:38',6,4,6,1),('2015-03-01 20:45:20',12,13,18,1);
+INSERT INTO user_rank_data_point (date_entered, judge_user_id, judged_user_id, requestoffer_id, meritorious, status_id) VALUES ('2015-03-01 19:53:57',5,4,2,1,2),('2015-03-01 19:58:43',4,5,1,1,2),('2015-03-01 20:11:38',6,4,6,1,2),('2015-03-01 20:45:20',12,13,18,1,2);
 ---DELIMITER---
 SET FOREIGN_KEY_CHECKS=0;

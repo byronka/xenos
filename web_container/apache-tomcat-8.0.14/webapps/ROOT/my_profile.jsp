@@ -23,19 +23,16 @@
     <li>Points: <%=user.points%></li>
   </ul>
 
-  <h3><%=loc.get(176, "Favor Resolution")%></h3>
-  <%
-  %>
-
   <h3><%=loc.get(79, "Rank")%></h3>
+
   <%
     Requestoffer_utils.Rank_detail[] rank_details = 
       Requestoffer_utils.get_rank_detail(user_id);
   %>
 
-  <%if (rank_details.length == 0) {%>
-      <p>(<%=loc.get(103,"None")%>)</p>
-  <% } %> 
+    <%if (rank_details.length == 0) {%>
+        <p>(<%=loc.get(103,"None")%>)</p>
+    <% } %> 
 
   <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
 
@@ -61,7 +58,7 @@
       </a>
 
       <%=loc.get(170,"for the favor")%>
-      <span><a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=Utils.safe_render(rd.ro_desc)%></a></span>
+      <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=Utils.safe_render(rd.ro_desc)%></a>
 
     </div>
 
@@ -85,7 +82,7 @@
       
       <%=loc.get(170,"for the favor")%>
 
-      <span><a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=Utils.safe_render(rd.ro_desc)%></a></span>
+      <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=Utils.safe_render(rd.ro_desc)%></a>
 
     </div>
 

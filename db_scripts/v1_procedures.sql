@@ -51,15 +51,6 @@ CREATE PROCEDURE recalculate_rank_on_user
   is_thumbs_up BOOL -- the opinion of the other party
 ) 
 BEGIN
-  INSERT INTO user_rank_data_point
-  (
-    date_entered, 
-    judge_user_id, 
-    judged_user_id, 
-    requestoffer_id, 
-    meritorious
-  ) 
-  VALUES (UTC_TIMESTAMP(), j_uid, uid, rid, is_thumbs_up);
   
   -- get the number of rankings that are less than 60 days old
   UPDATE user
@@ -583,11 +574,11 @@ BEGIN
   WHERE requestoffer_id = rid;
   
   -- indicate that this user is in "ACTIVE" state on this requestoffer
-  INSERT INTO requestoffer_user_state
-  (user_id, requestoffer_id, requestoffer_service_status_id)
+  INSERT INTO user_rank_data_point
+  (date_entered, judge_user_id, judged_user_id, requestoffer_id, status_id)
   VALUES 
-  (@owner_id, rid, 1), 
-  (uid, rid, 1); 
+  (UTC_TIMESTAMP(), @owner_id,uid, rid, 1), 
+  (UTC_TIMESTAMP(), uid,@owner_id, rid, 1); 
 
   -- change the service request to accepted for the winning user
   UPDATE requestoffer_service_request 
@@ -970,18 +961,30 @@ BEGIN
   
   -- we need the servicer to provide input, so...
   -- change the state for the servicer to COMPLETE_FEEDBACK_POSSIBLE
-  UPDATE requestoffer_user_state
-  SET requestoffer_service_status_id = 2 -- COMPLETE_FEEDBACK_POSSIBLE
-  WHERE user_id = @handling_user_id;
 
-  -- change the state for the owner to COMPLETE - they already
-  -- gave us their feedback
-  UPDATE requestoffer_user_state
-  SET requestoffer_service_status_id = 3 -- COMPLETE
-  WHERE user_id = uid;
+  UPDATE user_rank_data_point
+    SET date_entered = UTC_TIMESTAMP(),  -- last modified date update
+      judge_user_id = @handling_user_id, 
+      judged_user_id = uid,
+      requestoffer_id = rid, 
+      status_id = 2 -- move them to needing to provide feedback
+    WHERE judge_user_id = j_uid;
+
+  UPDATE user_rank_data_point
+    SET date_entered = UTC_TIMESTAMP(),  -- last modified date update
+      judge_user_id = uid, 
+      judged_user_id = @handling_user_id,
+      requestoffer_id = rid, 
+      meritorious = satis,
+      status_id = 3 -- they have provided feedback, they're done.
+    WHERE judge_user_id = j_uid;
+
 
 	CALL add_audit(11,@handling_user_id,rid,NULL);
+
+  -- recalculate the owner's rank
   CALL recalculate_rank_on_user(uid,@handling_user_id, rid, satis);
+
   IF (satis) THEN
     CALL add_audit(6,uid,rid,NULL);
   ELSE
@@ -1096,16 +1099,22 @@ BEGIN
     SET status = 76 -- "OPEN"
     WHERE requestoffer_id = rid;
 
-    -- change the state for the servicer to COMPLETE_FEEDBACK_POSSIBLE
-    UPDATE requestoffer_user_state
-    SET requestoffer_service_status_id = 2 -- COMPLETE_FEEDBACK_POSSIBLE
-    WHERE user_id = @other_party AND requestoffer_id = rid;
+    UPDATE user_rank_data_point
+      SET date_entered = UTC_TIMESTAMP(),  -- last modified date update
+        judge_user_id = @other_party,
+        judged_user_id = uid,
+        requestoffer_id = rid, 
+        status_id = 3 -- move them to needing to provide feedback
+      WHERE judge_user_id = j_uid;
 
-    -- change the state for the acting user to COMPLETE - they already
-    -- gave us their feedback
-    UPDATE requestoffer_user_state
-    SET requestoffer_service_status_id = 3 -- COMPLETE
-    WHERE user_id = uid AND requestoffer_id = rid;
+    UPDATE user_rank_data_point
+      SET date_entered = UTC_TIMESTAMP(),  -- last modified date update
+        judge_user_id = uid,
+        judged_user_id = @other_party,
+        requestoffer_id = rid, 
+        meritorious = satis,
+        status_id = 3 -- they have provided feedback, they're done.
+      WHERE judge_user_id = j_uid;
 
     -- inform the other user the transaction is canceled.
     CALL put_system_to_user_message(131, @other_party, rid);
@@ -1117,7 +1126,7 @@ BEGIN
     -- either way, they get removed as handler
     CALL add_audit(19,uid,@handling_user_id,NULL); 
 
-    -- recalculate the ranking on the other party
+    -- recalculate the acting user's ranking
     CALL recalculate_rank_on_user(uid,@other_party, rid, is_thumbs_up);
     IF (is_thumbs_up) THEN
       CALL add_audit(17,uid,rid,NULL);

@@ -396,6 +396,30 @@ location_to_requestoffer (
 
 ---DELIMITER---
 
+
+-- we will encapsulate the states that a servicer may be in
+
+CREATE TABLE
+requestoffer_user_statuses (
+  state_id INT UNSIGNED NOT NULL PRIMARY KEY,
+  state VARCHAR(30)
+)
+
+---DELIMITER---
+
+-- by having a state of "feedback possible", we have an explicit time
+-- period where we are querying the user for feedback on the other user.
+-- once that period is up, it goes into complete and it's no longer
+-- possible to enter feedback.
+
+INSERT INTO requestoffer_user_statuses(state_id, state)
+VALUES 
+(1, 'ACTIVE'), -- <-- we go here when users start servicing a RO
+(2, 'COMPLETE_FEEDBACK_POSSIBLE'), -- <-- right after a RO gets completed or canceled
+(3, 'COMPLETE') -- <-- no longer possible to leave feedback.
+
+---DELIMITER---
+
 -- This table holds information related to the outcome of a 
 -- requestoffer.  Whether it's the owner or handler, it's all
 -- the same as far as this table is concerned - it only knows
@@ -409,6 +433,7 @@ user_rank_data_point (
   judged_user_id INT UNSIGNED, -- the user being judged
   requestoffer_id INT UNSIGNED,
   meritorious BOOL,
+  status_id INT UNSIGNED NOT NULL,
   FOREIGN KEY FK_requestoffer (requestoffer_id)
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
@@ -417,7 +442,10 @@ user_rank_data_point (
   ON DELETE CASCADE,
   FOREIGN KEY FK_j_user (judge_user_id)
   REFERENCES user (user_id)
-  ON DELETE CASCADE
+  ON DELETE CASCADE,
+  FOREIGN KEY FK_status (status_id)
+  REFERENCES requestoffer_user_statuses (state_id)
+  ON DELETE RESTRICT
 )
 
 ---DELIMITER---
@@ -499,42 +527,4 @@ temporary_message_text (
   ON DELETE CASCADE
 )
 
----DELIMITER---
 
--- we will encapsulate the states that a servicer may be in
-
-CREATE TABLE
-requestoffer_user_statuses (
-  state_id INT UNSIGNED NOT NULL PRIMARY KEY,
-  state VARCHAR(30)
-)
-
----DELIMITER---
-
--- by having a state of "feedback possible", we have an explicit time
--- period where we are querying the user for feedback on the other user.
--- once that period is up, it goes into complete and it's no longer
--- possible to enter feedback.
-
-INSERT INTO requestoffer_user_statuses(state_id, state)
-VALUES 
-(1, 'ACTIVE'), -- <-- we go here when users start servicing a RO
-(2, 'COMPLETE_FEEDBACK_POSSIBLE'), -- <-- right after a RO gets completed or canceled
-(3, 'COMPLETE') -- <-- no longer possible to leave feedback.
-
----DELIMITER---
-
--- allows us to designate a state where we need to 
--- ask a user to give feedback
--- the user may be the servicer or the owner.
-
-CREATE TABLE
-requestoffer_user_state (
-  user_id INT UNSIGNED NOT NULL,
-  requestoffer_id INT UNSIGNED NOT NULL,
-  requestoffer_service_status_id INT UNSIGNED NOT NULL,
-  PRIMARY KEY (user_id, requestoffer_id),
-  FOREIGN KEY FK_status (requestoffer_service_status_id)
-  REFERENCES requestoffer_user_statuses (state_id)
-  ON DELETE RESTRICT
-)
