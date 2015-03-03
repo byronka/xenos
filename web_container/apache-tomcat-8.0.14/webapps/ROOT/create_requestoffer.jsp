@@ -111,15 +111,17 @@
           return;
         }
 
-        Integer location_id = 0;
-        if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
-          Requestoffer_utils.assign_location_to_requestoffer(location_id, new_ro_id);
-        } else {
-          int uid = request.getParameter("save_loc_to_user") != null ? user_id : 0;
-          Requestoffer_utils.put_location(
-            uid, new_ro_id,
-            strt_addr_1_val, strt_addr_2_val, 
-            city_val, state_val, postal_val, country_val);
+        if (need_loc) {
+          Integer location_id = 0;
+          if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
+            Requestoffer_utils.assign_location_to_requestoffer(location_id, new_ro_id);
+          } else {
+            int uid = request.getParameter("save_loc_to_user") != null ? user_id : 0;
+            Requestoffer_utils.put_location(
+              uid, new_ro_id,
+              strt_addr_1_val, strt_addr_2_val, 
+              city_val, state_val, postal_val, country_val);
+          }
         }
 
         response.sendRedirect("requestoffer_created.jsp?requestoffer=" + new_ro_id);
