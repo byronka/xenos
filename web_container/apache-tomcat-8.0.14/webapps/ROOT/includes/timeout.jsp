@@ -23,7 +23,7 @@
       "    display:block;padding-top:10px;                    " +
       "   padding-bottom:10px;font-size: 18px'                " +
       "    onclick='xenos_timeout.counter.halt();'>           " +
-      "   I am not done!                                      " +
+      "<%=loc.get(182,"I am not done!")%>" +
       "   </button>                                           " +
       " </div>                                                " +
       "</div>                                                 ";

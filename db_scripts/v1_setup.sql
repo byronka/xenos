@@ -428,6 +428,7 @@ VALUES
 
 CREATE TABLE
 user_rank_data_point (
+  urdp_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   date_entered DATETIME,
   judge_user_id INT UNSIGNED, -- the user doing the judging
   judged_user_id INT UNSIGNED, -- the user being judged

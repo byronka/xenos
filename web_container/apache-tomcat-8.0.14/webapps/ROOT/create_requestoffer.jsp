@@ -121,7 +121,8 @@
             strt_addr_1_val, strt_addr_2_val, 
             city_val, state_val, postal_val, country_val);
         }
-        response.sendRedirect("dashboard.jsp");
+
+        response.sendRedirect("requestoffer_created.jsp?requestoffer=" + new_ro_id);
         return;
       }
     }

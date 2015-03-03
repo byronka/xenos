@@ -1398,6 +1398,7 @@ public final class Requestoffer_utils {
     */
   public static class Rank_detail {
 
+    public int urdp_id; // the id of the user rank data point.
     public int judging_user_id;
     public String judging_username;
     public int judged_user_id;
@@ -1409,6 +1410,7 @@ public final class Requestoffer_utils {
     public int status_id;
 
     public Rank_detail(
+      int urdp_id,
       int judging_user_id,
       String judging_username,
       int judged_user_id,
@@ -1419,6 +1421,7 @@ public final class Requestoffer_utils {
       String timestamp,
       int status_id
         ) {
+      this.urdp_id          = urdp_id;
       this.judging_user_id  = judging_user_id;
       this.judging_username = judging_username;
       this.judged_user_id   = judged_user_id;
@@ -1445,7 +1448,7 @@ public final class Requestoffer_utils {
       "SELECT ju.username AS jusername, ju.user_id AS         "+
       "juser_id, u.username, u.user_id, urdp.date_entered,    "+
       "       urdp.meritorious,urdp.requestoffer_id,          "+
-      "       ro.description, urdp.status_id                  "+
+      "       ro.description, urdp.status_id, urdp.urdp_id    "+
       "FROM user_rank_data_point urdp                         "+
       "   JOIN user ju ON ju.user_id = urdp.judge_user_id     "+
       "   JOIN user u ON u.user_id = urdp.judged_user_id      "+
@@ -1473,6 +1476,7 @@ public final class Requestoffer_utils {
         int uid = resultSet.getInt("user_id");
         String username = resultSet.getNString("username");
         Boolean meritorious = resultSet.getBoolean("meritorious");
+        int urdp_id = resultSet.getInt("urdp_id");
         if (resultSet.wasNull()) {
           meritorious = null;
         }
@@ -1481,7 +1485,7 @@ public final class Requestoffer_utils {
         String timestamp = resultSet.getString("date_entered");
         int status_id = resultSet.getInt("status_id");
 
-        rds.add(new Rank_detail(juser_id, jusername, uid, username, meritorious, ro_id, desc, timestamp, status_id));
+        rds.add(new Rank_detail(urdp_id, juser_id, jusername, uid, username, meritorious, ro_id, desc, timestamp, status_id));
       }
 
       //convert arraylist to array
@@ -1495,6 +1499,30 @@ public final class Requestoffer_utils {
       Database_access.close_statement(pstmt);
     }
   }
+
+
+  /**
+    * apply a ranking to the other user for a given
+    * user id and requestoffer
+    */
+  public static boolean 
+    rank_other_user(int user_id, int urdp_id, boolean is_satis) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall(String.format(
+        "{call rank_other_user(%d, %d, %b)}" 
+        , user_id, urdp_id, is_satis));
+      cs.execute();
+      return true;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+  }
+
 
 
 

@@ -45,6 +45,9 @@
   <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
 
 
+  <% if (rd.status_id == 2 || rd.status_id == 3) { 
+      //don't even show a particular line unless status is 2 or 3
+  %>
   <%
   //there's two parties here: the judging and the judged
   if (rd.judging_user_id == uid) { // if this user is the judge
@@ -61,7 +64,7 @@
           <%=loc.get(167,"decreased")%>
         <% } %>
       <% } else { %>
-      has not yet determined
+        <%=loc.get(180,"has not yet determined")%>
       <% }  %>
 
       <%=loc.get(168,"the reputation of")%>
@@ -96,7 +99,7 @@
           <%=loc.get(167,"decreased")%>
         <% } %>
       <% } else { %>
-      has not yet determined
+        <%=loc.get(180,"has not yet determined")%>
       <% }  %>
       
       <%=loc.get(168,"the reputation of")%>
@@ -113,10 +116,9 @@
 
     </div>
 
-  <%
-  }
-  %>
+    <% } %>
 
+  <% } %>
   <% } %>
 
 

@@ -963,21 +963,17 @@ BEGIN
   -- change the state for the servicer to COMPLETE_FEEDBACK_POSSIBLE
 
   UPDATE user_rank_data_point
-    SET date_entered = UTC_TIMESTAMP(),  -- last modified date update
-      judge_user_id = @handling_user_id, 
-      judged_user_id = uid,
-      requestoffer_id = rid, 
+    SET 
+      date_entered = UTC_TIMESTAMP(),  -- last modified date update
       status_id = 2 -- move them to needing to provide feedback
-    WHERE judge_user_id = j_uid;
+    WHERE judge_user_id = @handling_user_id;
 
   UPDATE user_rank_data_point
-    SET date_entered = UTC_TIMESTAMP(),  -- last modified date update
-      judge_user_id = uid, 
-      judged_user_id = @handling_user_id,
-      requestoffer_id = rid, 
+    SET 
+      date_entered = UTC_TIMESTAMP(),  -- last modified date update
       meritorious = satis,
       status_id = 3 -- they have provided feedback, they're done.
-    WHERE judge_user_id = j_uid;
+    WHERE judge_user_id = uid;
 
 
 	CALL add_audit(11,@handling_user_id,rid,NULL);
@@ -1100,21 +1096,17 @@ BEGIN
     WHERE requestoffer_id = rid;
 
     UPDATE user_rank_data_point
-      SET date_entered = UTC_TIMESTAMP(),  -- last modified date update
-        judge_user_id = @other_party,
-        judged_user_id = uid,
-        requestoffer_id = rid, 
-        status_id = 3 -- move them to needing to provide feedback
-      WHERE judge_user_id = j_uid;
+      SET 
+        date_entered = UTC_TIMESTAMP(),  -- last modified date update
+        status_id = 2 -- move them to needing to provide feedback
+      WHERE judge_user_id = @other_party;
 
     UPDATE user_rank_data_point
-      SET date_entered = UTC_TIMESTAMP(),  -- last modified date update
-        judge_user_id = uid,
-        judged_user_id = @other_party,
-        requestoffer_id = rid, 
-        meritorious = satis,
+      SET 
+        date_entered = UTC_TIMESTAMP(),  -- last modified date update
+        meritorious = is_thumbs_up,
         status_id = 3 -- they have provided feedback, they're done.
-      WHERE judge_user_id = j_uid;
+      WHERE judge_user_id = uid;
 
     -- inform the other user the transaction is canceled.
     CALL put_system_to_user_message(131, @other_party, rid);
@@ -1255,5 +1247,41 @@ BEGIN
       ON tm.message_id = tmt.message_id
     WHERE tm.user_id = uid;
   END IF;
+
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS rank_other_user;   
+
+---DELIMITER---
+
+CREATE PROCEDURE rank_other_user
+(
+  uid INT UNSIGNED, -- the user id
+  my_urdp_id INT UNSIGNED, -- the user rank data point id
+  is_satis BOOL -- whether the user is satisfied
+) 
+BEGIN 
+
+  CALL validate_user_id(uid);
+
+  SELECT COUNT(*) INTO @count_urdps
+  FROM user_rank_data_point
+  WHERE urdp_id = my_urdp_id;
+
+  IF @count_urdps = 0 THEN
+    SET @msg = CONCAT('no urdp having an id of ', my_urdp_id);
+    
+    SIGNAL SQLSTATE '45000' 
+    SET message_text = @msg;
+  END IF;
+
+  UPDATE user_rank_data_point
+    SET 
+      date_entered = UTC_TIMESTAMP(),  -- last modified date update
+      meritorious = is_satis,
+      status_id = 3 -- they have provided feedback, they're done.
+    WHERE judge_user_id = uid;
 
 END

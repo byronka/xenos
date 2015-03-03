@@ -36,71 +36,79 @@
 
   <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
 
-  <%
-  //there's two parties here: the judging and the judged
-  if (rd.judging_user_id == user_id) { // if we are the judge
+  <% if (rd.status_id == 2 || rd.status_id == 3) { 
+      //don't even show a particular line unless status is 2 or 3
   %>
 
-    <div class="rank-detail">
-      <%=rd.timestamp%>
-      <%=loc.get(165,"You")%>
+    <%
+    //there's two parties here: the judging and the judged
+    if (rd.judging_user_id == user_id) { // if we are the judge
+    %>
 
-      <% if(rd.meritorious != null) {%>
-        <% if (rd.meritorious) { %>
-          <%=loc.get(166,"increased")%>
-        <% } else { %>
-          <%=loc.get(167,"decreased")%>
+      <div class="rank-detail">
+        <%=rd.timestamp%>
+        <%=loc.get(165,"You")%>
+
+        <% if(rd.status_id == 3) {%>
+          <% if (rd.meritorious) { %>
+            <%=loc.get(166,"increased")%>
+          <% } else { %>
+            <%=loc.get(167,"decreased")%>
+          <% } %>
         <% } %>
-        <% } else { %>
-        has not yet determined
+          
+        <% if (rd.status_id == 2) { %>
+        <a href="judge.jsp?urdp=<%=rd.urdp_id%>&requestoffer=<%=rd.ro_id%>">
+            <%=loc.get(181,"have not yet determined")%>
+          </a>
         <% }  %>
 
-      <%=loc.get(168,"the reputation of")%>
 
-      <a href="user.jsp?user_id=<%=rd.judged_user_id%>">
-        <%=Utils.safe_render(rd.judged_username)%>
-      </a>
+          <%=loc.get(168,"the reputation of")%>
+        <a href="user.jsp?user_id=<%=rd.judged_user_id%>">
+          <%=Utils.safe_render(rd.judged_username)%>
+        </a>
 
-      <%=loc.get(170,"for the favor")%>
-      <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=Utils.safe_render(rd.ro_desc)%></a>
-      <span>StatusID: <%=rd.status_id%></span>
+        <%=loc.get(170,"for the favor")%>
+        <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
+          <%=Utils.safe_render(rd.ro_desc)%>
+        </a>
 
-    </div>
+      </div>
 
-  <%
-  } else { //if we are the judged
-  %>
+    <%
+    } else { //if we are the judged
+    %>
 
-    <div class="rank-detail">
-      <%=rd.timestamp%>
-      <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
-        <%=Utils.safe_render(rd.judging_username)%>
-      </a>
+      <div class="rank-detail">
+        <%=rd.timestamp%>
+        <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
+          <%=Utils.safe_render(rd.judging_username)%>
+        </a>
 
-      <% if(rd.meritorious != null) {%>
-        <% if (rd.meritorious) { %>
-          <%=loc.get(166,"increased")%>
+        <% if(rd.status_id == 3) {%>
+          <% if (rd.meritorious) { %>
+            <%=loc.get(166,"increased")%>
+          <% } else { %>
+            <%=loc.get(167,"decreased")%>
+          <% } %>
         <% } else { %>
-          <%=loc.get(167,"decreased")%>
-        <% } %>
-      <% } else { %>
-      has not yet determined
-      <% }  %>
-      
-      <%=loc.get(169,"your reputation")%>
-      
-      <%=loc.get(170,"for the favor")%>
+          <%=loc.get(180,"has not yet determined")%>
+        <% }  %>
+        
+        <%=loc.get(169,"your reputation")%>
+        <%=loc.get(170,"for the favor")%>
 
-      <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>"><%=Utils.safe_render(rd.ro_desc)%></a>
-      <span>StatusID: <%=rd.status_id%></span>
+        <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
+          <%=Utils.safe_render(rd.ro_desc)%>
+        </a>
 
-    </div>
+      </div>
 
-  <%
-  }
-  %>
+    <% } %>
 
-  <% } %>
+    <% } %>
+  <% }  %>
 
   <h3><%=loc.get(119, "Favors I have offered to service")%></h3>
 		<%
