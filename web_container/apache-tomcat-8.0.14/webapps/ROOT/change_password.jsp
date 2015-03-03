@@ -30,7 +30,8 @@
     
     boolean success = false;
     if (error_msg.length() == 0) { // if no error
-      if ((uid = Security.check_login(user.username, old_pass)) > 0) {
+      String ip_address = request.getRemoteAddr();
+      if ((uid = Security.check_login(user.username, old_pass, ip_address)) > 0) {
         success = User_utils.change_password(uid, uid, new_pass);
       } else {
         error_msg = loc.get(118, "What you gave for your old password is not valid. Try again.");
