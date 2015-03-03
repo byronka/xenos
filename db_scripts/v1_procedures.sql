@@ -585,14 +585,14 @@ BEGIN
   SET 
     status = 107, -- "accepted"
     date_modified = UTC_TIMESTAMP()
-  WHERE requestoffer_id = rid AND user_id = uid;
+  WHERE requestoffer_id = rid AND user_id = uid AND status = 106;
 
   -- change the service request to rejected for the losing users
   UPDATE requestoffer_service_request 
   SET 
     status = 108, -- "rejected"
     date_modified = UTC_TIMESTAMP()
-  WHERE requestoffer_id = rid AND user_id <> uid;
+  WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
 
   -- Add an audit for the winning user
   CALL add_audit(3,uid,rid,NULL);
@@ -602,7 +602,7 @@ BEGIN
     datetime, audit_action_id, user_id, target_id)
   SELECT UTC_TIMESTAMP(), 20, user_id, rid
   FROM requestoffer_service_request 
-  WHERE requestoffer_id = rid AND user_id <> uid;
+  WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
 
   -- send a message to the winnng user
   CALL put_system_to_user_message(132, uid, rid);
@@ -612,13 +612,13 @@ BEGIN
     text_id, requestoffer_id, to_user_id, timestamp)
   SELECT 133, rid, user_id, UTC_TIMESTAMP()
   FROM requestoffer_service_request 
-  WHERE requestoffer_id = rid AND user_id <> uid;
+  WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
 
   INSERT INTO temporary_message
   (timestamp, user_id, message_localization_id)
   SELECT UTC_TIMESTAMP(), user_id, 133
   FROM requestoffer_service_request 
-  WHERE requestoffer_id = rid AND user_id <> uid;
+  WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
 
 END
 

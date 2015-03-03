@@ -108,7 +108,8 @@ DROP EVENT IF EXISTS revert_open_requestoffers_to_draft;
 ---DELIMITER---
 
 -- this sql does the following: every 5 minutes, run a script to revert
--- any requestoffers more than a day old that have not been taken to the draft status.
+-- any requestoffers more than a day old that have not been 
+-- taken to the draft status.
 
 CREATE EVENT revert_open_requestoffers_to_draft
 ON SCHEDULE
@@ -133,11 +134,27 @@ DO
         ON rtcs.requestoffer_id = rs.requestoffer_id
       SET rs.status = 109; -- 109 is "DRAFT"
 
+      INSERT INTO audit (
+        datetime, audit_action_id, user_id, target_id)
+      SELECT UTC_TIMESTAMP(), 24, 1, requestoffer_id
+      FROM requestoffers_to_change_status;
+
+      INSERT INTO audit (
+        datetime, audit_action_id, user_id, target_id)
+      SELECT UTC_TIMESTAMP(), 25, 1, rsr.service_request_id
+      FROM requestoffers_to_change_status rtcs
+      JOIN requestoffer_service_request rsr
+        ON rtcs.requestoffer_id = rsr.requestoffer_id
+      WHERE rsr.status = 106; -- 106 is "new"
+
     -- set associated service request statuses to "rejected"
+    -- if they aren't already rejected.
       UPDATE requestoffer_service_request rsr 
       JOIN requestoffers_to_change_status rtcs
         ON rtcs.requestoffer_id = rsr.requestoffer_id
-      SET rsr.status = 108, rsr.date_modified = UTC_TIMESTAMP(); -- 108 is "REJECTED"
+      SET rsr.status = 108, 
+      rsr.date_modified = UTC_TIMESTAMP() -- 108 is "REJECTED"
+      WHERE rsr.status = 106; -- 106 is "new"
 
 
   END

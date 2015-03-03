@@ -144,14 +144,16 @@ VALUES
 -- requestoffer.  When they offer to handle one, it goes into this table.
 -- It is expected that the data here is constantly in flux.
 
+-- Once a rsr goes to status 107 or 108, it's not moving any more.
+
 CREATE TABLE  
 requestoffer_service_request ( 
+  service_request_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   requestoffer_id INT UNSIGNED NOT NULL,
   user_id INT UNSIGNED NOT NULL,
   date_created DATETIME, -- when a user made the offer to handle
   date_modified DATETIME, -- when the user takes an action on it
   status INT,
-  PRIMARY KEY (requestoffer_id, user_id),
   FOREIGN KEY FK_requestoffer_id (requestoffer_id)
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
@@ -301,7 +303,9 @@ VALUES
 (20,'User was rejected on a requestoffer'),
 (21,'New location was created'),
 (22,'Location was attached to requestoffer'),
-(23,'failed login for user');
+(23,'failed login for user'),
+(24,'reverting requestoffers to draft status. target is a requestoffer_id'),
+(25,'rejecting users due to revert of requestoffer.  target is requestoffer_service_request id');
 
 
 ---DELIMITER---
