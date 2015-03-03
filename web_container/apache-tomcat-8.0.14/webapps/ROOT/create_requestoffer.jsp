@@ -165,7 +165,7 @@
         %>
         <p><%=loc.get(158,"Select one of your saved locations")%>:</p>
             <select name="savedlocation">
-              <option>No address selected</option>
+              <option><%=loc.get(192,"No address selected")%></option>
         <%
           for (User_location loca : locations) {
         %>
