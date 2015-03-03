@@ -62,19 +62,17 @@ public final class Security {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      cs = conn.prepareCall("{call check_login(?,?,?)}");
+      cs = conn.prepareCall("{call check_login(?,?,?,?)}");
       cs.setNString( 1, username);
       cs.setString( 2, hashed_pwd);
       cs.setString( 3, ip_address);
-      ResultSet resultSet = cs.executeQuery();
-
-      if(Database_access.resultset_is_null_or_empty(resultSet)) {
-        return 0; // no results on query - return user "0";
-      }
-
-      resultSet.next(); //move to the first set of results.
-      int user_id = resultSet.getInt("user_id"); //success!
-      return user_id;
+      cs.registerOutParameter(4, java.sql.Types.INTEGER);
+      cs.executeQuery();
+      Integer user_id_found = cs.getInt(4);
+			if (cs.wasNull()) {
+				return 0;
+			}
+      return user_id_found;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return 0;
