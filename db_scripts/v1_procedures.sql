@@ -604,7 +604,7 @@ BEGIN
   WHERE requestoffer_id = rid;
 
   UPDATE requestoffer_state
-  SET status = 78 -- "taken"
+  SET status = 78 -- "taken", datetime = UTC_TIMESTAMP()
   WHERE requestoffer_id = rid;
 
   -- get the owner's user id
@@ -982,7 +982,7 @@ BEGIN
   -- up again to be reused.  We can go ahead and leave this information
   -- here as an auditing-type artifact.
 	UPDATE requestoffer_state -- change state of the requestoffer
-	SET status = 77 -- 'closed'
+	SET status = 77 -- 'closed', datetime = UTC_TIMESTAMP()
 	WHERE requestoffer_id = rid;
 
   -- get the handling user's id
@@ -1067,7 +1067,7 @@ BEGIN
 	-- at this point we are pretty sure it's all cool.
 
   UPDATE requestoffer_state
-  SET status = 76
+  SET status = 76, datetime = UTC_TIMESTAMP()
   WHERE requestoffer_id = rid;
 
   -- Add an audit
@@ -1138,7 +1138,7 @@ BEGIN
     WHERE requestoffer_id = rid;
 
     UPDATE requestoffer_state
-    SET status = 76 -- "OPEN"
+    SET status = 76 -- "OPEN", datetime = UTC_TiMESTAMP()
     WHERE requestoffer_id = rid;
 
     UPDATE user_rank_data_point

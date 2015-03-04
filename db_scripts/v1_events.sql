@@ -132,7 +132,7 @@ DO
       UPDATE requestoffer_state rs
       JOIN requestoffers_to_change_status rtcs 
         ON rtcs.requestoffer_id = rs.requestoffer_id
-      SET rs.status = 109; -- 109 is "DRAFT"
+      SET rs.status = 109, datetime = UTC_TIMESTAMP(); -- 109 is "DRAFT"
 
       INSERT INTO audit (
         datetime, audit_action_id, user_id, target_id)
