@@ -965,14 +965,22 @@ BEGIN
     SET 
       date_entered = UTC_TIMESTAMP(),  -- last modified date update
       status_id = 2 -- move them to needing to provide feedback
-    WHERE judge_user_id = @handling_user_id;
+    WHERE 
+    judge_user_id = @handling_user_id 
+    AND judged_user_id = uid
+    AND requestoffer_id = rid
+    AND status_id = 1;
 
   UPDATE user_rank_data_point
     SET 
       date_entered = UTC_TIMESTAMP(),  -- last modified date update
       meritorious = satis,
       status_id = 3 -- they have provided feedback, they're done.
-    WHERE judge_user_id = uid;
+    WHERE 
+      judge_user_id = uid
+      AND judged_user_id = @handling_user_id
+      AND requestoffer_id = rid
+      AND status_id = 1;
 
 
 	CALL add_audit(11,@handling_user_id,rid,NULL);
@@ -1098,14 +1106,20 @@ BEGIN
       SET 
         date_entered = UTC_TIMESTAMP(),  -- last modified date update
         status_id = 2 -- move them to needing to provide feedback
-      WHERE judge_user_id = @other_party;
+      WHERE judge_user_id = @other_party
+      AND judged_user_id = uid
+      AND requestoffer_id = rid
+      AND status_id = 1;
 
     UPDATE user_rank_data_point
       SET 
         date_entered = UTC_TIMESTAMP(),  -- last modified date update
         meritorious = is_thumbs_up,
         status_id = 3 -- they have provided feedback, they're done.
-      WHERE judge_user_id = uid;
+      WHERE judge_user_id = uid
+      AND judged_user_id = @other_party
+      AND requestoffer_id = rid
+      AND status_id = 1;
 
     -- inform the other user the transaction is canceled.
     CALL put_system_to_user_message(131, @other_party, rid);
@@ -1265,12 +1279,16 @@ BEGIN
 
   CALL validate_user_id(uid);
 
-  SELECT COUNT(*) INTO @count_urdps
+  SELECT COUNT(*) INTO @count_valid_urdps
   FROM user_rank_data_point
-  WHERE urdp_id = my_urdp_id;
+  WHERE urdp_id = my_urdp_id 
+    AND judge_user_id = uid 
+    AND status_id = 2;
 
-  IF @count_urdps = 0 THEN
-    SET @msg = CONCAT('no urdp having an id of ', my_urdp_id);
+  -- check that a user rank data point exists with this id.
+  IF @count_valid_urdps = 0 THEN
+    SET @msg = CONCAT('no urdp having an id of ', my_urdp_id,
+     ' status_id of 2 ,judge_user_id of ', uid);
     
     SIGNAL SQLSTATE '45000' 
     SET message_text = @msg;
@@ -1281,6 +1299,8 @@ BEGIN
       date_entered = UTC_TIMESTAMP(),  -- last modified date update
       meritorious = is_satis,
       status_id = 3 -- they have provided feedback, they're done.
-    WHERE judge_user_id = uid;
+    WHERE judge_user_id = uid 
+    AND urdp_id = my_urdp_id
+    AND status_id = 2; -- the user has to be in a proper state to give rank
 
 END

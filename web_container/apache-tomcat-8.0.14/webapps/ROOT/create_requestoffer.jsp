@@ -27,6 +27,7 @@
     String c = "";
     String cat_error_msg = "";
     String desc_error_msg = "";
+    String addr_error_msg = "";
 
     //address values
     String strt_addr_1_val = "";
@@ -101,6 +102,20 @@
         cat_error_msg = loc.get(8,"No categories found in string");
       }
 
+      if ( // if they said they need a location, but haven't given us any location info at all, validation error
+        need_loc && 
+        Utils.parse_int(savedlocation_val) == null &&
+        Utils.is_null_or_empty(strt_addr_1_val) &&
+        Utils.is_null_or_empty(strt_addr_2_val) &&
+        Utils.is_null_or_empty(city_val) &&
+        Utils.is_null_or_empty(state_val) &&
+        Utils.is_null_or_empty(postal_val) &&
+        Utils.is_null_or_empty(country_val)
+        ) {     
+        validation_error |= true;
+        addr_error_msg = loc.get(193,"You indicated you wanted to save a location with this favor but you entered nothing. If this does not require a location, click ") + "<a href='create_requestoffer.jsp'>" + loc.get(2, "Request Favor") + "</a>";
+      }
+
       if (!validation_error) {
 
         int new_ro_id = 0;
@@ -159,6 +174,10 @@
       </div>
 
       <% if (need_loc) { %>
+
+      <p>
+      <%=addr_error_msg%>
+      </p>
               
         <% 
           User_location[] locations = 

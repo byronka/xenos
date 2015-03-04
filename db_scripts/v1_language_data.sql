@@ -198,6 +198,7 @@ VALUES
   (190, 1,  'Ranking confirmed'),
   (191, 1,  'Thanks!  By providing a ranking for this user, you make the system a safer place for everyone.'),
   (192, 1,  'no address selected'),
+  (193, 1,  'You indicated you wanted to save a location with this favor but you entered nothing. If this does not require a location, click '),
   (1,   2,  'Recherche'),
   (2,   2,  'Demande Favor'),
   (3,   2,  'Déconnexion'),
@@ -390,6 +391,7 @@ VALUES
   (190, 2,  'Classement confirmé'),
   (191, 2,  'Merci! En fournissant un classement pour cet utilisateur, vous faites du système un endroit plus sûr pour tout le monde.'),
   (192, 2,  'aucune adresse sélectionnée'),
+  (193, 2,  'Vous avez dit que vous vouliez enregistrer un emplacement avec cette faveur , mais vous avez entré rien. Si cela ne nécessite pas un emplacement , cliquez sur'),
   (1,   3,  'Búsqueda'),
   (2,   3,  'Solicitud Favor'),
   (3,   3,  'Cerrar sesión'),
@@ -582,6 +584,7 @@ VALUES
   (190, 3,  'La clasificación se confirmó'),
   (191, 3,  'Gracias! Al proporcionar un ranking para este usuario, usted hace el sistema de un lugar más seguro para todos.'),
   (192, 3,  'sin dirección seleccionada'),
+  (193, 3,  'Usted indicó que quería salvar a un lugar con este favor , pero que ha introducido nada . Si este no requiere una ubicación, haga clic'),
   (1,   4,  '搜索'),
   (2,   4,  '请求青睐'),
   (3,   4,  '注销'),
@@ -774,6 +777,7 @@ VALUES
   (190, 4,  '排名确定'),
   (191, 4,  '谢谢！通过提供该用户的排名，你让系统给大家一个更安全的地方。'),
   (192, 4,  '没有选择的地址'),
+  (193, 4,  '你表示你想保存的位置与这个忙，但你输入什么。如果不需要的位置，单击'),
   (1,   5,  'חיפוש'),
   (2,   5,  'בעד בקשה'),
   (3,   5,  'התנתקות'),
@@ -965,4 +969,5 @@ VALUES
   (189, 5,  'אומלל'),
   (190, 5,  'דירוג אישר'),
   (191, 5,  'תודה! על ידי מתן דירוג עבור משתמש זה, אתה להפוך את המערכת למקום בטוח יותר עבור כולם.'),
-  (192, 5,  'אין כתובת שנבחרה');
+  (192, 5,  'אין כתובת שנבחרה'),
+  (193, 5,  'שציינת שאתה רוצה לשמור אתמיקום עם הטובה הזאת , אבל אתה נכנס שום דבר . אם זה אינו מחייבמיקום , לחץ על');

@@ -71,7 +71,7 @@
     </a>
   </p>
   <ul>
-    <li>Name: <%=potential_handler.username%></li>
+    <li>Name: <%=Utils.safe_render(potential_handler.username)%></li>
     <li>Rank: <%=potential_handler.rank%></li>
     <li>Points: <%=potential_handler.points%></li>
   </ul>

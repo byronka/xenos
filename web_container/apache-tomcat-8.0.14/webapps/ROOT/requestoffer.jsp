@@ -72,14 +72,14 @@
   <p>
     <%=loc.get(100,"Owning User")%>: 
     <%if(is_requestoffering_user) {%><em><%=loc.get(165,"You")%></em>, <%}%>
-    <%=User_utils.get_user(r.requestoffering_user_id).username%>
+    <%=Utils.safe_render(User_utils.get_user(r.requestoffering_user_id).username)%>
   </p>
   <p>
     <%=loc.get(101,"Handling User")%>: 
     <%if(is_handling_user) {%><em><%=loc.get(165,"You")%></em>, <%}%>
     <% User handleuser = User_utils.get_user(r.handling_user_id); 
     if (handleuser != null) {%>
-      <%=handleuser.username%>
+      <%=Utils.safe_render(handleuser.username)%>
     <%} else {%>
       <%=loc.get(103,"None")%>
     <%}%>
