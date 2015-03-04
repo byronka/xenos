@@ -7,9 +7,8 @@
   if (user_id > 0) { // don't do anything unless it's a valid user
     Localization loc = new Localization(user_id, request.getLocale());
 
-    String[] msgs = 
-      com.renomad.xenos.Requestoffer_utils.
-        get_my_temporary_msgs(user_id, loc);
+    msgs = com.renomad.xenos.Requestoffer_utils.
+          get_my_temporary_msgs(user_id, loc);
   }
 %>
 
