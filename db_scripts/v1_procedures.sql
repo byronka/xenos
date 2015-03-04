@@ -261,7 +261,9 @@ BEGIN
   SET @last_row = (page * 10) + 10;
 
   SET @get_requestoffer = 
-     CONCAT('SELECT SQL_CALC_FOUND_ROWS r.requestoffer_id, 
+     CONCAT('
+        (
+            SELECT SQL_CALC_FOUND_ROWS r.requestoffer_id, 
             r.datetime, 
             r.description, 
             rs.status, 
@@ -289,10 +291,47 @@ BEGIN
               ON r.requestoffer_id = ltr.requestoffer_id
             LEFT JOIN location l
               ON l.location_id = ltr.location_id
-            WHERE requestoffering_user_id <> @ruid AND rs.status <> 109
+            WHERE rs.status = 109 AND r.requestoffering_user_id = @ruid
             ', @search_clauses ,'
             GROUP BY r.requestoffer_id , l.city, l.postal_code
-            ORDER BY r.datetime DESC
+          )
+
+            UNION ALL
+
+          (
+            SELECT r.requestoffer_id, 
+            r.datetime, 
+            r.description, 
+            rs.status, 
+            r.points, 
+            u.rank, 
+            rsr.user_id AS been_offered,
+            r.requestoffering_user_id, 
+            r.handling_user_id, 
+            GROUP_CONCAT(DISTINCT l.postal_code SEPARATOR ",") AS postcodes,
+            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities,
+            GROUP_CONCAT(rc.category_id SEPARATOR ",") 
+            AS categories 
+            FROM requestoffer r 
+            JOIN requestoffer_state rs
+              ON rs.requestoffer_id = r.requestoffer_id
+            JOIN requestoffer_to_category rtc 
+              ON rtc.requestoffer_id = r.requestoffer_id 
+            JOIN requestoffer_category rc 
+              ON rc.category_id = rtc.requestoffer_category_id 
+            JOIN user u ON u.user_id = r.requestoffering_user_id 
+            LEFT JOIN requestoffer_service_request rsr
+              ON r.requestoffer_id = rsr.requestoffer_id 
+              AND rsr.user_id = @ruid
+            LEFT JOIN location_to_requestoffer ltr
+              ON r.requestoffer_id = ltr.requestoffer_id
+            LEFT JOIN location l
+              ON l.location_id = ltr.location_id
+            WHERE rs.status <> 109
+            ', @search_clauses ,'
+            GROUP BY r.requestoffer_id , l.city, l.postal_code
+          )
+            ORDER BY datetime DESC
             LIMIT ',@first_row,',',@last_row );
 
 

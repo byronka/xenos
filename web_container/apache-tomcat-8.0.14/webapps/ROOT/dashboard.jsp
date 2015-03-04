@@ -78,7 +78,9 @@
   for (Others_Requestoffer r : or_package.get_requestoffers()) {
 %>
   <div class="others requestoffer">
-    <%if (r.status == 76 && !r.has_been_offered) {%>
+    <%if (r.status == 76 && 
+      !r.has_been_offered && 
+      user_id != r.requestoffering_user_id) {%>
       <span class="handle-button-span">
         <a 
           class="button" 
