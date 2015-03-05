@@ -523,6 +523,57 @@ supervision - they are a way of quickly smoke testing the product, and
 having human supervision is accepable for some of the broad use cases.
 You may want to have the script finish on some page for human review.
 
+Things to test - 
+
+registering a user
+  validation when lacking username
+  validation when lacking password
+  validation when username exists
+  validation when username is the same as an existing email
+  
+login
+  login succeeds on valid user
+  login fails on invalid user
+  login fails with bad credentials for valid user
+  login fails with empty username, validation occurs
+  login fails with empty password, validation occurs
+  login fails with both empty username and password, validation occurs
+
+creating a requestoffer
+  with / without location
+  validation when lacking category
+  publish the requestoffer
+  
+delete a draft requestoffer
+delete an open non-taken requestoffer
+
+cancel a taken requestoffer
+  as handler / as owner
+  
+change password
+  success when valid old password and a new password exists
+  fail when bad old password
+  fail when lacking old password
+  fail when lacking new password
+  fail when lacking old and new password
+
+messaging
+	when user offers to handle your requestoffer, message should appear shortly
+	for you
+    on dashboard
+    on requestoffer
+    on create_requestoffer
+    on my_profile
+  similarly, you should receive a message about 
+    user accepting your offer to handle your requestoffer
+    user cancelling their action with your requestoffer
+    owner completing the requestoffer
+  
+timeout
+  timeout should appear after 25 minutes of idle and log you out at the 30 minute mark
+  clicking "I'm not done" should reset that time
+  timeout should appear localized
+
 
 
 
