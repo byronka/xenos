@@ -78,7 +78,18 @@ developed thus far:
   end, the text goes into the same input field and gets posted as though
   the user had manually input it.
 * Validation code happens in the JSP file.  
-
+* Consider that the bulk of time is not spent writing the code, but in
+  debugging it.  That being the case, avoid dynamic, run-time coding
+  techniques, instead favoring stodgy, boring old strongly-typed
+  non-generic stuff.
+* Write code in such a way that stacktraces are informative.  A
+  stacktrace that does not immediately lead to the actual error is a
+  defect and should be corrected as such.
+* Test cases may be used to help work out a tricky problem. But in no
+  case should confounding, opaque test cases ever be written.  If a
+  developer cannot look at the test case and immediately understand
+  what it's trying to test or do, that's a defect and should be
+  corrected.
 
 
 
@@ -332,16 +343,16 @@ There is a copy of that file in this directory, at ssl-howto-tomcat.txt
 SQL standards
 ===============
 
-1) Only add triggers for error conditions.
-2) Don't cascade triggers.  We don't want impossible-to-comprehend events.
-3) Describe what your SQL is meant to do, and why.
-4) Try to simplify your SQL code.
-5) A great way to debug work while you are writing it is to include a
+1) Try to avoid ever using triggers.  Triggers are events, events make
+  it difficult or impossible to debug.
+2) Describe what your SQL is meant to do, and why.
+3) Try to simplify your SQL code.
+4) A great way to debug work while you are writing it is to include a
 	select statement indicating the query.  For example,
   if you are writing a stored procedure, include near the end a SELECT
   @query to print out the resulting SQL so you can understand what the
   database is thinking.
-6) Great reasons to use stored procedures: if you are doing something
+5) Great reasons to use stored procedures: if you are doing something
   that requires multiple conversations with the database, that might
   be a good time to use stored procedures.  For example, you want to
   delete a requestoffer.  So first, check that the requestoffer exists,
@@ -349,7 +360,7 @@ SQL standards
   code, there is a lot of boiler plate required to tie things together -
   checking for errors, rolling back if necessary, etc. Whereas, if you
   do it in a stored procedure, all that boiler plate disappears.
-7) Adding sample data: there needs to be sample data for every table
+6) Adding sample data: there needs to be sample data for every table
   in the system that receives user data (not enum tables like
   audit_actions).  Not having sample data is a defect.  Reason being,
   that it provides us with a way of keeping tight control on the system
