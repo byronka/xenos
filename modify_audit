@@ -1,0 +1,5 @@
+Changes we'll make to audit
+audit action 6 will become 'owner marked their requestoffer complete'
+audit action 10 will become 'NOT-USED'
+audit action 17 will become 'user1 canceled an active requestoffer, user2 is other party'
+audit action 18 will become 'NOT-USED'
