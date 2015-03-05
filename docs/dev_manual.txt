@@ -495,8 +495,7 @@ Useful SQL scripts
 ==================
 Show the audit with messages and usernames and notes:
 
-select a.datetime, u.username, aa.action, a.target_id, a.notes_id, an.notes from audit a JOIN audit_actions aa ON aa.action_id = a.audit_action_id LEFT JOIN user u ON u.user_id = a.user_id LEFT JOIN audit_notes an ON an.notes_id = a.notes_id;
-
+CALL show_audit_log_info(); -- shows lots of useful audit info
 
 
 

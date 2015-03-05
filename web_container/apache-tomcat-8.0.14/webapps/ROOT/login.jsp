@@ -8,7 +8,14 @@
   //username and password.
 	request.setCharacterEncoding("UTF-8");
   int user_id = Security.check_if_allowed(request, true);
-  if (user_id > 0) { response.sendRedirect("dashboard.jsp");return; }
+  if (user_id > 0) {
+    response.sendRedirect("dashboard.jsp");return; 
+  } else {
+    Cookie cookie = new Cookie("xenos_cookie", "");
+    cookie.setMaxAge(0);
+    response.addCookie(cookie);
+  }
+
 
   //set up an object to localize text
   Localization loc  = new Localization(request.getLocale());

@@ -77,8 +77,8 @@ DO
     );
 
     INSERT INTO audit ( -- now, store an audit of what we deleted
-      datetime, audit_action_id, user_id, target_id)
-    SELECT UTC_TIMESTAMP(), 8, 1, location_id
+      datetime, audit_action_id, user1_id, extra_id)
+    SELECT UTC_TIMESTAMP(), 404, 1, location_id
     FROM locations_to_delete;
 
   END
@@ -128,27 +128,29 @@ DO
         AND UTC_TIMESTAMP() > (datetime + INTERVAL 24 HOUR)
     );
 
-    -- update the requestoffer to be draft status
+    -- update the requestoffers to be draft status
       UPDATE requestoffer_state rs
       JOIN requestoffers_to_change_status rtcs 
         ON rtcs.requestoffer_id = rs.requestoffer_id
       SET rs.status = 109, datetime = UTC_TIMESTAMP(); -- 109 is "DRAFT"
 
+      -- audit that we are setting the requestoffer to draft
       INSERT INTO audit (
-        datetime, audit_action_id, user_id, target_id)
-      SELECT UTC_TIMESTAMP(), 24, 1, requestoffer_id
+        datetime, audit_action_id, user1_id, requestoffer_id)
+      SELECT UTC_TIMESTAMP(), 206, 1, requestoffer_id -- 1 is the system user
       FROM requestoffers_to_change_status;
 
+      -- audit that we are rejecting users who had offered to handle this
       INSERT INTO audit (
-        datetime, audit_action_id, user_id, target_id)
-      SELECT UTC_TIMESTAMP(), 25, 1, rsr.service_request_id
+        datetime, audit_action_id, user1_id, user2_id, requestoffer_id)
+      SELECT UTC_TIMESTAMP(), 211, 1, rsr.user_id, rsr.requestoffer_id
       FROM requestoffers_to_change_status rtcs
       JOIN requestoffer_service_request rsr
         ON rtcs.requestoffer_id = rsr.requestoffer_id
       WHERE rsr.status = 106; -- 106 is "new"
 
-    -- set associated service request statuses to "rejected"
-    -- if they aren't already rejected.
+      -- set associated service request statuses to "rejected"
+      -- if they aren't already rejected.
       UPDATE requestoffer_service_request rsr 
       JOIN requestoffers_to_change_status rtcs
         ON rtcs.requestoffer_id = rsr.requestoffer_id
@@ -156,6 +158,14 @@ DO
       rsr.date_modified = UTC_TIMESTAMP() -- 108 is "REJECTED"
       WHERE rsr.status = 106; -- 106 is "new"
 
+      -- give points back to the owning users
+      UPDATE user u 
+      JOIN requestoffer r 
+        ON u.user_id = r.requestoffering_user_id
+      JOIN requestoffers_to_change_status rtcs 
+        ON rtcs.requestoffer_id = r.requestoffer_id
+      SET u.points = u.points + r.points 
+      WHERE user_id = uid;
 
   END
 

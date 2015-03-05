@@ -38,7 +38,8 @@
     }
 
     if (!validation_error) {
-    boolean succeed = User_utils.put_user( username, password);
+    String ip_address = request.getRemoteAddr();
+    boolean succeed = User_utils.put_user( username, password, ip_address);
       if (succeed) {
         response.sendRedirect("thanks.jsp");
       } else {

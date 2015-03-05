@@ -150,7 +150,7 @@ CREATE TABLE
 requestoffer_service_request ( 
   service_request_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   requestoffer_id INT UNSIGNED NOT NULL,
-  user_id INT UNSIGNED NOT NULL,
+  user_id INT UNSIGNED NOT NULL, -- the user making an offer
   date_created DATETIME, -- when a user made the offer to handle
   date_modified DATETIME, -- when the user takes an action on it
   status INT,
@@ -281,31 +281,50 @@ audit_actions (
 
 INSERT INTO audit_actions (action_id,action)
 VALUES
-(1,'User created a requestoffer'),
-(2,'User deleted a requestoffer'),
-(3,'User was accepted on a requestoffer'),
-(4,'New user was registered'),
-(5,'cookie authentication failed'),
-(6,'completion of requestoffer - satisfied'),
-(7,'user offered to take requestoffer'),
-(8,'location was deleted, since there were no related users or requestoffers'),
-(9,'user published a requestoffer (set its status to OPEN)'),
-(10,'completion of requestoffer - unsatisfied'),
-(11,'handling user received a favor point from completing requestoffer'),
-(12,'user lost a favor point from creating a requestoffer'),
-(13,'user changed their password'),
-(14,'failed decrypting cookie'),
-(15,'user logged in'),
-(16,'user logged out'),
-(17,'user canceled an active requestoffer - satisfied'),
-(18,'user canceled an active requestoffer - unsatisfied'),
-(19,'handling user was removed by a cancel action'),
-(20,'User was rejected from handling a requestoffer'),
-(21,'New location was created'),
-(22,'Location was attached to requestoffer'),
-(23,'failed login for user'),
-(24,'reverting requestoffers to draft status. target is a requestoffer_id'),
-(25,'rejecting users due to revert of requestoffer.  target is requestoffer_service_request id');
+
+-- user registration, login, security - 100s
+
+(101,'New user was registered'),
+(102,'User logged in'),
+(103,'User logged out'),
+(104,'Failed login for user'),
+(105,'User changed their password'),
+(106,'Cookie authentication failed'),
+(107,'Failed decrypting cookie'),
+(108,'User came in from a different ip'),
+
+-- requestoffers - 200s
+
+(201,'User1 created a requestoffer'),
+(202,'User1 published a requestoffer (set its status to OPEN)'),
+(203,'User1 marked their requestoffer complete (user2 is handling user)'),
+(204,'User1 marked a requestoffer canceled (user2 is other user)'),
+(205,'User1 deleted a requestoffer'),
+(206,'User1 reverted requestoffer to draft status'),
+(207,'User1 accepted user2''s offer to handle a requestoffer'),
+(208,'User1 rejected user2''s offer to handle a requestoffer'),
+(209,'User1 offered to take user2''s requestoffer'),
+(210,'User1 (Handling user) was removed from a requestoffer by a cancel action'),
+(211,'Rejecting user2''s offer to handle requestoffer due to revert of requestoffer'),
+
+-- rank and points - 300s
+
+(301,'System took a point from user2 for publishing a requestoffer'),
+(302,'User1 gave user2 a point'),
+(303,'System returned a point to user2 for reverting a requestoffer to draft'),
+(304,'User1 raised user2''s rank (extra_id is the urdp_id)'),
+(305,'User1 lowered user2''s rank (extra_id is the urdp_id)'),
+(306,'User1 is going into ACTIVE on user_rank_data_point (extra_id is urdp_id)'),
+(307,'User1 is going into COMPLETE_FEEDBACK_POSSIBLE on user_rank_data_point (extra_id is urdp_id)'),
+(308,'User1 is going into COMPLETE on user_rank_data_point (extra_id is urdp_id)'),
+
+-- misc - 400s
+
+(401,'New location was created'),
+(402,'Location was attached to requestoffer'),
+(403,'Location was attached to user'),
+(404,'location was deleted, since there were no related users or requestoffers');
+
 
 
 ---DELIMITER---
@@ -324,23 +343,15 @@ audit_notes (
 ---DELIMITER---
 
 -- the audit table will store the various actions taken by users.  
--- for example,
--- if a user deletes a requestoffer, then a row will be added here with
--- that user's id, the requestoffer's id as "target_id", and the
--- id of the action that took place, with a timestamp.
-
--- there is no purpose to having an id that I can think, so I'll just
--- set this to be keyed by timestamp.
-
--- Given that this is just the timestamp plus 3 ints, the total size
--- should be tiny.
    
 CREATE TABLE 
 audit (
   datetime DATETIME NOT NULL,
   audit_action_id INT UNSIGNED NOT NULL, -- an enum of actions
-  user_id INT UNSIGNED ,  -- the user who caused the action
-  target_id INT UNSIGNED, -- this is the thing manipulated, e.g. the requestoffer.
+  user1_id INT UNSIGNED ,  -- typically the acting user
+  user2_id INT UNSIGNED ,  -- typically the passive / target user
+  requestoffer_id INT UNSIGNED, -- the requestoffer, when applicable
+  extra_id INT UNSIGNED, -- when referring to something not a requestoffer, e.g. location
   notes_id INT UNSIGNED -- some notes about the action, see audit_notes
 )
 
