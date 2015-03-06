@@ -1,19 +1,22 @@
 <%@include file="includes/init.jsp" %>
 <!DOCTYPE html>
-<html>                                 
+<html>
 	<head>
-		<title><%=loc.get(2, "Request Favor")%></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-		<%if (probably_mobile) {%>
-			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
-		<% } else { %>
-			<link rel="stylesheet" href="includes/common.css" title="desktop">
-		<% } %>
+    <title><%=loc.get(2, "Request Favor")%></title>	
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <%if (probably_mobile) {%>
+      <link rel="stylesheet" href="includes/common_alt.css" title="mobile">
+    <% } else { %>
+      <link rel="stylesheet" href="includes/common.css" title="desktop">
+    <% } %>		
 	</head>
-
+	
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%@ page import="com.renomad.xenos.User_location" %>
 <%@ page import="com.renomad.xenos.Utils" %>
+<%@ page import="java.util.Arrays" %>
+
   <% 
 
   String qs = request.getQueryString();
@@ -21,7 +24,7 @@
   boolean need_loc =  //does the user want to enter location info?
     Boolean.parseBoolean(Utils.parse_qs(qs).get("create_loc"));
 
-	request.setCharacterEncoding("UTF-8");
+  request.setCharacterEncoding("UTF-8");
     //get the values straight from the client
     String de = "";
     String c = "";
@@ -103,19 +106,19 @@
       }
 
       if ( // if they said they need a location, but haven't given us any location info at all, validation error
-        need_loc && 
-        Utils.parse_int(savedlocation_val) == null &&
-        Utils.is_null_or_empty(strt_addr_1_val) &&
-        Utils.is_null_or_empty(strt_addr_2_val) &&
-        Utils.is_null_or_empty(city_val) &&
-        Utils.is_null_or_empty(state_val) &&
-        Utils.is_null_or_empty(postal_val) &&
-        Utils.is_null_or_empty(country_val)
-        ) {     
-        validation_error |= true;
-        addr_error_msg = loc.get(193,"You indicated you wanted to save a location with this favor but you entered nothing. If this does not require a location, click ") + "<a href='create_requestoffer.jsp'>" + loc.get(2, "Request Favor") + "</a>";
-      }
-
+              need_loc &&
+              Utils.parse_int(savedlocation_val) == null &&
+              Utils.is_null_or_empty(strt_addr_1_val) &&
+              Utils.is_null_or_empty(strt_addr_2_val) &&
+              Utils.is_null_or_empty(city_val) &&
+              Utils.is_null_or_empty(state_val) &&
+              Utils.is_null_or_empty(postal_val) &&
+              Utils.is_null_or_empty(country_val)
+              ) {
+              validation_error |= true;
+              addr_error_msg = loc.get(193,"You indicated you wanted to save a location with this favor but you entered nothing. If this does not require a location, click ") + "<a href='create_requestoffer.jsp'>" + loc.get(2, "Request Favor") + "</a>";
+      }      
+      
       if (!validation_error) {
 
         int new_ro_id = 0;
@@ -126,161 +129,175 @@
           return;
         }
 
-        if (need_loc) {
-          Integer location_id = 0;
-          if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
-            Requestoffer_utils.assign_location_to_requestoffer(location_id, new_ro_id);
-          } else {
-            int uid = request.getParameter("save_loc_to_user") != null ? user_id : 0;
-            Requestoffer_utils.put_location(
-              uid, new_ro_id,
-              strt_addr_1_val, strt_addr_2_val, 
-              city_val, state_val, postal_val, country_val);
-          }
+        Integer location_id = 0;
+        if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
+          Requestoffer_utils.assign_location_to_requestoffer(location_id, new_ro_id);
+        } else {
+          int uid = request.getParameter("save_loc_to_user") != null ? user_id : 0;
+          Requestoffer_utils.put_location(
+            uid, new_ro_id,
+            strt_addr_1_val, strt_addr_2_val, 
+            city_val, state_val, postal_val, country_val);
         }
-
-        response.sendRedirect("requestoffer_created.jsp?requestoffer=" + new_ro_id);
+        response.sendRedirect("dashboard.jsp");
         return;
       }
     }
   %>
+	
+	<body role="document" class="backstretch-light">
+    <%@include file="includes/header.jsp" %>	
+	  <div class="wrapper">
+	    <div class="container theme-showcase" role="main">		   	   
+	     
+        <div class="page-header">
+	          <h1>Request Favor</h1>
+	      </div>
+	         		             
+				<form method="POST" action="create_requestoffer.jsp" class="form-horizontal">	
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<div class="panel-title-advanced clearfix">
+								<h3 class="panel-title">Details</h3>
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="form-group <%if(desc_error_msg.length() > 0){out.print("has-error has-feedback");}%>">
+		            <label for="description" class="col-sm-2 control-label"><%=loc.get(10,"Description")%>:</label>
+		            <div class="col-sm-7">
+		              <input maxlength=200 type="text" name="description" placeholder="<%=loc.get(10,"Description")%>" class="form-control" value="<%=de%>">
+                  <%if(desc_error_msg.length() > 0){%>  
+                  <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                  <%}%> 
+		            </div> 
+		            <div class="col-sm-3">
+                  <span class="help-block"><%=desc_error_msg%></span>
+                </div>		                     
+						  </div>				  
+              <div class="form-group <%if(cat_error_msg.length() > 0){out.print("has-error has-feedback");}%>">
+		            <label for="categories" class="col-sm-2 control-label"><%=loc.get(13,"Categories")%>:</label>
+								<div class="col-sm-7">
+			            <select name="categories" class="form-control">
+                    <option disabled selected> -- Select a Category -- </option>			            
+					          <%
+					          for(String category : Arrays.asList(Requestoffer_utils.get_categories_string(loc).split(","))){
+					          %>
+					          <option value="<%=category%>"><%=category%></option>    
+					          <%                    
+		                }
+		                %>			           		             
+		              </select>
+		            </div>
+                <div class="col-sm-3">
+                  <span class="help-block"><%=cat_error_msg%></span>
+                </div>                
+							</div>																	
+							<% if (need_loc) { %>					
+							
+              <div class="form-group <%if(addr_error_msg.length() > 0){out.print("has-error has-feedback");}%>">            
+                <div class="col-sm-10">
+                  <span class="help-block"><%=addr_error_msg%></span>
+                </div>                
+              </div>        																          			         
+							   <% 
+							     User_location[] locations = 
+							       Requestoffer_utils.get_my_saved_locations(user_id);
+							     if (locations.length > 0) {
+							   %>
+							   
+							   <p><%=loc.get(158,"Select one of your saved locations")%>:</p>
+							       <select name="savedlocation">
+							         <option>No address selected</option>
+							   <%
+							     for (User_location loca : locations) {
+							   %>
+							     <%if(Integer.toString(loca.id).equals(savedlocation_val)){%>
+							       <option selected value="<%=loca.id%>">
+							     <%} else { %>
+							       <option value="<%=loca.id%>">
+							     <% } %>
+							           <%=loca.str_addr_1%>
+							           <%=loca.str_addr_2%>
+							           <%=loca.city%>
+							           <%=loca.state%>
+							           <%=loca.postcode%>
+							           <%=loca.country%>
+							         </option>
+							   <%
+							       }
+							   %>
+							       </select>                       
+							   <%
+							     }
+							   %>
+              
+              <div class="form-group">
+                <label class="col-sm-4"><%=loc.get(159,"Or enter a new address")%>:</label>            
+              </div>                							
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label">
+						      <input id="save_loc_to_user" name="save_loc_to_user" <%=save_loc_to_user_checked%> type="checkbox"/>
+						        <%=loc.get(160,"Save to my favorites")%>
+						    </label>					
+						  </div>								 
+              <div class="form-group">
+                <label for=strt_addr_1 class="col-sm-2 control-label"><%=loc.get(152,"Street Address 1")%>:</label>
+                <div class="col-sm-7">
+                  <input maxlength=100 type="text" name="strt_addr_1" placeholder="" class="form-control" value="<%=strt_addr_1_val%>">
+                </div>                      
+              </div>  				
+              <div class="form-group">
+                <label for=strt_addr_2 class="col-sm-2 control-label"><%=loc.get(153,"Street Address 2")%>:</label>
+                <div class="col-sm-7">
+                  <input maxlength=100 type="text" name="strt_addr_2" placeholder="" class="form-control" value="<%=strt_addr_2_val%>">
+                </div>                      
+              </div>         
+              <div class="form-group">
+                <label for=city class="col-sm-2 control-label"><%=loc.get(154,"City")%>:</label>
+                <div class="col-sm-7">
+                  <input maxlength=40 type="text" name="city" placeholder="" class="form-control" value="<%=city_val%>">
+                </div>                      
+              </div>     
+              <div class="form-group">
+                <label for=state class="col-sm-2 control-label"><%=loc.get(155,"State")%>:</label>
+                <div class="col-sm-7">
+                  <input maxlength=30 type="text" name="state" placeholder="" class="form-control" value="<%=state_val%>">
+                </div>                      
+              </div>   
+              <div class="form-group">
+                <label for=postal class="col-sm-2 control-label"><%=loc.get(156,"Postal code")%>:</label>
+                <div class="col-sm-7">
+                  <input maxlength=20 type="text" name="postal" placeholder="" class="form-control" value="<%=postal_val%>">
+                </div>                      
+              </div>   
+              <div class="form-group">
+                <label for=country class="col-sm-2 control-label"><%=loc.get(157,"Country")%>:</label>
+                <div class="col-sm-7">
+                  <input maxlength=40 type="text" name="country" placeholder="" class="form-control" value="<%=country_val%>">
+                </div>                      
+              </div>                                             
 
-  <body>
-  <%@include file="includes/header.jsp" %>
-    <form method="POST" action="create_requestoffer.jsp">
-
-      <p>
-        <label for="description">
-          <%=loc.get(10,"Description")%>: 
-        </label>
-        <input 
-          type="text" 
-          maxlength=200
-          name="description" 
-          value="<%=de%>"/> 
-        <span><%=desc_error_msg%></span>
-      </p>
-
-      <p>
-        <label for="categories">
-          <%=loc.get(13,"Categories")%>: 
-        </label>
-        <input type="text" name="categories" value="<%=c%>"/>
-        <span><%=cat_error_msg%></span>
-      </p>
-
-      <div id='available-categories'>
-				<%=Requestoffer_utils.get_categories_string(loc)%>
+							
+							 <%  }  %>							
+							
+							
+							
+														
+						</div>
+						<div class="panel-footer clearfix">
+							<div class="btn-group pull-right">
+								<button type="submit" class="btn btn-primary">Request Favor</button>
+							</div>
+						</div>
+					</div>			
+				</form>	
       </div>
+    </div>
 
-      <% if (need_loc) { %>
-
-      <p>
-      <%=addr_error_msg%>
-      </p>
-              
-        <% 
-          User_location[] locations = 
-            Requestoffer_utils.get_my_saved_locations(user_id);
-          if (locations.length > 0) {
-        %>
-        <p><%=loc.get(158,"Select one of your saved locations")%>:</p>
-            <select name="savedlocation">
-              <option><%=loc.get(192,"No address selected")%></option>
-        <%
-          for (User_location loca : locations) {
-        %>
-          <%if(Integer.toString(loca.id).equals(savedlocation_val)){%>
-            <option selected value="<%=loca.id%>">
-          <%} else { %>
-            <option value="<%=loca.id%>">
-          <% } %>
-                <%=loca.str_addr_1%>
-                <%=loca.str_addr_2%>
-                <%=loca.city%>
-                <%=loca.state%>
-                <%=loca.postcode%>
-                <%=loca.country%>
-              </option>
-        <%
-            }
-        %>
-            </select>                       
-          <p><%=loc.get(159,"Or enter a new address")%>:</p>
-
-        <%
-          }
-        %>
-
-        <p>
-          <input 
-            id="save_loc_to_user" 
-            name="save_loc_to_user" 
-            <%=save_loc_to_user_checked%>
-            type="checkbox" />
-            <label for="save_loc_to_user">
-              <%=loc.get(160,"Save to my favorites")%>
-            </label>
-        </p>
-        <p>
-          <label for="strt_addr_1">
-            <%=loc.get(152,"Street Address 1")%>: 
-          </label>
-          <input 
-            type="text" name="strt_addr_1" 
-            maxlength="100" value="<%=strt_addr_1_val%>"/>
-        </p>
-              
-        <p>
-          <label for="strt_addr_2">
-            <%=loc.get(153,"Street Address 2")%>:
-          </label>
-          <input 
-            type="text" name="strt_addr_2" 
-            maxlength="100" value="<%=strt_addr_2_val%>"/>
-        </p>
-              
-        <p>
-          <label for="city">
-            <%=loc.get(154,"City")%>: 
-          </label>
-          <input 
-            type="text" name="city" maxlength="40" 
-            value="<%=city_val%>"/>
-        </p>
-              
-        <p>
-          <label for="state">
-            <%=loc.get(155,"State")%>: 
-          </label>
-          <input 
-            type="text" name="state" 
-            maxlength="30" value="<%=state_val%>"/>
-        </p>
-              
-        <p>
-          <label for="postal">
-            <%=loc.get(156,"Postal code")%>: 
-          </label>
-          <input 
-            type="text" name="postal" 
-            maxlength="20" value="<%=postal_val%>"/>
-        </p>
-              
-        <p>
-          <label for="country">
-            <%=loc.get(157,"Country")%>: 
-          </label>
-          <input 
-            type="text" name="country" 
-            maxlength="40" value="<%=country_val%>"/>
-        </p>
-
-      <%  }  %>
-
-      <button type="submit"><%=loc.get(2,"Request Favor")%></button>
-
-    </form>
-    <%@include file="includes/timeout.jsp" %>
-  </body>
+	
+		<script
+			src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="includes/timeout.js"></script>
+	</body>
 </html>
