@@ -80,12 +80,12 @@ public final class Requestoffer_utils {
     * hidden from everyone but the owner
     */
   public static boolean 
-    unpublish_requestoffer(int requestoffer_id, int user_id) {
+    retract_requestoffer(int user_id, int requestoffer_id ) {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
       cs = conn.prepareCall(String.format(
-        "{call unpublish_requestoffer(%d, %d)}" 
+        "{call retract_requestoffer(%d, %d)}" 
         , user_id, requestoffer_id));
       cs.execute();
     } catch (SQLException ex) {

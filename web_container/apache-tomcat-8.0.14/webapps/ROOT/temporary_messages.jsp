@@ -3,13 +3,21 @@
 
 <% 
   int user_id = com.renomad.xenos.Security.check_if_allowed(request, false);
-  String[] msgs = new String[0];
-  if (user_id > 0) { // don't do anything unless it's a valid user
-    Localization loc = new Localization(user_id, request.getLocale());
-
-    msgs = com.renomad.xenos.Requestoffer_utils.
-          get_my_temporary_msgs(user_id, loc);
+  if (user_id <= 0) { 
+    Cookie cookie = new Cookie("xenos_cookie", "");
+    cookie.setMaxAge(0);
+    response.addCookie(cookie);
+    response.sendError(SC_FORBIDDEN);
+  %>
+    <div>unauthenticated</div>
+  <%
+    return;
   }
+  String[] msgs = new String[0];
+  Localization loc = new Localization(user_id, request.getLocale());
+
+  msgs = com.renomad.xenos.Requestoffer_utils.
+        get_my_temporary_msgs(user_id, loc);
 %>
 
 <!DOCTYPE html>

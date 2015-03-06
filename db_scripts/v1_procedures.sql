@@ -732,10 +732,10 @@ END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS unpublish_requestoffer;
+DROP PROCEDURE IF EXISTS retract_requestoffer;
 
 ---DELIMITER---
-CREATE PROCEDURE unpublish_requestoffer
+CREATE PROCEDURE retract_requestoffer
 (
   uid INT UNSIGNED, -- the user id making the choice to unpublish
   rid INT UNSIGNED -- the requestoffer id

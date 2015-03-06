@@ -240,6 +240,9 @@
             href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
             <%=loc.get(21,"Delete")%>
           </a>
+          <a class="button" href="retract_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+            <%=loc.get(194,"Retract")%>
+          </a>
 			</div>
 		<% } %>
 		</div>

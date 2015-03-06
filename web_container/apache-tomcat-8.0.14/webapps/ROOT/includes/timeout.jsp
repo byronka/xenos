@@ -43,9 +43,9 @@
         return;
       }
       //if we hit countdown of 0, we are already logged out on the
-      // server.  Just refresh the page to the login screen.
+      // server.  Just send them to the logout page to clean up.
       if (countdown == 0) {
-        document.location = 'login.jsp';
+        document.location = 'logout.jsp';
         return;
       }
       //HERE is where we set the point where the alert shows.
