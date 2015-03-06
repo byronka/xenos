@@ -292,7 +292,7 @@ BEGIN
             JOIN user u ON u.user_id = r.requestoffering_user_id 
             LEFT JOIN requestoffer_service_request rsr
               ON r.requestoffer_id = rsr.requestoffer_id 
-              AND rsr.user_id = @ruid
+              AND rsr.user_id = @ruid AND rsr.status = 106 -- 106 is "NEW"
             LEFT JOIN location_to_requestoffer ltr
               ON r.requestoffer_id = ltr.requestoffer_id
             LEFT JOIN location l
@@ -328,7 +328,7 @@ BEGIN
             JOIN user u ON u.user_id = r.requestoffering_user_id 
             LEFT JOIN requestoffer_service_request rsr
               ON r.requestoffer_id = rsr.requestoffer_id 
-              AND rsr.user_id = @ruid
+              AND rsr.user_id = @ruid AND rsr.status = 106 -- 106 is "NEW"
             LEFT JOIN location_to_requestoffer ltr
               ON r.requestoffer_id = ltr.requestoffer_id
             LEFT JOIN location l
@@ -624,6 +624,12 @@ BEGIN
   (UTC_TIMESTAMP(), @owner_id,uid, rid, 1), 
   (UTC_TIMESTAMP(), uid,@owner_id, rid, 1); 
 
+  SET @urdp_id = LAST_INSERT_ID();
+
+  -- Add an audit that these users are going into ACTIVE state
+  CALL add_audit(306,uid,@owner_id,rid,@urdp_id,NULL);
+  CALL add_audit(306,@owner_id,uid,rid,@urdp_id,NULL);
+
   -- change the service request to accepted for the winning user
   UPDATE requestoffer_service_request 
   SET 
@@ -731,8 +737,8 @@ DROP PROCEDURE IF EXISTS unpublish_requestoffer;
 ---DELIMITER---
 CREATE PROCEDURE unpublish_requestoffer
 (
-  uid INT UNSIGNED,
-  rid INT UNSIGNED
+  uid INT UNSIGNED, -- the user id making the choice to unpublish
+  rid INT UNSIGNED -- the requestoffer id
 ) 
 BEGIN 
   CALL validate_user_id(uid);
@@ -743,16 +749,21 @@ BEGIN
   WHERE requestoffer_id = rid AND status = 76; -- 76 is "OPEN"
 
   -- get the points on this requestoffer.
-  SELECT points into @points
+  SELECT points, requestoffering_user_id into @points, @ruid
   FROM requestoffer 
   WHERE requestoffer_id = rid;
 
   -- give points back to the user
   UPDATE user 
   SET points = points + @points 
-  WHERE user_id = uid;
+  WHERE user_id = @ruid;
 
-  call add_audit(206, uid, NULL, rid, NULL, NULL);
+
+  -- audit that the requestoffer was reverted
+  call add_audit(206, uid, @ruid, rid, NULL, NULL);
+
+  -- audit that the point was returned to the user who owns the requestoffer
+  call add_audit(303, 1, @ruid, rid, NULL, NULL);
 
 END
 ---DELIMITER---
@@ -1027,6 +1038,8 @@ BEGIN
 	SET status = 77 -- 'closed', datetime = UTC_TIMESTAMP()
 	WHERE requestoffer_id = rid;
 
+	CALL add_audit(203,uid,@handling_user_id,rid,NULL,NULL);
+
   -- get the handling user's id
   SELECT handling_user_id INTO @handling_user_id
   FROM requestoffer 
@@ -1055,7 +1068,7 @@ BEGIN
       date_entered = UTC_TIMESTAMP(),  -- last modified date update
       status_id = 2 -- move them to needing to provide feedback
     WHERE 
-    urdp_id = @handler_urdp_id
+    urdp_id = @handler_urdp_id;
 
   -- audit that we're putting the handling user in COMPLETE_FEEDBACK_POSSIBLE
 	CALL add_audit(307,@handling_user_id,uid,rid,@handler_urdp_id,'From status_id 1');
@@ -1074,8 +1087,9 @@ BEGIN
       meritorious = satis,
       status_id = 3 -- they have provided feedback, they're done.
     WHERE 
-      urdp_id = @owner_urdp_id
+      urdp_id = @owner_urdp_id;
 
+  -- Audit that we're putting the owner into COMPLETE
 	CALL add_audit(308,uid,@handling_user_id,rid,@owner_urdp_id,'From status_id 1');
 
   -- audit that the handling user earned a point off this
@@ -1210,6 +1224,8 @@ BEGIN
     SET status = 76 -- "OPEN", datetime = UTC_TiMESTAMP()
     WHERE requestoffer_id = rid;
 
+    CALL add_audit(204,uid,@other_party,rid,NULL, NULL);
+
     UPDATE user_rank_data_point
       SET 
         date_entered = UTC_TIMESTAMP(),  -- last modified date update
@@ -1219,7 +1235,7 @@ BEGIN
       AND requestoffer_id = rid
       AND status_id = 1;
 
-    CALL add_audit(307,@handling_user_id,uid,rid,@handler_urdp_id,'From status_id 1');
+    CALL add_audit(307,@other_party,uid,rid,@handler_urdp_id,'From status_id 1');
 
     UPDATE user_rank_data_point
       SET 
@@ -1231,7 +1247,7 @@ BEGIN
       AND requestoffer_id = rid
       AND status_id = 1;
 
-    CALL add_audit(307,@handling_user_id,uid,rid,@handler_urdp_id,'From status_id 1');
+    CALL add_audit(308,uid,@other_party,rid,@handler_urdp_id,'From status_id 1');
 
     -- inform the other user the transaction is canceled.
     CALL put_system_to_user_message(131, @other_party, rid);
@@ -1245,9 +1261,9 @@ BEGIN
     -- recalculate the acting user's ranking
     CALL recalculate_rank_on_user(uid,@other_party, rid, is_thumbs_up);
     IF (is_thumbs_up) THEN
-      CALL add_audit(304,uid,@handling_user_id,rid,NULL,NULL);
+      CALL add_audit(304,uid,@other_party,rid,NULL,NULL);
     ELSE
-      CALL add_audit(305, uid, @handling_user_id,rid,NULL,NULL);
+      CALL add_audit(305,uid, @other_party,rid,NULL,NULL);
     END IF;
 
   
@@ -1445,7 +1461,7 @@ CREATE PROCEDURE show_audit_log_info()
 BEGIN
 
   SELECT a.datetime, u1.username, aa.action, u2.username,
-      a.requestoffer_id, a.extra_id, a.notes_id, an.notes 
+      a.requestoffer_id, a.extra_id, an.notes 
   FROM audit a 
   JOIN audit_actions aa 
     ON aa.action_id = a.audit_action_id 

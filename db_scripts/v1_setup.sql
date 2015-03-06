@@ -300,11 +300,11 @@ VALUES
 (203,'User1 marked their requestoffer complete (user2 is handling user)'),
 (204,'User1 marked a requestoffer canceled (user2 is other user)'),
 (205,'User1 deleted a requestoffer'),
-(206,'User1 reverted requestoffer to draft status'),
+(206,'User1 reverted User2''s requestoffer to draft status'),
 (207,'User1 accepted user2''s offer to handle a requestoffer'),
 (208,'User1 rejected user2''s offer to handle a requestoffer'),
 (209,'User1 offered to take user2''s requestoffer'),
-(210,'User1 (Handling user) was removed from a requestoffer by a cancel action'),
+(210,'User1 removed User2 from a requestoffer by a cancel action'),
 (211,'Rejecting user2''s offer to handle requestoffer due to revert of requestoffer'),
 
 -- rank and points - 300s
