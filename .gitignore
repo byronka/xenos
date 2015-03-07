@@ -1,9 +1,27 @@
+#build is where most of the built code goes
 build
+
+#build_schema is where the code used for modifying the database
+#schema goes.  It hardly ever changes, so it gets its own directory.
 build_schema
+
+#these few directories might vary for each developer.  They 
+#get built and rebuilt by the their corresponding ant commands,
+# ant install, ant docs, ant lint
 web_container/apache-tomcat-8.0.14/webapps/ROOT/WEB-INF/classes
 web_container/apache-tomcat-8.0.14/webapps/xenos_javadocs
 web_container/apache-tomcat-8.0.14/webapps/lint
+
+#On some linux systems, bash will try to autocomplete your ant commands
+#if you press the tab key while entering an ant target.  In so doing, it
+#will create the .ant-targets-build.xml file
 .ant-targets-build.xml
+
+#the pidfile is used by the tomcat ant scripts to tell if tomcat
+#is running.
 web_container/apache-tomcat-8.0.14/temp/pidfile
+
+#For those users using an editor like emacs or vim, it's helpful to use
+#the ctags utility to generate a tags while, which can be used to jump
+#to the declaration of variables, definitions of methods, and so on.
 tags
-TEST*
