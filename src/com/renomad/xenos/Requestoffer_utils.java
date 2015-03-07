@@ -994,31 +994,28 @@ public final class Requestoffer_utils {
     * @return an integer, the id of the new requestoffer.  -1 if failure.
     */
   public static int put_requestoffer(
-      int user_id, String desc, Integer[] categories) {
+      int user_id, String desc, Integer category) {
 
     int new_requestoffer_id = -1; //need it here to be outside the "try".
     CallableStatement cs = null;
-    String categories_str = "";
     try {
       Connection conn = Database_access.get_a_connection();
       // see db_scripts/v1_procedures.sql put_requestoffer for
       // details on this stored procedure.
       
-      //convert categories into proper format: e.g. (1),(2),(3)
-      if (categories.length > 0) {
-        StringBuilder sb = 
-          new StringBuilder(String.format("(%d)", categories[0]));
-        for (int i = 1; i < categories.length; i++) {
-          sb.append(String.format(",(%d)",categories[i]));
-        }
-        categories_str = sb.toString();
+      //convert category into proper format: e.g. (1)
+      //format is this way because we used to allow adding multiple
+      //categories for a requestoffer, and we may do so again in the future.
+      String category_str = "";
+      if (category != null) {
+        category_str = String.format("(%d)", category);
       }
 
       cs = conn.prepareCall("{call put_requestoffer(?,?,?,?,?)}");
       cs.setNString(1, desc);
       cs.setInt(2, user_id);
       cs.setInt(3, 1); //we make all requestoffers 1 point for now
-      cs.setString(4, categories_str);
+      cs.setString(4, category_str); 
       cs.registerOutParameter(5, java.sql.Types.INTEGER);
       cs.executeQuery();
       new_requestoffer_id = cs.getInt(5);
@@ -1030,7 +1027,6 @@ public final class Requestoffer_utils {
     }
     return new_requestoffer_id;
   }
-
 
 
   /**

@@ -15,7 +15,6 @@
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%@ page import="com.renomad.xenos.User_location" %>
 <%@ page import="com.renomad.xenos.Utils" %>
-<%@ page import="java.util.Arrays" %>
 
   <% 
 
@@ -27,7 +26,7 @@
   request.setCharacterEncoding("UTF-8");
     //get the values straight from the client
     String de = "";
-    String c = "";
+    Integer selected_cat = null;
     String cat_error_msg = "";
     String desc_error_msg = "";
     String addr_error_msg = "";
@@ -96,13 +95,11 @@
       }
 
       //parse out the categories from a string the client gave us
-      c = request.getParameter("categories");
+      selected_cat = Utils.parse_int(request.getParameter("categories"));
       
-      Integer[] cat = Requestoffer_utils.parse_categories_string(c, loc );
-      
-      if (cat.length == 0) {
+      if (selected_cat == null) {
         validation_error |= true;
-        cat_error_msg = loc.get(8,"No categories found in string");
+        cat_error_msg = loc.get(197,"You must choose a category for this favor");
       }
 
       if ( // if they said they need a location, but haven't given us any location info at all, validation error
@@ -124,7 +121,7 @@
         int new_ro_id = 0;
 
         //try adding the new requestoffer - if failed, go to error page
-        if ((new_ro_id = Requestoffer_utils.put_requestoffer(user_id, de, cat)) == -1) {
+        if ((new_ro_id = Requestoffer_utils.put_requestoffer(user_id, de, selected_cat)) == -1) {
           response.sendRedirect("general_error.jsp");
           return;
         }
@@ -151,7 +148,7 @@
 	    <div class="container theme-showcase" role="main">		   	   
 	     
         <div class="page-header">
-	          <h1>Request Favor</h1>
+	          <h1><%=loc.get(2,"Request Favor")%></h1>
 	      </div>
 	         		             
 				<form method="POST" action="create_requestoffer.jsp" class="form-horizontal">	
@@ -178,14 +175,14 @@
 		            <label for="categories" class="col-sm-2 control-label"><%=loc.get(13,"Categories")%>:</label>
 								<div class="col-sm-7">
 			            <select name="categories" class="form-control">
-                    <option disabled selected> -- Select a Category -- </option>			            
-					          <%
-					          for(String category : Arrays.asList(Requestoffer_utils.get_categories_string(loc).split(","))){
-					          %>
-					          <option value="<%=category%>"><%=category%></option>    
-					          <%                    
-		                }
-		                %>			           		             
+                    <option disabled selected> -- <%=loc.get(198,"Select a Category")%> -- </option>			            
+					          <% for(Integer category : Requestoffer_utils.get_all_categories()){ %>
+                      <% if (category.equals(selected_cat)) {%>
+                        <option selected value="<%=category%>"><%=loc.get(category,"")%></option>    
+                      <%} else {%>
+                        <option value="<%=category%>"><%=loc.get(category,"")%></option>    
+                      <% } %>			           		             
+					          <% } %>			           		             
 		              </select>
 		            </div>
                 <div class="col-sm-3">
@@ -207,7 +204,7 @@
 							   
 							   <p><%=loc.get(158,"Select one of your saved locations")%>:</p>
 							       <select name="savedlocation">
-							         <option>No address selected</option>
+                       <option><%=loc.get(192,"No address selected")%></option>
 							   <%
 							     for (User_location loca : locations) {
 							   %>
@@ -286,7 +283,7 @@
 						</div>
 						<div class="panel-footer clearfix">
 							<div class="btn-group pull-right">
-								<button type="submit" class="btn btn-primary">Request Favor</button>
+                <button type="submit" class="btn btn-primary"><%=loc.get(2,"Request Favor")%></button>
 							</div>
 						</div>
 					</div>			

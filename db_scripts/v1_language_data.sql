@@ -202,6 +202,8 @@ VALUES
   (194, 1,  'Retract'),
   (195, 1,  'Favor retracted'),
   (196, 1,  'Your favor is now hidden.  Any offers have been rejected. A point has been returned to you.'),
+  (197, 1,  'You must choose a category for this favor'),
+  (198, 1,  'Select a category'),
   (1,   2,  'Recherche'),
   (2,   2,  'Demande Favor'),
   (3,   2,  'Déconnexion'),
@@ -398,6 +400,8 @@ VALUES
   (194, 2,  'Rétracter'),
   (195, 2,  'Favoriser rétractée'),
   (196, 2,  'Votre faveur est maintenant caché . Les offres ont été rejetées . Un point a été retourné.'),
+  (197, 2,  'Vous devez choisir une catégorie pour cette faveur'),
+  (198, 2,  'Sélectionnez une catégorie'),
   (1,   3,  'Búsqueda'),
   (2,   3,  'Solicitud Favor'),
   (3,   3,  'Cerrar sesión'),
@@ -594,6 +598,8 @@ VALUES
   (194, 3,  'Retraer'),
   (195, 3,  'Favorecer retraída'),
   (196, 3,  'Tu favor está oculto. Las ofertas han sido rechazadas . Un punto ha sido devuelto a usted.'),
+  (197, 3,  'Usted debe elegir una categoría para este favor'),
+  (198, 3,  'Seleccione una categoría'),
   (1,   4,  '搜索'),
   (2,   4,  '请求青睐'),
   (3,   4,  '注销'),
@@ -790,6 +796,8 @@ VALUES
   (194, 4,  '撤回'),
   (195, 4,  '青睐缩回'),
   (196, 4,  '您的青睐隐时现。任何报价都被拒绝。有一点已经退还给您。'),
+  (197, 4,  '你必须选择一个类别为这个忙'),
+  (198, 4,  '选择一个类别'),
   (1,   5,  'חיפוש'),
   (2,   5,  'בעד בקשה'),
   (3,   5,  'התנתקות'),
@@ -985,6 +993,8 @@ VALUES
   (193, 5,  'שציינת שאתה רוצה לשמור אתמיקום עם הטובה הזאת , אבל אתה נכנס שום דבר . אם זה אינו מחייבמיקום , לחץ על'),
   (194, 5,  'לחזור בו'),
   (195, 5,  'להעדיף חזר בי'),
-  (196, 5,  'לטובתך עכשיו חבויה . כל הצעות נדחו . נקודה הוחזרה לך .');
+  (196, 5,  'לטובתך עכשיו חבויה . כל הצעות נדחו . נקודה הוחזרה לך .'),
+  (197, 5,  'עליך לבחורקטגוריה עבור הטובה הזאת'),
+  (198, 5,  'בחר קטגוריה');
  
 
