@@ -88,8 +88,15 @@ xenos_user_notify.message_checker = function() {
   var mq = xenos_user_notify.message_queue();
 
   var response_handler = function() {
-      if (request.readyState != 4 || request.status != 200) {
+      if (request.readyState != 4 )  {
         return;  //if not the state we want, ignore.
+      }
+      if (request.status == 403) { //forbidden
+        document.location = 'logout.jsp';
+        return;
+      }
+      if (request.status != 200) {
+        return;
       }
       //otherwise, success!
       var mydoc = request.responseXML;

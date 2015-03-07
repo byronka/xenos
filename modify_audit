@@ -1,0 +1,67 @@
+Changes we'll make to audit
+
+audit action 6 will become 'user1 (owner) marked their requestoffer complete'
+audit action 10 will become 'NOT-USED' - used in complete_requestoffer
+audit action 17 will become 'user1 canceled an active requestoffer, user2 is other party'
+audit action 18 will become 'NOT-USED' - used in cancel_requestoffer
+audit action 12 will become 'system took a point from user2 for creating a requestoffer'
+
+add audit actions:
+26, 'user1 raised user2 rank'
+27, 'user1 lowered user2 rank'
+28, 'user1 assigned user2 a point'
+29, 'system gave a point to user2 for deleting a requestoffer'
+
+Conversions:
+
+
+Summary:
+
+In the complete stored proc:
+Include audits:
+6, 28, (26 or 27 (for the owner))
+
+in cancel stored proc:
+Include audits:
+17, 19 , (26 or 27 (for the owner))
+
+in rank_other_user:
+(27 or 27)
+                    
+in delete_requestoffer:
+
+Old stuff:
+
+-- user registration, login, security - 100s
+(4,'New user was registered'),
+(5,'cookie authentication failed'),
+(13,'user changed their password'),
+(14,'failed decrypting cookie'),
+(15,'user logged in'),
+(16,'user logged out'),
+(23,'failed login for user'),
+
+-- requestoffers - 200s
+(1,'User created a requestoffer'),
+(2,'User deleted a requestoffer'),
+(3,'User was accepted to handle a requestoffer'),
+(6,'completion of requestoffer - satisfied'),
+(7,'user offered to take requestoffer'),
+(9,'user published a requestoffer (set its status to OPEN)'),
+(10,'completion of requestoffer - unsatisfied'),
+(17,'user canceled an active requestoffer - satisfied'),
+(18,'user canceled an active requestoffer - unsatisfied'),
+(19,'handling user was removed from a requestoffer by a cancel action'),
+(20,'User was rejected from handling a requestoffer'),
+(24,'reverting requestoffers to draft status'),
+(25,'rejecting offer to handle requestoffer due to revert of requestoffer');
+
+-- rank and points - 300s
+
+(12,'user lost a favor point from creating a requestoffer'),
+(11,'handling user received a favor point from completing requestoffer'),
+
+-- location - 400s
+(8,'location was deleted, since there were no related users or requestoffers'),
+(21,'New location was created'),
+(22,'Location was attached to requestoffer'),

@@ -8,7 +8,13 @@
   //to go.  It doesn't use username and password.
 	request.setCharacterEncoding("UTF-8");
   int user_id = Security.check_if_allowed(request,true);
-  if (user_id > 0) { response.sendRedirect("dashboard.jsp"); }
+	if (user_id > 0) { 
+	response.sendRedirect("dashboard.jsp"); 
+	} else {
+    Cookie cookie = new Cookie("xenos_cookie", "");
+    cookie.setMaxAge(0);
+    response.addCookie(cookie);
+	}
 
   //set up an object to localize text
   Localization loc  = new Localization(request.getLocale());
@@ -38,7 +44,8 @@
     }
 
     if (!validation_error) {
-    boolean succeed = User_utils.put_user( username, password);
+    String ip_address = request.getRemoteAddr();
+    boolean succeed = User_utils.put_user( username, password, ip_address);
       if (succeed) {
         response.sendRedirect("thanks.jsp");
       } else {

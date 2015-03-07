@@ -1,5 +1,6 @@
 -- NOTE: This script will rebuild any existing procedures of the same name.
 
+
 -- Some helper validation functions follow:
 -- -----------------------------------------
 
@@ -123,40 +124,45 @@ DROP PROCEDURE IF EXISTS add_audit;
 -- and audit) so to avoid having complexity in the java, we'll just
 -- call the stored procedure.
 --
--- No transactions here - it's assumed we'll be called from inside one.
 CREATE PROCEDURE add_audit
 (
   my_audit_action_id INT UNSIGNED, 
-  my_user_id INT UNSIGNED, 
-  my_target_id INT UNSIGNED, 
+  my_user1_id INT UNSIGNED, 
+  my_user2_id INT UNSIGNED, 
+  my_requestoffer_id INT UNSIGNED, 
+  my_extra_id INT UNSIGNED,
   my_notes NVARCHAR(100)
 ) 
 BEGIN 
   DECLARE the_audit_notes_id INT UNSIGNED;
 
-  CASE
-    WHEN my_notes = "" 
-			OR my_notes is NULL -- if we get an empty string, don't add to notes
+  IF my_notes = "" OR my_notes is NULL -- if we get an empty string, don't add to notes
   THEN 
     INSERT INTO audit (
-      datetime, audit_action_id, user_id, target_id)
+      datetime, audit_action_id, user1_id, 
+      user2_id, requestoffer_id, extra_id)
       VALUES(
         UTC_TIMESTAMP(), 
         my_audit_action_id, 
-        my_user_id, 
-        my_target_id);
+        my_user1_id, 
+        my_user2_id, 
+        my_requestoffer_id,
+        my_extra_id
+      );
   ELSE
     INSERT INTO audit_notes (notes) VALUES(my_notes);
     SET the_audit_notes_id = LAST_INSERT_ID();
     INSERT INTO audit (
-      datetime, audit_action_id, user_id, target_id, notes_id)
+      datetime, audit_action_id, user1_id, user2_id, requestoffer_id, extra_id, notes_id)
       VALUES(
         UTC_TIMESTAMP(),     -- the current time and date
         my_audit_action_id,  -- the action, e.g. create, delete, etc.
-        my_user_id,          -- the user causing the action
-        my_target_id,        -- the thing being acted upon
-        the_audit_notes_id); -- notes about the action ,like during delete
-  END CASE;
+        my_user1_id,          -- the user causing the action
+        my_user2_id,          -- the user causing the action
+        my_requestoffer_id,        -- the thing being acted upon
+        my_extra_id,              -- extra id's, for example, locations
+        the_audit_notes_id); -- notes about the action ,like during requestoffer delete
+  END IF;
 
 END
 
@@ -286,7 +292,7 @@ BEGIN
             JOIN user u ON u.user_id = r.requestoffering_user_id 
             LEFT JOIN requestoffer_service_request rsr
               ON r.requestoffer_id = rsr.requestoffer_id 
-              AND rsr.user_id = @ruid
+              AND rsr.user_id = @ruid AND rsr.status = 106 -- 106 is "NEW"
             LEFT JOIN location_to_requestoffer ltr
               ON r.requestoffer_id = ltr.requestoffer_id
             LEFT JOIN location l
@@ -322,7 +328,7 @@ BEGIN
             JOIN user u ON u.user_id = r.requestoffering_user_id 
             LEFT JOIN requestoffer_service_request rsr
               ON r.requestoffer_id = rsr.requestoffer_id 
-              AND rsr.user_id = @ruid
+              AND rsr.user_id = @ruid AND rsr.status = 106 -- 106 is "NEW"
             LEFT JOIN location_to_requestoffer ltr
               ON r.requestoffer_id = ltr.requestoffer_id
             LEFT JOIN location l
@@ -392,13 +398,12 @@ BEGIN
   SELECT new_requestoffer_id, id FROM CAT_IDS;
   DROP TEMPORARY TABLE CAT_IDS;
 
-  -- C) Deduct points from the user
-  UPDATE user SET points = points - pts WHERE user_id = ruid;
 
 
   -- D) Add an audit
-  CALL add_audit(1,ruid,new_requestoffer_id,'');
-  CALL add_audit(12,ruid,new_requestoffer_id,'');
+
+  -- audit that this user created a new requestoffer
+  CALL add_audit(201,ruid,NULL,new_requestoffer_id,NULL,'');
 
 END
 
@@ -567,8 +572,8 @@ BEGIN
   -- send a message to the owner of that requestoffer
   CALL put_system_to_user_message(148, @ro_owner, rid);
 
-  -- Add an audit
-  CALL add_audit(7,uid,rid,NULL);
+  -- Add an audit that this user is offering to take the requestoffer
+  CALL add_audit(209,uid,@ro_owner,rid,NULL,NULL);
 
 END
 
@@ -619,6 +624,12 @@ BEGIN
   (UTC_TIMESTAMP(), @owner_id,uid, rid, 1), 
   (UTC_TIMESTAMP(), uid,@owner_id, rid, 1); 
 
+  SET @urdp_id = LAST_INSERT_ID();
+
+  -- Add an audit that these users are going into ACTIVE state
+  CALL add_audit(306,uid,@owner_id,rid,@urdp_id,NULL);
+  CALL add_audit(306,@owner_id,uid,rid,@urdp_id,NULL);
+
   -- change the service request to accepted for the winning user
   UPDATE requestoffer_service_request 
   SET 
@@ -626,25 +637,18 @@ BEGIN
     date_modified = UTC_TIMESTAMP()
   WHERE requestoffer_id = rid AND user_id = uid AND status = 106;
 
-  -- change the service request to rejected for the losing users
-  UPDATE requestoffer_service_request 
-  SET 
-    status = 108, -- "rejected"
-    date_modified = UTC_TIMESTAMP()
-  WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
-
   -- Add an audit for the winning user
-  CALL add_audit(3,uid,rid,NULL);
-
-  -- Add an audit for the losing users
-  INSERT INTO audit (
-    datetime, audit_action_id, user_id, target_id)
-  SELECT UTC_TIMESTAMP(), 20, user_id, rid
-  FROM requestoffer_service_request 
-  WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
+  CALL add_audit(207,@owner_id,uid,rid,NULL,NULL);
 
   -- send a message to the winnng user
   CALL put_system_to_user_message(132, uid, rid);
+
+  -- Add an audit for the losing users
+  INSERT INTO audit (
+    datetime, audit_action_id, user1_id, user2_id, requestoffer_id)
+  SELECT UTC_TIMESTAMP(), 208, @owner_id, user_id, rid
+  FROM requestoffer_service_request 
+  WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
 
   -- send a message to other users they were rejected
   INSERT into system_to_user_message (
@@ -658,6 +662,14 @@ BEGIN
   SELECT UTC_TIMESTAMP(), user_id, 133
   FROM requestoffer_service_request 
   WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
+
+  -- change the service request to rejected for the losing users
+  UPDATE requestoffer_service_request 
+  SET 
+    status = 108, -- "rejected"
+    date_modified = UTC_TIMESTAMP()
+  WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
+
 
 END
 
@@ -677,10 +689,6 @@ BEGIN
   call validate_requestoffer_id(rid);
   call validate_user_id(uid);
 
-  -- get the points on this requestoffer.
-  SELECT points into @points
-  FROM requestoffer 
-  WHERE requestoffer_id = rid;
 
   -- get a string version of the status
   SELECT requestoffer_status_id, requestoffer_status_value 
@@ -715,17 +723,49 @@ BEGIN
       -- actually delete the requestoffer here.
       DELETE FROM requestoffer WHERE requestoffer_id = rid;
 
-      -- give points back to the user
-      UPDATE user 
-      SET points = points + @points 
-      WHERE user_id = uid;
 
-      -- Add an audit
-      CALL add_audit(2,uid,rid,@delete_msg);
+      -- Add an audit about deleting the requestoffer
+      CALL add_audit(205,uid,NULL,rid,NULL,@delete_msg);
 
     
 END
 
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS retract_requestoffer;
+
+---DELIMITER---
+CREATE PROCEDURE retract_requestoffer
+(
+  uid INT UNSIGNED, -- the user id making the choice to unpublish
+  rid INT UNSIGNED -- the requestoffer id
+) 
+BEGIN 
+  CALL validate_user_id(uid);
+  CALL validate_requestoffer_id(rid);
+
+  UPDATE requestoffer_state
+  SET status = 109, datetime = UTC_TIMESTAMP() -- 109 is "DRAFT"
+  WHERE requestoffer_id = rid AND status = 76; -- 76 is "OPEN"
+
+  -- get the points on this requestoffer.
+  SELECT points, requestoffering_user_id into @points, @ruid
+  FROM requestoffer 
+  WHERE requestoffer_id = rid;
+
+  -- give points back to the user
+  UPDATE user 
+  SET points = points + @points 
+  WHERE user_id = @ruid;
+
+
+  -- audit that the requestoffer was reverted
+  call add_audit(206, uid, @ruid, rid, NULL, NULL);
+
+  -- audit that the point was returned to the user who owns the requestoffer
+  call add_audit(303, 1, @ruid, rid, NULL, NULL);
+
+END
 ---DELIMITER---
 
 DROP PROCEDURE IF EXISTS create_new_user;
@@ -736,7 +776,8 @@ CREATE PROCEDURE create_new_user
 (
   uname NVARCHAR(50),
   pword VARCHAR(64),
-  slt VARCHAR(50)
+  slt VARCHAR(50),
+  ipaddr VARCHAR(40) -- their ip address
 ) 
 BEGIN 
 
@@ -760,13 +801,13 @@ BEGIN
 
 
   -- add the user
-  INSERT INTO user (username, password, salt, date_created)
-  VALUES (uname, pword, slt, UTC_TIMESTAMP());
+  INSERT INTO user (username, password, salt, date_created, last_ip_logged_in)
+  VALUES (uname, pword, slt, UTC_TIMESTAMP(), ipaddr);
 
   SET @new_user_id = LAST_INSERT_ID();
 
-  -- Add an audit
-  CALL add_audit(4,@new_user_id,NULL,NULL);
+  -- Add an audit about registering a new user
+  CALL add_audit(101,@new_user_id,NULL,NULL,NULL,ipaddr);
 
   
 
@@ -815,7 +856,8 @@ BEGIN
     AES_ENCRYPT(
       @cookie_val_plaintext, SHA2(@p_phrase,512))) INTO new_cookie;
 
-  CALL add_audit(15, uid, uid, NULL);
+  -- register that a user logged in
+  CALL add_audit(102, uid, NULL, NULL, NULL, NULL);
 
 END
 
@@ -831,7 +873,7 @@ CREATE PROCEDURE user_logout
 ) 
 BEGIN 
     UPDATE user SET is_logged_in = false WHERE user_id = uid;
-    CALL add_audit(16, uid, NULL, NULL);
+    CALL add_audit(103, uid, NULL, NULL,NULL,NULL);
 END
 
 ---DELIMITER---
@@ -849,15 +891,23 @@ CREATE PROCEDURE check_login
 ) 
 BEGIN 
 
-  SELECT user_id into user_id_found
+  SELECT user_id, last_ip_logged_in into user_id_found, @last_ip
   FROM user
   WHERE BINARY username = their_username AND BINARY password = their_password;
 
+  -- audit that their username / password didn't match anything in our db
   IF user_id_found IS null THEN
     SET @pass = SUBSTR(IFNULL(their_password,'WAS_NULL'), 1, 10);
-    SET @message = CONCAT('ip: ',their_ip_address,' name: ',their_username,' pass: ',@pass);
-    CALL add_audit(23,NULL,NULL,@message);
+    SET @message = CONCAT('ip: ',their_ip_address,' name: ',their_username,' pass: ',@pass,'...');
+    CALL add_audit(104,NULL,NULL,NULL,NULL,@message);
   END IF;
+
+  -- audit that they are coming from a different ip now.
+  IF @last_ip <> their_ip_address THEN
+    SET @ip_msg = CONCAT('old ip: ',@last_ip,' new_ip:',their_ip_address);
+    CALL add_audit(108,user_id_found,NULL,NULL,NULL,message);
+  END IF;
+
 
 END
 ---DELIMITER---
@@ -887,9 +937,9 @@ BEGIN
     AES_DECRYPT(UNHEX(enc_cookie), SHA2(@p_phrase,512)) 
     INTO @plaintext_cookie;
 
+  -- if there's an error...
   IF (@plaintext_cookie IS NULL OR @plaintext_cookie = '')
     THEN
-      CALL add_audit(14,NULL,NULL,ip_address);
       SET @msg = 
       CONCAT(
 				'got null when trying to unencrypt cookie '
@@ -898,7 +948,10 @@ BEGIN
         ,' with passphrase: '
         ,SUBSTR(IFNULL(@p_phrase,''), 1, 4)
         , '...'
+        ,'Ip: '
+        ,ip_address
       );
+      CALL add_audit(107,NULL,NULL,NULL,NULL,@msg);
       SIGNAL SQLSTATE '45000' SET message_text = @msg;
   END IF;
 
@@ -923,7 +976,7 @@ BEGIN
       , IFNULL(@user_id , -1)
       ,' ip_address: ',IFNULL(@ip_address, '')
       ,' timestamp: ',IFNULL(@timestamp, ''));
-    CALL add_audit(5,@user_id,NULL,@msg);
+    CALL add_audit(106,NULL,NULL,NULL,NULL,@msg);
     SET user_id_out = -1;
   -- if we got here, the user's info is good.
   ELSEIF update_last_activity = 1 THEN
@@ -985,6 +1038,8 @@ BEGIN
 	SET status = 77 -- 'closed', datetime = UTC_TIMESTAMP()
 	WHERE requestoffer_id = rid;
 
+	CALL add_audit(203,uid,@handling_user_id,rid,NULL,NULL);
+
   -- get the handling user's id
   SELECT handling_user_id INTO @handling_user_id
   FROM requestoffer 
@@ -1000,13 +1055,29 @@ BEGIN
   -- we need the servicer to provide input, so...
   -- change the state for the servicer to COMPLETE_FEEDBACK_POSSIBLE
 
+  SELECT urdp_id INTO @handler_urdp_id
+  FROM user_rank_data_point
+  WHERE
+    judge_user_id = @handling_user_id 
+    AND judged_user_id = uid
+    AND requestoffer_id = rid
+    AND status_id = 1;
+
   UPDATE user_rank_data_point
     SET 
       date_entered = UTC_TIMESTAMP(),  -- last modified date update
       status_id = 2 -- move them to needing to provide feedback
     WHERE 
-    judge_user_id = @handling_user_id 
-    AND judged_user_id = uid
+    urdp_id = @handler_urdp_id;
+
+  -- audit that we're putting the handling user in COMPLETE_FEEDBACK_POSSIBLE
+	CALL add_audit(307,@handling_user_id,uid,rid,@handler_urdp_id,'From status_id 1');
+
+  SELECT urdp_id INTO @owner_urdp_id
+  FROM user_rank_data_point
+  WHERE
+    judge_user_id = uid
+    AND judged_user_id = @handling_user_id
     AND requestoffer_id = rid
     AND status_id = 1;
 
@@ -1016,21 +1087,22 @@ BEGIN
       meritorious = satis,
       status_id = 3 -- they have provided feedback, they're done.
     WHERE 
-      judge_user_id = uid
-      AND judged_user_id = @handling_user_id
-      AND requestoffer_id = rid
-      AND status_id = 1;
+      urdp_id = @owner_urdp_id;
 
+  -- Audit that we're putting the owner into COMPLETE
+	CALL add_audit(308,uid,@handling_user_id,rid,@owner_urdp_id,'From status_id 1');
 
-	CALL add_audit(11,@handling_user_id,rid,NULL);
+  -- audit that the handling user earned a point off this
+	CALL add_audit(302,uid,@handling_user_id,rid,NULL,NULL);
 
   -- recalculate the owner's rank
   CALL recalculate_rank_on_user(uid,@handling_user_id, rid, satis);
 
+  -- audit that the owner is raising or lowering their rank
   IF (satis) THEN
-    CALL add_audit(6,uid,rid,NULL);
+    CALL add_audit(304,uid,@handling_user_id,rid,NULL,NULL);
   ELSE
-    CALL add_audit(10,uid,rid,NULL);
+    CALL add_audit(305,uid,@handling_user_id,rid,NULL,NULL);
   END IF;
 	
 END
@@ -1070,8 +1142,19 @@ BEGIN
   SET status = 76, datetime = UTC_TIMESTAMP()
   WHERE requestoffer_id = rid;
 
-  -- Add an audit
-  CALL add_audit(9,uid,rid,NULL);
+  -- Add an audit that the user published their requestoffer
+  CALL add_audit(202,uid,NULL,rid,NULL,NULL);
+
+  SELECT points INTO @pts 
+  FROM requestoffer 
+  WHERE requestoffer_id = rid;
+
+  -- Deduct points from the user
+  UPDATE user SET points = points - @pts WHERE user_id = uid;
+
+  -- audit that we deducted points from the user
+  CALL add_audit(301,1,uid,rid,NULL,NULL);
+
 
 END
 
@@ -1093,7 +1176,7 @@ BEGIN
   SET password = new_password
   WHERE user_id = uid;
 
-  CALL add_audit(13,exec_uid,uid,NULL);
+  CALL add_audit(105,exec_uid,uid,NULL,NULL,NULL);
 
   
 
@@ -1141,6 +1224,8 @@ BEGIN
     SET status = 76 -- "OPEN", datetime = UTC_TiMESTAMP()
     WHERE requestoffer_id = rid;
 
+    CALL add_audit(204,uid,@other_party,rid,NULL, NULL);
+
     UPDATE user_rank_data_point
       SET 
         date_entered = UTC_TIMESTAMP(),  -- last modified date update
@@ -1149,6 +1234,8 @@ BEGIN
       AND judged_user_id = uid
       AND requestoffer_id = rid
       AND status_id = 1;
+
+    CALL add_audit(307,@other_party,uid,rid,@handler_urdp_id,'From status_id 1');
 
     UPDATE user_rank_data_point
       SET 
@@ -1160,22 +1247,23 @@ BEGIN
       AND requestoffer_id = rid
       AND status_id = 1;
 
+    CALL add_audit(308,uid,@other_party,rid,@handler_urdp_id,'From status_id 1');
+
     -- inform the other user the transaction is canceled.
     CALL put_system_to_user_message(131, @other_party, rid);
 
     -- inform the acting user they have canceled the transaction
     CALL put_system_to_user_message(136, uid, rid);
     
-    -- set audit for removal of handling user - 
-    -- either way, they get removed as handler
-    CALL add_audit(19,uid,@handling_user_id,NULL); 
+    -- set audit for removal of handling user due to cancellation
+    CALL add_audit(210,uid,@handling_user_id,rid,NULL,NULL); 
 
     -- recalculate the acting user's ranking
     CALL recalculate_rank_on_user(uid,@other_party, rid, is_thumbs_up);
     IF (is_thumbs_up) THEN
-      CALL add_audit(17,uid,rid,NULL);
+      CALL add_audit(304,uid,@other_party,rid,NULL,NULL);
     ELSE
-      CALL add_audit(18, uid, rid,NULL);
+      CALL add_audit(305,uid, @other_party,rid,NULL,NULL);
     END IF;
 
   
@@ -1208,11 +1296,17 @@ BEGIN
 
   SET @new_location_id = LAST_INSERT_ID();
 
+  -- audit: we just created a new location
+  CALL add_audit(401, uid, NULL,NULL,@new_location_id, NULL);
+
   -- link it to a user, if they asked to save it
   IF uid > 0 THEN
     CALL validate_user_id(uid); -- it's a valid user, right?
     INSERT INTO location_to_user (location_id, user_id)
     VALUES (@new_location_id, uid);
+
+    -- audit that we connected a location to a user
+    CALL add_audit(403, uid, NULL, NULL, @new_location_id, NULL);
   END IF;
 
   -- link it to a requestoffer, if that's the situation
@@ -1220,10 +1314,11 @@ BEGIN
     CALL validate_requestoffer_id(rid); -- valid requestoffer, right?
     INSERT INTO location_to_requestoffer (location_id, requestoffer_id)
     VALUES (@new_location_id, rid);
+
+    -- audit that we connected a location to a requestoffer
+    CALL add_audit(402, NULL, NULL, rid, @new_location_id, NULL);
   END IF;
 
-  -- audit: we just created a new location
-  CALL add_audit(21, uid, @new_location_id, NULL);
 
 END
 
@@ -1256,7 +1351,7 @@ BEGIN
   VALUES (lid, rid);
 
   -- audit: we just attached a location to a requestoffer. 
-  CALL add_audit(22, NULL, rid, NULL);
+  CALL add_audit(402, NULL,NULL, rid,NULL, NULL);
 
 END
 
@@ -1333,13 +1428,49 @@ BEGIN
     SET message_text = @msg;
   END IF;
 
+  SELECT judged_user_id, requestoffer_id INTO @judged_uid, @rid
+  FROM user_rank_data_point
+  WHERE urdp_id = my_urdp_id;
+
   UPDATE user_rank_data_point
-    SET 
-      date_entered = UTC_TIMESTAMP(),  -- last modified date update
-      meritorious = is_satis,
-      status_id = 3 -- they have provided feedback, they're done.
-    WHERE judge_user_id = uid 
-    AND urdp_id = my_urdp_id
-    AND status_id = 2; -- the user has to be in a proper state to give rank
+  SET 
+    date_entered = UTC_TIMESTAMP(),  -- last modified date update
+    meritorious = is_satis,
+    status_id = 3 -- they have provided feedback, they're done.
+  WHERE urdp_id = my_urdp_id;
+
+	CALL add_audit(308,uid,@judged_uid,@rid,my_urdp_id,'from status_id 2');
+
+  -- audit that the user is raising or lowering the other party's rank
+  IF (is_satis) THEN
+    CALL add_audit(304,uid,@judged_uid,@rid,my_urdp_id,NULL);
+  ELSE
+    CALL add_audit(305,uid,@judged_uid,@rid,my_urdp_id,NULL);
+  END IF;
+
+END
+
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS show_audit_log_info;   
+
+---DELIMITER---
+
+CREATE PROCEDURE show_audit_log_info()
+BEGIN
+
+  SELECT a.datetime, u1.username, aa.action, u2.username,
+      a.requestoffer_id, a.extra_id, an.notes 
+  FROM audit a 
+  JOIN audit_actions aa 
+    ON aa.action_id = a.audit_action_id 
+  LEFT JOIN user u1 
+    ON u1.user_id = a.user1_id 
+  LEFT JOIN user u2 
+    ON u2.user_id = a.user2_id 
+  LEFT JOIN audit_notes an 
+    ON an.notes_id = a.notes_id
+  ORDER BY a.datetime;
 
 END

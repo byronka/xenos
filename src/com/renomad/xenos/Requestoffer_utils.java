@@ -76,6 +76,29 @@ public final class Requestoffer_utils {
 
 
   /**
+    * put the requestoffer into a 'draft' status,
+    * hidden from everyone but the owner
+    */
+  public static boolean 
+    retract_requestoffer(int user_id, int requestoffer_id ) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall(String.format(
+        "{call retract_requestoffer(%d, %d)}" 
+        , user_id, requestoffer_id));
+      cs.execute();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+    return true;
+  }
+
+
+  /**
     * put the requestoffer into an 'open' status,
     * so people can potentially handle it.
     */

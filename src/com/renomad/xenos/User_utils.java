@@ -322,7 +322,7 @@ public final class User_utils {
     * still.  See put_user's overload.
     * @return true if successful
     */
-  public static boolean put_user(String username, String password) {
+  public static boolean put_user(String username, String password, String ip_address) {
 
       if ( Utils.is_null_or_empty(username) ||
            Utils.is_null_or_empty(password)) {
@@ -335,7 +335,7 @@ public final class User_utils {
         // see db_scripts/v1_setup.sql delete_requestoffer for
         // details on this stored procedure.
         
-        cs = conn.prepareCall("{call create_new_user(?,?,?)}");
+        cs = conn.prepareCall("{call create_new_user(?,?,?,?)}");
         cs.setNString(1,username);
         //make a salt we'll use for hashing.
         String salt = Long.toString(
@@ -343,6 +343,7 @@ public final class User_utils {
         String hashed_pwd = hash_password(password, salt);
         cs.setString(2,hashed_pwd);
         cs.setString(3,salt);
+        cs.setString(4,ip_address);
         cs.executeQuery();
       } catch (SQLException ex) {
 				String msg = ex.getMessage();

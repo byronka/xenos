@@ -7,6 +7,9 @@
   //Note that these objects below will thus be available to most pages.
   int user_id = com.renomad.xenos.Security.check_if_allowed(request, true);
   if (user_id <= 0) { 
+    Cookie cookie = new Cookie("xenos_cookie", "");
+    cookie.setMaxAge(0);
+    response.addCookie(cookie);
     response.sendRedirect("sorry.jsp"); 
     return;
   }

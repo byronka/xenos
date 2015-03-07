@@ -3,6 +3,11 @@
 <%
   //set up an object to localize text
   Localization loc  = new Localization(request.getLocale());
+
+  //clear their Xenos cookie
+  Cookie cookie = new Cookie("xenos_cookie", "");
+  cookie.setMaxAge(0);
+  response.addCookie(cookie);
 %>
 <!DOCTYPE html>
 <html>                                 
