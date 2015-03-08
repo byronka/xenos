@@ -776,6 +776,7 @@ CREATE PROCEDURE create_new_user
 (
   uname NVARCHAR(50),
   pword VARCHAR(64),
+  my_invite_code VARCHAR(100),
   slt VARCHAR(50),
   ipaddr VARCHAR(40) -- their ip address
 ) 
@@ -797,6 +798,38 @@ BEGIN
       
       SIGNAL SQLSTATE '45000' 
       SET message_text = @msg;
+  END IF;
+
+  -- check that the invite code is valid
+  SELECT COUNT(*) INTO @count_invite_code
+  FROM invite_code
+  WHERE value = my_invite_code;
+
+  -- guard against the count of valid invite codes being zero
+  -- we will use this error message back on the client side.
+  IF @count_invite_code = 0 THEN
+      -- if the ip address is too long, truncate
+      IF LENGTH(ipaddr) > 20 THEN
+        SET @my_ipaddr = CONCAT(SUBSTR(ipaddr,1,20),'...');
+      ELSE
+        SET @my_ipaddr = ipaddr;
+      END IF;
+
+      -- if the username is too long, truncate
+      IF LENGTH(uname) > 10 THEN
+        SET @name = CONCAT(SUBSTR(uname,1,10),'...');
+      ELSE
+        SET @name = uname;
+      END IF;
+      SET @message = CONCAT('ip: ',@my_ipaddr,' name: ',@name,
+        ' invite code: ', SUBSTR(my_invite_code,1,10),'...');
+
+      -- audit that they failed the invite-code check
+      CALL add_audit(110,NULL,NULL,NULL,NULL,@message);
+      
+      -- return an error so we can indicate that on the client
+      SIGNAL SQLSTATE '45000' 
+      SET message_text = 'invite code is invalid';
   END IF;
 
 

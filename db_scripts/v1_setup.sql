@@ -291,6 +291,7 @@ VALUES
 (107,'Failed decrypting cookie'),
 (108,'User came in from a different ip'),
 (109,'User generated an invite code'),
+(110,'User tried an invalid invite code'),
 
 -- requestoffers - 200s
 
