@@ -180,9 +180,9 @@
                     <option disabled selected> -- <%=loc.get(198,"Select a Category")%> -- </option>			            
 					          <% for(Integer category : Requestoffer_utils.get_all_categories()){ %>
                       <% if (category.equals(selected_cat)) {%>
-                        <option selected value="<%=category%>"><%=loc.get(category,"")%></option>    
+                        <option class="category c-<%=category%>" selected value="<%=category%>"><%=loc.get(category,"")%></option>    
                       <%} else {%>
-                        <option value="<%=category%>"><%=loc.get(category,"")%></option>    
+                        <option class="category c-<%=category%>" value="<%=category%>"><%=loc.get(category,"")%></option>    
                       <% } %>			           		             
 					          <% } %>			           		             
 		              </select>
@@ -204,9 +204,11 @@
 							     if (locations.length > 0) {
 							   %>
 							   
-							   <p><%=loc.get(158,"Select one of your saved locations")%>:</p>
-							       <select name="savedlocation">
-                       <option><%=loc.get(192,"No address selected")%></option>
+                 <div class="form-group">
+							   <label for="savedlocation" class="col-sm-2 control-label"><%=loc.get(158,"Select one of your saved locations")%>:</label>
+								<div class="col-sm-7">
+                 <select class="form-control" name="savedlocation">
+                   <option><%=loc.get(192,"No address selected")%></option>
 							   <%
 							     for (User_location loca : locations) {
 							   %>
@@ -226,6 +228,8 @@
 							       }
 							   %>
 							       </select>                       
+                   </div>
+                 </div>
 							   <%
 							     }
 							   %>
@@ -234,7 +238,7 @@
                 <label class="col-sm-4"><%=loc.get(159,"Or enter a new address")%>:</label>            
               </div>                							
 						  <div class="form-group">
-						    <label class="col-sm-2 control-label">
+						    <label class="col-sm-4 control-label">
 						      <input id="save_loc_to_user" name="save_loc_to_user" <%=save_loc_to_user_checked%> type="checkbox"/>
 						        <%=loc.get(160,"Save to my favorites")%>
 						    </label>					
@@ -297,6 +301,6 @@
 		<script
 			src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="includes/timeout.js"></script>
+    <%@include file="includes/timeout.jsp" %>
 	</body>
 </html>

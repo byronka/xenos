@@ -2,6 +2,29 @@ div.header-container {
   height: 75px;
 }
 
+option.category {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: right center;
+}
+
+option.c-143 {
+  background-image: url('../img/babysitting.png');
+}
+option.c-144 {
+  background-image: url('../img/dog_walking.png');
+}
+option.c-145 {
+  background-image: url('../img/taxi.png');
+}
+option.c-199 {
+  background-image: url('../img/miscellaneous.png');
+}
+option.c-200 {
+  background-image: url('../img/homework.png');
+}
+
+
 div.header-container a.advanced.search {
   position: absolute;
   top: 40px;
