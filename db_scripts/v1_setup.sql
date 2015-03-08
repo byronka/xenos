@@ -541,3 +541,19 @@ temporary_message_text (
 )
 
 
+---DELIMITER---
+
+-- this table will hold invite codes.  It is expected that the table will
+-- never have many values in it at a time, since the codes only last 5 minutes
+-- before they expire.
+
+-- invite codes are tied to the user who generated them, and they are 
+-- time-based - they only last five minute before getting killed.
+
+CREATE TABLE
+invite_code (
+    user_id INT UNSIGNED NOT NULL, -- the user who generated the invite code
+    datetime DATETIME, -- when the code was generated
+    value VARCHAR(100) -- the text of the code.  a hash of random num + time + user id
+)
+
