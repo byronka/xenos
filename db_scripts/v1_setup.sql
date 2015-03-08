@@ -554,7 +554,7 @@ temporary_message_text (
 CREATE TABLE
 invite_code (
     user_id INT UNSIGNED NOT NULL, -- the user who generated the invite code
-    datetime DATETIME, -- when the code was generated
+    timestamp DATETIME, -- when the code was generated
     value VARCHAR(100) -- the text of the code.  a hash of random num + time + user id
 )
 
