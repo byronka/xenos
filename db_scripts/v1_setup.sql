@@ -214,14 +214,11 @@ requestoffer_category (
 
 INSERT INTO requestoffer_category (category_id, requestoffer_category_value)
 VALUES
-(71, 'MATH'),
-(72,'PHYSICS'),
-(73,'ECONOMICS'),
-(74,'HISTORY'),
-(75,'ENGLISH'),
 (143,'BABYSITTING'),
 (144,'DOG-WALKING'),
-(145,'TAXI');
+(145,'TAXI'),
+(199,'MISCELLANY'),
+(200,'HOMEWORK');
 
 ---DELIMITER---
 -- here, we set up a table to correlate categories to a given

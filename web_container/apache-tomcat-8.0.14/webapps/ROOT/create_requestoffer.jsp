@@ -155,7 +155,9 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<div class="panel-title-advanced clearfix">
-								<h3 class="panel-title">Details</h3>
+                <h3 class="panel-title">
+                  <%=loc.get(22,"Favor Details")%>
+                </h3>
 							</div>
 						</div>
 						<div class="panel-body">
