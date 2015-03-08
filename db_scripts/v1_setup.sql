@@ -49,7 +49,8 @@ CREATE TABLE
     timeout_seconds INT NOT NULL DEFAULT 1800, -- 30 minutes in seconds
     last_ip_logged_in VARCHAR(40),
     rank FLOAT NOT NULL DEFAULT 0.5, -- how they are ranked (like, in stars)
-    is_admin BOOL NOT NULL DEFAULT FALSE
+    is_admin BOOL NOT NULL DEFAULT FALSE,
+    inviter INT UNSIGNED -- the user who invited this user into the system
   );
 
 ---DELIMITER---
