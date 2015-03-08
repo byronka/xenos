@@ -1474,3 +1474,23 @@ BEGIN
   ORDER BY a.datetime;
 
 END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS generate_invite_code;   
+
+---DELIMITER---
+CREATE PROCEDURE generate_invite_code
+(
+  my_user_id INT UNSIGNED,
+  OUT new_invite_code VARCHAR(100)
+)
+BEGIN
+  SET @code = sha2(concat(UTC_TIMESTAMP(), '_',my_user_id,'_', rand()),256);
+
+  INSERT INTO invite_code (user_id, timestamp, value)
+  VALUES (my_user_id, UTC_TIMESTAMP(), @code);
+
+  CALL add_audit(109, user_id, NULL, NULL, NULL, NULL);
+END
+
