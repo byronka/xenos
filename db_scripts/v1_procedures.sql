@@ -834,15 +834,19 @@ BEGIN
 
 
   -- add the user
-  INSERT INTO user (username, password, salt, date_created, last_ip_logged_in)
-  VALUES (uname, pword, slt, UTC_TIMESTAMP(), ipaddr);
+  INSERT INTO user (username, password, salt, date_created, last_ip_logged_in, inviter)
+  SELECT uname, pword, slt, UTC_TIMESTAMP(), ipaddr, ic.user_id
+  FROM invite_code ic
+  WHERE ic.value = my_invite_code;
 
   SET @new_user_id = LAST_INSERT_ID();
 
+  -- delete that invite code
+  DELETE FROM invite_code
+  WHERE ic.value = my_invite_code;
+
   -- Add an audit about registering a new user
   CALL add_audit(101,@new_user_id,NULL,NULL,NULL,ipaddr);
-
-  
 
 END
 
