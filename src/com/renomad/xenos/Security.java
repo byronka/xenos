@@ -59,6 +59,30 @@ public final class Security {
 
 
   /**
+    * given a user id, sets up an invite code tied to that
+    * user and adds an audit.
+    * @return an invite code or empty string if failure.
+    */
+  public static String generate_invite_code(int user_id) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall("{call generate_invite_code(?,?)}");
+      cs.setInt(1, user_id);
+      cs.registerOutParameter(2, java.sql.Types.VARCHAR);
+      cs.executeQuery();
+      String invite_code = cs.getString(2);
+      return invite_code;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return "";
+    } finally {
+      Database_access.close_statement(cs);
+    }
+  }
+  
+
+  /**
     * tries logging out the user.  If successful, return true
     * @param user_id the user id in question
     * @return true if successful

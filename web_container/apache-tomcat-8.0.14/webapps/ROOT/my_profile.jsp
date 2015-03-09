@@ -15,7 +15,12 @@
 	</head>
 	<body>
   <%@include file="includes/header.jsp" %>
-  <a href="change_password.jsp"><%=loc.get(113,"Change password")%></a>
+  <p>
+    <a href="change_password.jsp"><%=loc.get(113,"Change password")%></a>
+  </p>
+  <p>
+    <a href="generate_icode.jsp"><%=loc.get(206,"Generate invitation code")%></a>
+  </p>
 
   <h3><%=Utils.safe_render(user.username)%></h3>
   <ul>

@@ -1525,11 +1525,12 @@ CREATE PROCEDURE generate_invite_code
 )
 BEGIN
   SET @code = sha2(concat(UTC_TIMESTAMP(), '_',my_user_id,'_', rand()),256);
+  SET new_invite_code = @code;
 
   INSERT INTO invite_code (user_id, timestamp, value)
   VALUES (my_user_id, UTC_TIMESTAMP(), @code);
 
-  CALL add_audit(109, user_id, NULL, NULL, NULL, NULL);
+  CALL add_audit(109, my_user_id, NULL, NULL, NULL, NULL);
 END
 
 
