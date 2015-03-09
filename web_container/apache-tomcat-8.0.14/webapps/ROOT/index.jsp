@@ -22,7 +22,7 @@
     <section>
     <nav class="cl-effect-1">
       <a href="login.jsp"><%=loc.get(42,"Login")%></a>
-      <a href="register.jsp"><%=loc.get(43,"Register")%></a>
+      <a href="check_invite_code.jsp"><%=loc.get(43,"Register")%></a>
     </nav>
     </section>
   </div>
