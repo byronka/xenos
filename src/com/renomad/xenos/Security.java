@@ -23,6 +23,41 @@ public final class Security {
     //do nothing.
   }
 
+
+  /**
+    * checks that the invite code given exists in the table
+    * @return true if success, false otherwise
+    */
+  public static boolean is_valid_invite_code(String invite_code) {
+    // 1. set the sql
+    String check_icode_sql = 
+      "SELECT COUNT(*) AS icodes_found FROM invite_code WHERE value = ?";
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, check_icode_sql);     
+      pstmt.setString(1,invite_code);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return false;
+      }
+
+      resultSet.next();
+      int count_icodes_found = resultSet.getInt("icodes_found");
+      if (count_icodes_found == 1) { //if and only if it's 1 do we proceed.
+        return true;
+      }
+      return false;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
   /**
     * tries logging out the user.  If successful, return true
     * @param user_id the user id in question

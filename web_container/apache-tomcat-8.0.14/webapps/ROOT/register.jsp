@@ -1,6 +1,7 @@
 <%@include file="includes/mobile_check.jsp" %>
 <%@ page import="com.renomad.xenos.Security" %>
 <%@ page import="com.renomad.xenos.User_utils" %>
+<%@ page import="com.renomad.xenos.Utils" %>
 <%@ page import="com.renomad.xenos.Localization" %>
 <%
   //check if they are already logged in.  If so, just skip to
@@ -9,12 +10,14 @@
 	request.setCharacterEncoding("UTF-8");
   int user_id = Security.check_if_allowed(request,true);
 	if (user_id > 0) { 
-	response.sendRedirect("dashboard.jsp"); 
+    response.sendRedirect("dashboard.jsp"); 
 	} else {
+    // just in case, if they have a cookie for us at all, clear it.
     Cookie cookie = new Cookie("xenos_cookie", "");
     cookie.setMaxAge(0);
     response.addCookie(cookie);
 	}
+
 
   //set up an object to localize text
   Localization loc  = new Localization(request.getLocale());
@@ -22,14 +25,26 @@
   //get the values straight from the client
   String username = "";
   String password = "";
+  String invite_code = "";
   boolean validation_error = false;
 
   //we'll put error messages here if validation errors occur
   String username_error_msg = "";  //empty username
   String password_error_msg = "";  //empty password
   String user_creation_error_msg = ""; //couldn't register
+  String icode_error_msg = ""; // for invalid invite codes, though this really shouldn't 
+                              //happen since we precheck
+
+  // when coming in from the page that checks validity of invite
+  // code, we'll first get that from a query string.
+  String qs = request.getQueryString();
+  invite_code = Utils.parse_qs(qs).get("icode"); // get it from query string
 
   if (request.getMethod().equals("POST")) {
+
+    // we will get invite code this way only when they 
+    //are posting their username and password as well.
+    invite_code = request.getParameter("icode"); // get it from POST
 
     username = request.getParameter("username");
     if (username.length() == 0) {
@@ -44,12 +59,23 @@
     }
 
     if (!validation_error) {
-    String ip_address = request.getRemoteAddr();
-    boolean succeed = User_utils.put_user( username, password, ip_address);
-      if (succeed) {
-        response.sendRedirect("thanks.jsp");
-      } else {
-        user_creation_error_msg = loc.get(57,"That user already exists");
+      String ip_address = request.getRemoteAddr();
+      User_utils.Put_user_result result = User_utils.put_user( username, password, ip_address, invite_code);
+      switch (result) {
+        case OK:
+          response.sendRedirect("thanks.jsp");  // if everything is cool, only this runs.
+          return;
+        case EXISTING_USERNAME:
+          user_creation_error_msg = loc.get(57,"That user already exists");
+          break;
+        case INVALID_INVITE_CODE:
+          icode_error_msg = loc.get(201,"Invalid invite code");
+          break;
+        case GENERAL_ERR:
+         // fall through.
+        default:
+          response.sendRedirect("general_error.jsp"); // developer error if this happens, usually
+          return;
       }
     }
   }
@@ -69,8 +95,10 @@
   <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
   <div class="register">
     <form id="enter_name_form" action="register.jsp" method="post">
+      <input type="hidden" name="icode" value="<%=invite_code%>" >
 
       <div class="error"><%=user_creation_error_msg%></div>
+      <div class="error"><%=icode_error_msg%></div>
 
       <div class="username">
         <div class="label"><%=loc.get(51 ,"username")%>:</div> 

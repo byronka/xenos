@@ -316,26 +316,31 @@ public final class User_utils {
   
 
   /**
+    * the possible results from creating a new user.
+    */
+  public enum Put_user_result { OK, GENERAL_ERR, INVALID_ENTRY, EXISTING_USERNAME, INVALID_INVITE_CODE}
+
+
+  /**
     * adds a user.  Will check that values were entered for required
     * fields, and if so, will create the user.  Note that at that
     * point, the database has constraints which might cause failure
     * still.  See put_user's overload.
+    * @param invite_code users generate a code to invite their buddies to the system.  With
+    *  this code, the user is allowed to register.
     * @return true if successful
     */
-  public static boolean put_user(String username, String password, String ip_address) {
+  public static Put_user_result put_user(String username, String password, String ip_address, String invite_code) {
 
       if ( Utils.is_null_or_empty(username) ||
            Utils.is_null_or_empty(password)) {
-        return false;
+        return Put_user_result.INVALID_ENTRY;
       }
 
       CallableStatement cs = null;
       try {
         Connection conn = Database_access.get_a_connection();
-        // see db_scripts/v1_setup.sql delete_requestoffer for
-        // details on this stored procedure.
-        
-        cs = conn.prepareCall("{call create_new_user(?,?,?,?)}");
+        cs = conn.prepareCall("{call create_new_user(?,?,?,?,?)}");
         cs.setNString(1,username);
         //make a salt we'll use for hashing.
         String salt = Long.toString(
@@ -344,19 +349,23 @@ public final class User_utils {
         cs.setString(2,hashed_pwd);
         cs.setString(3,salt);
         cs.setString(4,ip_address);
+        cs.setString(5,invite_code);
         cs.executeQuery();
       } catch (SQLException ex) {
 				String msg = ex.getMessage();
 				if (msg.contains("Duplicate entry") ||
 					msg.contains("username matches existing")) {
-					return false;
+					return Put_user_result.EXISTING_USERNAME;
 				}
+        if (msg.contains("invite code is invalid")) {
+					return Put_user_result.INVALID_INVITE_CODE;
+        }
         Database_access.handle_sql_exception(ex);
-        return false;
+        return Put_user_result.GENERAL_ERR;
       } finally {
         Database_access.close_statement(cs);
       }
-      return true;
+      return Put_user_result.OK;
   }
 
 

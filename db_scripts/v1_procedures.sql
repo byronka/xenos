@@ -776,9 +776,9 @@ CREATE PROCEDURE create_new_user
 (
   uname NVARCHAR(50),
   pword VARCHAR(64),
-  my_invite_code VARCHAR(100),
   slt VARCHAR(50),
-  ipaddr VARCHAR(40) -- their ip address
+  ipaddr VARCHAR(40), -- their ip address
+  my_invite_code VARCHAR(100)
 ) 
 BEGIN 
 
@@ -821,6 +821,7 @@ BEGIN
       ELSE
         SET @name = uname;
       END IF;
+
       SET @message = CONCAT('ip: ',@my_ipaddr,' name: ',@name,
         ' invite code: ', SUBSTR(my_invite_code,1,10),'...');
 
@@ -835,15 +836,15 @@ BEGIN
 
   -- add the user
   INSERT INTO user (username, password, salt, date_created, last_ip_logged_in, inviter)
-  SELECT uname, pword, slt, UTC_TIMESTAMP(), ipaddr, ic.user_id
-  FROM invite_code ic
-  WHERE ic.value = my_invite_code;
+  SELECT uname, pword, slt, UTC_TIMESTAMP(), ipaddr, user_id
+  FROM invite_code
+  WHERE value = my_invite_code;
 
   SET @new_user_id = LAST_INSERT_ID();
 
   -- delete that invite code
   DELETE FROM invite_code
-  WHERE ic.value = my_invite_code;
+  WHERE value = my_invite_code;
 
   -- Add an audit about registering a new user
   CALL add_audit(101,@new_user_id,NULL,NULL,NULL,ipaddr);
@@ -1530,4 +1531,5 @@ BEGIN
 
   CALL add_audit(109, user_id, NULL, NULL, NULL, NULL);
 END
+
 
