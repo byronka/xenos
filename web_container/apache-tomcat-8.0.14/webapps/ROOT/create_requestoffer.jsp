@@ -178,9 +178,9 @@
                     <option disabled selected> -- <%=loc.get(198,"Select a Category")%> -- </option>			            
 					          <% for(Integer category : Requestoffer_utils.get_all_categories()){ %>
                       <% if (category.equals(selected_cat)) {%>
-                        <option class="category c-<%=category%>" selected value="<%=category%>"><%=loc.get(category,"")%></option>    
+                        <option selected value="<%=category%>"><%=loc.get(category,"")%></option>    
                       <%} else {%>
-                        <option class="category c-<%=category%>" value="<%=category%>"><%=loc.get(category,"")%></option>    
+                        <option value="<%=category%>"><%=loc.get(category,"")%></option>    
                       <% } %>			           		             
 					          <% } %>			           		             
 		              </select>
