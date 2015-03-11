@@ -5,11 +5,6 @@
     <title><%=loc.get(2, "Request Favor")%></title>	
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <%if (probably_mobile) {%>
-      <link rel="stylesheet" href="includes/common_alt.css" title="mobile">
-    <% } else { %>
-      <link rel="stylesheet" href="includes/common.css" title="desktop">
-    <% } %>		
 	</head>
 	
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
@@ -145,7 +140,7 @@
 	<body role="document" class="backstretch-light">
     <%@include file="includes/header.jsp" %>	
 	  <div class="wrapper">
-	    <div class="container theme-showcase" role="main">		   	   
+	    <div class="container-fluid theme-showcase" role="main">		   	   
 	     
         <div class="page-header">
 	          <h1><%=loc.get(2,"Request Favor")%></h1>
@@ -163,19 +158,22 @@
 						<div class="panel-body">
 							<div class="form-group <%if(desc_error_msg.length() > 0){out.print("has-error has-feedback");}%>">
 		            <label for="description" class="col-sm-2 control-label"><%=loc.get(10,"Description")%>:</label>
-		            <div class="col-sm-7">
+		            <div class="col-sm-6">
 		              <input maxlength=200 type="text" name="description" placeholder="<%=loc.get(10,"Description")%>" class="form-control" value="<%=de%>">
-                  <%if(desc_error_msg.length() > 0){%>  
-                  <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                  <%}%> 
 		            </div> 
-		            <div class="col-sm-3">
-                  <span class="help-block"><%=desc_error_msg%></span>
-                </div>		                     
+                  <%if(desc_error_msg.length() > 0){%>  
+                  <div class="col-sm-4">
+                    <div class="alert alert-danger" role="alert">
+                      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                      <span class="sr-only">Error:</span>
+                      <%=desc_error_msg%>
+                    </div>		                     
+                  </div>		                     
+                  <%}%> 
 						  </div>				  
               <div class="form-group <%if(cat_error_msg.length() > 0){out.print("has-error has-feedback");}%>">
 		            <label for="categories" class="col-sm-2 control-label"><%=loc.get(13,"Categories")%>:</label>
-								<div class="col-sm-7">
+								<div class="col-sm-6">
 			            <select name="categories" class="form-control">
                     <option disabled selected> -- <%=loc.get(198,"Select a Category")%> -- </option>			            
 					          <% for(Integer category : Requestoffer_utils.get_all_categories()){ %>
@@ -187,17 +185,28 @@
 					          <% } %>			           		             
 		              </select>
 		            </div>
-                <div class="col-sm-3">
-                  <span class="help-block"><%=cat_error_msg%></span>
-                </div>                
+                  <%if(cat_error_msg.length() > 0){%>  
+                  <div class="col-sm-4">
+                    <div class="alert alert-danger" role="alert">
+                      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                      <span class="sr-only">Error:</span>
+                      <%=cat_error_msg%>
+                    </div>		                     
+                  </div>		                     
+                  <%}%> 
 							</div>																	
 							<% if (need_loc) { %>					
 							
-              <div class="form-group <%if(addr_error_msg.length() > 0){out.print("has-error has-feedback");}%>">            
-                <div class="col-sm-10">
-                  <span class="help-block"><%=addr_error_msg%></span>
-                </div>                
-              </div>        																          			         
+                  <%if(addr_error_msg.length() > 0){%>  
+                  <div class="form-group">
+                    <div class="alert alert-danger" role="alert">
+                      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                      <span class="sr-only">Error:</span>
+                      <%=addr_error_msg%>
+                    </div>		                     
+                  </div>		                     
+                  <%}%> 
+
 							   <% 
 							     User_location[] locations = 
 							       Requestoffer_utils.get_my_saved_locations(user_id);
