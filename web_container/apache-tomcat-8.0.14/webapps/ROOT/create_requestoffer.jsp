@@ -230,13 +230,13 @@
 							       </select>                       
                    </div>
                  </div>
+                <div class="form-group">
+                  <label class="col-sm-4"><%=loc.get(159,"Or enter a new address")%>:</label>            
+                </div>                							
 							   <%
 							     }
 							   %>
               
-              <div class="form-group">
-                <label class="col-sm-4"><%=loc.get(159,"Or enter a new address")%>:</label>            
-              </div>                							
 						  <div class="form-group">
 						    <label class="col-sm-4 control-label">
 						      <input id="save_loc_to_user" name="save_loc_to_user" <%=save_loc_to_user_checked%> type="checkbox"/>
