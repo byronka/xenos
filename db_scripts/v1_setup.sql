@@ -114,10 +114,10 @@ requestoffer_state (
   requestoffer_id INT UNSIGNED NOT NULL PRIMARY KEY,
   status INT UNSIGNED NOT NULL,
   datetime DATETIME,
-  FOREIGN KEY FK_requestoffer_id (requestoffer_id)
+  FOREIGN KEY FK_requestoffer_id_rs (requestoffer_id)
     REFERENCES requestoffer (requestoffer_id)
     ON DELETE CASCADE,
-  FOREIGN KEY FK_status (status)
+  FOREIGN KEY FK_status_rs (status)
     REFERENCES requestoffer_status (requestoffer_status_id)
     ON DELETE CASCADE
 )
@@ -155,10 +155,10 @@ requestoffer_service_request (
   date_created DATETIME, -- when a user made the offer to handle
   date_modified DATETIME, -- when the user takes an action on it
   status INT,
-  FOREIGN KEY FK_requestoffer_id (requestoffer_id)
+  FOREIGN KEY FK_requestoffer_id_rsr (requestoffer_id)
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
-  FOREIGN KEY FK_user_id (user_id)
+  FOREIGN KEY FK_user_id_rsr (user_id)
   REFERENCES user (user_id)
   ON DELETE CASCADE
 )
@@ -229,7 +229,7 @@ CREATE TABLE
 requestoffer_to_category ( 
   requestoffer_id INT UNSIGNED NOT NULL,
   requestoffer_category_id INT UNSIGNED NOT NULL,
-  FOREIGN KEY FK_requestoffer_id (requestoffer_id) 
+  FOREIGN KEY FK_requestoffer_id_rtc (requestoffer_id) 
     REFERENCES requestoffer (requestoffer_id) 
     ON DELETE CASCADE,
   FOREIGN KEY 
@@ -251,13 +251,13 @@ requestoffer_message (
   timestamp datetime,
   from_user_id INT UNSIGNED NOT NULL, -- person sending the message
   to_user_id INT UNSIGNED NOT NULL,   -- person receiving the message
-  FOREIGN KEY FK_requestoffer_id (requestoffer_id)
+  FOREIGN KEY FK_requestoffer_id_rm (requestoffer_id)
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
   FOREIGN KEY FK_from_user_id (from_user_id)
   REFERENCES user (user_id)
   ON DELETE CASCADE,
-  FOREIGN KEY FK_to_user_id (to_user_id)
+  FOREIGN KEY FK_to_user_id_rm (to_user_id)
   REFERENCES user (user_id)
   ON DELETE CASCADE
 )
@@ -388,7 +388,7 @@ location_to_user (
   FOREIGN KEY FK_user (user_id)
   REFERENCES user (user_id)
   ON DELETE CASCADE,
-  FOREIGN KEY FK_location (location_id)
+  FOREIGN KEY FK_location_ltu (location_id)
   REFERENCES location (location_id)
   ON DELETE CASCADE,
   PRIMARY KEY (location_id, user_id)
@@ -400,10 +400,10 @@ CREATE TABLE
 location_to_requestoffer (
   location_id INT UNSIGNED,
   requestoffer_id INT UNSIGNED,
-  FOREIGN KEY FK_requestoffer (requestoffer_id)
+  FOREIGN KEY FK_requestoffer_ltr (requestoffer_id)
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
-  FOREIGN KEY FK_location (location_id)
+  FOREIGN KEY FK_location_ltr (location_id)
   REFERENCES location (location_id)
   ON DELETE CASCADE,
   PRIMARY KEY (location_id, requestoffer_id)
@@ -450,16 +450,16 @@ user_rank_data_point (
   requestoffer_id INT UNSIGNED,
   meritorious BOOL,
   status_id INT UNSIGNED NOT NULL,
-  FOREIGN KEY FK_requestoffer (requestoffer_id)
+  FOREIGN KEY FK_requestoffer_urdp (requestoffer_id)
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
-  FOREIGN KEY FK_user (judged_user_id)
+  FOREIGN KEY FK_user_urdp (judged_user_id)
   REFERENCES user (user_id)
   ON DELETE CASCADE,
   FOREIGN KEY FK_j_user (judge_user_id)
   REFERENCES user (user_id)
   ON DELETE CASCADE,
-  FOREIGN KEY FK_status (status_id)
+  FOREIGN KEY FK_status_urdp (status_id)
   REFERENCES requestoffer_user_statuses (state_id)
   ON DELETE RESTRICT
 )
@@ -499,7 +499,7 @@ system_to_user_message (
   timestamp DATETIME,
   to_user_id INT UNSIGNED NOT NULL,   -- person receiving the message
   has_been_viewed BOOL DEFAULT FALSE, -- if the user has viewed this message
-  FOREIGN KEY FK_to_user_id (to_user_id)
+  FOREIGN KEY FK_to_user_id_stum (to_user_id)
   REFERENCES user (user_id)
   ON DELETE CASCADE,
   FOREIGN KEY FK_message_text (text_id)
