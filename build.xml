@@ -180,6 +180,7 @@
   system.  All classes are built and put in the build directory, and
   other Ant targets move these files to their intended destination -->
   <target name="compile" description="compiles all business java files">
+    <mkdir dir="${tomcat.webapps.dir}ROOT/WEB-INF/classes" />
     <javac 
       debug="true" 
       debuglevel="lines,vars,source" 
