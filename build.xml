@@ -75,7 +75,6 @@
     <antcall target="build-procs" />
     <antcall target="build-events" />
 		<antcall target="build-language-data" />
-    <antcall target="install" />
     <antcall target="tomcat-restart" />
   </target>
 
@@ -87,7 +86,6 @@
     <antcall target="build-procs" />
     <antcall target="build-events" />
 		<antcall target="build-language-data" />
-    <antcall target="install" />
   </target>
 
   <target name="clean-everything" depends="compile-schema-code"
@@ -171,8 +169,7 @@
   <!-- builds the Java classes necessary for the functioning of the
   system.  All classes are built and put in the build directory, and
   other Ant targets move these files to their intended destination -->
-  <target name="compile" description="compiles all java files">
-    <mkdir dir="build/classes"/>
+  <target name="compile" description="compiles all business java files">
     <javac 
       debug="true" 
       debuglevel="lines,vars,source" 
@@ -182,7 +179,7 @@
         lib/junit-4.12.jar:
         ${tomcat.lib.dir}servlet-api.jar"
       srcdir="src" 
-      destdir="build/classes">
+      destdir="${tomcat.webapps.dir}ROOT/WEB-INF/classes">
 			<exclude name="com/renomad/xenos/schema/**" />
       <compilerarg value="-Xlint:unchecked" /> <!-- for more warnings -->
     </javac>
@@ -204,20 +201,6 @@
       <compilerarg value="-Xlint:unchecked" /> <!-- for more warnings -->
     </javac>
   </target>
-
-
-  <!-- 
-    copies the compiled classes and other resources into
-    their proper locations in the web_container directory.
-  -->
-  <target name="install"
-    description="move files into web container">
-    <copy todir="${tomcat.webapps.dir}ROOT/WEB-INF/classes" >
-      <!-- Note: **/* will include all sub-directories. -->
-      <fileset dir="build/classes" includes="**/*" />
-    </copy>
-  </target>
-
 
 
   <!-- ################ -->
