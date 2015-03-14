@@ -93,7 +93,8 @@
     <antcall target="clean-schema" />
     <antcall target="clean-build" />
     <antcall target="clean-code-analysis" />
-    <antcall target="clean-tomcat" />
+    <antcall target="clean-tomcat-logs" />
+    <antcall target="clean-tomcat-work" />
     <antcall target="clean-javadoc" />
     <antcall target="clean-schema-code" />
   </target>
@@ -112,13 +113,22 @@
 		<delete dir="${docs.dir}"/>
   </target>
 
-  <!-- deletes the tomcat log and work directory 
-    don't worry, they get rebuilt when Tomcat starts. --> 
+  <!-- deletes the tomcat log directory 
+    don't worry, it gets rebuilt when Tomcat starts. --> 
   <target 
-    name="clean-tomcat" 
-    description="deletes the tomcat log and work directory">
+    name="clean-tomcat-logs" 
+    description="deletes the tomcat log directory">
 		<delete>
 			<fileset dir="web_container/apache-tomcat-8.0.14/logs" includes="**"/>
+		</delete>
+  </target>
+
+  <!-- deletes the tomcat work directory 
+    don't worry, it gets rebuilt when Tomcat starts. --> 
+  <target 
+    name="clean-tomcat-work" 
+    description="deletes the tomcat work directory">
+		<delete>
 			<fileset dir="web_container/apache-tomcat-8.0.14/work" includes="**"/>
 		</delete>
   </target>
