@@ -1,21 +1,37 @@
+* {
+  margin: 0;
+}
+
+body {
+  background-color: #5f2d1d;
+}
+
 span.error {
   color: white;
   background-color: red;
 }
 
 form[action="create_requestoffer.jsp"] select {
-  width: 400px;
+  width: 200px;
+overflow: hidden;
 }
 
 form[action="create_requestoffer.jsp"] {
   display: table;
-  margin: auto;
-  table-layout: fixed;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
   border-spacing: 20px 20px;
+  background-color: white;
 }
 
 form[action="create_requestoffer.jsp"] div {
   display: table-row;
+}
+
+form[action="create_requestoffer.jsp"] h4 {
+  text-align: center;
 }
 
 form[action="create_requestoffer.jsp"] textarea {
@@ -54,5 +70,4 @@ form[action="create_requestoffer.jsp"] input[type="text"]:-moz-placeholder {
  form[action="create_requestoffer.jsp"] input[type="text"]:focus{
     box-shadow: 0 1px 0 #2392F3 inset, 0 -1px 0 #2392F3 inset, 1px 0 0 #2392F3 inset, -1px 0 0 #2392F3 inset, 0 0 4px rgba(35,146,243,0.5);
     outline: none;
-    background: url(../img/keyIcon.png) 12px 11px no-repeat, #FFF;
   }

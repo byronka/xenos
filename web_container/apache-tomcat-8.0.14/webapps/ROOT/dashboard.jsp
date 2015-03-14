@@ -41,11 +41,14 @@
 <!DOCTYPE html>
 <html>                                 
   <head>
-		<%if (probably_mobile) {%>
-			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
-		<% } else { %>
-			<link rel="stylesheet" href="includes/common.css" title="desktop">
-		<% } %>
+     <link rel="stylesheet" href="includes/reset.css">
+    <%if (probably_mobile) {%>
+     <link rel="stylesheet" href="includes/header_mobile.css" title="mobile">
+     <link rel="stylesheet" href="dashboard_mobile.css" title="mobile">
+    <% } else { %>
+     <link rel="stylesheet" href="includes/header.css" title="desktop">
+     <link rel="stylesheet" href="dashboard.css" title="desktop">
+    <% } %>    
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=loc.get(16,"The dashboard")%></title>
   </head>
@@ -53,7 +56,6 @@
 <body>
 <%@include file="includes/header.jsp" %>
 <div class="dashboard-container">
-<div class="requestoffers others">
 <%
   String decoded_srch_desc = "";
   if (srch_desc != null) {
@@ -77,7 +79,7 @@
                                       which_page);
   for (Others_Requestoffer r : or_package.get_requestoffers()) {
 %>
-  <div class="others requestoffer">
+  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
     <%if (r.status == 76 && 
       !r.has_been_offered && 
       user_id != r.requestoffering_user_id) {%>
@@ -90,25 +92,10 @@
       </span>
     <%}%>
     <ul>
-      <li class="rank">
-        <span class="label"><%=loc.get(79, "Rank")%>:</span>
-        <span >
-          <%for (int i = 0; i < Math.ceil(r.rank * 5); i++) {%>
-           &#x2605; 
-            <%}%>
-        </span>
-      </li>
       <li class="description">
         <div class="desc container">
-          <div class="label"><%=loc.get(10, "Description")%>:</div>
           <div class="value description"><%=Utils.safe_render(r.description)%></div>
         </div>
-      </li>
-      <li class="status">
-        <span class="label"><%=loc.get(24, "Status")%>:</span>
-        <span 
-          class="value">
-          <%=loc.get(r.status,"")%></span>
       </li>
       <li class="datetime">
         <span class="label"><%=loc.get(25, "Date")%>:</span>
@@ -121,7 +108,7 @@
         %>
         <span class="value"> <%=Utils.safe_render(ru.username)%></span>
       </li>
-      <li>
+      <li class="categories">
         <span class="label"><%=loc.get(13, "Categories")%>:</span>
 
         <span class="value">
@@ -132,24 +119,24 @@
       </li>
 
       <% if (!Utils.is_null_or_empty(r.postcodes)) { %>
-        <li>
+        <li class="postal-code">
           <span class="label"><%=loc.get(156, "Postal code")%>:</span>
           <%=Utils.safe_render(r.postcodes)%>
         </li>
       <% } %>
 
       <% if (!Utils.is_null_or_empty(r.cities)) { %>
-      <li>
+      <li class="cities">
         <span class="label"><%=loc.get(154, "City")%>:</span>
         <%=Utils.safe_render(r.cities)%>
       </li>
       <% } %>
 
     </ul>
-  </div>
+  </a>
 <% } %>
-</div>
 
+<%if(or_package.page_count > 1) {%>
   <span><%=loc.get(93, "Page")%>: </span>
 	<% 	
 	String qs_without_page = "";
@@ -165,6 +152,7 @@
 		<a class="page-link" href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>"><%=i+1%></a>
 		<%  }
 	}%>
+<%}%>
 
 </div>
 <%@include file="includes/timeout.jsp" %>

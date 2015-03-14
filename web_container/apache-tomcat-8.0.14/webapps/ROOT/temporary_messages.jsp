@@ -7,7 +7,7 @@
     Cookie cookie = new Cookie("xenos_cookie", "");
     cookie.setMaxAge(0);
     response.addCookie(cookie);
-    response.sendError(SC_FORBIDDEN);
+    response.sendError(response.SC_FORBIDDEN);
   %>
     <div>unauthenticated</div>
   <%

@@ -1,0 +1,63 @@
+body {
+  background-color: #5f2d1d;
+}
+
+div.dashboard-container ul {
+  list-style: none;
+  margin: initial;
+  padding: 0px;
+}
+
+div.dashboard-container {
+  margin-top: 20px;
+  font-family: garamond;
+  overflow: hidden;
+}
+
+div.dashboard-container a.requestoffer {
+  -webkit-border-radius: 10px 10px 10px 10px;
+  border: 2px solid white;
+  background-color: grey;
+  margin-left: auto;
+  margin-right: auto;
+  min-width: 300px;
+  max-width: 400px;
+  position:relative;
+  overflow: hidden;
+  margin-bottom: 4px;
+  display: block;
+}
+
+div.dashboard-container li.datetime{
+  font-size: 7px;
+}
+
+div.dashboard-container li.requestoffering-user-id{
+  display: none;
+}
+
+div.dashboard-container li.categories{
+  display: none;
+}
+div.dashboard-container li.postal-code{
+  display: none;
+}
+
+div.dashboard-container li.cities{
+  display: none;
+}
+
+div.desc.container {
+  background: black;
+  color: white;
+  border: 1px solid blue;
+  padding: 5px;
+}
+
+a.page-link {
+	display: inline-block;
+	font-size: 20px;
+	padding: 14px;
+	margin: 4px;
+	border: black solid 1px;
+}
