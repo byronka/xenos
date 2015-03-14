@@ -48,7 +48,8 @@ CREATE TABLE
     last_activity_time DATETIME,
     timeout_seconds INT NOT NULL DEFAULT 1800, -- 30 minutes in seconds
     last_ip_logged_in VARCHAR(40),
-    rank FLOAT NOT NULL DEFAULT 0.5, -- how they are ranked (like, in stars)
+    rank_average FLOAT, -- average # good rankings in last 6 months
+    rank_ladder INT, -- represents most recent activity
     is_admin BOOL NOT NULL DEFAULT FALSE,
     inviter INT UNSIGNED -- the user who invited this user into the system
   );
