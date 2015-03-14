@@ -592,6 +592,16 @@ timeout
   clicking "I'm not done" should reset that time
   timeout should appear localized
 
+ranking
+  when a user ranks another user, whether by completion, cancellation,
+  or subsequent ranking of other user, make sure the other user has 
+  their rank_average and rank_ladder recalculated
+
+events
+  once a day, system should find those users having user rank data points
+    that are more than 6 months old and adjust them to include only data
+    points that are within the 6 month rolling window
+
 
 
 
