@@ -5,11 +5,6 @@
 -- we will use them for a few ideas - like timeouts, for example.
 
 
--- Timeout event - an event to check whether users have passed their
--- timeout period and should have "is_logged_in" set false.  Timeout
--- meaning that once users have a certain amount of time without activity,
--- the system should log them out.
-
 -- IMPORTANT! The event scheduler in MySQL has to be running for this to
 -- work.
 -- check with "show processlist;".  If you don't see event_scheduler under
@@ -20,6 +15,11 @@ SET GLOBAL event_scheduler = ON;
 ---DELIMITER---
 DROP EVENT IF EXISTS user_timeout;
 ---DELIMITER---
+
+-- Timeout event - an event to check whether users have passed their
+-- timeout period and should have "is_logged_in" set false.  Timeout
+-- meaning that once users have a certain amount of time without activity,
+-- the system should log them out.
 
 -- this sql does the following: every 5 seconds, run a script to check for
 -- users whose last action was more than timeout_seconds ago.
@@ -137,7 +137,7 @@ DO
       -- audit that we are setting the requestoffer to draft
       INSERT INTO audit (
         datetime, audit_action_id, user1_id, requestoffer_id)
-      SELECT UTC_TIMESTAMP(), 206, 1, requestoffer_id -- 1 is the system user
+      SELECT UTC_TIMESTAMP(), 206, 1, requestoffer_id -- 1 is system user
       FROM requestoffers_to_change_status;
 
       -- audit that we are rejecting users who had offered to handle this
@@ -185,4 +185,70 @@ DO
       DELETE FROM invite_code 
       WHERE UTC_TIMESTAMP() > 
           (timestamp + INTERVAL 30 MINUTE);
+  END
+
+---DELIMITER---
+DROP EVENT IF EXISTS adjust_user_rankings;
+---DELIMITER---
+
+-- this sql does the following: once a day, run a script to recalculate
+-- user rankings for those users who have user_rank_data_points that are
+-- outside the 6 month rolling window.  Audits this also.
+
+CREATE EVENT adjust_user_rankings
+ON SCHEDULE
+  EVERY 1 DAY 
+COMMENT 'recalculates user rankings for 6 month rolling window'
+DO
+  BEGIN
+
+    -- a table to hold user rank data points outside the rolling window
+    DROP TEMPORARY TABLE IF EXISTS urdps_going_outside_window;
+
+    CREATE TEMPORARY TABLE urdps_going_outside_window AS ( 
+      SELECT urdp_id
+      FROM user_rank_data_point
+      WHERE 
+        UTC_TIMESTAMP() > (date_entered + INTERVAL 6 MONTH)
+        AND
+        is_inside_window = 1;
+    );
+
+    -- audit going outside the window
+    INSERT INTO audit (
+      datetime, audit_action_id, user1_id, user2_id, 
+      requestoffer_id, extra_id)
+    SELECT UTC_TIMESTAMP(), 310, 1, ugow.user_id, 
+      ugow.requestoffer_id, ugow.urdp_id
+    FROM urdps_going_outside_window ugow;
+
+    -- actually set them to be outside the window
+    UPDATE user_rank_data_point urdp
+    JOIN urpds_going_outside_window ugow ON ugow.urdp_id = urdp.urdp_id
+    SET urdp.is_inside_window = 0;
+
+    -- only update users if they have user rank data points
+    -- that are moving from being inside the rolling window to outside.
+    UPDATE user u
+    JOIN user_rank_data_point urdp ON urdp.judged_user_id = u.user_id
+    JOIN urdps_going_outside_window ugow ON ugow.user_id = u.user_id
+    SET 
+      u.rank_average = 
+        (
+          SELECT AVG(meritorious)
+          FROM user_rank_data_point
+          WHERE 
+            judged_user_id = uid
+            AND
+            status_id = 3 -- feedback is complete
+            AND
+            UTC_TIMESTAMP() < (date_entered + INTERVAL 6 MONTH)
+        );
+
+    INSERT INTO audit (
+      datetime, audit_action_id, user1_id, user2_id, requestoffer_id)
+    SELECT UTC_TIMESTAMP(), 309, 1, rsr.user_id, rsr.requestoffer_id
+    FROM user_rank_data_point urdp
+    WHERE UTC_TIMESTAMP() < (date_entered + INTERVAL 6 MONTH);
+
   END
