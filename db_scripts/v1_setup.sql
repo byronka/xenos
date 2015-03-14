@@ -318,6 +318,8 @@ VALUES
 (306,'User1 is going into ACTIVE on user_rank_data_point (extra_id is urdp_id)'),
 (307,'User1 is going into COMPLETE_FEEDBACK_POSSIBLE on user_rank_data_point (extra_id is urdp_id)'),
 (308,'User1 is going into COMPLETE on user_rank_data_point (extra_id is urdp_id)'),
+(309,'System adjusted rank on a user due to one or more user rank data points going outside 6 month window'),
+(310,'System is automatically setting a user rank data point outside of the rolling window'),
 
 -- misc - 400s
 
@@ -451,6 +453,7 @@ user_rank_data_point (
   requestoffer_id INT UNSIGNED,
   meritorious BOOL,
   status_id INT UNSIGNED NOT NULL,
+  is_inside_window BOOL, -- whether we are inside rolling window (only  matters while status_id is 2 or 3)
   FOREIGN KEY FK_requestoffer_urdp (requestoffer_id)
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
