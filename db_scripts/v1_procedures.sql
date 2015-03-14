@@ -36,7 +36,7 @@ DROP PROCEDURE IF EXISTS recalculate_rank_on_user;
 -- it operates on a 6-month rolling schedule.  Every input, thumbs-up
 -- or thumbs-down, will be inserted into the table and averaged out.
 
--- inputs that are more than 6 months old will be deleted and not applied
+-- inputs that are more than 6 months old will not be applied
 -- in this average.
 
 -- this procedure does not double-check the user or requestoffer id, 

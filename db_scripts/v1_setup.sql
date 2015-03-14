@@ -39,9 +39,9 @@ CREATE TABLE
     username NVARCHAR(50) UNIQUE,
     email NVARCHAR(200) UNIQUE, 
     password VARCHAR(64),
-    points INT NOT NULL DEFAULT 0,
-    language INT UNSIGNED NULL, 
-    is_logged_in BOOL, 
+    points INT NOT NULL DEFAULT 0, -- legal tender of our system
+    language INT UNSIGNED NULL,  -- let them choose their language 
+    is_logged_in BOOL,  -- when they log in.  event exists to clear this.
     date_created DATETIME,
     salt VARCHAR(50), -- used when hashing password
     last_time_logged_in DATETIME,
