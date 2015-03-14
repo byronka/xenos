@@ -33,35 +33,58 @@ DROP PROCEDURE IF EXISTS recalculate_rank_on_user;
 ---DELIMITER---
 
 -- This procedure calculates and applies the rank calculation for users.
--- it operates on a 6-month rolling schedule.  Every input, thumbs-up
--- or thumbs-down, will be inserted into the table and averaged out.
-
--- inputs that are more than 6 months old will not be applied
--- in this average.
+-- it operates on a 6-month rolling schedule.  
+-- user rank data points that are more than 6 months old 
+-- will not be applied in this average.
 
 -- this procedure does not double-check the user or requestoffer id, 
 -- because it is assumed that by the time the calling procedure 
 -- gets to this one,
 -- that will have already been validated.
 
+
+
 CREATE PROCEDURE recalculate_rank_on_user
 (
-  j_uid INT UNSIGNED, -- ther user judging the other user
   uid INT UNSIGNED, -- the user id having his rank recalculated
-  rid INT UNSIGNED, -- the requestoffer id
   is_thumbs_up BOOL -- the opinion of the other party
 ) 
 BEGIN
-  
-  -- get the number of rankings that are less than 60 days old
-  UPDATE user
-  SET rank = 
-  (
-    SELECT AVG(meritorious)
-    FROM user_rank_data_point
-    WHERE UTC_TIMESTAMP() < (date_entered + INTERVAL 60 DAY)
-  )
-  WHERE user_id = uid;
+
+  SELECT rank_ladder INTO @ladder
+  FROM user
+  WHERE user_id = uid
+
+  -- adjust the ranking ladder.
+  IF is_thumbs_up = 1 THEN -- ladder only goes up one at a time
+    IF @ladder < 15 THEN
+      UPDATE user SET rank_ladder = rank_ladder + 1 WHERE user_id = uid;
+    END IF;
+  ELSEIF is_thumbs_up = 0 THEN -- ladder drops 3 at a time
+    IF @ladder - 3 < -3 THEN
+      UPDATE user SET rank_ladder = -3 WHERE user_id = uid;
+    ELSE
+      UPDATE user SET rank_ladder = rank_ladder - 3 WHERE user_id = uid;
+    END IF;
+  END IF;
+
+  -- get the number of rankings that are less than 6 months old
+  -- and recalculate the average
+    UPDATE user
+    SET 
+      rank_average = 
+        (
+          SELECT AVG(meritorious)
+          FROM user_rank_data_point
+          WHERE 
+            judged_user_id = uid
+            AND
+            status_id = 3 -- feedback is complete
+            AND
+            UTC_TIMESTAMP() < (date_entered + INTERVAL 6 MONTH)
+        )
+    WHERE user_id = uid;
+
 
 END
 
@@ -618,11 +641,13 @@ BEGIN
   WHERE requestoffer_id = rid;
   
   -- indicate that this user is in "ACTIVE" state on this requestoffer
+  -- default to "true" for meritorious, so if the feedback never happens,
+  -- it is assumed that things went ok.
   INSERT INTO user_rank_data_point
-  (date_entered, judge_user_id, judged_user_id, requestoffer_id, status_id)
+  (date_entered, judge_user_id, judged_user_id, requestoffer_id, status_id, is_inside_window, meritorious)
   VALUES 
-  (UTC_TIMESTAMP(), @owner_id,uid, rid, 1), 
-  (UTC_TIMESTAMP(), uid,@owner_id, rid, 1); 
+  (UTC_TIMESTAMP(), @owner_id,uid, rid, 1, 1, 1), 
+  (UTC_TIMESTAMP(), uid,@owner_id, rid, 1, 1, 1); 
 
   SET @urdp_id = LAST_INSERT_ID();
 
@@ -1134,7 +1159,7 @@ BEGIN
 	CALL add_audit(302,uid,@handling_user_id,rid,NULL,NULL);
 
   -- recalculate the owner's rank
-  CALL recalculate_rank_on_user(uid,@handling_user_id, rid, satis);
+  CALL recalculate_rank_on_user(@handling_user_id, satis);
 
   -- audit that the owner is raising or lowering their rank
   IF (satis) THEN
@@ -1297,7 +1322,7 @@ BEGIN
     CALL add_audit(210,uid,@handling_user_id,rid,NULL,NULL); 
 
     -- recalculate the acting user's ranking
-    CALL recalculate_rank_on_user(uid,@other_party, rid, is_thumbs_up);
+    CALL recalculate_rank_on_user(other_party, is_thumbs_up);
     IF (is_thumbs_up) THEN
       CALL add_audit(304,uid,@other_party,rid,NULL,NULL);
     ELSE
@@ -1443,7 +1468,7 @@ DROP PROCEDURE IF EXISTS rank_other_user;
 
 CREATE PROCEDURE rank_other_user
 (
-  uid INT UNSIGNED, -- the user id
+  uid INT UNSIGNED, -- the user id acting as judge
   my_urdp_id INT UNSIGNED, -- the user rank data point id
   is_satis BOOL -- whether the user is satisfied
 ) 
@@ -1451,16 +1476,20 @@ BEGIN
 
   CALL validate_user_id(uid);
 
+  -- we only allow feedback in these situations: this user is, in fact,
+  -- the judge.  status is "feedback possible".  date is within 30 days
+  -- of going to status 2 (feedback possible)
   SELECT COUNT(*) INTO @count_valid_urdps
   FROM user_rank_data_point
   WHERE urdp_id = my_urdp_id 
     AND judge_user_id = uid 
-    AND status_id = 2;
+    AND status_id = 2
+    AND UTC_TIMESTAMP() < (date_entered + INTERVAL 30 DAY)
 
   -- check that a user rank data point exists with this id.
   IF @count_valid_urdps = 0 THEN
     SET @msg = CONCAT('no urdp having an id of ', my_urdp_id,
-     ' status_id of 2 ,judge_user_id of ', uid);
+     ' status_id of 2 ,judge_user_id of ', uid, 'inside 30 day window');
     
     SIGNAL SQLSTATE '45000' 
     SET message_text = @msg;
@@ -1476,6 +1505,8 @@ BEGIN
     meritorious = is_satis,
     status_id = 3 -- they have provided feedback, they're done.
   WHERE urdp_id = my_urdp_id;
+
+  CALL recalculate_rank_on_user(judged_uid, is_satis);
 
 	CALL add_audit(308,uid,@judged_uid,@rid,my_urdp_id,'from status_id 2');
 
