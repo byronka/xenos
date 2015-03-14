@@ -42,8 +42,6 @@ DROP PROCEDURE IF EXISTS recalculate_rank_on_user;
 -- gets to this one,
 -- that will have already been validated.
 
-
-
 CREATE PROCEDURE recalculate_rank_on_user
 (
   uid INT UNSIGNED, -- the user id having his rank recalculated
@@ -259,21 +257,21 @@ BEGIN
       " AND description LIKE CONCAT('%' , @desc , '%') ");
   END IF;
 
-  -- searching by rank
+  -- searching by rank_average
   IF minrank > 0.0 AND maxrank > 0.0 THEN
     SET @minrank = minrank;
     SET @maxrank = maxrank;
     SET @search_clauses = 
       CONCAT(@search_clauses, 
-        ' AND @minrank <= u.rank AND u.rank <= @maxrank ');
+        ' AND @minrank <= u.rank_average AND u.rank_average <= @maxrank ');
   ELSEIF minrank > 0 THEN
     SET @minrank = minrank;
     SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND @minrank <= u.rank ');
+      CONCAT(@search_clauses, ' AND @minrank <= u.rank_average ');
   ELSEIF maxrank > 0 THEN
     SET @maxrank = maxrank;
     SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND @maxrank >= u.rank ');
+      CONCAT(@search_clauses, ' AND @maxrank >= u.rank_average ');
   END IF;
 
   -- searching by postcode - right now, only an exact match
@@ -297,7 +295,7 @@ BEGIN
             r.description, 
             rs.status, 
             r.points, 
-            u.rank, 
+            u.rank_average, 
             rsr.user_id AS been_offered,
             r.requestoffering_user_id, 
             r.handling_user_id, 
@@ -333,7 +331,7 @@ BEGIN
             r.description, 
             rs.status, 
             r.points, 
-            u.rank, 
+            u.rank_average, 
             rsr.user_id AS been_offered,
             r.requestoffering_user_id, 
             r.handling_user_id, 
