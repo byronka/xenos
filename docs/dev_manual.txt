@@ -493,6 +493,7 @@ Database in use:
 Beginning up to current: 5.6.23 will work
 Beginning up to eef04ec139930f055f234c4faadbe4a0db1222ca - 5.5 and up works
 eef04ec139930f055f234c4faadbe4a0db1222ca and beyond 5.6.23 exactly
+f6b5c612f6bb6d6ec7817896e7555a33fb12d454 and beyond 10.0.17-MariaDB 
 
 
 
