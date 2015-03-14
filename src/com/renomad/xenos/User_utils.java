@@ -255,7 +255,7 @@ public final class User_utils {
     */
   public static User get_user(int user_id) {
     String sqlText = 
-      "SELECT username,points, timeout_seconds, rank "+
+      "SELECT username,points, timeout_seconds, rank_average "+
       "FROM user WHERE user_id = ?;";
     PreparedStatement pstmt = null;
     try {

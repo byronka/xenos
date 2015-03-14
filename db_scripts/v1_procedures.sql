@@ -51,7 +51,7 @@ BEGIN
 
   SELECT rank_ladder INTO @ladder
   FROM user
-  WHERE user_id = uid
+  WHERE user_id = uid;
 
   -- adjust the ranking ladder.
   IF is_thumbs_up = 1 THEN -- ladder only goes up one at a time
@@ -1482,7 +1482,7 @@ BEGIN
   WHERE urdp_id = my_urdp_id 
     AND judge_user_id = uid 
     AND status_id = 2
-    AND UTC_TIMESTAMP() < (date_entered + INTERVAL 30 DAY)
+    AND UTC_TIMESTAMP() < (date_entered + INTERVAL 30 DAY);
 
   -- check that a user rank data point exists with this id.
   IF @count_valid_urdps = 0 THEN

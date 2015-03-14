@@ -211,7 +211,7 @@ DO
       WHERE 
         UTC_TIMESTAMP() > (date_entered + INTERVAL 6 MONTH)
         AND
-        is_inside_window = 1;
+        is_inside_window = 1
     );
 
     -- audit going outside the window

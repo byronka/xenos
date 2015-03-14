@@ -58,7 +58,7 @@ CREATE TABLE
 
 
 -- create the system user and admin users
-INSERT INTO user (username, email, password, language, rank, is_admin)
+INSERT INTO user (username, email, password, language, rank_average, is_admin)
 VALUES 
 ('xenos_system',NULL,NULL,1,1.0, true),
 ('admin_bk','byron@renomad.com','password',1,1.0, true),
