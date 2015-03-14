@@ -142,7 +142,7 @@
   <target 
     name="clean-build" 
     description="deletes the build directory">
-    <delete dir="build"/>
+    <delete dir="${tomcat.webapps.dir}ROOT/WEB-INF/classes" />
   </target>
 
 
