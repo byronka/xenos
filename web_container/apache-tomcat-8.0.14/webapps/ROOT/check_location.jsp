@@ -13,7 +13,6 @@
     <% } %>   
   </head>
   <body>
-    <%@include file="includes/header.jsp" %>
 
     <div class="wrapper">
       <div class="container theme-showcase" role="main">           

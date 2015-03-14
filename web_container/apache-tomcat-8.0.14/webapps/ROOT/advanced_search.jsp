@@ -255,7 +255,7 @@ if (request.getMethod().equals("POST")) {
       <%for(int c : Requestoffer_utils.get_all_categories()) {%>
         <p>
           <%=loc.get(c,"")%>
-          <% if(java.util.Arrays.asList(categories).contains(Integer.toString(c))) { %>
+          <% if(categories != null && java.util.Arrays.asList(categories).contains(Integer.toString(c))) { %>
             <input type="checkbox" checked name="categories" value="<%=c%>" />
           <% } else { %>
             <input type="checkbox" name="categories" value="<%=c%>" />

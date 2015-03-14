@@ -13,7 +13,7 @@ span.error {
 
 form[action="create_requestoffer.jsp"] select {
   width: 200px;
-overflow: hidden;
+  overflow: hidden;
 }
 
 form[action="create_requestoffer.jsp"] {

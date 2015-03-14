@@ -1479,7 +1479,7 @@ BEGIN
     status_id = 3 -- they have provided feedback, they're done.
   WHERE urdp_id = my_urdp_id;
 
-  CALL recalculate_rank_on_user(judged_uid, is_satis);
+  CALL recalculate_rank_on_user(@judged_uid, is_satis);
 
 	CALL add_audit(308,uid,@judged_uid,@rid,my_urdp_id,'from status_id 2');
 

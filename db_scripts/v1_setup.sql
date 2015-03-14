@@ -49,7 +49,7 @@ CREATE TABLE
     timeout_seconds INT NOT NULL DEFAULT 1800, -- 30 minutes in seconds
     last_ip_logged_in VARCHAR(40),
     rank_average FLOAT, -- average # good rankings in last 6 months
-    rank_ladder INT, -- represents most recent activity
+    rank_ladder INT NOT NULL DEFAULT 0, -- represents most recent activity
     is_admin BOOL NOT NULL DEFAULT FALSE,
     inviter INT UNSIGNED -- the user who invited this user into the system
   );
