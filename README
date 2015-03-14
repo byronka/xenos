@@ -34,7 +34,7 @@ sudo yum install java-1.7.0-openjdk-devel
 For Ubuntu:
 sudo apt-get install openjdk-7-jre
 
-Installing MySQL
+Installing MariaDB
 ----------------
 
 Download links for Generic Linux binaries:
@@ -42,42 +42,13 @@ Download links for Generic Linux binaries:
 (Choose 32 bit or 64 bit.  By the way, I experimented - choosing
 one or the other will have negligible impact on memory usage)
 
-64 bit
-------
-http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.23-linux-glibc2.5-x86_64.tar.gz
+https://downloads.mariadb.org/f/mariadb-10.0.17/source/mariadb-10.0.17.tar.gz/from/http%3A/sfo1.mirrors.digitalocean.com/mariadb?serve
 
-32 bit
-------
-http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.23-linux-glibc2.5-i686.tar.gz
-(if it complains about lacking libaio, you can install it on CentOS with: yum install libaio.i686 )
+Follow the general instructions from the INSTALL-SOURCE file 
+in that archive.
 
-Follow these general instructions, taken (and modified) from the
-INSTALL-BINARY file in that archive:
-
- To install and use a MySQL binary distribution, the basic
- command sequence looks like this (You should be root, or run with sudo):
-% groupadd mysql
-% useradd -r -g mysql mysql
-% cd /usr/local
-% tar zxf /path/to/mysql-VERSION-OS.tar.gz
-% ln -s /usr/local/mysql-VERSION-OS.tar.gz mysql
-% cd mysql
-% chown -R mysql .
-% chgrp -R mysql .
-% scripts/mysql_install_db --user=mysql
-% chown -R root .
-% chown -R mysql data
-% bin/mysqld_safe --user=mysql &
-% cp support-files/mysql.server /etc/init.d/mysql.server
-% bin/mysql_secure_installation 
-
-	(on your dev machine, set the password to password1 ,and answer
-	"Yes" to pretty much everything else)
-
-  (Yes, obviously that's not too secure, but it's only that way on
-	your dev machine, not in production)
-
-% service mysql.server start
+Once the build is done, look for INSTALL-BINARY and 
+follow those instructions to the letter.
 
 IMPORTANT: If there is a sock (socket) complaint it gives you, like
 something about not finding the sock in /var/run/mysql/mysql.sock or
@@ -91,7 +62,7 @@ typing something like the following, as root or in sudo mode:
 Now, set up a user, xenosuser and a password of password1
 
 First, use the mysql program to connect to the server as the 
-MySQL root user:
+MariaDB root user:
 
 > mysql -u root -p
 
