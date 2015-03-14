@@ -255,8 +255,14 @@ public final class User_utils {
     */
   public static User get_user(int user_id) {
     String sqlText = 
-      "SELECT username,points, timeout_seconds, rank_average "+
-      "FROM user WHERE user_id = ?;";
+      "SELECT COUNT(urdp.judged_user_id) AS urdp_count,u.username,u.points,  " +
+      "u.timeout_seconds, u.rank_average, u.rank_ladder  " +
+      "FROM user u  " +
+      "LEFT JOIN user_rank_data_point urdp  " +
+      "  ON urdp.judged_user_id = u.user_id AND urdp.is_inside_window = 1  " +
+      "WHERE u.user_id = ?  " +
+      "GROUP BY urdp.judged_user_id ";
+
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();
@@ -272,8 +278,10 @@ public final class User_utils {
       String username = resultSet.getNString("username");
       int points = resultSet.getInt("points");
       int timeout_seconds = resultSet.getInt("timeout_seconds");
-      float rank = resultSet.getFloat("rank");
-      return new User(username, "", points, timeout_seconds, rank);
+      float rank_av = resultSet.getFloat("rank_average");
+      int rank_ladder = resultSet.getInt("rank_ladder");
+      int urdp_count = resultSet.getInt("urdp_count");
+      return new User(username, "", points, timeout_seconds, rank_av, rank_ladder, urdp_count);
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return null;

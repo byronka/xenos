@@ -28,7 +28,10 @@
 
   <h3><%=Utils.safe_render(the_user.username)%></h3>
   <ul>
-    <li>Rank: <%=the_user.rank%></li>
+    <%if (the_user.urdp_count >= 30) {%>
+      <li>Rank average: <%=the_user.rank_av%></li>
+    <%}%>
+    <li>Rank ladder: <%=the_user.rank_ladder%></li>
     <li>Points: <%=the_user.points%></li>
   </ul>
 

@@ -24,7 +24,8 @@
 
   <h3><%=Utils.safe_render(user.username)%></h3>
   <ul>
-    <li>Rank: <%=user.rank%></li>
+    <li>Rank average: <%=user.rank_av%></li>
+    <li>Rank ladder: <%=user.rank_ladder%></li>
     <li>Points: <%=user.points%></li>
   </ul>
 
