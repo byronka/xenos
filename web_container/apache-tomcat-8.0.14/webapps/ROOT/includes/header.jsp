@@ -27,8 +27,8 @@
 			<%=loc.get(81,"Advanced search")%>
 		</a>
 		<form class="search" method="GET" action="dashboard.jsp" >
-			<span><input type="text" name="desc" maxlength="20" />
-				<button type="submit"><%=loc.get(1, "search")%></button></span>
+      <input type="text" name="desc" maxlength="20" />
+      <button type="submit"><%=loc.get(1, "search")%></button>
 		</form>
 	</div>
 </div>

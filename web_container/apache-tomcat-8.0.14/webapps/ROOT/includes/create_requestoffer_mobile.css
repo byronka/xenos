@@ -1,0 +1,26 @@
+span.error {
+  color: white;
+  background-color: red;
+}
+
+form[action="create_requestoffer.jsp"] {
+  display: table;
+  margin: auto;
+  border-spacing: 5px 5px;
+}
+
+form[action="create_requestoffer.jsp"] div {
+  display: table-row;
+}
+
+form[action="create_requestoffer.jsp"] textarea {
+  display: table-cell;
+}
+
+form[action="create_requestoffer.jsp"] label {
+  display: table-cell;
+}
+
+form[action="create_requestoffer.jsp"] input[type="text"] {
+  display: table-cell;
+}

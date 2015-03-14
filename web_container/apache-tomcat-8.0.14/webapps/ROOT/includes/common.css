@@ -1,3 +1,7 @@
+body {
+  margin: 0;
+}
+
 div.header-container {
   height: 75px;
 }
@@ -64,12 +68,7 @@ div.header-container div.header {
 
   background-color: #5f2d1d;
   color: white;
-  border: 1px solid grey;
   height: 75px;
-  position: fixed;
-  top:0px;
-  left: 0px;
-  right: 0px;
   width: 100%;
   z-index: 1;
 }
@@ -139,13 +138,8 @@ div.header-container  a:focus::after {
 }
 
 div.dashboard-container {
-  padding: 0;
   font-family: garamond;
   background-color: #5f2d1d;
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 50px;
 }
 
 
