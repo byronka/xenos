@@ -3,9 +3,10 @@ div.header-container {
   background-color: grey;
 }
 
-div.header-container a {
-  padding:5px;
+div.header-container a, div.header-container form {
+  padding:15px;
   color: white;
-  display: block;
+  display: inline;
 }
+
 

@@ -4,10 +4,11 @@
 	<head>
 		<title><%=loc.get(81, "Advanced search")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+			<link rel="stylesheet" href="advanced_search.css" title="mobile">
 		<%if (probably_mobile) {%>
-			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
+			<link rel="stylesheet" href="includes/header_mobile.css" title="mobile">
 		<% } else { %>
-			<link rel="stylesheet" href="includes/common.css" title="desktop">
+			<link rel="stylesheet" href="includes/header.css" title="desktop">
 		<% } %>
 		<meta http-equiv="content-type" value="text/html; charset=UTF8" />
 	</head>
@@ -17,7 +18,7 @@
 <%
 
 request.setCharacterEncoding("UTF-8");
-String statuses = "";
+String[] statuses = new String[0];
 String desc = "";
 String startdate = "";
 String enddate = "";
@@ -103,17 +104,8 @@ if (request.getMethod().equals("POST")) {
 
 
   //parse out the statuses from a string the client gave us
-  if ((statuses = request.getParameter("statuses")) == null) {
-    statuses = "";
-  }
-
-  Integer[] status_array = 
-    Requestoffer_utils.parse_statuses_string(statuses, loc );
-
-  if (status_array.length == 0 && statuses.length() > 0) { 
-    //if there were no statuses found, but they entered something...
-    validation_error |= true;
-    stat_error_msg = loc.get(82,"No statuses found in string");
+  if ((statuses = request.getParameterValues("statuses")) == null) {
+    statuses = new String[0];
   }
 
   //parse out the date
@@ -156,8 +148,9 @@ if (request.getMethod().equals("POST")) {
     user_error_msg = loc.get(85,"No users found in string");
   }
 
-  //parse out the categories
-  categories = request.getParameterValues("categories");
+  if ((categories = request.getParameterValues("categories")) == null) {
+    categories = new String[0];
+  }
 
   if(!validation_error) {
     String dashboard_string = String.format(
@@ -166,7 +159,7 @@ if (request.getMethod().equals("POST")) {
       enddate,
       categories,
       user_ids,
-      Utils.int_array_to_string(status_array),
+      statuses,
       desc,
       minrankvalue,
       maxrankvalue,
@@ -183,86 +176,89 @@ if (request.getMethod().equals("POST")) {
     <form method="POST" action="advanced_search.jsp">
 
     <h3><%=loc.get(10,"Description")%></h3>
-    <p>
-      <div class="help-text">
-        <%=loc.get(90,"Enter words to search in a description")%>
-      </div>
-      <%=loc.get(10,"Description")%>: 
-      <input type="text" name="desc" value="<%=desc%>"/> 
-    </p>
+    <div class="help-text">
+      <%=loc.get(90,"Enter words to search in a description")%>
+    </div>
+    <div class="form-row">
+      <label for="desc_input"><%=loc.get(10,"Description")%>: </label>
+      <input type="text" id="desc_input" name="desc" value="<%=desc%>"/> 
+    </div>
 
     <h3><%=loc.get(156,"Postal code")%></h3>
-    <p>
-      <div class="help-text">
-        <%=loc.get(162,"Enter a postal code to search")%>
-      </div>
-      <%=loc.get(156,"Postal code")%>: 
-      <input type="text" name="postcode" value="<%=postcode%>"/> 
-    </p>
+    <div class="help-text">
+      <%=loc.get(162,"Enter a postal code to search")%>
+    </div>
+    <div class="form-row">
+      <label for="postcode_input"><%=loc.get(156,"Postal code")%>: </label>
+      <input type="text" id="postcode_input" name="postcode" value="<%=postcode%>"/> 
+    </div>
 
     <h3><%=loc.get(79,"Rank")%></h3>
-    <p>
-      <div class="help-text">
-        <%=loc.get(161,"Enter a ranking value between 0.0 and 1.0")%>
-      </div>
-      <%=loc.get(14,"Minimum Rank")%>: 
-      <input type="text" name="minrank" value="<%=minrank%>"/> 
-      <span><%=min_rank_error_msg%></span>
-    </p>
+    <div class="help-text">
+      <%=loc.get(161,"Enter a ranking value between 0.0 and 1.0")%>
+    </div>
+    <div class="form-row">
+      <label for="minrank_input"><%=loc.get(14,"Minimum Rank")%>: </label>
+      <input type="text" id="minrank_input" name="minrank" value="<%=minrank%>"/> 
+    </div>
+    <span class="error"><%=min_rank_error_msg%></span>
 
-    <p>
-      <div class="help-text">
-        <%=loc.get(161,"Enter a ranking value between 0.0 and 1.0")%>
-      </div>
-      <%=loc.get(15,"Maximum Rank")%>: 
-      <input type="text" name="maxrank" value="<%=maxrank%>"/> 
-      <span><%=max_rank_error_msg%></span>
-    </p>
+    <div class="help-text">
+      <%=loc.get(161,"Enter a ranking value between 0.0 and 1.0")%>
+    </div>
+    <div class="form-row">
+      <label for="maxrank_input"><%=loc.get(15,"Maximum Rank")%>: </label>
+      <input type="text" id="maxrank_input" name="maxrank" value="<%=maxrank%>"/> 
+    </div>
+    <span class="error"><%=max_rank_error_msg%></span>
 
     <h3><%=loc.get(25,"Date")%></h3>
-    <p>
-      <%=loc.get(86,"Start date")%>: 
-      <input type="text" name="startdate" placeholder="2012-10-31" value="<%=startdate%>" /> 
-      <span><%=st_da_error_msg%></span>
-    </p>
-    <p>
-      <%=loc.get(87,"End date")%>: 
-      <input type="text" name="enddate" placeholder="2012-10-31" value="<%=enddate%>" /> 
-      <span><%=end_da_error_msg%></span>
-    </p>
+    <div class="form-row">
+      <label for="startdate_input"><%=loc.get(86,"Start date")%>: </label>
+      <input type="text" id="startdate_input" name="startdate" placeholder="2012-10-31" value="<%=startdate%>" /> 
+    </div>
+    <span class="error"><%=st_da_error_msg%></span>
+
+    <div class="form-row">
+      <label for="enddate_input"><%=loc.get(87,"End date")%>: </label>
+      <input type="text" id="enddate_input" name="enddate" placeholder="2012-10-31" value="<%=enddate%>" /> 
+    </div>
+    <span class="error"><%=end_da_error_msg%></span>
 
 		<h3><%=loc.get(24,"Status")%></h3>
-    <p>
-      <%=loc.get(24,"Status")%>: 
-			<input type="text" name="statuses" placeholder="<%=loc.get(76,"open")%>" value="<%=statuses%>" /> 
-			<%=Requestoffer_utils.get_requestoffer_status_string(loc)%>
-      <span><%=stat_error_msg%></span>
-    </p>
+      <%for (int s : Requestoffer_utils.get_requestoffer_statuses()) {%>
+        <div class="form-row">
+          <label for="status_checkbox_<%=s%>"><%=loc.get(s,"")%></label>
+          <% if(java.util.Arrays.asList(statuses).contains(Integer.toString(s))) { %>
+            <input type="checkbox" id="status_checkbox_<%=s%>" checked name="statuses" value="<%=s%>" />
+          <% } else { %>
+            <input type="checkbox" id="status_checkbox_<%=s%>" name="statuses" value="<%=s%>" />
+          <% } %>
+        </div>
+      <% } %>
 
 		<h3><%=loc.get(80,"User")%></h3>
-    <p>
     <div class="help-text">
       <%=loc.get(91,"Enter one or more usernames separated by spaces")%>
     </div>
-      <%=loc.get(80,"User")%>: 
-      <input type="text" name="users" value="<%=users%>" />
-      <span><%=user_error_msg%></span>
-    </p>
+    <div class="form-row">
+      <label for="users_input"><%=loc.get(80,"User")%>: </label>
+      <input type="text" id="users_input" name="users" value="<%=users%>" />
+    </div>
+    <span class="error"><%=user_error_msg%></span>
 
 
 		<h3><%=loc.get(13,"Categories")%></h3>
-    <p>
       <%for(int c : Requestoffer_utils.get_all_categories()) {%>
-        <p>
-          <%=loc.get(c,"")%>
-          <% if(categories != null && java.util.Arrays.asList(categories).contains(Integer.toString(c))) { %>
-            <input type="checkbox" checked name="categories" value="<%=c%>" />
+      <div class="form-row"> 
+        <label for="cat_checkbox_<%=c%>"><%=loc.get(c,"")%></label>
+          <% if(java.util.Arrays.asList(categories).contains(Integer.toString(c))) { %>
+            <input type="checkbox" id="cat_checkbox_<%=c%>" checked name="categories" value="<%=c%>" />
           <% } else { %>
-            <input type="checkbox" name="categories" value="<%=c%>" />
+            <input type="checkbox" id="cat_checkbox_<%=c%>" name="categories" value="<%=c%>" />
           <% } %>
-        </p>
+        </div>
       <%}%>
-    </p>
 
       <button type="submit"><%=loc.get(1,"Search")%></button>
     </form>

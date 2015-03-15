@@ -28,54 +28,6 @@ public final class Requestoffer_utils {
 
 
   /**
-    * given an array of words, we'll look up the local words
-    * for statuses and see if any match.  If so, we'll return those
-    * as an array of ints.
-    * @param statuses the words we'll compare to see if 
-    *  they are localized statuses
-    * @param loc the localization object
-    * @return an array of ints of statuses that were 
-    *  found amongst the words.
-    */
-  public static Integer[] 
-    parse_statuses_string(String statuses, Localization loc) {
-    // 1. set the sql
-    String get_statuses_sql = 
-      "SELECT requestoffer_status_id FROM requestoffer_status";
-    PreparedStatement pstmt = null;
-    try {
-      // 3. get the connection and set up a statement
-      Connection conn = Database_access.get_a_connection();
-      pstmt = Database_access.prepare_statement(
-          conn, get_statuses_sql);     
-      // 4. execute a statement
-      ResultSet resultSet = pstmt.executeQuery();
-      // 5. check that we got results
-      if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return null;
-      }
-
-      ArrayList<Integer> status_ids_found 
-        = new ArrayList<Integer>();
-      while(resultSet.next()) {
-        int rsid = resultSet.getInt("requestoffer_status_id");
-        String localized_status = loc.get(rsid, "");
-        if (statuses.contains(localized_status)) {
-          status_ids_found.add(rsid);
-        }
-      }
-      return status_ids_found.toArray(
-          new Integer[status_ids_found.size()]);
-    } catch (SQLException ex) {
-      Database_access.handle_sql_exception(ex);
-      return new Integer[0];
-    } finally {
-      Database_access.close_statement(pstmt);
-    }
-  }
-
-
-  /**
     * put the requestoffer into a 'draft' status,
     * hidden from everyone but the owner
     */
@@ -1014,23 +966,6 @@ public final class Requestoffer_utils {
     }
     return new_requestoffer_id;
   }
-
-
-
-
-	/**
-		* returns a comma-delimited string of requestoffer_statuses
-		*/
-	public static String get_requestoffer_status_string(Localization loc) {
-		Integer[] ros = get_requestoffer_statuses();
-		StringBuilder sb = new StringBuilder(loc.get(ros[0],""));
-		for(int i = 1; i < ros.length; i++) {
-			sb
-				.append(",")
-				.append(loc.get(ros[i],""));
-		}
-		return sb.toString();
-	}
 
 
   /**
