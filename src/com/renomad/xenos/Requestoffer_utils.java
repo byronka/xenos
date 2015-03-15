@@ -519,6 +519,40 @@ public final class Requestoffer_utils {
 
 
   /**
+    * this gives the "stair step" that the user is at for the
+    * value of rank_ladder they have.  It's a way to get a sense
+    * of their recent rankings.  See youtrack issue X-172 for more info.
+    * @return a value between 0 and 6 if valid input, or -1 otherwise.
+    */
+  public static int get_ladder_step(int rank_ladder_val) {
+    if ( rank_ladder_val < -1 ) {
+      return 0;
+    }
+    if ( rank_ladder_val == -1 ) {
+      return 1;
+    }
+    if ( rank_ladder_val == 0 ) {
+      return 2;
+    }
+    if ( rank_ladder_val == 1 ) {
+      return 3;
+    }
+    if ( rank_ladder_val > 1 && rank_ladder_val <= 3 ) {
+      return 4;
+    }
+    if ( rank_ladder_val > 3 && rank_ladder_val <= 7 ) {
+      return 5;
+    }
+    if ( rank_ladder_val > 7 && rank_ladder_val <= 15 ) {
+      return 6;
+    }
+
+    return -1;
+
+  }
+
+
+  /**
     * Gets information necessary for display on the dashboard,
     * about requestoffers that are not the currently logged-in user's.
     * 
@@ -585,6 +619,7 @@ public final class Requestoffer_utils {
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
         float ra = resultSet.getFloat("rank_average");
+        int rl = resultSet.getInt("rank_ladder");
         int offered_user_id = resultSet.getInt("been_offered");
         boolean has_been_offered = false;
         String po = resultSet.getString("postcodes");
@@ -595,7 +630,7 @@ public final class Requestoffer_utils {
 
         Others_Requestoffer requestoffer = 
           new Others_Requestoffer(
-              dt,d,s,ra,p,rid,ru,hu,ca, has_been_offered,po,ci);
+              dt,d,s,ra,rl,p,rid,ru,hu,ca, has_been_offered,po,ci);
         requestoffers.add(requestoffer);
       }
 

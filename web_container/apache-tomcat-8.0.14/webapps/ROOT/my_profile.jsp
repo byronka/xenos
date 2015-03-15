@@ -25,7 +25,8 @@
   <h3><%=Utils.safe_render(user.username)%></h3>
   <ul>
     <li>Rank average: <%=user.rank_av%></li>
-    <li>Rank ladder: <%=user.rank_ladder%></li>
+    <%int l_step = Requestoffer_utils.get_ladder_step(user.rank_ladder);%>
+    <li>Rank ladder: <%=l_step%></li>
     <li>Points: <%=user.points%></li>
   </ul>
 

@@ -4,7 +4,7 @@
 	<head>
 		<title><%=loc.get(81, "Advanced search")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-			<link rel="stylesheet" href="advanced_search.css" title="mobile">
+			<link rel="stylesheet" href="advanced_search.css" >
 		<%if (probably_mobile) {%>
 			<link rel="stylesheet" href="includes/header_mobile.css" title="mobile">
 		<% } else { %>
@@ -157,9 +157,9 @@ if (request.getMethod().equals("POST")) {
       "dashboard.jsp?da=%s,%s&cat=%s&us=%s&sta=%s&desc=%s&minrank=%f&maxrank=%f&postcode=%s",
       startdate,
       enddate,
-      categories,
+      Utils.string_array_to_string(categories),
       user_ids,
-      statuses,
+      Utils.string_array_to_string(statuses),
       desc,
       minrankvalue,
       maxrankvalue,

@@ -4,11 +4,12 @@
 <!DOCTYPE html>
 <html>
 	<head>
+   <link rel="stylesheet" href="includes/reset.css">
 		<%if (probably_mobile) {%>
 			<link 
-        rel="stylesheet" href="includes/common_alt.css" title="mobile">
+        rel="stylesheet" href="includes/header_mobile.css" >
 		<% } else { %>
-			<link rel="stylesheet" href="includes/common.css" title="desktop">
+			<link rel="stylesheet" href="includes/header.css" >
 		<% } %>
 		<title><%=loc.get(97,"My Profile")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,7 +32,8 @@
     <%if (the_user.urdp_count >= 30) {%>
       <li>Rank average: <%=the_user.rank_av%></li>
     <%}%>
-    <li>Rank ladder: <%=the_user.rank_ladder%></li>
+    <%int l_step = Requestoffer_utils.get_ladder_step(the_user.rank_ladder);%>
+    <li>Rank ladder: <%=l_step%></li>
     <li>Points: <%=the_user.points%></li>
   </ul>
 

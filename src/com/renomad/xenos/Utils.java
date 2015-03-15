@@ -76,6 +76,23 @@ public final class Utils {
   
 
   /**
+    * a helper method to convert String arrays to strings
+    * delimited by commas, like going from ["1","2","3"] to "1,2,3"
+    */
+  public static String string_array_to_string(String[] arr) {
+
+    if (arr.length == 0) return "";
+
+    StringBuilder s = new StringBuilder();
+    s.append(arr[0].toString());
+    for(int i = 1; i < arr.length;i++) {
+      s.append(",").append(arr[i]);
+    }
+    return s.toString();
+  }
+
+
+  /**
     * a helper method to convert integer arrays to strings
     * delimited by commas, like going from [1,2,3] to "1,2,3"
     */

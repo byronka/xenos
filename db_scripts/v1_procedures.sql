@@ -222,7 +222,7 @@ BEGIN
   -- searching by categories
   IF categories <> '' THEN
     SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND rc.category_id IN (',categories,') ');
+      CONCAT(@search_clauses, ' AND r.category IN (',categories,') ');
   END IF;
 
   -- searching by requestoffering user
@@ -296,6 +296,7 @@ BEGIN
             rs.status, 
             r.points, 
             u.rank_average, 
+            u.rank_ladder,
             rsr.user_id AS been_offered,
             r.requestoffering_user_id, 
             r.handling_user_id, 
@@ -327,6 +328,7 @@ BEGIN
             rs.status, 
             r.points, 
             u.rank_average, 
+            u.rank_ladder,
             rsr.user_id AS been_offered,
             r.requestoffering_user_id, 
             r.handling_user_id, 

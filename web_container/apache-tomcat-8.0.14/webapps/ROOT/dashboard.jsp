@@ -44,9 +44,9 @@
      <link rel="stylesheet" href="includes/reset.css">
      <link rel="stylesheet" href="dashboard.css" >
     <%if (probably_mobile) {%>
-     <link rel="stylesheet" href="includes/header_mobile.css" title="mobile">
+     <link rel="stylesheet" href="includes/header_mobile.css" >
     <% } else { %>
-     <link rel="stylesheet" href="includes/header.css" title="desktop">
+     <link rel="stylesheet" href="includes/header.css" >
     <% } %>    
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=loc.get(16,"The dashboard")%></title>
@@ -78,7 +78,8 @@
                                       which_page);
   for (Others_Requestoffer r : or_package.get_requestoffers()) {
 %>
-  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+  <%int l_step = Requestoffer_utils.get_ladder_step(r.rank_ladder);%>
+  <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
     <ul>
       <li class="description">
         <div class="desc container">
