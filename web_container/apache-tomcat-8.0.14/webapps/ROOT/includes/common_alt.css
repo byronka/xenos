@@ -34,3 +34,9 @@ div.others.requestoffer {
 	margin: 1px;
 }
 
+/* Overrides to Bootstrap elements */
+.form-group.required .control-label:before {
+  content:"* ";
+  color:#a94442;
+}
+
