@@ -241,3 +241,9 @@ div.dashboard-container div.others-requestoffers {
   width: 400px;
 }
 
+/* Overrides to Bootstrap elements */
+.form-group.required .control-label:before {
+  content:"* ";
+  color:#a94442;
+}
+

@@ -5,6 +5,7 @@
     <title><%=loc.get(2, "Request Favor")%></title>	
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="includes/common.css" rel="stylesheet">    
 	</head>
 	
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
@@ -156,24 +157,16 @@
 							</div>
 						</div>
 						<div class="panel-body">
-							<div class="form-group <%if(desc_error_msg.length() > 0){out.print("has-error has-feedback");}%>">
-		            <label for="description" class="col-sm-2 control-label"><%=loc.get(10,"Description")%>:</label>
-		            <div class="col-sm-6">
+							<div class="form-group required <%if(desc_error_msg.length() > 0){out.print("has-error has-feedback");}%>">
+		            <label for="description" class="col-sm-3 control-label"><%=loc.get(10,"Description")%>:</label>
+		            <div class="col-sm-9">
 		              <input maxlength=200 type="text" name="description" placeholder="<%=loc.get(10,"Description")%>" class="form-control" value="<%=de%>">
-		            </div> 
-                  <%if(desc_error_msg.length() > 0){%>  
-                  <div class="col-sm-4">
-                    <div class="alert alert-danger" role="alert">
-                      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                      <span class="sr-only">Error:</span>
-                      <%=desc_error_msg%>
-                    </div>		                     
-                  </div>		                     
-                  <%}%> 
+                  <label class="help-block"><%=desc_error_msg%></label>    		            
+                </div> 
 						  </div>				  
-              <div class="form-group <%if(cat_error_msg.length() > 0){out.print("has-error has-feedback");}%>">
-		            <label for="categories" class="col-sm-2 control-label"><%=loc.get(13,"Categories")%>:</label>
-								<div class="col-sm-6">
+              <div class="form-group required <%if(cat_error_msg.length() > 0){out.print("has-error has-feedback");}%>">
+		            <label for="categories" class="col-sm-3 control-label"><%=loc.get(13,"Categories")%>:</label>
+								<div class="col-sm-9">
 			            <select name="categories" class="form-control">
                     <option disabled selected> -- <%=loc.get(198,"Select a Category")%> -- </option>			            
 					          <% for(Integer category : Requestoffer_utils.get_all_categories()){ %>
@@ -184,27 +177,23 @@
                       <% } %>			           		             
 					          <% } %>			           		             
 		              </select>
+                  <label class="help-block"><%=cat_error_msg%></label>                             
 		            </div>
-                  <%if(cat_error_msg.length() > 0){%>  
-                  <div class="col-sm-4">
-                    <div class="alert alert-danger" role="alert">
-                      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                      <span class="sr-only">Error:</span>
-                      <%=cat_error_msg%>
-                    </div>		                     
-                  </div>		                     
-                  <%}%> 
 							</div>																	
 							<% if (need_loc) { %>					
 							
                   <%if(addr_error_msg.length() > 0){%>  
-                  <div class="form-group">
-                    <div class="alert alert-danger" role="alert">
-                      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                      <span class="sr-only">Error:</span>
-                      <%=addr_error_msg%>
-                    </div>		                     
-                  </div>		                     
+                  <div class="form-group has-error has-feedback">
+                    <label class="col-sm-3 control-label"></label>
+                    <div class="col-sm-9">
+                      <div class="alert alert-danger" role="alert">
+                        <label class="help-block">
+                          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                          <%=addr_error_msg%>
+                        </label>
+                      </div>              
+                    </div>              
+                  </div>                       
                   <%}%> 
 
 							   <% 
@@ -214,8 +203,8 @@
 							   %>
 							   
                  <div class="form-group">
-							   <label for="savedlocation" class="col-sm-2 control-label"><%=loc.get(158,"Select one of your saved locations")%>:</label>
-								<div class="col-sm-7">
+							   <label for="savedlocation" class="col-sm-3 control-label"><%=loc.get(158,"Select one of your saved locations")%>:</label>
+								<div class="col-sm-9">
                  <select class="form-control" name="savedlocation">
                    <option><%=loc.get(192,"No address selected")%></option>
 							   <%
@@ -240,55 +229,54 @@
                    </div>
                  </div>
                 <div class="form-group">
-                  <label class="col-sm-4"><%=loc.get(159,"Or enter a new address")%>:</label>            
+                  <label class="col-sm-3 control-label"><%=loc.get(159,"Or enter a new address")%>:</label>            
                 </div>                							
 							   <%
 							     }
 							   %>
-              
-						  <div class="form-group">
-						    <label class="col-sm-4 control-label">
-						      <input id="save_loc_to_user" name="save_loc_to_user" <%=save_loc_to_user_checked%> type="checkbox"/>
-						        <%=loc.get(160,"Save to my favorites")%>
-						    </label>					
-						  </div>								 
+                           				 
               <div class="form-group">
-                <label for=strt_addr_1 class="col-sm-2 control-label"><%=loc.get(152,"Street Address 1")%>:</label>
-                <div class="col-sm-7">
+                <label for=strt_addr_1 class="col-sm-3 control-label"><%=loc.get(152,"Street Address 1")%>:</label>
+                <div class="col-sm-9">
                   <input maxlength=100 type="text" name="strt_addr_1" placeholder="" class="form-control" value="<%=strt_addr_1_val%>">
                 </div>                      
               </div>  				
               <div class="form-group">
-                <label for=strt_addr_2 class="col-sm-2 control-label"><%=loc.get(153,"Street Address 2")%>:</label>
-                <div class="col-sm-7">
+                <label for=strt_addr_2 class="col-sm-3 control-label"><%=loc.get(153,"Street Address 2")%>:</label>
+                <div class="col-sm-9">
                   <input maxlength=100 type="text" name="strt_addr_2" placeholder="" class="form-control" value="<%=strt_addr_2_val%>">
                 </div>                      
               </div>         
               <div class="form-group">
-                <label for=city class="col-sm-2 control-label"><%=loc.get(154,"City")%>:</label>
-                <div class="col-sm-7">
+                <label for=city class="col-sm-3 control-label"><%=loc.get(154,"City")%>:</label>
+                <div class="col-sm-9">
                   <input maxlength=40 type="text" name="city" placeholder="" class="form-control" value="<%=city_val%>">
                 </div>                      
               </div>     
               <div class="form-group">
-                <label for=state class="col-sm-2 control-label"><%=loc.get(155,"State")%>:</label>
-                <div class="col-sm-7">
+                <label for=state class="col-sm-3 control-label"><%=loc.get(155,"State")%>:</label>
+                <div class="col-sm-9">
                   <input maxlength=30 type="text" name="state" placeholder="" class="form-control" value="<%=state_val%>">
                 </div>                      
               </div>   
               <div class="form-group">
-                <label for=postal class="col-sm-2 control-label"><%=loc.get(156,"Postal code")%>:</label>
-                <div class="col-sm-7">
+                <label for=postal class="col-sm-3 control-label"><%=loc.get(156,"Postal code")%>:</label>
+                <div class="col-sm-9">
                   <input maxlength=20 type="text" name="postal" placeholder="" class="form-control" value="<%=postal_val%>">
                 </div>                      
               </div>   
               <div class="form-group">
-                <label for=country class="col-sm-2 control-label"><%=loc.get(157,"Country")%>:</label>
-                <div class="col-sm-7">
+                <label for=country class="col-sm-3 control-label"><%=loc.get(157,"Country")%>:</label>
+                <div class="col-sm-9">
                   <input maxlength=40 type="text" name="country" placeholder="" class="form-control" value="<%=country_val%>">
                 </div>                      
-              </div>                                             
-
+              </div>       
+              <div class="form-group">
+                <label class="col-sm-3 control-label">
+                  <input id="save_loc_to_user" name="save_loc_to_user" <%=save_loc_to_user_checked%> type="checkbox"/>
+                    <%=loc.get(160,"Save to my favorites")%>
+                </label>          
+              </div>                                                       
 							
 							 <%  }  %>							
 							
@@ -310,6 +298,7 @@
 		<script
 			src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="includes/xenos_global.js"></script> 
     <%@include file="includes/timeout.jsp" %>
 	</body>
 </html>
