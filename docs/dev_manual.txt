@@ -582,6 +582,7 @@ messaging
     on requestoffer
     on create_requestoffer
     on my_profile
+    Look for other pages where this should show.  It should show EVERYWHERE.
   similarly, you should receive a message about 
     user accepting your offer to handle your requestoffer
     user cancelling their action with your requestoffer
@@ -591,6 +592,7 @@ timeout
   timeout should appear after 25 minutes of idle and log you out at the 30 minute mark
   clicking "I'm not done" should reset that time
   timeout should appear localized
+  Look for other pages where this should show.  It should show EVERYWHERE.
 
 ranking
   when a user ranks another user, whether by completion, cancellation,
