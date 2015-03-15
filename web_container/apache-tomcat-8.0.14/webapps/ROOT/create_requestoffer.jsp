@@ -131,7 +131,7 @@
         }
 
         if (prr.pe == Requestoffer_utils.Pro_enum.DATA_TOO_LARGE) {
-          size_error_msg = "size too large";
+          size_error_msg = loc.get(208,"Description text too large - please stay within 200 characters");
         } else {
           new_ro_id = prr.id;
 

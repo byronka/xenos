@@ -421,6 +421,7 @@ VALUES
   (205, 2,  'Un code d''invitation est nécessaire pour l''inscription'),
   (206, 2,  'Générer du code d''invitation'),
   (207, 2,  'Voici un code d''invitation . Il est valable pour 30 minutes de cette époque'),
+  (208, 2,  'Description Texte trop grande - se il vous plaît rester à moins de 200 caractères'),
   (1,   3,  'Búsqueda'),
   (2,   3,  'Solicitud Favor'),
   (3,   3,  'Cerrar sesión'),
@@ -628,6 +629,7 @@ VALUES
   (205, 3,  'Se requiere un código de invitación para el registro'),
   (206, 3,  'Generar código de invitación'),
   (207, 3,  'Aquí hay un código de invitación . Tiene una validez de 30 minutos de este tiempo'),
+  (208, 3,  'Descripción de texto demasiado grande - por favor, quédate dentro de los 200 caracteres'),
   (1,   4,  '搜索'),
   (2,   4,  '请求青睐'),
   (3,   4,  '注销'),
@@ -835,6 +837,7 @@ VALUES
   (205, 4,  '需要注册邀请码'),
   (206, 4,  '生成邀请码'),
   (207, 4,  '下面是一个邀请码。它是有效的，从这个时间的30分钟'),
+  (208, 4,  '说明文太大 - 请留在200个字符'),
   (1,   5,  'חיפוש'),
   (2,   5,  'בעד בקשה'),
   (3,   5,  'התנתקות'),
@@ -1041,5 +1044,6 @@ VALUES
   (204, 5,  'שלח קוד הזמנה'),
   (205, 5,  'קוד הזמנה נדרש לרישום'),
   (206, 5,  'ליצור קוד הזמנה'),
-  (207, 5,  'הנהקוד הזמנה . זה תקף למשך 30 דקות מהזמן הזה');
+  (207, 5,  'הנהקוד הזמנה . זה תקף למשך 30 דקות מהזמן הזה'),
+  (208, 5,  'טקסט תיאור גדול מדי - בבקשה להישאר בתוך 200 תווים');
 
