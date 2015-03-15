@@ -17,7 +17,7 @@ public class Requestoffer {
   public final int status;
   public final int requestoffering_user_id;
   public final int handling_user_id;
-  private final Integer[] categories;
+  public final int category;
 
   /**
     * This constructor is probably used for sending a new
@@ -27,29 +27,15 @@ public class Requestoffer {
   public Requestoffer ( String datetime, String description, 
       int points, int status, 
       int requestoffering_user_id, 
-      int handling_user_id, Integer[] categories) {
+      int handling_user_id, int category) {
     this(-1, datetime, description, points,
-        status, requestoffering_user_id, handling_user_id, categories);
-  }
-
-  /** 
-    * This constructor is for those cases where we are getting 
-    * data from the database.  It's difficult to get categories
-    * at the same time, so we don't use it here.
-    */
-  public Requestoffer ( 
-      int requestoffer_id, String datetime, String description, 
-      int points, int status, int requestoffering_user_id, 
-      int handling_user_id) {
-    this(requestoffer_id, datetime, description, points,
-        status, requestoffering_user_id, 
-        handling_user_id, new Integer[0]);
+        status, requestoffering_user_id, handling_user_id, category);
   }
 
   public Requestoffer ( int requestoffer_id, String datetime, 
       String description, int points, int status, 
       int requestoffering_user_id, int handling_user_id,
-      Integer[] categories) {
+      int category) {
     this.requestoffer_id       =  requestoffer_id;
     this.datetime         =  datetime;
     this.description      =  description;
@@ -57,16 +43,7 @@ public class Requestoffer {
     this.status           =  status;
     this.requestoffering_user_id  =  requestoffering_user_id;
     this.handling_user_id  =  handling_user_id;
-    this.categories       =  Arrays.copyOf(categories, categories.length);
+    this.category       =  category;
   }
 
-  /**
-    * Returns a copy of the categories array
-    */
-  public Integer[] get_categories() {
-    Integer[] c = Arrays.copyOf(categories, categories.length);
-    return c;
-  }
-
-  
 }

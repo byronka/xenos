@@ -440,15 +440,10 @@ public final class Requestoffer_utils {
     
     String sqlText = 
       "SELECT r.requestoffer_id, r.datetime, r.description, r.points,"+
-      "rs.status, r.requestoffering_user_id, r.handling_user_id, "+
-      "GROUP_CONCAT(rc.category_id SEPARATOR ',') AS categories "+
+      "rs.status, r.requestoffering_user_id, r.handling_user_id, r.category "+
       "FROM requestoffer r "+
       "JOIN requestoffer_state rs "+
         "ON rs.requestoffer_id = r.requestoffer_id " +
-      "JOIN requestoffer_to_category rtc "+
-        "ON rtc.requestoffer_id = r.requestoffer_id "+
-      "JOIN requestoffer_category rc "+
-        "ON rc.category_id = rtc.requestoffer_category_id "+
       "WHERE r.requestoffer_id = ? "+
       "GROUP BY requestoffer_id";
 
@@ -471,9 +466,8 @@ public final class Requestoffer_utils {
       int s = resultSet.getInt("status");
       int ru = resultSet.getInt("requestoffering_user_id");
       int hu = resultSet.getInt("handling_user_id");
-      String ca = resultSet.getString("categories");
-      Integer[] categories = parse_string_to_int_array(ca);
-      Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,categories);
+      int ca = resultSet.getInt("category");
+      Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,ca);
 
       return requestoffer;
     } catch (SQLException ex) {
@@ -635,6 +629,7 @@ public final class Requestoffer_utils {
         String d = resultSet.getNString("description");
         int p = resultSet.getInt("points");
         int s = resultSet.getInt("status");
+        int ca = resultSet.getInt("category");
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
         float ra = resultSet.getFloat("rank_average");
@@ -645,12 +640,10 @@ public final class Requestoffer_utils {
         if (offered_user_id > 0) {
           has_been_offered = true;
         }
-        String cats = resultSet.getString("categories");
-        Integer[] cat_array = parse_string_to_int_array(cats);
 
         Others_Requestoffer requestoffer = 
           new Others_Requestoffer(
-              dt,d,s,ra,p,rid,ru,hu,cat_array, has_been_offered,po,ci);
+              dt,d,s,ra,p,rid,ru,hu,ca, has_been_offered,po,ci);
         requestoffers.add(requestoffer);
       }
 
@@ -699,7 +692,7 @@ public final class Requestoffer_utils {
     String sqlText = 
       
       "SELECT r.requestoffer_id, r.datetime, r.description, "+
-      "r.points, rs.status, r.requestoffering_user_id, r.handling_user_id "+
+      "r.points, r.category, rs.status, r.requestoffering_user_id, r.handling_user_id "+
       "FROM requestoffer r "+
       "JOIN requestoffer_state rs "+
         "ON rs.requestoffer_id = r.requestoffer_id " +
@@ -727,7 +720,8 @@ public final class Requestoffer_utils {
         int s = resultSet.getInt("status");
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
-        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu);
+        int ca = resultSet.getInt("category");
+        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,ca);
         requestoffers.add(requestoffer);
       }
 
@@ -754,7 +748,7 @@ public final class Requestoffer_utils {
     String sqlText = 
       
       "SELECT r.requestoffer_id, r.datetime, r.description, "+
-      "r.points, rs.status, r.requestoffering_user_id, r.handling_user_id "+
+      "r.points, rs.status, r.requestoffering_user_id, r.handling_user_id, r.category "+
       "FROM requestoffer r "+
       "JOIN requestoffer_state rs ON "+
         "rs.requestoffer_id = r.requestoffer_id " +
@@ -784,7 +778,8 @@ public final class Requestoffer_utils {
         int s = resultSet.getInt("status");
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
-        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu);
+        int ca = resultSet.getInt("category");
+        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,ca);
         requestoffers.add(requestoffer);
       }
 
@@ -990,11 +985,11 @@ public final class Requestoffer_utils {
     * given all the data to add a requestoffer, does so.
     * @param user_id the user's id
     * @param desc a description string, the core of the requestoffer
-    * @param categories the various categories for this requestoffer, 
+    * @param category the category for this requestoffer, 
     * @return an integer, the id of the new requestoffer.  -1 if failure.
     */
   public static int put_requestoffer(
-      int user_id, String desc, Integer category) {
+      int user_id, String desc, int category) {
 
     int new_requestoffer_id = -1; //need it here to be outside the "try".
     CallableStatement cs = null;
@@ -1003,19 +998,11 @@ public final class Requestoffer_utils {
       // see db_scripts/v1_procedures.sql put_requestoffer for
       // details on this stored procedure.
       
-      //convert category into proper format: e.g. (1)
-      //format is this way because we used to allow adding multiple
-      //categories for a requestoffer, and we may do so again in the future.
-      String category_str = "";
-      if (category != null) {
-        category_str = String.format("(%d)", category);
-      }
-
       cs = conn.prepareCall("{call put_requestoffer(?,?,?,?,?)}");
       cs.setNString(1, desc);
       cs.setInt(2, user_id);
       cs.setInt(3, 1); //we make all requestoffers 1 point for now
-      cs.setString(4, category_str); 
+      cs.setInt(4, category); 
       cs.registerOutParameter(5, java.sql.Types.INTEGER);
       cs.executeQuery();
       new_requestoffer_id = cs.getInt(5);
@@ -1028,54 +1015,6 @@ public final class Requestoffer_utils {
     return new_requestoffer_id;
   }
 
-
-  /**
-    * Convert a single string containing multiple categories into 
-    * an array of integers representing those categories.
-    * the easy way to handle this is to get all the categories and then
-    * indexof() the string for them.
-    * @param categories_str a single string that contains 0 or more 
-    * category words, localized.  This value comes straight 
-    * unchanged from the client.
-    * @return an integer array of the applicable categories
-    */
-  public static Integer[] 
-    parse_categories_string(String categories_str, Localization loc) {
-    List<Integer> all_categories = get_all_categories();
-    
-    //guard clauses
-    if (all_categories == null) {return new Integer[0];}
-    if (categories_str == null || 
-        categories_str.length() == 0) {return new Integer[0];}
-
-    ArrayList<Integer> selected_categories = new ArrayList<Integer>();
-    for (Integer i : all_categories) {
-      String c = loc.get(i,"");
-      if (categories_str.contains(c)) {
-        selected_categories.add(i);
-      }
-    }
-    Integer[] my_array = 
-      selected_categories.toArray(new Integer[selected_categories.size()]);
-    return my_array;
-  }
-
-
-  /**
-    * gets all the requestoffer categories that exist as 
-    * a comma-delimited string in the locale of the user.
-    */
-  public static String get_categories_string(Localization loc) {
-      List<Integer> c = get_all_categories();
-      Integer[] cat_array = c.toArray(new Integer[c.size()]);
-			StringBuilder sb = new StringBuilder(loc.get(cat_array[0],""));
-			for(int i = 1; i < cat_array.length; i++) {
-				sb
-					.append(",")
-					.append(loc.get(cat_array[i],""));
-			}
-			return sb.toString();
-  }
 
 
 

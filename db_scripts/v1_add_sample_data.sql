@@ -48,15 +48,13 @@ INSERT INTO location_to_requestoffer (location_id, requestoffer_id) VALUES (1,1)
 ---DELIMITER---
 INSERT INTO location_to_user (location_id, user_id) VALUES (1,4);
 ---DELIMITER---
-INSERT INTO requestoffer (requestoffer_id, datetime, description, points, requestoffering_user_id, handling_user_id) VALUES (1,'2015-03-11 01:31:28','Babysit my unruly kids',1,4,5);
+INSERT INTO requestoffer (requestoffer_id, datetime, description, points, category, requestoffering_user_id, handling_user_id) VALUES (1,'2015-03-11 01:31:28','Babysit my unruly kids',1,143,4,5);
 ---DELIMITER---
 INSERT INTO requestoffer_message (requestoffer_id, message, timestamp, from_user_id, to_user_id) VALUES (1,'alice says:What time do you want me over there?','2015-03-11 01:33:10',5,4),(1,'bob says:Umm, 7pm will do fine','2015-03-11 01:33:39',4,5),(1,'alice says:great, I\'ll see you then.','2015-03-11 01:34:35',5,4),(1,'bob says:Thanks for the babysitting.','2015-03-11 01:35:02',4,5);
 ---DELIMITER---
 INSERT INTO requestoffer_service_request (service_request_id, requestoffer_id, user_id, date_created, date_modified, status) VALUES (1,1,5,'2015-03-11 01:31:45','2015-03-11 01:32:13',107),(2,1,6,'2015-03-11 01:31:57','2015-03-11 01:32:13',108);
 ---DELIMITER---
 INSERT INTO requestoffer_state (requestoffer_id, status, datetime) VALUES (1,77,'2015-03-11 01:31:32');
----DELIMITER---
-INSERT INTO requestoffer_to_category (requestoffer_id, requestoffer_category_id) VALUES (1,143);
 ---DELIMITER---
 INSERT INTO system_to_user_message (stu_message_id, requestoffer_id, text_id, timestamp, to_user_id, has_been_viewed) VALUES (1,1,148,'2015-03-11 01:31:45',4,0),(2,1,148,'2015-03-11 01:31:57',4,0),(3,1,132,'2015-03-11 01:32:13',5,0),(4,1,133,'2015-03-11 01:32:13',6,0);
 ---DELIMITER---

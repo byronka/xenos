@@ -200,7 +200,7 @@ CREATE PROCEDURE get_others_requestoffers
   startdate VARCHAR(10),
   enddate VARCHAR(10),
   status VARCHAR(50), -- can be many INT's separated by commas
-  categories VARCHAR(50),
+  categories VARCHAR(50), -- several INT's separated by commas.
   user_id VARCHAR(50), -- can be many INT's separated by commas
   page INT UNSIGNED,
   description NVARCHAR(50),
@@ -299,17 +299,12 @@ BEGIN
             rsr.user_id AS been_offered,
             r.requestoffering_user_id, 
             r.handling_user_id, 
+            r.category,
             GROUP_CONCAT(DISTINCT l.postal_code SEPARATOR ",") AS postcodes,
-            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities,
-            GROUP_CONCAT(rc.category_id SEPARATOR ",") 
-            AS categories 
+            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities
             FROM requestoffer r 
             JOIN requestoffer_state rs
               ON rs.requestoffer_id = r.requestoffer_id
-            JOIN requestoffer_to_category rtc 
-              ON rtc.requestoffer_id = r.requestoffer_id 
-            JOIN requestoffer_category rc 
-              ON rc.category_id = rtc.requestoffer_category_id 
             JOIN user u ON u.user_id = r.requestoffering_user_id 
             LEFT JOIN requestoffer_service_request rsr
               ON r.requestoffer_id = rsr.requestoffer_id 
@@ -335,17 +330,12 @@ BEGIN
             rsr.user_id AS been_offered,
             r.requestoffering_user_id, 
             r.handling_user_id, 
+            r.category,
             GROUP_CONCAT(DISTINCT l.postal_code SEPARATOR ",") AS postcodes,
-            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities,
-            GROUP_CONCAT(rc.category_id SEPARATOR ",") 
-            AS categories 
+            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities
             FROM requestoffer r 
             JOIN requestoffer_state rs
               ON rs.requestoffer_id = r.requestoffer_id
-            JOIN requestoffer_to_category rtc 
-              ON rtc.requestoffer_id = r.requestoffer_id 
-            JOIN requestoffer_category rc 
-              ON rc.category_id = rtc.requestoffer_category_id 
             JOIN user u ON u.user_id = r.requestoffering_user_id 
             LEFT JOIN requestoffer_service_request rsr
               ON r.requestoffer_id = rsr.requestoffer_id 
@@ -381,13 +371,13 @@ CREATE PROCEDURE put_requestoffer
   my_desc NVARCHAR(200),
   ruid INT UNSIGNED, -- requestoffering user id
   pts INT, -- points
-  cats VARCHAR(50), -- categories - this cannot be empty or we'll SQLException.
+  cat INT, -- category - this cannot be empty or we'll SQLException.
   OUT new_requestoffer_id INT UNSIGNED
 ) 
 BEGIN 
 
-  IF (LENGTH(cats) = 0) THEN
-      SET @cat_err_msg = 'categories was empty - not allowed in this proc';
+  IF (cat <= 0) THEN
+      SET @cat_err_msg = 'no category set- not allowed in this proc';
       SIGNAL SQLSTATE '45000' set message_text = @cat_err_msg;
   END IF;
 
@@ -395,30 +385,15 @@ BEGIN
   call validate_user_id(ruid);
   
   -- A) The main part - add the requestoffer to that table.
-  INSERT into requestoffer (description, datetime, points,
+  INSERT into requestoffer (description, datetime, points, category,
    requestoffering_user_id)
-   VALUES (my_desc, UTC_TIMESTAMP(), pts, ruid); 
+   VALUES (my_desc, UTC_TIMESTAMP(), pts, cat, ruid); 
          
   SET new_requestoffer_id = LAST_INSERT_ID();
   SET @status = 109; -- requestoffers always start 'draft'
 
   INSERT INTO requestoffer_state (requestoffer_id, status, datetime)
   VALUES (new_requestoffer_id, @status, UTC_TIMESTAMP());
-
-
-  -- B) Add categories.
-  CREATE TEMPORARY TABLE IF NOT EXISTS CAT_IDS (id INT);
-  SELECT CONCAT(
-    'INSERT INTO CAT_IDS (id) VALUES ',cats) INTO @cat_sql;
-
-  PREPARE cat_sql FROM @cat_sql;
-  EXECUTE cat_sql;
-
-  INSERT INTO 
-    requestoffer_to_category (requestoffer_id, requestoffer_category_id)
-  SELECT new_requestoffer_id, id FROM CAT_IDS;
-  DROP TEMPORARY TABLE CAT_IDS;
-
 
 
   -- D) Add an audit

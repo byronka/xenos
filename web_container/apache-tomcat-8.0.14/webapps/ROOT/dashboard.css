@@ -15,7 +15,6 @@ div.dashboard-container {
 }
 
 div.dashboard-container a.requestoffer {
-  -webkit-border-radius: 10px 10px 10px 10px;
   border: 2px solid white;
   background-color: grey;
   margin-left: auto;
@@ -36,22 +35,18 @@ div.dashboard-container li.requestoffering-user-id{
   display: none;
 }
 
-div.dashboard-container li.categories{
-  display: none;
-}
-div.dashboard-container li.postal-code{
-  display: none;
-}
-
-div.dashboard-container li.cities{
+div.dashboard-container li.categories {
   display: none;
 }
 
 div.desc.container {
   background: black;
   color: white;
-  border: 1px solid blue;
   padding: 5px;
+  margin: auto;
+  padding: 2px;
+  width: 90%;
+  display: inline-block;
 }
 
 a.page-link {
@@ -61,3 +56,34 @@ a.page-link {
 	margin: 4px;
 	border: black solid 1px;
 }
+
+
+div.category {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: right center;
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  right:5px;
+  position: absolute;
+}
+
+.c-143 {
+  background-image: url('../img/babysitting.png');
+}
+.c-144 {
+  background-image: url('../img/dog_walking.png');
+}
+.c-145 {
+  background-image: url('../img/taxi.png');
+}
+.c-199 {
+  background-image: url('../img/miscellaneous.png');
+}
+.c-200 {
+  background-image: url('../img/homework.png');
+}
+
+
+

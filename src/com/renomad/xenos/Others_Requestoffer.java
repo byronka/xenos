@@ -21,10 +21,10 @@ public class Others_Requestoffer extends Requestoffer {
       String date, String desc, int status,
       float rank, int points, int requestoffer_id, 
       int requestoffering_user_id,
-      int handling_user_id, Integer[] categories, 
+      int handling_user_id, int category, 
       boolean has_been_offered, String postcodes, String cities) {
     super(requestoffer_id, date, desc, points,
-        status, requestoffering_user_id, handling_user_id, categories);
+        status, requestoffering_user_id, handling_user_id, category);
     this.rank = rank;
     this.has_been_offered = has_been_offered;
     this.postcodes = postcodes;

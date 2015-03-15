@@ -9,6 +9,11 @@ form[action="create_requestoffer.jsp"] {
   border-spacing: 5px 5px;
 }
 
+form[action="create_requestoffer.jsp"] select {
+  width: 200px;
+  overflow: hidden;
+}
+
 form[action="create_requestoffer.jsp"] div {
   display: table-row;
 }

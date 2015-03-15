@@ -42,12 +42,11 @@
 <html>                                 
   <head>
      <link rel="stylesheet" href="includes/reset.css">
+     <link rel="stylesheet" href="dashboard.css" >
     <%if (probably_mobile) {%>
      <link rel="stylesheet" href="includes/header_mobile.css" title="mobile">
-     <link rel="stylesheet" href="dashboard_mobile.css" title="mobile">
     <% } else { %>
      <link rel="stylesheet" href="includes/header.css" title="desktop">
-     <link rel="stylesheet" href="dashboard.css" title="desktop">
     <% } %>    
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=loc.get(16,"The dashboard")%></title>
@@ -80,57 +79,30 @@
   for (Others_Requestoffer r : or_package.get_requestoffers()) {
 %>
   <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-    <%if (r.status == 76 && 
-      !r.has_been_offered && 
-      user_id != r.requestoffering_user_id) {%>
-      <span class="handle-button-span">
-        <a 
-          class="button" 
-          href="handle.jsp?requestoffer=<%=r.requestoffer_id%>"> 
-          <%=loc.get(20, "Handle")%> 
-        </a>
-      </span>
-    <%}%>
     <ul>
       <li class="description">
         <div class="desc container">
           <div class="value description"><%=Utils.safe_render(r.description)%></div>
         </div>
+        <div class="category c-<%=r.category%>" />
       </li>
       <li class="datetime">
         <span class="label"><%=loc.get(25, "Date")%>:</span>
         <span class="value"><%=r.datetime%></span>
       </li>
       <li class="requestoffering-user-id">
-        <span class="label"><%=loc.get(80, "User")%>:</span>
+        <label><%=loc.get(80, "User")%>:</label>
         <%
           User ru = User_utils.get_user(r.requestoffering_user_id);
         %>
-        <span class="value"> <%=Utils.safe_render(ru.username)%></span>
+        <span> <%=Utils.safe_render(ru.username)%></span>
       </li>
       <li class="categories">
-        <span class="label"><%=loc.get(13, "Categories")%>:</span>
-
-        <span class="value">
-          <%for (Integer c : r.get_categories()) {%>
-            <%=loc.get(c,"")%> 
-          <%}%>               
+        <label><%=loc.get(13, "Categories")%>:</label>
+        <span >
+          <%=loc.get(r.category,"")%> 
         </span>
       </li>
-
-      <% if (!Utils.is_null_or_empty(r.postcodes)) { %>
-        <li class="postal-code">
-          <span class="label"><%=loc.get(156, "Postal code")%>:</span>
-          <%=Utils.safe_render(r.postcodes)%>
-        </li>
-      <% } %>
-
-      <% if (!Utils.is_null_or_empty(r.cities)) { %>
-      <li class="cities">
-        <span class="label"><%=loc.get(154, "City")%>:</span>
-        <%=Utils.safe_render(r.cities)%>
-      </li>
-      <% } %>
 
     </ul>
   </a>

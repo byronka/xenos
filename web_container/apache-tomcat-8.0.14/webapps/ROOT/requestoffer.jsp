@@ -86,9 +86,7 @@
   </p>
   <p>
     <%=loc.get(28,"Categories")%>: 
-      <%for (Integer c : r.get_categories()) {%>
-        <span class="category"><%=loc.get(c,"")%> </span>
-      <%}%>
+    <span class="category"><%=loc.get(r.category,"")%> </span>
   </p>
   <% 
       for (User_location lo : locations) { 

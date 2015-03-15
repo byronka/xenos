@@ -99,6 +99,7 @@ requestoffer (
   points INT,
   requestoffering_user_id INT UNSIGNED NOT NULL,
   handling_user_id INT UNSIGNED,
+  category INT UNSIGNED,
   FOREIGN KEY FK_requestoffering_user_user_id (requestoffering_user_id) 
     REFERENCES user (user_id) 
     ON DELETE CASCADE
@@ -221,24 +222,6 @@ VALUES
 (145,'TAXI'),
 (199,'MISCELLANY'),
 (200,'HOMEWORK');
-
----DELIMITER---
--- here, we set up a table to correlate categories to a given
--- requestoffer.
-
-CREATE TABLE  
-requestoffer_to_category ( 
-  requestoffer_id INT UNSIGNED NOT NULL,
-  requestoffer_category_id INT UNSIGNED NOT NULL,
-  FOREIGN KEY FK_requestoffer_id_rtc (requestoffer_id) 
-    REFERENCES requestoffer (requestoffer_id) 
-    ON DELETE CASCADE,
-  FOREIGN KEY 
-    FK_requestoffer_category_id (requestoffer_category_id)
-    REFERENCES requestoffer_category (category_id)
-    ON DELETE CASCADE,
-  PRIMARY KEY (requestoffer_id, requestoffer_category_id)
-)
 
 ---DELIMITER---
 -- create a table of meesages for requestoffers

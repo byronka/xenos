@@ -17,7 +17,6 @@
 <%
 
 request.setCharacterEncoding("UTF-8");
-String category = "";
 String statuses = "";
 String desc = "";
 String startdate = "";
@@ -26,9 +25,9 @@ String users = "";
 String minrank = "";
 String maxrank = "";
 String postcode = "";
+String[] categories = new String[0];
 
 String stat_error_msg = "";
-String cat_error_msg = "";
 String st_da_error_msg = ""; //date
 String end_da_error_msg = ""; //date
 String user_error_msg = ""; 
@@ -117,23 +116,6 @@ if (request.getMethod().equals("POST")) {
     stat_error_msg = loc.get(82,"No statuses found in string");
   }
 
-
-
-  //parse out the categories from a string the client gave us
-  if ((category = request.getParameter("categories")) == null) {
-    category = "";
-  }
-
-  Integer[] cat_array = 
-    Requestoffer_utils.parse_categories_string(category, loc );
-  String categories = Utils.int_array_to_string(cat_array);
-
-  if (cat_array.length == 0 && category.length() > 0) {
-    validation_error |= true;
-    cat_error_msg = loc.get(8,"No categories found in string");
-  }
-
-
   //parse out the date
   if ((startdate = request.getParameter("startdate")) == null) {
     startdate = "";
@@ -173,6 +155,9 @@ if (request.getMethod().equals("POST")) {
     validation_error |= true;
     user_error_msg = loc.get(85,"No users found in string");
   }
+
+  //parse out the categories
+  categories = request.getParameterValues("categories");
 
   if(!validation_error) {
     String dashboard_string = String.format(
@@ -267,19 +252,18 @@ if (request.getMethod().equals("POST")) {
 
 		<h3><%=loc.get(13,"Categories")%></h3>
     <p>
-    <div class="help-text">
-      <%=loc.get(92,"Enter one or more categories separated by spaces")%>
-    </div>
-      <%=loc.get(13,"Categories")%>: 
-      <input type="text" name="categories" value="<%=category%>" />
-      <span><%=cat_error_msg%></span>
+      <%for(int c : Requestoffer_utils.get_all_categories()) {%>
+        <p>
+          <%=loc.get(c,"")%>
+          <% if(java.util.Arrays.asList(categories).contains(Integer.toString(c))) { %>
+            <input type="checkbox" checked name="categories" value="<%=c%>" />
+          <% } else { %>
+            <input type="checkbox" name="categories" value="<%=c%>" />
+          <% } %>
+        </p>
+      <%}%>
     </p>
 
-
-
-      <div id='available-categories'>
-				<%=Requestoffer_utils.get_categories_string(loc)%>
-      </div>
       <button type="submit"><%=loc.get(1,"Search")%></button>
     </form>
 
