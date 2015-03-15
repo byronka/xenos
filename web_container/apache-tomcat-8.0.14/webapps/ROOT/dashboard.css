@@ -54,7 +54,7 @@ div.dashboard-container a.requestoffer {
   display: block;
 }
 
-div.dashboard-container li.datetime{
+div.dashboard-container .datetime{
   font-size: 7px;
 }
 
@@ -72,7 +72,7 @@ div.desc.container {
   padding: 5px;
   margin: auto;
   padding: 2px;
-  width: 90%;
+  width: 87%;
   display: inline-block;
 }
 

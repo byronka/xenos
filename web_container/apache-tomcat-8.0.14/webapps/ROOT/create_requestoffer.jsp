@@ -32,6 +32,7 @@
     String cat_error_msg = "";
     String desc_error_msg = "";
     String addr_error_msg = "";
+    String size_error_msg = "";
 
     //address values
     String strt_addr_1_val = "";
@@ -120,26 +121,33 @@
       
       if (!validation_error) {
 
+        Requestoffer_utils.Put_requestoffer_result prr = null;
         int new_ro_id = 0;
 
         //try adding the new requestoffer - if failed, go to error page
-        if ((new_ro_id = Requestoffer_utils.put_requestoffer(user_id, de, selected_cat)) == -1) {
+        if ((prr = Requestoffer_utils.put_requestoffer(user_id, de, selected_cat)).pe == Requestoffer_utils.Pro_enum.GENERAL_ERROR) {
           response.sendRedirect("general_error.jsp");
           return;
         }
 
-        Integer location_id = 0;
-        if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
-          Requestoffer_utils.assign_location_to_requestoffer(location_id, new_ro_id);
+        if (prr.pe == Requestoffer_utils.Pro_enum.DATA_TOO_LARGE) {
+          size_error_msg = "size too large";
         } else {
-          int uid = request.getParameter("save_loc_to_user") != null ? user_id : 0;
-          Requestoffer_utils.put_location(
-            uid, new_ro_id,
-            strt_addr_1_val, strt_addr_2_val, 
-            city_val, state_val, postal_val, country_val);
+          new_ro_id = prr.id;
+
+          Integer location_id = 0;
+          if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
+            Requestoffer_utils.assign_location_to_requestoffer(location_id, new_ro_id);
+          } else {
+            int uid = request.getParameter("save_loc_to_user") != null ? user_id : 0;
+            Requestoffer_utils.put_location(
+              uid, new_ro_id,
+              strt_addr_1_val, strt_addr_2_val, 
+              city_val, state_val, postal_val, country_val);
+          }
+          response.sendRedirect("requestoffer_created.jsp?requestoffer=" + new_ro_id);
+          return;
         }
-        response.sendRedirect("requestoffer_created.jsp?requestoffer=" + new_ro_id);
-        return;
       }
     }
   %>
@@ -157,6 +165,9 @@
       <div>
         <label for="description"><%=loc.get(10,"Description")%>:</label>
         <textarea maxlength="200" name="description" placeholder="<%=loc.get(10,"Description")%>" value="<%=de%>"></textarea>
+        <%if(size_error_msg.length() > 0){%>  
+          <span class="error"><%=size_error_msg%></span>
+        <%}%> 
         <%if(desc_error_msg.length() > 0){%>  
           <span class="error"><%=desc_error_msg%></span>
         <%}%> 

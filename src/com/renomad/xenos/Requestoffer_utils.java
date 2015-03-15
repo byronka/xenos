@@ -967,15 +967,27 @@ public final class Requestoffer_utils {
     return true;
   }
 
+  // Put Requestoffer enum
+  public enum Pro_enum { OK, DATA_TOO_LARGE, GENERAL_ERROR}
+
+  public static class Put_requestoffer_result {
+    public Pro_enum pe;
+    public int id;
+    public Put_requestoffer_result(Pro_enum pe, int id) {
+      this.pe = pe;
+      this.id = id;
+    }
+  }
 
   /**
     * given all the data to add a requestoffer, does so.
     * @param user_id the user's id
     * @param desc a description string, the core of the requestoffer
     * @param category the category for this requestoffer, 
-    * @return an integer, the id of the new requestoffer.  -1 if failure.
+    * @return an id result with an enum, OK if ok, DATA_TOO_LARGE if the 
+    *  description is too big.  If not OK, id is -1.
     */
-  public static int put_requestoffer(
+  public static Put_requestoffer_result put_requestoffer(
       int user_id, String desc, int category) {
 
     int new_requestoffer_id = -1; //need it here to be outside the "try".
@@ -994,12 +1006,17 @@ public final class Requestoffer_utils {
       cs.executeQuery();
       new_requestoffer_id = cs.getInt(5);
     } catch (SQLException ex) {
+      String msg = ex.getMessage();
+			if (msg.contains("Data too long")) {
+      	return new Put_requestoffer_result(Pro_enum.DATA_TOO_LARGE, -1);
+			}
+                  
       Database_access.handle_sql_exception(ex);
-      return -1;
+      return new Put_requestoffer_result(Pro_enum.GENERAL_ERROR, -1);
     } finally {
       Database_access.close_statement(cs);
     }
-    return new_requestoffer_id;
+    return new Put_requestoffer_result(Pro_enum.OK, new_requestoffer_id);
   }
 
 

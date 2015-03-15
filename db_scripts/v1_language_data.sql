@@ -213,6 +213,7 @@ VALUES
   (205, 1,  'An invitation code is required for registration'),
   (206, 1,  'Generate invitation code'),
   (207, 1,  'Here is an invitation code.  It is valid for 30 minutes from this time'),
+  (208, 1,  'Description text too large - please stay within 200 characters'),
   (1,   2,  'Recherche'),
   (2,   2,  'Demande Favor'),
   (3,   2,  'Déconnexion'),

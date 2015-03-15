@@ -83,13 +83,14 @@
     <ul>
       <li class="description">
         <div class="desc container">
-          <div class="value description"><%=Utils.safe_render(r.description)%></div>
-        </div>
+          <div class="value description">
+            <%=Utils.safe_render(r.description)%></div>
+            <div class="datetime">
+              <span class="label"><%=loc.get(25, "Date")%>:</span>
+              <span class="value"><%=r.datetime%></span>
+            </div>
+          </div>
         <div class="category c-<%=r.category%>" />
-      </li>
-      <li class="datetime">
-        <span class="label"><%=loc.get(25, "Date")%>:</span>
-        <span class="value"><%=r.datetime%></span>
       </li>
       <li class="requestoffering-user-id">
         <label><%=loc.get(80, "User")%>:</label>

@@ -4,11 +4,12 @@
 	<head>
 		<title><%=loc.get(81, "Advanced search")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-			<link rel="stylesheet" href="advanced_search.css" >
 		<%if (probably_mobile) {%>
-			<link rel="stylesheet" href="includes/header_mobile.css" title="mobile">
+			<link rel="stylesheet" href="includes/header_mobile.css" >
+			<link rel="stylesheet" href="advanced_search_mobile.css" >
 		<% } else { %>
-			<link rel="stylesheet" href="includes/header.css" title="desktop">
+			<link rel="stylesheet" href="includes/header.css" >
+			<link rel="stylesheet" href="advanced_search.css" >
 		<% } %>
 		<meta http-equiv="content-type" value="text/html; charset=UTF8" />
 	</head>
