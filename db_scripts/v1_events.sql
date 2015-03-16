@@ -29,7 +29,7 @@ DROP EVENT IF EXISTS user_timeout;
 
 CREATE EVENT user_timeout 
 ON SCHEDULE
-  EVERY 5 SECOND 
+  EVERY 3 HOUR 
 COMMENT 'logs out users past their timeout period'
 DO
   BEGIN
