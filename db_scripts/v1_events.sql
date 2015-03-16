@@ -184,7 +184,7 @@ DO
   BEGIN
       DELETE FROM invite_code 
       WHERE UTC_TIMESTAMP() > 
-          (timestamp + INTERVAL 30 MINUTE);
+          (timestamp + INTERVAL 7 DAY);
   END
 
 ---DELIMITER---

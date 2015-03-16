@@ -46,7 +46,7 @@ CREATE TABLE
     salt VARCHAR(50), -- used when hashing password
     last_time_logged_in DATETIME,
     last_activity_time DATETIME,
-    timeout_seconds INT NOT NULL DEFAULT 1800, -- 30 minutes in seconds
+    timeout_seconds INT NOT NULL DEFAULT 604800, -- 7*24*60*60 - a week in seconds
     last_ip_logged_in VARCHAR(40),
     rank_average FLOAT, -- average # good rankings in last 6 months
     rank_ladder INT NOT NULL DEFAULT 0, -- represents most recent activity
