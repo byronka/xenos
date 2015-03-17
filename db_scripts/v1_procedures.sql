@@ -1044,7 +1044,8 @@ CREATE PROCEDURE complete_ro_transaction
 (
 uid INT UNSIGNED, -- the user who owns this requestoffer
 rid INT UNSIGNED, -- the requestoffer
-satis BOOL -- whether the owner of this RO was satisfied with result
+satis BOOL, -- whether the owner of this RO was satisfied with result
+comment NVARCHAR(500) -- a comment by the user
 )
 BEGIN
 
@@ -1126,6 +1127,12 @@ BEGIN
       status_id = 3 -- they have provided feedback, they're done.
     WHERE 
       urdp_id = @owner_urdp_id;
+
+  IF comment IS NOT NULL AND comment <> '' THEN
+    INSERT INTO user_rank_data_point_note (urdp_id, text)
+    VALUES (@owner_urdp_id, comment);
+  END IF;
+
 
   -- Audit that we're putting the owner into COMPLETE
 	CALL add_audit(308,uid,@handling_user_id,rid,@owner_urdp_id,'From status_id 1');

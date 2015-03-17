@@ -1129,15 +1129,16 @@ public final class Requestoffer_utils {
 		* @return true if successful, false otherwise
 		*/
 	public static boolean complete_transaction(
-      int rid, int uid, boolean is_satisfied) {
+      int rid, int uid, boolean is_satisfied, String comment) {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
       // see db_scripts/v1_procedures.sql for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
-        "{call complete_ro_transaction(%d,%d,%b)}" 
+        "{call complete_ro_transaction(%d,%d,%b, ?)}" 
         ,uid, rid, is_satisfied));
+      cs.setNString(1, comment);
       cs.execute();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
