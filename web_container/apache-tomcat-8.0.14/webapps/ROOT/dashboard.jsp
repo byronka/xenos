@@ -129,7 +129,6 @@
 <%}%>
 
 </div>
-<%@include file="includes/timeout.jsp" %>
 <script type="text/javascript" src="includes/user_notify.js"></script>
 </body>
 </html>

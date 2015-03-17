@@ -309,6 +309,5 @@
 			src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="includes/xenos_global.js"></script> 
-    <%@include file="includes/timeout.jsp" %>
 	</body>
 </html>

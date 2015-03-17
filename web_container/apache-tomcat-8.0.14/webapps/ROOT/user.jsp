@@ -145,8 +145,5 @@
 			</div>
 		<% } %>
 		</div>
-
-
-<%@include file="includes/timeout.jsp" %>
 	</body>
 </html>

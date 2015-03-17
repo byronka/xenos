@@ -263,9 +263,6 @@ if (request.getMethod().equals("POST")) {
 
       <button type="submit"><%=loc.get(1,"Search")%></button>
     </form>
-
-    <%@include file="includes/timeout.jsp" %>
-
   </body>
 </html>
 

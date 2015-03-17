@@ -269,6 +269,5 @@
       <%  }  %>							
       <button type="submit"><%=loc.get(2,"Request Favor")%></button>
     </form>	
-    <%@include file="includes/timeout.jsp" %>
 	</body>
 </html>
