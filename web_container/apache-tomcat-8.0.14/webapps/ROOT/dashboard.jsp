@@ -60,6 +60,11 @@
   if (srch_desc != null) {
     decoded_srch_desc = java.net.URLDecoder.decode(srch_desc, "UTF-8");
   }
+  // if the user has not specifically asked to see closed and taken,
+  // we will default to showing just "OPEN"
+  if (Utils.is_null_or_empty(srch_sta)) {
+    srch_sta = "76"; // "OPEN"
+  }
   Requestoffer_utils.Search_Object so = 
     new Requestoffer_utils.Search_Object(  
                                       srch_startdate, 
@@ -76,8 +81,7 @@
     Requestoffer_utils.get_others_requestoffers(user_id, 
                                       so , 
                                       which_page);
-  for (Others_Requestoffer r : or_package.get_requestoffers()) {
-%>
+  for (Others_Requestoffer r : or_package.get_requestoffers()) { %>
   <%int l_step = Requestoffer_utils.get_ladder_step(r.rank_ladder);%>
   <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
     <ul>
