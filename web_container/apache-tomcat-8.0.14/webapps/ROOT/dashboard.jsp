@@ -85,15 +85,13 @@
   <%int l_step = Requestoffer_utils.get_ladder_step(r.rank_ladder);%>
   <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
     <ul>
-      <li class="description">
-        <div class="desc container">
-          <div class="value description">
-            <%=Utils.safe_render(r.description)%></div>
+      <li>
+      <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+            <%=Utils.safe_render(r.description)%>
             <div class="datetime">
-              <span class="label"><%=loc.get(25, "Date")%>:</span>
-              <span class="value"><%=r.datetime%></span>
+              <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
             </div>
-          </div>
+         </div> 
         <div class="category c-<%=r.category%>" />
       </li>
       <li class="requestoffering-user-id">

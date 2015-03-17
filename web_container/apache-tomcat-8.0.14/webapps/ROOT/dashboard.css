@@ -66,6 +66,11 @@ div.dashboard-container li.categories {
   display: none;
 }
 
+div.desc.container.taken {
+  text-decoration: line-through;
+  color: grey;
+}
+
 div.desc.container {
   background: black;
   color: white;
