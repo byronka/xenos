@@ -453,6 +453,17 @@ user_rank_data_point (
 
 ---DELIMITER---
 
+CREATE TABLE 
+user_rank_data_point_note (
+  urdp_id INT UNSIGNED NOT NULL,
+  text NVARCHAR(500),
+  FOREIGN KEY FK_urdp_note (urdp_id)
+  REFERENCES user_rank_data_point (urdp_id)
+  ON DELETE CASCADE
+)
+
+---DELIMITER---
+
 CREATE TABLE
 system_to_user_message_text (
   stu_message_text_id INT UNSIGNED NOT NULL PRIMARY KEY,
