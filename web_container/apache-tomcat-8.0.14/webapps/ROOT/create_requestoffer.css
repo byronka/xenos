@@ -27,6 +27,7 @@ form[action="create_requestoffer.jsp"] {
 }
 
 form[action="create_requestoffer.jsp"] div {
+  vertical-align: top;
   display: table-row;
 }
 
@@ -35,6 +36,7 @@ form[action="create_requestoffer.jsp"] h4 {
 }
 
 form[action="create_requestoffer.jsp"] textarea {
+  vertical-align: top;
   display: table-cell;
   width: 400px;
 }

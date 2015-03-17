@@ -22,17 +22,13 @@
 
   String qs = request.getQueryString();
 
-  boolean need_loc =  //does the user want to enter location info?
-    Boolean.parseBoolean(Utils.parse_qs(qs).get("create_loc"));
-
   request.setCharacterEncoding("UTF-8");
     //get the values straight from the client
     String de = "";
     Integer selected_cat = null;
-    String cat_error_msg = "";
-    String desc_error_msg = "";
-    String addr_error_msg = "";
-    String size_error_msg = "";
+    boolean has_cat_error = false;
+    boolean has_desc_error = false;
+    boolean has_size_error = false;
 
     //address values
     String strt_addr_1_val = "";
@@ -45,23 +41,6 @@
     String save_loc_to_user_checked = "";
 
     if (request.getMethod().equals("POST")) {
-
-    // If we have any one of the location values in the POST,
-    // then they came from a page having location values, so 
-    // need_loc would be true.
-    if (
-      request.getParameter("strt_addr_1") != null ||
-      request.getParameter("strt_addr_2") != null ||
-      request.getParameter("city")        != null ||
-      request.getParameter("state")       != null ||
-      request.getParameter("postal")      != null ||
-      request.getParameter("country")     != null ||
-      request.getParameter("savedlocation") != null ||
-      request.getParameter("save_loc_to_user") != null
-      ) {
-      need_loc = true;
-    }
-
 
     //get values so if they are in validation mode they don't lose info.
       strt_addr_1_val = 
@@ -91,9 +70,10 @@
 
 
       boolean validation_error = false;
-      de = request.getParameter("description");
+
+      de = request.getParameter("description").trim();
       if (de.length() == 0) {
-        desc_error_msg = loc.get(5, "Please enter a description");
+        has_desc_error = true;
         validation_error |= true;
       }
 
@@ -102,22 +82,17 @@
       
       if (selected_cat == null) {
         validation_error |= true;
-        cat_error_msg = loc.get(197,"You must choose a category for this favor");
+        has_cat_error = true;
       }
 
-      if ( // if they said they need a location, but haven't given us any location info at all, validation error
-              need_loc &&
-              Utils.parse_int(savedlocation_val) == null &&
-              Utils.is_null_or_empty(strt_addr_1_val) &&
-              Utils.is_null_or_empty(strt_addr_2_val) &&
-              Utils.is_null_or_empty(city_val) &&
-              Utils.is_null_or_empty(state_val) &&
-              Utils.is_null_or_empty(postal_val) &&
-              Utils.is_null_or_empty(country_val)
-              ) {
-              validation_error |= true;
-              addr_error_msg = loc.get(193,"You indicated you wanted to save a location with this favor but you entered nothing. If this does not require a location, click ") + "<a href='create_requestoffer.jsp'>" + loc.get(2, "Request Favor") + "</a>";
-      }      
+      boolean user_entered_a_location = 
+        Utils.parse_int(savedlocation_val) != null ||
+        !Utils.is_null_or_empty(strt_addr_1_val) ||
+        !Utils.is_null_or_empty(strt_addr_2_val) ||
+        !Utils.is_null_or_empty(city_val) ||
+        !Utils.is_null_or_empty(state_val) ||
+        !Utils.is_null_or_empty(postal_val) ||
+        !Utils.is_null_or_empty(country_val);
       
       if (!validation_error) {
 
@@ -129,11 +104,15 @@
           response.sendRedirect("general_error.jsp");
           return;
         }
+        new_ro_id = prr.id; //get the requestoffer id from the result.
 
         if (prr.pe == Requestoffer_utils.Pro_enum.DATA_TOO_LARGE) {
-          size_error_msg = loc.get(208,"Description text too large - please stay within 200 characters");
-        } else {
-          new_ro_id = prr.id;
+          has_size_error = true;
+          return;
+        }
+       
+        //if we got here, a requestoffer was successfully added.
+        if (user_entered_a_location) {
 
           Integer location_id = 0;
           if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
@@ -145,9 +124,10 @@
               strt_addr_1_val, strt_addr_2_val, 
               city_val, state_val, postal_val, country_val);
           }
-          response.sendRedirect("requestoffer_created.jsp?requestoffer=" + new_ro_id);
-          return;
         }
+
+        response.sendRedirect("requestoffer_created.jsp?requestoffer=" + new_ro_id);
+        return;
       }
     }
   %>
@@ -163,18 +143,24 @@
       <fieldset>
       <legend><%=loc.get(22,"Favor Details")%></legend>
       <div>
-        <label for="description"><%=loc.get(10,"Description")%>:</label>
-        <textarea maxlength="200" name="description" placeholder="<%=loc.get(10,"Description")%>" value="<%=de%>"></textarea>
-        <%if(size_error_msg.length() > 0){%>  
-          <span class="error"><%=size_error_msg%></span>
+        <label for="description">* <%=loc.get(10,"Description")%>:</label>
+        <textarea 
+          id="description"
+          maxlength="200" 
+          name="description" 
+          placeholder="<%=loc.get(10,"Description")%>" ><%=de%></textarea>
+        <%if(has_size_error){%>  
+        <span class="error"><%=loc.get(208,"Description text too large - please stay within 200 characters")%></span>
         <%}%> 
-        <%if(desc_error_msg.length() > 0){%>  
-          <span class="error"><%=desc_error_msg%></span>
+        <%if(has_desc_error){%>  
+        <span class="error"><%=loc.get(5, "Please enter a description")%></span>
         <%}%> 
       </div>
       <div>
-        <label for="categories"><%=loc.get(13,"Categories")%>:</label>
-        <select name="categories" >
+        <label for="categories">* <%=loc.get(13,"Categories")%>:</label>
+        <select 
+          id="categories" 
+          name="categories" >
               <option disabled selected> -- <%=loc.get(198,"Select a Category")%> -- </option>			            
           <% for(Integer category : Requestoffer_utils.get_all_categories()){ %>
             <% if (category.equals(selected_cat)) {%>
@@ -184,19 +170,15 @@
             <% } %>			           		             
           <% } %>			           		             
         </select>
-        <%if(cat_error_msg.length() > 0){%>  
-          <span class="error"><%=cat_error_msg%></span>
+        <%if(has_cat_error){%>  
+          <span class="error">
+            <%=loc.get(197,"You must choose a category for this favor")%>
+          </span>
         <%}%> 
       </div>
     </fieldset>
-      <% if (need_loc) { %>					
-
       <fieldset>
         <legend>Location</legend>
-        <span class="error">
-          <%if(addr_error_msg.length() > 0){%>  
-            <span><%=addr_error_msg%></span>
-          <%}%> 
         </span>
 
           <% 
@@ -207,7 +189,9 @@
 
         <div>
           <label for="savedlocation"><%=loc.get(158,"Select one of your saved locations")%>:</label>
-          <select name="savedlocation">
+          <select 
+            id="savedlocation" 
+            name="savedlocation">
             <option><%=loc.get(192,"No address selected")%></option>
             <%for (User_location loca : locations) {%>
               <%if(Integer.toString(loca.id).equals(savedlocation_val)){%>
@@ -237,36 +221,35 @@
           
         <div>
           <label for="strt_addr_1"><%=loc.get(152,"Street Address 1")%>:</label>
-          <input maxlength=100 type="text" name="strt_addr_1" value="<%=strt_addr_1_val%>">
+          <input maxlength=100 type="text" id="strt_addr_1" name="strt_addr_1" value="<%=strt_addr_1_val%>">
         </div>
           
         <div>
           <label for="strt_addr_2"><%=loc.get(153,"Street Address 2")%>:</label>
-          <input maxlength=100 type="text" name="strt_addr_2" value="<%=strt_addr_2_val%>">
+          <input maxlength=100 type="text" id="strt_addr_2" name="strt_addr_2" value="<%=strt_addr_2_val%>">
         </div>
           
         <div>
           <label for="city"><%=loc.get(154,"City")%>:</label>
-          <input maxlength=40 type="text" name="city" value="<%=city_val%>">
+          <input maxlength=40 type="text" id="city" name="city" value="<%=city_val%>">
         </div>
           
         <div>
           <label for="state"><%=loc.get(155,"State")%>:</label>
-          <input maxlength=30 type="text" name="state" value="<%=state_val%>">
+          <input maxlength=30 type="text" id="state" name="state" value="<%=state_val%>">
         </div>
           
         <div>
           <label for="postal" ><%=loc.get(156,"Postal code")%>:</label>
-          <input maxlength=20 type="text" name="postal" value="<%=postal_val%>">
+          <input maxlength=20 type="text" id="postal" vname="postal" value="<%=postal_val%>">
         </div>
           
         <div>
           <label for="country"><%=loc.get(157,"Country")%>:</label>
-          <input maxlength=40 type="text" name="country" value="<%=country_val%>">
+          <input maxlength=40 type="text" id="country" vname="country" value="<%=country_val%>">
         </div>
 
       </fieldset>
-      <%  }  %>							
       <button type="submit"><%=loc.get(2,"Request Favor")%></button>
     </form>	
 	</body>

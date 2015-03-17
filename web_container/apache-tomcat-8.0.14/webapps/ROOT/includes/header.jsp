@@ -2,7 +2,7 @@
 <div class="header-container">
 	<div class="header">
 		<a class="trademark" href="dashboard.jsp">Xenos</a>
-		<a href="check_location.jsp" >
+		<a href="create_requestoffer.jsp" >
 			<%=loc.get(2, "Request Favor")%>
     </a>
 		<a href="my_profile.jsp" class="user-displayname">
