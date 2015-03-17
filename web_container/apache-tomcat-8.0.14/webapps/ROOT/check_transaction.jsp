@@ -27,15 +27,27 @@
 %>
 <body>
 
-<p>
-  <a href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>&satisfied=true" >
-    Thumbs up
-  </a>
-</p>
-<p>
-  <a href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>&satisfied=false" >
-    Thumbs down
-  </a>
-</p>
+<form method="POST" action="transaction_complete.jsp" >
+  <fieldset>
+    <input type="hidden" name="ro_id" value="<%=r.requestoffer_id%>" />
+    <legend><%=loc.get(22,"Favor Details")%></legend>
+
+    <input type="radio" name="is_satis" id="happy" value="true" />
+    <label for="happy">Happy</label>
+
+    <input type="radio" name="is_satis" id="sad" value="false" />
+    <label for="sad">Sad</label>
+
+    <label for="is_satis_comment">Comment</label>
+    <textarea 
+      id="is_satis_comment" 
+      name="is_satis_comment" 
+      placeholder="I really appreciate ..." >
+    </textarea>
+
+    <button type="submit">submit</button>
+  </fieldset>
+</form>
+
 </body>
 </html>
