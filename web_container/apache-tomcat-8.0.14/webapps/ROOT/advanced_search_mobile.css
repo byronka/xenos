@@ -34,5 +34,6 @@ form[action="advanced_search.jsp"] input[type="text"] {
 }
 
 div.help-text {
+  display: table-cell;
   font-style: italic;
 }

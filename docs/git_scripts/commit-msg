@@ -4,7 +4,7 @@
 #starts with two or three letters (initials) , a dash, 
 #then between one and seven digits, and finally a dash
 
-validentry=$(head -1 $1|grep -c -P '^[A-Z]{2,3}-#\d{1,7}-')
+validentry=$(head -1 $1|grep -E -c -e "^[[:upper:]]{2,3}-#[[:digit:]]{1,7}-")
 if [ $validentry -ne 0 ]
   then
     exit 0

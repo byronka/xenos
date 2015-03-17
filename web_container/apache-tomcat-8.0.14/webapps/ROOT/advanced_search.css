@@ -58,6 +58,6 @@ form[action="advanced_search.jsp"] input[type="text"]:-moz-placeholder {
   }
 
 div.help-text {
-  position: absolute;
+  display: table-cell;
   font-style: italic;
 }
