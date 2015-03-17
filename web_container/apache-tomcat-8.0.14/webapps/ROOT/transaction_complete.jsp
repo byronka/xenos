@@ -11,7 +11,7 @@
 		complete_transaction(requestoffer_id, user_id, is_satisfied, comment);
 	if (result == true) {
 		response.sendRedirect(
-			"requestoffer_closed.jsp?requestoffer=" + r.requestoffer_id);
+			"requestoffer_closed.jsp?requestoffer=" + requestoffer_id);
 	} else {
   	response.sendRedirect("general_error.jsp");
 	}
