@@ -6,6 +6,7 @@ div.header-container {
 div.header-container a, div.header-container form {
   padding-left:7px;
   padding-right:7px;
+  margin: 10px;
   color: white;
   display: block;
 }

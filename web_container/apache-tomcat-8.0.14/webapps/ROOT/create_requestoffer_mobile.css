@@ -5,8 +5,7 @@ span.error {
 
 form[action="create_requestoffer.jsp"] {
   display: table;
-  margin: auto;
-  border-spacing: 5px 5px;
+  border-spacing: 5px 25px;
 }
 
 form[action="create_requestoffer.jsp"] select {
