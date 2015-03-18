@@ -92,15 +92,15 @@
     </div>
   </body>
 <script>
-  (function() {
+  window.onload = function() {
       var covering_screen = document.getElementById('covering_screen');
       covering_screen.style.opacity = 1; 
       var fade = function() {
         if ((covering_screen.style.opacity -=.1) > 0) { 
-          setTimeout(fade,20);
+          setTimeout(fade,10);
         }
       };
       fade(); //kick it off.
-    })();
+    };
 </script>
 </html>
