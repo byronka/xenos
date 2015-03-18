@@ -82,6 +82,10 @@
         </a>
 
       </div>
+      <%if (rd.comment.length() > 0) {%>
+        <%=loc.get(165,"You")%>
+        commented: "<%=rd.comment%>"
+      <%}%>
 
     <%
     } else { //if we are the judged
@@ -112,6 +116,12 @@
 
       </div>
 
+      <%if (rd.comment.length() > 0) {%>
+        <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
+          <%=Utils.safe_render(rd.judging_username)%>
+        </a>
+        comment: "<%=rd.comment%>"
+      <%}%>
     <% } %>
 
     <% } %>

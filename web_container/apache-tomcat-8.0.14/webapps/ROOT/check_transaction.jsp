@@ -42,8 +42,7 @@
     <textarea 
       id="is_satis_comment" 
       name="is_satis_comment" 
-      placeholder="I really appreciate ..." >
-    </textarea>
+      placeholder="I really appreciate ..." ></textarea>
 
     <button type="submit">submit</button>
   </fieldset>

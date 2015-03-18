@@ -86,7 +86,10 @@
       </span>
 
     </div>
-    <%=rd.comment%>
+    <%if (rd.comment.length() > 0) {%>
+      <%=Utils.safe_render(rd.judging_username)%>
+      commented: "<%=rd.comment%>"
+    <%}%>
 
   <%
   } else { 
@@ -122,8 +125,13 @@
 
     </div>
 
-    <%=rd.comment%>
-    <% } %>
+    <%if (rd.comment.length() > 0) {%>
+      <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
+        <%=Utils.safe_render(rd.judging_username)%>
+      </a>
+      commented: "<%=rd.comment%>"
+    <%}%>
+  <% } %>
 
   <% } %>
   <% } %>

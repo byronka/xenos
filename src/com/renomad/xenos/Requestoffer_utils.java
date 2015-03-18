@@ -1433,6 +1433,9 @@ public final class Requestoffer_utils {
           meritorious = null;
         }
         String comment = resultSet.getNString("text");
+        if (resultSet.wasNull()) {
+          comment = "";
+        }
         String desc = resultSet.getNString("description");
         int ro_id = resultSet.getInt("requestoffer_id");
         String timestamp = resultSet.getString("date_entered");
