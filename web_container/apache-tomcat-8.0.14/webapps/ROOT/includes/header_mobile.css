@@ -1,28 +1,11 @@
 div.header-container {
   border: 1px solid blue;
-}
-
-div.header-container a{
-  font-size: 20px;
-  text-align: center;
-  padding: 10px;
-  border: 1px dashed white;
   background-color: grey;
-  display: block;
 }
 
-form[class="search"] input {
+div.header-container a, div.header-container form {
+  padding-left:7px;
+  padding-right:7px;
+  color: white;
   display: block;
-  width:80%;
-  margin-left: 10%;
-  margin-right: 10%;
-  height: 30px;
 }
-
-form[class="search"] button {
-  display: block;
-  width:80%;
-  margin-left: 10%;
-  margin-right: 10%;
-}
-
