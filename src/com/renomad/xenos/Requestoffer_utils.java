@@ -1354,6 +1354,7 @@ public final class Requestoffer_utils {
     public String ro_desc; //the description of the requestoffer
     public String timestamp;
     public int status_id;
+    public String comment; // the comment entered by the judging user
 
     public Rank_detail(
       int urdp_id,
@@ -1365,7 +1366,8 @@ public final class Requestoffer_utils {
       int ro_id,
       String ro_desc,
       String timestamp,
-      int status_id
+      int status_id,
+      String comment
         ) {
       this.urdp_id          = urdp_id;
       this.judging_user_id  = judging_user_id;
@@ -1377,6 +1379,7 @@ public final class Requestoffer_utils {
       this.ro_desc          = ro_desc;
       this.timestamp        = timestamp;
       this.status_id        = status_id;
+      this.comment          = comment;
     }
   }
 
@@ -1394,8 +1397,11 @@ public final class Requestoffer_utils {
       "SELECT ju.username AS jusername, ju.user_id AS         "+
       "juser_id, u.username, u.user_id, urdp.date_entered,    "+
       "       urdp.meritorious,urdp.requestoffer_id,          "+
-      "       ro.description, urdp.status_id, urdp.urdp_id    "+
+      "       ro.description, urdp.status_id, urdp.urdp_id,   "+
+      "       urdpn.text                                      "+
       "FROM user_rank_data_point urdp                         "+
+      "   LEFT JOIN user_rank_data_point_note urdpn           "+
+      "     ON urdpn.urdp_id = urdp.urdp_id                   "+
       "   JOIN user ju ON ju.user_id = urdp.judge_user_id     "+
       "   JOIN user u ON u.user_id = urdp.judged_user_id      "+
       "   JOIN requestoffer ro                                "+
@@ -1426,12 +1432,13 @@ public final class Requestoffer_utils {
         if (resultSet.wasNull()) {
           meritorious = null;
         }
+        String comment = resultSet.getNString("text");
         String desc = resultSet.getNString("description");
         int ro_id = resultSet.getInt("requestoffer_id");
         String timestamp = resultSet.getString("date_entered");
         int status_id = resultSet.getInt("status_id");
 
-        rds.add(new Rank_detail(urdp_id, juser_id, jusername, uid, username, meritorious, ro_id, desc, timestamp, status_id));
+        rds.add(new Rank_detail(urdp_id, juser_id, jusername, uid, username, meritorious, ro_id, desc, timestamp, status_id, comment));
       }
 
       //convert arraylist to array

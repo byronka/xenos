@@ -46,7 +46,7 @@
   <p>
     <%=loc.get(187,"Rank the other user for the following Favor")%>
   </p>
-  <p>Favor <%=ro.requestoffer_id%>: <%=ro.description%></p>
+  <p>Favor <%=ro.requestoffer_id%>: <a href="requestoffer.jsp?requestoffer=<%=ro.requestoffer_id%>"><%=ro.description%></a></p>
   <p>
     <a href="judge.jsp?urdp=<%=urdp_id%>&amp;satisfied=true">
       <%=loc.get(95, "Confirm")%> <%=loc.get(188,"happy")%>

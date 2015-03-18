@@ -86,6 +86,7 @@
       </span>
 
     </div>
+    <%=rd.comment%>
 
   <%
   } else { 
@@ -121,6 +122,7 @@
 
     </div>
 
+    <%=rd.comment%>
     <% } %>
 
   <% } %>
