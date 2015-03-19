@@ -93,7 +93,7 @@
 		<% } %>
   </head>
 <body>
-  <div id="covering_screen"></div>
+  <div style="width: 100%; height: 100%; position: fixed; background-color: black" id="covering_screen"></div>  
   <script>
     window.onload = xenos_utils.fade('covering_screen');
   </script>

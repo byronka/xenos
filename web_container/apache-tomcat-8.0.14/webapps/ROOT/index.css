@@ -64,15 +64,9 @@ nav a:focus {
   transform: translateX(0px);
 }
 
-div#covering_screen {
-  background-color: black;
-  width: 100%;
-  height: 100%;
-  position: fixed;
-}
-
 body {
     background: url('img/cool.jpg') no-repeat center center fixed;
+    background-color: black;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;

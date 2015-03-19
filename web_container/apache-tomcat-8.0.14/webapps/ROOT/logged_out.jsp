@@ -1,4 +1,4 @@
-<%@include file="includes/mobile_check.jsp" %>
+  <%@include file="includes/mobile_check.jsp" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="com.renomad.xenos.Localization" %>
 <%
@@ -18,7 +18,7 @@
 		<% } %>
 </head>
 <body>
-  <div id="covering_screen"></div>
+  <div style="width: 100%; height: 100%; position: fixed; background-color: black" id="covering_screen"></div>  
   <script>
     window.onload = xenos_utils.fade('covering_screen');
   </script>

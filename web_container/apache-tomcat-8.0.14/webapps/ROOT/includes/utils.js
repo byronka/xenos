@@ -6,7 +6,7 @@ xenos_utils.fade = function(element_id) {
       var element = document.getElementById(element_id);
       element.style.opacity = 1; 
       var fade = function() {
-        if ((element.style.opacity -=.2) > 0) { 
+        if ((element.style.opacity -=.1) > 0) { 
           setTimeout(fade,40);
         }
       };
