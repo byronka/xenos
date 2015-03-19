@@ -1,0 +1,102 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: garamond;
+}
+
+a {
+  position: relative;
+  display: inline-block;
+  margin: 15px 25px;
+  outline: none;
+  color: #fff;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 400;
+  text-shadow: 0 0 1px rgba(255,255,255,0.3);
+  font-size: 1.35em;
+}
+
+section {
+  background-color: #FF6600;
+}
+
+nav a:hover,
+nav a:focus {
+  outline: none;
+}
+
+/* Effect 1: Brackets */
+.cl-effect-1 a::before,
+.cl-effect-1 a::after {
+  display: inline-block;
+  opacity: 0;
+  -webkit-transition: -webkit-transform 0.3s, opacity 0.2s;
+  -moz-transition: -moz-transform 0.3s, opacity 0.2s;
+  transition: transform 0.3s, opacity 0.2s;
+}
+
+.cl-effect-1 a::before {
+  margin-right: 10px;
+  content: '[';
+  -webkit-transform: translateX(20px);
+  -moz-transform: translateX(20px);
+  transform: translateX(20px);
+}
+
+.cl-effect-1 a::after {
+  margin-left: 10px;
+  content: ']';
+  -webkit-transform: translateX(-20px);
+  -moz-transform: translateX(-20px);
+  transform: translateX(-20px);
+}
+
+.cl-effect-1 a:hover::before,
+.cl-effect-1 a:hover::after,
+.cl-effect-1 a:focus::before,
+.cl-effect-1 a:focus::after {
+  opacity: 1;
+  -webkit-transform: translateX(0px);
+  -moz-transform: translateX(0px);
+  transform: translateX(0px);
+}
+
+body {
+    background: url('img/cool.jpg') no-repeat center center fixed;
+    background-color: black;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='cool.jpg',     sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='cool.jpg', sizingMethod='scale');
+}
+
+div.trademark {
+  text-shadow:6px 7px 4px rgba(34,87,73,0.5);
+  font-weight:normal;
+  color:#161D33;
+  letter-spacing:10pt;
+  word-spacing:1pt;
+  font-size:36px;
+  text-align:left;
+  line-height:1;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+div.actions {
+  color: #FFFFFF;
+  font-size: 23px;
+  position: absolute;
+  top: 100px;
+  right: 100px;
+}
+
+a:visited {
+  color: white;
+}

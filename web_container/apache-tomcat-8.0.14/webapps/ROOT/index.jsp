@@ -21,13 +21,13 @@
   <title><%=loc.get(44,"Welcome to Xenos!")%></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 		<%if (probably_mobile) {%>
-			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
+			<link rel="stylesheet" href="index_mobile.css" title="mobile">
 		<% } else { %>
 			<link rel="stylesheet" href="index.css" title="desktop">
 		<% } %>
 </head>
 <body>
-  <div style="width: 100%; height: 100%; position: fixed; background-color: black" id="covering_screen"></div>  
+  <div style="top:0;left:0;width: 100%; height: 100%; position: fixed; background-color: black" id="covering_screen"></div>  
   <script>
     window.onload = xenos_utils.fade('covering_screen');
   </script>

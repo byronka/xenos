@@ -25,9 +25,9 @@
   String pass = "";
 
   //we'll put error messages here if validation errors occur
-  String user_error_msg = "";  //empty username
-  String pass_error_msg = "";  //empty password
-  String login_error_msg = ""; //failed login
+  boolean has_user_error = false;  //empty username
+  boolean has_pass_error = false;  //empty password
+  boolean has_login_error = false; //failed login
 
   //this code handles validation and applying username and password.
   if (request.getMethod().equals("POST")) {
@@ -37,12 +37,12 @@
 
     //validate the password field
     if (pass.length() == 0) {
-        pass_error_msg = loc.get(47,"Please enter a password");
+        has_pass_error = true;
     }
 
     //validate the username field
     if (user.length() == 0) {
-        user_error_msg = loc.get(48,"Please enter a username");
+        has_user_error = true;
     }
 
     int uid = 0;
@@ -52,8 +52,7 @@
       response.addCookie(new Cookie("xenos_cookie", cookie));
       response.sendRedirect("dashboard.jsp");
     } else {
-      login_error_msg = 
-        loc.get(49,"Invalid username / password combination");
+      has_login_error = true;
     }
   }
 
@@ -65,29 +64,43 @@
 		<title><%=loc.get(50,"Login page")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<%if (probably_mobile) {%>
-			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
+			<link rel="stylesheet" href="login_mobile.css" title="mobile">
 		<% } else { %>
 			<link rel="stylesheet" href="login.css" title="desktop">
 		<% } %>
 	</head>
   <body>
-    <div style="width: 100%; height: 100%; position: fixed; background-color: black" id="covering_screen"></div>  
-    <script>
-      window.onload = xenos_utils.fade('covering_screen');
-    </script>
+		<%if (!probably_mobile) {%>
+      <div style="top:0;left:0;width: 100%; height: 100%; position: fixed; background-color: black" id="covering_screen"></div>  
+      <script>
+        window.onload = xenos_utils.fade('covering_screen');
+      </script>
+    <% } %>
     <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
     <div class="signin">
       <form method="POST" action="login.jsp">
-      <div><%=login_error_msg%></div>
+      <% if (has_login_error) { %>
+        <div class="error">
+          <%=loc.get(49,"Invalid username / password combination")%>
+        </div>
+      <% } %>
       <div class="user-input">
         <div class="label"><%=loc.get(51,"Username")%>: </div>
         <input type="text" autofocus="autofocus" name="username" value="<%=user%>"/>
-        <span><%=user_error_msg%></span>
+        <% if (has_user_error) { %>
+          <span class="error">
+            <%=loc.get(48,"Please enter a username")%>
+          </span>
+        <% } %>
       </div>
       <div class="password-input">
         <div class="label"><%=loc.get(52,"Password")%>: </div>
         <input type="password" name="password" value="<%=pass%>"/>
-        <span><%=pass_error_msg%></span>
+        <% if (has_pass_error) { %>
+          <span class="error">
+            <%=loc.get(47,"Please enter a password")%>
+          </span>
+        <% } %>
       </div>
       <button type="submit">
         <%=loc.get(42,"Login")%>

@@ -5,10 +5,15 @@ var xenos_utils = {};
 xenos_utils.fade = function(element_id) {
       var element = document.getElementById(element_id);
       element.style.opacity = 1; 
-      var fade = function() {
-        if ((element.style.opacity -=.1) > 0) { 
-          setTimeout(fade,40);
+
+      var do_the_fade = function() {
+        if ((element.style.opacity-=.1) < 0) { 
+        //  var element_kill = document.getElementById('notification_dialog');
+          document.body.removeChild(element);
+        } else {
+          setTimeout(do_the_fade,40);
         }
       };
-      fade(); //kick it off.
+
+      do_the_fade(); //kick it off.
 };
