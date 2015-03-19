@@ -60,8 +60,8 @@
 %>
 <!DOCTYPE html>
 <html>
-  <div id="covering_screen"></div>
 	<head>
+    <script type="text/javascript" src="includes/utils.js"></script>
 		<title><%=loc.get(50,"Login page")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<%if (probably_mobile) {%>
@@ -71,6 +71,10 @@
 		<% } %>
 	</head>
   <body>
+    <div id="covering_screen"></div>
+    <script>
+      window.onload = xenos_utils.fade('covering_screen');
+    </script>
     <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
     <div class="signin">
       <form method="POST" action="login.jsp">
@@ -91,16 +95,4 @@
       </form>
     </div>
   </body>
-<script>
-  window.onload = function() {
-      var covering_screen = document.getElementById('covering_screen');
-      covering_screen.style.opacity = 1; 
-      var fade = function() {
-        if ((covering_screen.style.opacity -=.1) > 0) { 
-          setTimeout(fade,10);
-        }
-      };
-      fade(); //kick it off.
-    };
-</script>
 </html>

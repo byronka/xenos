@@ -12,6 +12,7 @@
 <!DOCTYPE html>
 <html>                                 
 	<head>
+    <script type="text/javascript" src="includes/utils.js"></script>
 		<title><%=loc.get(67,"Security problem")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 		<%if (probably_mobile) {%>
@@ -21,6 +22,10 @@
 		<% } %>
 	</head>
 <body>
+  <div id="covering_screen"></div>
+  <script>
+    window.onload = xenos_utils.fade('covering_screen');
+  </script>
   <div class="trademark">Xenos</div>
   <nav class="cl-effect-1">
     <p><%=loc.get(68,"Your browser did not send us the proper credentials.")%></p>
