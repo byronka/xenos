@@ -65,7 +65,7 @@
         <% } %>
           
         <% if (rd.status_id == 2) { %>
-        <a href="judge.jsp?urdp=<%=rd.urdp_id%>&requestoffer=<%=rd.ro_id%>">
+        <a href="judge.jsp?urdp=<%=rd.urdp_id%>">
             <%=loc.get(181,"have not yet determined")%>
           </a>
         <% }  %>
@@ -120,7 +120,7 @@
         <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
           <%=Utils.safe_render(rd.judging_username)%>
         </a>
-        comment: "<%=rd.comment%>"
+        commented: "<%=rd.comment%>"
       <%}%>
     <% } %>
 

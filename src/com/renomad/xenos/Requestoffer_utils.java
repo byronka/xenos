@@ -167,22 +167,21 @@ public final class Requestoffer_utils {
     */
   public static boolean
     cancel_taken_requestoffer(
-        int user_id, int requestoffer_id, boolean is_satisfied) {
+        int user_id, int requestoffer_id) {
       CallableStatement cs = null;
       try {
         Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall(String.format(
-          "{call cancel_taken_requestoffer(%d, %d, %b)}" 
-          , user_id, requestoffer_id, is_satisfied));
+          "{call cancel_taken_requestoffer(%d, %d)}" 
+          , user_id, requestoffer_id));
         cs.execute();
-
+        return true;
       } catch (SQLException ex) {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
         Database_access.close_statement(cs);
       }
-      return true;
     }
 
 
@@ -1129,24 +1128,22 @@ public final class Requestoffer_utils {
 		* @return true if successful, false otherwise
 		*/
 	public static boolean complete_transaction(
-      int rid, int uid, boolean is_satisfied, String comment) {
+      int rid, int uid) {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
       // see db_scripts/v1_procedures.sql for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
-        "{call complete_ro_transaction(%d,%d,%b, ?)}" 
-        ,uid, rid, is_satisfied));
-      cs.setNString(1, comment);
+        "{call complete_ro_transaction(%d,%d)}" ,uid, rid ));
       cs.execute();
+      return true;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
       Database_access.close_statement(cs);
     }
-    return true;
 	}
 
 
@@ -1384,6 +1381,7 @@ public final class Requestoffer_utils {
   }
 
 
+
   /**
     * gets all the rankings associated with a given user, for display
     * @param user_id the user whose rankings we'll see.
@@ -1458,17 +1456,80 @@ public final class Requestoffer_utils {
 
 
   /**
+    * gets all the rank detail for a given user rank data point id
+    * @param urdp_id the user rank data point id
+    * @return details about a particular user rank data point, or
+    *   null otherwise.
+    */
+  public static Rank_detail get_urdp_detail(int urdp_id) {
+    String sqlText = 
+
+      String.format(
+      "SELECT ju.username AS jusername, ju.user_id AS         "+
+      "juser_id, u.username, u.user_id, urdp.date_entered,    "+
+      "       urdp.meritorious,urdp.requestoffer_id,          "+
+      "       ro.description, urdp.status_id, urdp.urdp_id,   "+
+      "       urdpn.text                                      "+
+      "FROM user_rank_data_point urdp                         "+
+      "   LEFT JOIN user_rank_data_point_note urdpn           "+
+      "     ON urdpn.urdp_id = urdp.urdp_id                   "+
+      "   JOIN user ju ON ju.user_id = urdp.judge_user_id     "+
+      "   JOIN user u ON u.user_id = urdp.judged_user_id      "+
+      "   JOIN requestoffer ro                                "+
+      "     ON ro.requestoffer_id = urdp.requestoffer_id      "+
+      "WHERE urdp.urdp_id = %d                                ",
+        urdp_id);
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return null;
+      }
+
+      //keep adding rows of data while there is more data
+      resultSet.next();
+      int juser_id = resultSet.getInt("juser_id");
+      String jusername = resultSet.getNString("jusername");
+      int uid = resultSet.getInt("user_id");
+      String username = resultSet.getNString("username");
+      Boolean meritorious = null;
+      String comment = "";
+      String desc = resultSet.getNString("description");
+      int ro_id = resultSet.getInt("requestoffer_id");
+      String timestamp = resultSet.getString("date_entered");
+      int status_id = resultSet.getInt("status_id");
+
+      Rank_detail rd = new Rank_detail(urdp_id, juser_id, jusername, uid, username, meritorious, ro_id, desc, timestamp, status_id, comment);
+
+      return rd;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
     * apply a ranking to the other user for a given
     * user id and requestoffer
     */
   public static boolean 
-    rank_other_user(int user_id, int urdp_id, boolean is_satis) {
+    rank_other_user(int user_id, int urdp_id, 
+        boolean is_satis, String comment) {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
       cs = conn.prepareCall(String.format(
-        "{call rank_other_user(%d, %d, %b)}" 
+        "{call rank_other_user(%d, %d, %b, ?)}" 
         , user_id, urdp_id, is_satis));
+      cs.setNString(1, comment);
       cs.execute();
       return true;
     } catch (SQLException ex) {

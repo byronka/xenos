@@ -1043,9 +1043,7 @@ DROP PROCEDURE IF EXISTS complete_ro_transaction;
 CREATE PROCEDURE complete_ro_transaction
 (
 uid INT UNSIGNED, -- the user who owns this requestoffer
-rid INT UNSIGNED, -- the requestoffer
-satis BOOL, -- whether the owner of this RO was satisfied with result
-comment NVARCHAR(500) -- a comment by the user
+rid INT UNSIGNED -- the requestoffer
 )
 BEGIN
 
@@ -1053,6 +1051,7 @@ BEGIN
 	call validate_requestoffer_id(rid);	
 	call validate_user_id(uid);
 
+  -- make sure a valid requestoffer exists for completion
 	SELECT COUNT(*) INTO @is_valid
 	FROM requestoffer r
   JOIN requestoffer_state rs ON rs.requestoffer_id = r.requestoffer_id
@@ -1074,9 +1073,11 @@ BEGIN
   -- up again to be reused.  We can go ahead and leave this information
   -- here as an auditing-type artifact.
 	UPDATE requestoffer_state -- change state of the requestoffer
-	SET status = 77 -- 'closed', datetime = UTC_TIMESTAMP()
+	SET status = 77, -- 'closed'
+  datetime = UTC_TIMESTAMP()
 	WHERE requestoffer_id = rid;
 
+  -- audit that the owner is making this RO complete
 	CALL add_audit(203,uid,@handling_user_id,rid,NULL,NULL);
 
   -- get the handling user's id
@@ -1123,33 +1124,17 @@ BEGIN
   UPDATE user_rank_data_point
     SET 
       date_entered = UTC_TIMESTAMP(),  -- last modified date update
-      meritorious = satis,
-      status_id = 3 -- they have provided feedback, they're done.
+      status_id = 2 -- COMPLETE_FEEDBACK_POSSIBLE
     WHERE 
       urdp_id = @owner_urdp_id;
 
-  IF comment IS NOT NULL AND comment <> '' THEN
-    INSERT INTO user_rank_data_point_note (urdp_id, text)
-    VALUES (@owner_urdp_id, comment);
-  END IF;
 
-
-  -- Audit that we're putting the owner into COMPLETE
-	CALL add_audit(308,uid,@handling_user_id,rid,@owner_urdp_id,'From status_id 1');
+  -- Audit that we're putting the owner into COMPLETE_FEEDBACK_POSSIBLE
+	CALL add_audit(307,uid,@handling_user_id,rid,@owner_urdp_id,'From status_id 1');
 
   -- audit that the handling user earned a point off this
 	CALL add_audit(302,uid,@handling_user_id,rid,NULL,NULL);
 
-  -- recalculate the owner's rank
-  CALL recalculate_rank_on_user(@handling_user_id, satis);
-
-  -- audit that the owner is raising or lowering their rank
-  IF (satis) THEN
-    CALL add_audit(304,uid,@handling_user_id,rid,NULL,NULL);
-  ELSE
-    CALL add_audit(305,uid,@handling_user_id,rid,NULL,NULL);
-  END IF;
-	
 END
 
 ---DELIMITER---
@@ -1238,8 +1223,7 @@ DROP PROCEDURE IF EXISTS cancel_taken_requestoffer;
 CREATE PROCEDURE cancel_taken_requestoffer
 (
   uid INT UNSIGNED, -- the user making the choice to cancel
-  rid INT UNSIGNED, -- the requestoffer
-  is_thumbs_up BOOL -- thumbs up on the cancellation
+  rid INT UNSIGNED -- the requestoffer
 ) 
 BEGIN 
     CALL validate_user_id(uid);
@@ -1269,6 +1253,7 @@ BEGIN
     SET status = 76 -- "OPEN", datetime = UTC_TiMESTAMP()
     WHERE requestoffer_id = rid;
 
+    -- audit that this user canceled
     CALL add_audit(204,uid,@other_party,rid,NULL, NULL);
 
     UPDATE user_rank_data_point
@@ -1280,19 +1265,20 @@ BEGIN
       AND requestoffer_id = rid
       AND status_id = 1;
 
+      -- audit that the other party is going into COMPLETE_FEEDBACK_POSSIBLE
     CALL add_audit(307,@other_party,uid,rid,@handler_urdp_id,'From status_id 1');
 
     UPDATE user_rank_data_point
       SET 
         date_entered = UTC_TIMESTAMP(),  -- last modified date update
-        meritorious = is_thumbs_up,
-        status_id = 3 -- they have provided feedback, they're done.
+        status_id = 2 -- they have provided feedback, they're done.
       WHERE judge_user_id = uid
       AND judged_user_id = @other_party
       AND requestoffer_id = rid
       AND status_id = 1;
 
-    CALL add_audit(308,uid,@other_party,rid,@handler_urdp_id,'From status_id 1');
+      -- audit that the cancelling user is going into COMPLETE_FEEDBACK_POSSIBLE
+    CALL add_audit(307,uid,@other_party,rid,@handler_urdp_id,'From status_id 1');
 
     -- inform the other user the transaction is canceled.
     CALL put_system_to_user_message(131, @other_party, rid);
@@ -1302,16 +1288,6 @@ BEGIN
     
     -- set audit for removal of handling user due to cancellation
     CALL add_audit(210,uid,@handling_user_id,rid,NULL,NULL); 
-
-    -- recalculate the acting user's ranking
-    CALL recalculate_rank_on_user(other_party, is_thumbs_up);
-    IF (is_thumbs_up) THEN
-      CALL add_audit(304,uid,@other_party,rid,NULL,NULL);
-    ELSE
-      CALL add_audit(305,uid, @other_party,rid,NULL,NULL);
-    END IF;
-
-  
 
 END
 
@@ -1452,7 +1428,8 @@ CREATE PROCEDURE rank_other_user
 (
   uid INT UNSIGNED, -- the user id acting as judge
   my_urdp_id INT UNSIGNED, -- the user rank data point id
-  is_satis BOOL -- whether the user is satisfied
+  is_satis BOOL, -- whether the user is satisfied
+  comment NVARCHAR(500) -- a comment by the judging user
 ) 
 BEGIN 
 
@@ -1487,6 +1464,11 @@ BEGIN
     meritorious = is_satis,
     status_id = 3 -- they have provided feedback, they're done.
   WHERE urdp_id = my_urdp_id;
+
+  IF comment IS NOT NULL AND comment <> '' THEN
+    INSERT INTO user_rank_data_point_note (urdp_id, user_id, text)
+    VALUES (my_urdp_id, uid, comment);
+  END IF;
 
   CALL recalculate_rank_on_user(@judged_uid, is_satis);
 

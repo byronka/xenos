@@ -3,15 +3,22 @@
 <%@ page import="com.renomad.xenos.Requestoffer" %>
 <%
 
-  boolean is_satisfied = Boolean.parseBoolean(request.getParameter("is_satis"));
-  int requestoffer_id = Utils.parse_int(request.getParameter("ro_id"));
-  String comment = request.getParameter("is_satis_comment");
+  String qs = request.getQueryString();
+  Requestoffer r = 
+    Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
+  if (r == null) {
+    response.sendRedirect("general_error.jsp");
+    return;
+  }
+  if (r.status == 77) {// closed
+  	response.sendRedirect("general_error.jsp");
+  }
 
 	boolean result = Requestoffer_utils.
-		complete_transaction(requestoffer_id, user_id, is_satisfied, comment);
+		complete_transaction(r.requestoffer_id, user_id);
 	if (result == true) {
 		response.sendRedirect(
-			"requestoffer_closed.jsp?requestoffer=" + requestoffer_id);
+			"requestoffer_closed.jsp?requestoffer=" + r.requestoffer_id);
 	} else {
   	response.sendRedirect("general_error.jsp");
 	}

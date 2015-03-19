@@ -192,7 +192,7 @@ VALUES
   (184, 1,  'You have created a favor.  Right now, it is in draft mode, unviewable by other users. You may'),
   (185, 1,  'it now if you wish.  Until you publish, it will remain hidden.  You can also publish this favor from your profile page.'),
   (186, 1,  'Rank user'),
-  (187, 1,  'Rank the other user for the following Favor'),
+  (187, 1,  'for the following Favor'),
   (188, 1,  'happy'),
   (189, 1,  'unhappy'),
   (190, 1,  'Ranking confirmed'),

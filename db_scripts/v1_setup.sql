@@ -102,7 +102,6 @@ requestoffer (
   category INT UNSIGNED,
   FOREIGN KEY FK_requestoffering_user_user_id (requestoffering_user_id) 
     REFERENCES user (user_id) 
-    ON DELETE CASCADE
 );
 
 
@@ -121,7 +120,6 @@ requestoffer_state (
     ON DELETE CASCADE,
   FOREIGN KEY FK_status_rs (status)
     REFERENCES requestoffer_status (requestoffer_status_id)
-    ON DELETE CASCADE
 )
 
 ---DELIMITER---
@@ -162,7 +160,6 @@ requestoffer_service_request (
   ON DELETE CASCADE,
   FOREIGN KEY FK_user_id_rsr (user_id)
   REFERENCES user (user_id)
-  ON DELETE CASCADE
 )
 
 ---DELIMITER---
@@ -239,11 +236,9 @@ requestoffer_message (
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
   FOREIGN KEY FK_from_user_id (from_user_id)
-  REFERENCES user (user_id)
-  ON DELETE CASCADE,
+  REFERENCES user (user_id),
   FOREIGN KEY FK_to_user_id_rm (to_user_id)
   REFERENCES user (user_id)
-  ON DELETE CASCADE
 )
 
 
@@ -372,11 +367,9 @@ location_to_user (
   location_id INT UNSIGNED, 
   user_id INT UNSIGNED, 
   FOREIGN KEY FK_user (user_id)
-  REFERENCES user (user_id)
-  ON DELETE CASCADE,
+  REFERENCES user (user_id),
   FOREIGN KEY FK_location_ltu (location_id)
-  REFERENCES location (location_id)
-  ON DELETE CASCADE,
+  REFERENCES location (location_id),
   PRIMARY KEY (location_id, user_id)
 )
 
@@ -390,8 +383,7 @@ location_to_requestoffer (
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
   FOREIGN KEY FK_location_ltr (location_id)
-  REFERENCES location (location_id)
-  ON DELETE CASCADE,
+  REFERENCES location (location_id),
   PRIMARY KEY (location_id, requestoffer_id)
 )
 
@@ -441,14 +433,11 @@ user_rank_data_point (
   REFERENCES requestoffer (requestoffer_id)
   ON DELETE CASCADE,
   FOREIGN KEY FK_user_urdp (judged_user_id)
-  REFERENCES user (user_id)
-  ON DELETE CASCADE,
+  REFERENCES user (user_id),
   FOREIGN KEY FK_j_user (judge_user_id)
-  REFERENCES user (user_id)
-  ON DELETE CASCADE,
+  REFERENCES user (user_id),
   FOREIGN KEY FK_status_urdp (status_id)
   REFERENCES requestoffer_user_statuses (state_id)
-  ON DELETE RESTRICT
 )
 
 ---DELIMITER---
@@ -456,10 +445,12 @@ user_rank_data_point (
 CREATE TABLE 
 user_rank_data_point_note (
   urdp_id INT UNSIGNED NOT NULL,
+  user_id INT UNSIGNED NOT NULL, -- the user making the comment
   text NVARCHAR(500),
   FOREIGN KEY FK_urdp_note (urdp_id)
-  REFERENCES user_rank_data_point (urdp_id)
-  ON DELETE CASCADE
+  REFERENCES user_rank_data_point (urdp_id),
+  FOREIGN KEY FK_urdp_user_id (user_id)
+  REFERENCES user (user_id)
 )
 
 ---DELIMITER---
@@ -498,11 +489,9 @@ system_to_user_message (
   to_user_id INT UNSIGNED NOT NULL,   -- person receiving the message
   has_been_viewed BOOL DEFAULT FALSE, -- if the user has viewed this message
   FOREIGN KEY FK_to_user_id_stum (to_user_id)
-  REFERENCES user (user_id)
-  ON DELETE CASCADE,
+  REFERENCES user (user_id),
   FOREIGN KEY FK_message_text (text_id)
   REFERENCES system_to_user_message_text (stu_message_text_id)
-  ON DELETE CASCADE
 )
 
 ---DELIMITER---
