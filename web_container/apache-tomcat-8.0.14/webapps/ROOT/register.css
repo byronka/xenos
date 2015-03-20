@@ -36,14 +36,7 @@ div.trademark {
 }
 
 body {
-      background: url('img/cool2.jpg') no-repeat center center fixed;
       background-color: black;
-      -webkit-background-size: cover;
-      -moz-background-size: cover;
-      -o-background-size: cover;
-      background-size: cover;
-      filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='cool2.jpg',     sizingMethod='scale');
-      -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='cool2.jpg', sizingMethod='scale');
 }
 
 div.label {

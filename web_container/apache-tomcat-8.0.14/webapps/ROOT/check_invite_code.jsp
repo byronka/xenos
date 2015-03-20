@@ -1,4 +1,3 @@
-<%@include file="includes/mobile_check.jsp" %>
 <%@ page import="com.renomad.xenos.Security" %>
 <%@ page import="com.renomad.xenos.User_utils" %>
 <%@ page import="com.renomad.xenos.Utils" %>
@@ -54,17 +53,10 @@
   <script type="text/javascript" src="includes/utils.js"></script>
   <title><%=loc.get(202,"Check invite code")%></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-		<%if (probably_mobile) {%>
-			<link rel="stylesheet" href="register_mobile.css" title="mobile">
-		<% } else { %>
-			<link rel="stylesheet" href="register.css" title="desktop">
-		<% } %>
+  <link rel="stylesheet" href="register.css" title="desktop">
   </head>
 <body>
-    <div style="top:0;left:0;width: 100%; height: 100%; position: fixed; background-color: black" id="covering_screen"></div>  
-  <script>
-    window.onload = xenos_utils.fade('covering_screen');
-  </script>
+    <img id='my_background' style="top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/cool2.jpg" onload="xenos_utils.fade_in_background()"/>
   <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
   <div class="register">
     <form id="enter_name_form" action="check_invite_code.jsp" method="post">

@@ -6,14 +6,7 @@
 }
 
 body {
-      background: url('img/thanks.jpeg') no-repeat center center fixed;
-      background-color: black;
-      -webkit-background-size: cover;
-      -moz-background-size: cover;
-      -o-background-size: cover;
-      background-size: cover;
-      filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='thanks.jpeg',     sizingMethod='scale');
-      -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='thanks.jpeg', sizingMethod='scale');
+    background-color: black;
 }
 
 

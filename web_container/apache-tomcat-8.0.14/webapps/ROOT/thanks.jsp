@@ -1,4 +1,3 @@
-<%@include file="includes/mobile_check.jsp" %>
 <%@ page import="com.renomad.xenos.Localization" %>
 <%
   //set up an object to localize text
@@ -10,17 +9,11 @@
     <script type="text/javascript" src="includes/utils.js"></script>
 		<title><%=loc.get(69,"Thanks for registering!")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-		<%if (probably_mobile) {%>
-			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
-		<% } else { %>
-			<link rel="stylesheet" href="thanks.css" title="desktop">
-		<% } %>
+    <link rel="stylesheet" href="thanks.css" title="desktop">
 	</head>
 <body>
-    <div style="top:0;left:0;width: 100%; height: 100%; position: fixed; background-color: black" id="covering_screen"></div>  
-    <script>
-      window.onload = xenos_utils.fade('covering_screen');
-    </script>
+      background: url('img/thanks.jpeg') no-repeat center center fixed;
+  <img id='my_background' style="top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/thanks.jpeg" onload="xenos_utils.fade_in_background()"/>
   <div class="trademark">Xenos</div>
   <nav class="cl-effect-1">
     <p><%=loc.get(70,"You are awesome! thanks so much for entering your name!")%></p>

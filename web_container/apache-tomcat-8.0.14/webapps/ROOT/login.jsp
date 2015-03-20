@@ -1,4 +1,3 @@
-<%@include file="includes/mobile_check.jsp" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="com.renomad.xenos.Security" %>
 <%@ page import="com.renomad.xenos.Localization" %>
@@ -63,19 +62,10 @@
     <script type="text/javascript" src="includes/utils.js"></script>
 		<title><%=loc.get(50,"Login page")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<%if (probably_mobile) {%>
-			<link rel="stylesheet" href="login_mobile.css" title="mobile">
-		<% } else { %>
-			<link rel="stylesheet" href="login.css" title="desktop">
-		<% } %>
+    <link rel="stylesheet" href="login.css" title="desktop">
 	</head>
   <body>
-		<%if (!probably_mobile) {%>
-      <div style="top:0;left:0;width: 100%; height: 100%; position: fixed; background-color: black" id="covering_screen"></div>  
-      <script>
-        window.onload = xenos_utils.fade('covering_screen');
-      </script>
-    <% } %>
+    <img id='my_background' style="top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
     <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
     <div class="signin">
       <form method="POST" action="login.jsp">

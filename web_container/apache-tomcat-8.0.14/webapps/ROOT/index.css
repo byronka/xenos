@@ -65,14 +65,7 @@ nav a:focus {
 }
 
 body {
-    background: url('img/cool.jpg') no-repeat center center fixed;
     background-color: black;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='cool.jpg',     sizingMethod='scale');
-    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='cool.jpg', sizingMethod='scale');
 }
 
 div.trademark {
