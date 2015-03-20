@@ -4,14 +4,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
-   <link rel="stylesheet" href="includes/reset.css">
-		<%if (probably_mobile) {%>
-			<link 
-        rel="stylesheet" href="includes/header_mobile.css" >
-		<% } else { %>
-			<link rel="stylesheet" href="includes/header.css" >
-		<% } %>
-		<title><%=loc.get(97,"My Profile")%></title>
+    <link rel="stylesheet" href="includes/reset.css">
+    <link rel="stylesheet" href="includes/header.css" >
+    <title><%=loc.get(97,"My Profile")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 <%

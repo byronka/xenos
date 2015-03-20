@@ -5,13 +5,8 @@
     <title><%=loc.get(2, "Request Favor")%></title>	
 		<meta name="viewport" content="width=device-width, initial-scale=1">
    <link rel="stylesheet" href="includes/reset.css">
-    <%if (probably_mobile) {%>
-     <link rel="stylesheet" href="includes/header_mobile.css" title="mobile">
-     <link rel="stylesheet" href="create_requestoffer_mobile.css" title="mobile">
-    <% } else { %>
-     <link rel="stylesheet" href="includes/header.css" title="desktop">
-     <link rel="stylesheet" href="create_requestoffer.css" title="desktop">
-    <% } %>    
+   <link rel="stylesheet" href="includes/header.css" title="desktop">
+   <link rel="stylesheet" href="create_requestoffer.css" title="desktop">
 	</head>
 	
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>

@@ -85,11 +85,7 @@
   <script type="text/javascript" src="includes/utils.js"></script>
   <title><%=loc.get(58,"Account Creation")%></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-		<%if (probably_mobile) {%>
-			<link rel="stylesheet" href="includes/common_alt.css" title="mobile">
-		<% } else { %>
-			<link rel="stylesheet" href="register.css" title="desktop">
-		<% } %>
+  <link rel="stylesheet" href="register.css" title="desktop">
   </head>
 <body>
     <img id='my_background' style="top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/cool2.png" onload="xenos_utils.fade_in_background()"/>
