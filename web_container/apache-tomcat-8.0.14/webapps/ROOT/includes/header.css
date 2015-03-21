@@ -3,11 +3,23 @@ div.header-container {
   background-color: grey;
 }
 
-div.header-container a, div.header-container form {
+div.header-container form {
+  margin-top:5px;
+  margin-bottom:5px;
   padding-left:7px;
   padding-right:7px;
   color: white;
-  display: inline;
+  display: inline-block;
+}
+div.header-container a {
+  margin-top:5px;
+  margin-bottom:5px;
+  padding-left:7px;
+  padding-right:7px;
+  margin-left: 10px;
+  margin-right: 10px;
+  color: white;
+  display: inline-block;
 }
 
 
