@@ -1,9 +1,9 @@
-div.header-container {
+header {
   border: 1px solid blue;
   background-color: grey;
 }
 
-div.header-container form {
+header form {
   margin-top:5px;
   margin-bottom:5px;
   padding-left:7px;
@@ -11,7 +11,8 @@ div.header-container form {
   color: white;
   display: inline-block;
 }
-div.header-container a {
+
+header a {
   margin-top:5px;
   margin-bottom:5px;
   padding-left:7px;
