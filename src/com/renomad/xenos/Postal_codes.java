@@ -4,6 +4,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -55,7 +57,6 @@ public class Postal_codes implements javax.servlet.ServletContextListener {
    */
   public void contextInitialized(ServletContextEvent context) {
     assemble_postal_codes_map();
-    language_mappings = get_language_mappings_from_db();
   }
 
 

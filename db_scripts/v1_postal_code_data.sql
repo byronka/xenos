@@ -15997,7 +15997,15 @@ VALUES
 ("64146", 38.899843,  -94.57323 ),
 ("64147", 38.849841,  -94.54555 ),
 ("64149", 38.872285,  -94.46712 ),
-("64150", 39.174903,  -94.62241 ),
+("64150", 39.174903,  -94.62241 );
+
+---DELIMITER---
+
+-- have to split this into multiple pieces because it
+-- exceeds maximum default size for sending data to db.
+
+INSERT INTO postal_codes(postal_code, latitude, longitude)
+VALUES
 ("64151", 39.215652,  -94.63021 ),
 ("64152", 39.216635,  -94.69991 ),
 ("64153", 39.281602,  -94.71439 ),
