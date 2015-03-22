@@ -150,10 +150,10 @@
             </span>
           </li>
 
-          <%if (r.postcodes != null && user.postcode != null ) {%>
-          <li class="distance">
-            approx some miles
-          </li>
+          <%if (r.distance != null ) {%>
+            <li class="distance">
+              about <%=String.format("%.1f",r.distance)%> miles
+            </li>
           <% } %>
 
         </ul>

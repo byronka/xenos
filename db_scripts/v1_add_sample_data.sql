@@ -49,12 +49,11 @@ INSERT INTO audit_notes (notes_id, notes) VALUES (1,'got null when trying to une
 ---DELIMITER---
 INSERT INTO location (location_id, address_line_1, address_line_2, city, state, postal_code, country) 
 VALUES 
-(1,'2335 Dogwood meadows cover','','Germantown','TN','38139','USA'),
-(2,'20675 Cutwater Place','','Sterling','VA','20165','USA');
+(1,'5335 Dogwood meadows cover','','Germantown','TN','38139','USA'),(2,'20675 Cutwater Place','','Sterling','VA','20165','USA');
 ---DELIMITER---
 INSERT INTO location_to_requestoffer (location_id, requestoffer_id) VALUES (1,1);
 ---DELIMITER---
-INSERT INTO location_to_user (location_id, user_id) VALUES (1,4);
+INSERT INTO location_to_user (location_id, user_id) VALUES (1,4),(2,4);
 ---DELIMITER---
 INSERT INTO requestoffer (requestoffer_id, datetime, description, points, category, requestoffering_user_id, handling_user_id) VALUES (1,'2015-03-11 01:31:28','Babysit my unruly kids',1,143,4,5);
 ---DELIMITER---

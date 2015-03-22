@@ -621,15 +621,19 @@ public final class Requestoffer_utils {
         int rl = resultSet.getInt("rank_ladder");
         int offered_user_id = resultSet.getInt("been_offered");
         boolean has_been_offered = false;
-        String po = resultSet.getString("postcodes");
-        String ci = resultSet.getNString("cities");
+        String po = resultSet.getString("postal_code");
+        Double di = resultSet.getDouble("distance");
+        if (resultSet.wasNull()) {
+          di = null;
+        }
+        String ci = resultSet.getNString("city");
         if (offered_user_id > 0) {
           has_been_offered = true;
         }
 
         Others_Requestoffer requestoffer = 
           new Others_Requestoffer(
-              dt,d,s,ra,rl,p,rid,ru,hu,ca, has_been_offered,po,ci);
+              dt,d,s,ra,rl,p,rid,ru,hu,ca, has_been_offered,po,ci,di);
         requestoffers.add(requestoffer);
       }
 

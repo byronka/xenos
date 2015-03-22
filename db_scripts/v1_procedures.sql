@@ -308,9 +308,9 @@ BEGIN
             r.requestoffering_user_id, 
             r.handling_user_id, 
             r.category,
-            GROUP_CONCAT(DISTINCT l.postal_code SEPARATOR ",") AS postcodes,
-            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities,
-            calc_approx_dist(postcodes, @user_postal_code) AS distance
+            l.postal_code,
+            l.city,
+            calc_approx_dist(l.postal_code, @user_postal_code) AS distance
             FROM requestoffer r 
             JOIN requestoffer_state rs
               ON rs.requestoffer_id = r.requestoffer_id
@@ -324,7 +324,6 @@ BEGIN
               ON l.location_id = ltr.location_id
             WHERE rs.status = 109 AND r.requestoffering_user_id = @ruid
             ', @search_clauses ,'
-            GROUP BY r.requestoffer_id , l.city, l.postal_code
           )
 
             UNION ALL
@@ -341,9 +340,9 @@ BEGIN
             r.requestoffering_user_id, 
             r.handling_user_id, 
             r.category,
-            GROUP_CONCAT(DISTINCT l.postal_code SEPARATOR ",") AS postcodes,
-            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities,
-            calc_approx_dist(postcodes, @user_postal_code) AS distance
+            l.postal_code,
+            l.city,
+            calc_approx_dist(l.postal_code, @user_postal_code) AS distance
             FROM requestoffer r 
             JOIN requestoffer_state rs
               ON rs.requestoffer_id = r.requestoffer_id
@@ -357,7 +356,6 @@ BEGIN
               ON l.location_id = ltr.location_id
             WHERE rs.status <> 109
             ', @search_clauses ,'
-            GROUP BY r.requestoffer_id , l.city, l.postal_code
           )
             ORDER BY datetime DESC
             LIMIT ',@first_row,',',@last_row );

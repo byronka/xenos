@@ -101,12 +101,12 @@
           
         <div>
           <label for="postal" ><%=loc.get(156,"Postal code")%>:</label>
-          <input maxlength=20 type="text" id="postal" vname="postal" value="<%=postal_val%>">
+          <input maxlength=20 type="text" id="postal" name="postal" value="<%=postal_val%>">
         </div>
           
         <div>
           <label for="country"><%=loc.get(157,"Country")%>:</label>
-          <input maxlength=40 type="text" id="country" vname="country" value="<%=country_val%>">
+          <input maxlength=40 type="text" id="country" name="country" value="<%=country_val%>">
         </div>
 
       </fieldset>
