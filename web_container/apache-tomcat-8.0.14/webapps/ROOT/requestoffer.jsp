@@ -151,14 +151,29 @@
           <%if (!Utils.is_null_or_empty(lo.postcode)) {%>
             <label for="post_span"><%=loc.get(156,"Postal code")%>: </label>
             <span id="post_span"><%=Utils.safe_render(lo.postcode)%></span>
+
             <%
-              com.renomad.xenos.Postal_codes.Latlong ll = 
+              com.renomad.xenos.Postal_codes.Latlong ll_first = 
                 com.renomad.xenos.Postal_codes.get(lo.postcode);
-              if (ll != null) {
+              if (ll_first != null) {
             %>
-            <span>Latitude: <%=ll.latitude%></span>
-            <span>Longitude: <%=ll.longitude%></span>
+            <div>Latitude: <%=ll_first.latitude%></div>
+            <div>Longitude: <%=ll_first.longitude%></div>
             <%}%>
+
+            <div>For 20165</div>
+
+            <%
+              com.renomad.xenos.Postal_codes.Latlong ll_second = 
+                com.renomad.xenos.Postal_codes.get("20165");
+              if (ll_second != null) {
+            %>
+            <div>Latitude: <%=ll_second.latitude%></div>
+            <div>Longitude: <%=ll_second.longitude%></div>
+            <%}%>
+
+            <%=com.renomad.xenos.Postal_codes.get_distance(lo.postcode, "20165")%>
+
           <%}%>
       </div>
 

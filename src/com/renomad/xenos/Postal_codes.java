@@ -119,4 +119,35 @@ public class Postal_codes implements javax.servlet.ServletContextListener {
     return postal_codes.get(postal_code);
   }
 
+  public static double dec_degrees_to_radians(double val) {
+    return (Math.PI/180) * val;
+  }
+
+  /**
+    * given two postal codes, get distance in miles
+    * uses spherical law of cosines.  Approximately correct, seems performant.
+    * gives distance as crow flies.  Should probably make that clear to user.
+    */
+  public static double get_distance(String p1, String p2) {
+    Latlong ll_first = postal_codes.get(p1);
+    Latlong ll_second = postal_codes.get(p2);
+
+    double tau_1 = dec_degrees_to_radians(ll_first.latitude);
+    double tau_2 = dec_degrees_to_radians(ll_second.latitude);
+    double delta_lambda = dec_degrees_to_radians(ll_second.longitude - ll_first.longitude);
+    double R = 3958.76; // gives d in miles - radius of earth approximately
+    double d = 
+        Math.acos
+          ( 
+          Math.sin(tau_1) *
+          Math.sin(tau_2) + 
+          Math.cos(tau_1) *
+          Math.cos(tau_2) * 
+          Math.cos(delta_lambda) 
+          ) * R;
+
+    return d;
+  }
+
+
 }

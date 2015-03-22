@@ -51,7 +51,8 @@ CREATE TABLE
     rank_average FLOAT, -- average # good rankings in last 6 months
     rank_ladder INT NOT NULL DEFAULT 0, -- represents most recent activity
     is_admin BOOL NOT NULL DEFAULT FALSE,
-    inviter INT UNSIGNED -- the user who invited this user into the system
+    inviter INT UNSIGNED, -- the user who invited this user into the system
+    current_location INT UNSIGNED -- useful for when they want to see distances to each requestoffer
   );
 
 ---DELIMITER---

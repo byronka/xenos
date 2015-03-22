@@ -340,6 +340,7 @@ if (request.getMethod().equals("POST")) {
       <%int l_step = Requestoffer_utils.get_ladder_step(r.rank_ladder);%>
       <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
         <ul>
+
           <li>
           <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
                 <%=Utils.safe_render(r.description)%>
@@ -349,6 +350,7 @@ if (request.getMethod().equals("POST")) {
              </div> 
             <div class="category c-<%=r.category%>" />
           </li>
+
           <li class="requestoffering-user-id">
             <label><%=loc.get(80, "User")%>:</label>
             <%
@@ -356,12 +358,19 @@ if (request.getMethod().equals("POST")) {
             %>
             <span> <%=Utils.safe_render(ru.username)%></span>
           </li>
+
           <li class="categories">
             <label><%=loc.get(13, "Categories")%>:</label>
             <span >
               <%=loc.get(r.category,"")%> 
             </span>
           </li>
+
+          <%if (r.postcodes != null && user.postcode != null ) {%>
+          <li class="distance">
+            approx <%=String.format("%.2f",com.renomad.xenos.Postal_codes.get_distance(r.postcodes,user.postcode))%> miles
+          </li>
+          <% } %>
 
         </ul>
       </a>
