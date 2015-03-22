@@ -75,6 +75,7 @@
     <antcall target="build-procs" />
     <antcall target="build-events" />
 		<antcall target="build-language-data" />
+		<antcall target="build-postal-code-data" />
     <antcall target="tomcat-restart" />
   </target>
 
@@ -86,6 +87,7 @@
     <antcall target="build-procs" />
     <antcall target="build-events" />
 		<antcall target="build-language-data" />
+		<antcall target="build-postal-code-data" />
   </target>
 
   <target name="clean-everything" depends="compile-schema-code"
@@ -270,6 +272,23 @@
     <echo message="If this succeeded, run 'ant tomcat-restart' or 'ant tomcat-start'"/>
     <echo message="to get this new data in the system" />
     <echo message="Tomcat, on startup, runs a command to load language data into memory."/>
+  </target>
+
+   <!-- 
+    build-postal-code-data adds postal codes to the database
+  -->
+  <target name="build-postal-code-data" depends="compile-schema-code" 
+    description="adds postal code data">
+    <java 
+      classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
+      classname="com.renomad.xenos.schema.Add_postal_code_data_to_db"
+      fork="true" >
+			<jvmarg value="-D${conn.str.with.db}" />
+			<jvmarg value="-D${conn.str.without.db}" />
+		</java>
+    <echo message="If this succeeded, run 'ant tomcat-restart' or 'ant tomcat-start'"/>
+    <echo message="to get this new data in the system" />
+    <echo message="Tomcat, on startup, runs a command to load postal code data into memory."/>
   </target>
 
    <!-- 

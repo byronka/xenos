@@ -547,3 +547,23 @@ invite_code (
     value VARCHAR(100) -- the text of the code.  a hash of random num + time + user id
 )
 
+---DELIMITER---
+-- create a lookup table for postal code to lat/long, so it becomes easy to
+-- show distance to places
+
+-- some interesting information that should affect us:
+-- postal codes have to follow certain rules.  They have to 
+-- be from the latin alphabet, so we don't have to worry 
+-- about unicode (NVARCHAR) for those guys.  Also,
+-- it means we cannot trust them to be digits.  In many places, they
+-- include letters.
+-- see http://en.wikipedia.org/wiki/Postal_code for more info!
+
+CREATE TABLE  
+postal_codes ( 
+  postal_code_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+  postal_code VARCHAR(30), 
+  latitude DOUBLE,
+  longitude DOUBLE
+)
+
