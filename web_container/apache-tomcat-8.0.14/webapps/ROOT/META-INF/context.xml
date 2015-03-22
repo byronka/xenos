@@ -42,5 +42,14 @@
 		maxWait="10000" username="xenosuser" password="password1"
 		driverClassName="com.mysql.jdbc.Driver"
 		url="jdbc:mysql://localhost/xenos_database?useUnicode=yes&amp;characterEncoding=UTF-8" />
+  	
+
+  <!-- 
+    This disables Tomcat from tracking sessions - we aren't 
+    using its session manager, we made our own. 
+  -->
+  <Manager pathname="" />
+
+	
 
 </Context>
