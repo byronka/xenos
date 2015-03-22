@@ -154,9 +154,11 @@
             <%
               com.renomad.xenos.Postal_codes.Latlong ll = 
                 com.renomad.xenos.Postal_codes.get(lo.postcode);
+              if (ll != null) {
             %>
             <span>Latitude: <%=ll.latitude%></span>
             <span>Longitude: <%=ll.longitude%></span>
+            <%}%>
           <%}%>
       </div>
 
