@@ -281,6 +281,13 @@ BEGIN
       CONCAT(@search_clauses, ' AND l.postal_code = @postcode ');
   END IF;
 
+  -- get current user's postal code if they have one
+  -- we'll use this to get distances per requestoffer
+  SELECT loc.postal_code INTO @user_postal_code
+  FROM location loc
+  JOIN user u ON u.current_location = loc.location_id
+  WHERE u.user_id = ruid;
+
   SET @ruid = ruid;
 
   -- set up paging.  Right now it's always 10 or less rows on the page.
@@ -302,7 +309,8 @@ BEGIN
             r.handling_user_id, 
             r.category,
             GROUP_CONCAT(DISTINCT l.postal_code SEPARATOR ",") AS postcodes,
-            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities
+            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities,
+            calc_approx_dist(postcodes, @user_postal_code) AS distance
             FROM requestoffer r 
             JOIN requestoffer_state rs
               ON rs.requestoffer_id = r.requestoffer_id
@@ -334,7 +342,8 @@ BEGIN
             r.handling_user_id, 
             r.category,
             GROUP_CONCAT(DISTINCT l.postal_code SEPARATOR ",") AS postcodes,
-            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities
+            GROUP_CONCAT(DISTINCT l.city SEPARATOR ",") AS cities,
+            calc_approx_dist(postcodes, @user_postal_code) AS distance
             FROM requestoffer r 
             JOIN requestoffer_state rs
               ON rs.requestoffer_id = r.requestoffer_id
@@ -1527,5 +1536,4 @@ BEGIN
 
   CALL add_audit(109, my_user_id, NULL, NULL, NULL, NULL);
 END
-
 

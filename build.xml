@@ -72,6 +72,7 @@
     <antcall target="clean-schema" />
     <antcall target="build-schema" />
     <antcall target="build-sample-data" />
+    <antcall target="build-functions" />
     <antcall target="build-procs" />
     <antcall target="build-events" />
 		<antcall target="build-language-data" />
@@ -84,6 +85,7 @@
     <antcall target="compile" />
     <antcall target="clean-schema" />
     <antcall target="build-schema" />
+    <antcall target="build-functions" />
     <antcall target="build-procs" />
     <antcall target="build-events" />
 		<antcall target="build-language-data" />
@@ -299,6 +301,21 @@
     <java 
       classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
       classname="com.renomad.xenos.schema.Build_procedures"
+      fork="true" >
+			<jvmarg value="-D${conn.str.with.db}" />
+			<jvmarg value="-D${conn.str.without.db}" />
+		</java>
+  </target>
+
+
+   <!-- 
+    build-functions adds functions to the database
+  -->
+  <target name="build-functions" depends="compile-schema-code" 
+    description="adds (or rebuilds if they exist) stored functions">
+    <java 
+      classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
+      classname="com.renomad.xenos.schema.Build_functions"
       fork="true" >
 			<jvmarg value="-D${conn.str.with.db}" />
 			<jvmarg value="-D${conn.str.without.db}" />
