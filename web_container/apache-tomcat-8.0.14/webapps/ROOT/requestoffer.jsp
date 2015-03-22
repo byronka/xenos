@@ -151,6 +151,12 @@
           <%if (!Utils.is_null_or_empty(lo.postcode)) {%>
             <label for="post_span"><%=loc.get(156,"Postal code")%>: </label>
             <span id="post_span"><%=Utils.safe_render(lo.postcode)%></span>
+            <%
+              com.renomad.xenos.Postal_codes.Latlong ll = 
+                com.renomad.xenos.Postal_codes.get(lo.postcode);
+            %>
+            <span>Latitude: <%=ll.latitude%></span>
+            <span>Longitude: <%=ll.longitude%></span>
           <%}%>
       </div>
 
