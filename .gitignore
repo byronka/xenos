@@ -22,8 +22,3 @@ web_container/apache-tomcat-8.0.14/temp/pidfile
 #to the declaration of variables, definitions of methods, and so on.
 tags
 
-#Changing this file allows developers to set a user/pass for tomcat
-#manager, which can speed up the development cycle.  Like this: it allows
-#you to run ant compile, then in manager just reload the app and you'll
-#immediately get the new code running.
-web_container/apache-tomcat-8.0.14/conf/tomcat-users.xml
