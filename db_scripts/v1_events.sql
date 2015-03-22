@@ -164,8 +164,7 @@ DO
         ON u.user_id = r.requestoffering_user_id
       JOIN requestoffers_to_change_status rtcs 
         ON rtcs.requestoffer_id = r.requestoffer_id
-      SET u.points = u.points + r.points 
-      WHERE user_id = uid;
+      SET u.points = u.points + r.points; 
 
   END
 
@@ -206,7 +205,8 @@ DO
     DROP TEMPORARY TABLE IF EXISTS urdps_going_outside_window;
 
     CREATE TEMPORARY TABLE urdps_going_outside_window AS ( 
-      SELECT urdp_id
+      SELECT urdp_id, judge_user_id, 
+        judged_user_id, requestoffer_id, date_entered
       FROM user_rank_data_point
       WHERE 
         UTC_TIMESTAMP() > (date_entered + INTERVAL 6 MONTH)
@@ -218,37 +218,39 @@ DO
     INSERT INTO audit (
       datetime, audit_action_id, user1_id, user2_id, 
       requestoffer_id, extra_id)
-    SELECT UTC_TIMESTAMP(), 310, 1, ugow.user_id, 
+    SELECT UTC_TIMESTAMP(), 310, 1, ugow.judge_user_id, 
       ugow.requestoffer_id, ugow.urdp_id
     FROM urdps_going_outside_window ugow;
 
     -- actually set them to be outside the window
     UPDATE user_rank_data_point urdp
-    JOIN urpds_going_outside_window ugow ON ugow.urdp_id = urdp.urdp_id
+    JOIN urdps_going_outside_window ugow ON ugow.urdp_id = urdp.urdp_id
     SET urdp.is_inside_window = 0;
 
     -- only update users if they have user rank data points
     -- that are moving from being inside the rolling window to outside.
     UPDATE user u
     JOIN user_rank_data_point urdp ON urdp.judged_user_id = u.user_id
-    JOIN urdps_going_outside_window ugow ON ugow.user_id = u.user_id
+    JOIN urdps_going_outside_window ugow ON ugow.judged_user_id = u.user_id
     SET 
       u.rank_average = 
         (
           SELECT AVG(meritorious)
           FROM user_rank_data_point
           WHERE 
-            judged_user_id = uid
+            judged_user_id = u.user_id
             AND
             status_id = 3 -- feedback is complete
             AND
             UTC_TIMESTAMP() < (date_entered + INTERVAL 6 MONTH)
         );
 
+    -- audit that certain users had their ranks adjusted because of
+    -- urdp's going outside window
     INSERT INTO audit (
-      datetime, audit_action_id, user1_id, user2_id, requestoffer_id)
-    SELECT UTC_TIMESTAMP(), 309, 1, rsr.user_id, rsr.requestoffer_id
-    FROM user_rank_data_point urdp
-    WHERE UTC_TIMESTAMP() < (date_entered + INTERVAL 6 MONTH);
+      datetime, audit_action_id, user1_id, user2_id, requestoffer_id
+    )
+    SELECT UTC_TIMESTAMP(), 309, 1, judged_user_id, requestoffer_id
+    FROM urdps_going_outside_window;
 
   END
