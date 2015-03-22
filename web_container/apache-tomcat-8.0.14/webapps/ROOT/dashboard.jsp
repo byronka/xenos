@@ -1,5 +1,13 @@
 <%@include file="includes/init.jsp" %>
+<%@ page import="com.renomad.xenos.Requestoffer_utils" %>
+<%@ page import="com.renomad.xenos.User_location" %>
+<%@ page import="com.renomad.xenos.Requestoffer" %>
+<%@ page import="com.renomad.xenos.Utils" %>
+<%@ page import="com.renomad.xenos.Others_Requestoffer" %>
+<% request.setCharacterEncoding("UTF-8"); %>
+
 <!DOCTYPE html>
+
 <html>                                 
   <head>
     <link rel="stylesheet" href="includes/reset.css">
@@ -15,255 +23,34 @@
 
 <% // ADVANCED SEARCH STARTS %>
 
-<%
-
-request.setCharacterEncoding("UTF-8");
-String[] statuses = new String[0];
-String desc = "";
-String startdate = "";
-String enddate = "";
-String users = "";
-String minrank = "";
-String maxrank = "";
-String postcode = "";
-String[] categories = new String[0];
-
-String stat_error_msg = "";
-String st_da_error_msg = ""; //date
-String end_da_error_msg = ""; //date
-String user_error_msg = ""; 
-String min_rank_error_msg = ""; 
-String max_rank_error_msg = ""; 
-
-if (request.getMethod().equals("POST")) {
-  boolean validation_error = false;
-
-  //these guys don't require validation.
-  if ((desc = request.getParameter("desc")) == null) {
-    desc = "";
-  }
-
-  if ((postcode = request.getParameter("postcode")) == null) {
-    postcode = "";
-  }
-  postcode = Utils.safe_render(postcode);
-
-
-  Float minrankvalue = null;
-  Float maxrankvalue = null;
-
-  // rank has to be from 0.0 to 1.0
-  minrank = request.getParameter("minrank");
-  maxrank = request.getParameter("maxrank");
-
-  // check that minrank is either empty or a valid number
-  if (Utils.is_null_or_empty(minrank)) {
-    minrank = "";
-  } else {
-    try{
-      minrankvalue = Float.valueOf(minrank);
-      if ( !(minrankvalue >= 0.0 && minrankvalue <= 1.0)) {
-        min_rank_error_msg = 
-          loc.get(163,"invalid - must be a number between 0.0 and 1.0");
-        validation_error |= true;
-      }
-    } catch (Exception ex) {
-      validation_error |= true;
-      min_rank_error_msg = 
-        loc.get(163,"invalid - must be a number between 0.0 and 1.0");
-    }
-  }
-
-  // check that maxrank is either empty or a valid number
-  if (Utils.is_null_or_empty(maxrank)) {
-    maxrank = "";
-  } else {
-    try{
-      maxrankvalue = Float.valueOf(maxrank);
-      if ( !(maxrankvalue >= 0.0 && maxrankvalue <= 1.0)) {
-        max_rank_error_msg = 
-          loc.get(163,"invalid - must be a number between 0.0 and 1.0");
-        validation_error |= true;
-      }
-    } catch (Exception ex) {
-      validation_error |= true;
-      max_rank_error_msg = 
-        loc.get(163,"invalid - must be a number between 0.0 and 1.0");
-    }
-  }
-  
-  // make sure that minrank is less than maxrank
-  if (maxrankvalue != null && minrankvalue != null && 
-        (maxrankvalue - minrankvalue) < 0) {
-      validation_error |= true;
-      min_rank_error_msg = 
-        loc.get(164,"invalid - maximum rank must be greater than minimum rank");
-      max_rank_error_msg = 
-        loc.get(164,"invalid - maximum rank must be greater than minimum rank");
-  }
-
-
-  //parse out the statuses from a string the client gave us
-  if ((statuses = request.getParameterValues("statuses")) == null) {
-    statuses = new String[0];
-  }
-
-  //parse out the date
-  if ((startdate = request.getParameter("startdate")) == null) {
-    startdate = "";
-  }
-  if ((enddate = request.getParameter("enddate")) == null) {
-    enddate = "";
-  }
-
-  //a proper date will look like:
-  // 2014-12-18
-  // or 0000 to 9999, dash, 0 to 12, number varying between 1 
-  // and 31 depending on month,space
-  //, 0 to 23, colon, 0 to 59, colon, 0 to 59
-  if(startdate.length() > 0 && !Utils.is_valid_date(startdate)) {
-    validation_error |= true;
-    st_da_error_msg = loc.get(83,"Invalid date");
-  }
-  if(enddate.length() > 0 && !Utils.is_valid_date(enddate)) {
-    validation_error |= true;
-    end_da_error_msg = loc.get(83,"Invalid date");
-  }
-
-  //parse out the user
-  if ((users = request.getParameter("users")) == null) {
-    users = "";
-  }
-
-  //split the users string on one or more whitespace or one 
-  //or more non-word chars.
-  String[] split_user_names = users.split("\\s+?|\\W+?"); 
-
-  String user_ids = User_utils
-    .get_user_ids_by_names(split_user_names);
-
-  if ((user_ids == null || user_ids.equals("")) && 
-      users.length() > 0) {
-    validation_error |= true;
-    user_error_msg = loc.get(85,"No users found in string");
-  }
-
-  if ((categories = request.getParameterValues("categories")) == null) {
-    categories = new String[0];
-  }
-
-  if(!validation_error) {
-    String dashboard_string = String.format(
-      "dashboard.jsp?da=%s,%s&cat=%s&us=%s&sta=%s&desc=%s&minrank=%f&maxrank=%f&postcode=%s",
-      startdate,
-      enddate,
-      Utils.string_array_to_string(categories),
-      user_ids,
-      Utils.string_array_to_string(statuses),
-      desc,
-      minrankvalue,
-      maxrankvalue,
-      postcode );
-    response.sendRedirect(dashboard_string);
-    return;
-  }
-}
-  
-%>
-
 <div id="search_section">
-    <div>
-        <h3><%=loc.get(81,"Advanced Search")%></h3>
-    </div>
- <form method="POST" action="advanced_search.jsp">
 
-    <h3><%=loc.get(10,"Description")%></h3>
-    <div class="help-text">
-      <%=loc.get(90,"Enter words to search in a description")%>
-    </div>
-    <div class="form-row">
-      <label for="desc_input"><%=loc.get(10,"Description")%>: </label>
-      <input type="text" id="desc_input" name="desc" value="<%=desc%>"/> 
-    </div>
+  <div>
+      <h3><%=loc.get(81,"Advanced Search")%></h3>
+  </div>
 
-    <h3><%=loc.get(156,"Postal code")%></h3>
-    <div class="help-text">
-      <%=loc.get(162,"Enter a postal code to search")%>
-    </div>
-    <div class="form-row">
-      <label for="postcode_input"><%=loc.get(156,"Postal code")%>: </label>
-      <input type="text" id="postcode_input" name="postcode" value="<%=postcode%>"/> 
-    </div>
+  <%
+  String[] statuses = new String[0];
+  String desc = "";
+  String startdate = "";
+  String enddate = "";
+  String users = "";
+  String minrank = "";
+  String maxrank = "";
+  String postcode = "";
+  String[] categories = new String[0];
 
-    <h3><%=loc.get(79,"Rank")%></h3>
-    <div class="help-text">
-      <%=loc.get(161,"Enter a ranking value between 0.0 and 1.0")%>
-    </div>
-    <div class="form-row">
-      <label for="minrank_input"><%=loc.get(14,"Minimum Rank")%>: </label>
-      <input type="text" id="minrank_input" name="minrank" value="<%=minrank%>"/> 
-    </div>
-    <span class="error"><%=min_rank_error_msg%></span>
-
-    <div class="help-text">
-      <%=loc.get(161,"Enter a ranking value between 0.0 and 1.0")%>
-    </div>
-    <div class="form-row">
-      <label for="maxrank_input"><%=loc.get(15,"Maximum Rank")%>: </label>
-      <input type="text" id="maxrank_input" name="maxrank" value="<%=maxrank%>"/> 
-    </div>
-    <span class="error"><%=max_rank_error_msg%></span>
-
-    <h3><%=loc.get(25,"Date")%></h3>
-    <div class="form-row">
-      <label for="startdate_input"><%=loc.get(86,"Start date")%>: </label>
-      <input type="text" id="startdate_input" name="startdate" placeholder="2012-10-31" value="<%=startdate%>" /> 
-    </div>
-    <span class="error"><%=st_da_error_msg%></span>
-
-    <div class="form-row">
-      <label for="enddate_input"><%=loc.get(87,"End date")%>: </label>
-      <input type="text" id="enddate_input" name="enddate" placeholder="2012-10-31" value="<%=enddate%>" /> 
-    </div>
-    <span class="error"><%=end_da_error_msg%></span>
-
-		<h3><%=loc.get(24,"Status")%></h3>
-      <%for (int s : Requestoffer_utils.get_requestoffer_statuses()) {%>
-        <div class="form-row">
-          <label for="status_checkbox_<%=s%>"><%=loc.get(s,"")%></label>
-          <% if(java.util.Arrays.asList(statuses).contains(Integer.toString(s))) { %>
-            <input type="checkbox" id="status_checkbox_<%=s%>" checked name="statuses" value="<%=s%>" />
-          <% } else { %>
-            <input type="checkbox" id="status_checkbox_<%=s%>" name="statuses" value="<%=s%>" />
-          <% } %>
-        </div>
-      <% } %>
-
-		<h3><%=loc.get(80,"User")%></h3>
-    <div class="help-text">
-      <%=loc.get(91,"Enter one or more usernames separated by spaces")%>
-    </div>
-    <div class="form-row">
-      <label for="users_input"><%=loc.get(80,"User")%>: </label>
-      <input type="text" id="users_input" name="users" value="<%=users%>" />
-    </div>
-    <span class="error"><%=user_error_msg%></span>
-
-
-		<h3><%=loc.get(13,"Categories")%></h3>
-      <%for(int c : Requestoffer_utils.get_all_categories()) {%>
-      <div class="form-row"> 
-        <label for="cat_checkbox_<%=c%>"><%=loc.get(c,"")%></label>
-          <% if(java.util.Arrays.asList(categories).contains(Integer.toString(c))) { %>
-            <input type="checkbox" id="cat_checkbox_<%=c%>" checked name="categories" value="<%=c%>" />
-          <% } else { %>
-            <input type="checkbox" id="cat_checkbox_<%=c%>" name="categories" value="<%=c%>" />
-          <% } %>
-        </div>
-      <%}%>
-
-      <button type="submit"><%=loc.get(1,"Search")%></button>
-    </form>
+  boolean has_stat_error = false; // when status doesn't exist
+  boolean has_st_da_error = false; //date
+  boolean has_end_da_error = false; //date
+  boolean has_user_error = false;  // when user cannot be found
+  boolean has_min_rank_error = false;  // when rank not between 0.0 and 1.0
+  boolean has_max_rank_error = false; 
+  boolean has_min_rank_greater_error = false; // when min rank is greater than max rank
+  boolean has_max_rank_lesser_error = false;
+  %>
+  <%@include file="advanced_search_html.jsp" %>
+ 
 </div>
 
 
@@ -274,10 +61,6 @@ if (request.getMethod().equals("POST")) {
 <% // REQUESTOFFER ENTRIES START%>
 
   <div id="ro-container">
-    <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
-    <%@ page import="com.renomad.xenos.Requestoffer" %>
-    <%@ page import="com.renomad.xenos.Utils" %>
-    <%@ page import="com.renomad.xenos.Others_Requestoffer" %>
     <%
 
       String thequerystring = request.getQueryString();
@@ -368,7 +151,7 @@ if (request.getMethod().equals("POST")) {
 
           <%if (r.postcodes != null && user.postcode != null ) {%>
           <li class="distance">
-            approx <%=String.format("%.2f",com.renomad.xenos.Postal_codes.get_distance(r.postcodes,user.postcode))%> miles
+            approx some miles
           </li>
           <% } %>
 
@@ -402,243 +185,32 @@ if (request.getMethod().equals("POST")) {
 
 <div id="create-requestoffer-container">
 
-<%@ page import="com.renomad.xenos.Requestoffer_utils" %>
-<%@ page import="com.renomad.xenos.User_location" %>
-<%@ page import="com.renomad.xenos.Utils" %>
+  <%
+  String de = "";
+  Integer selected_cat = null;
+  boolean has_cat_error = false;
+  boolean has_desc_error = false;
+  boolean has_size_error = false;
 
-  <% 
-
-  String qs = request.getQueryString();
-
-  request.setCharacterEncoding("UTF-8");
-    //get the values straight from the client
-    String de = "";
-    Integer selected_cat = null;
-    boolean has_cat_error = false;
-    boolean has_desc_error = false;
-    boolean has_size_error = false;
-
-    //address values
-    String strt_addr_1_val = "";
-    String strt_addr_2_val = "";
-    String city_val        = "";
-    String state_val       = "";
-    String postal_val      = "";
-    String country_val     = "";
-    String savedlocation_val = "";
-    String save_loc_to_user_checked = "";
-
-    if (request.getMethod().equals("POST")) {
-
-    //get values so if they are in validation mode they don't lose info.
-      strt_addr_1_val = 
-        Utils.get_string_no_null(request.getParameter("strt_addr_1"));
-
-      strt_addr_2_val = 
-        Utils.get_string_no_null(request.getParameter("strt_addr_2"));
-      
-      city_val = 
-        Utils.get_string_no_null(request.getParameter("city"));
-
-      state_val =
-        Utils.get_string_no_null(request.getParameter("state"));
-
-      postal_val = 
-        Utils.get_string_no_null(request.getParameter("postal"));
-
-      country_val = 
-        Utils.get_string_no_null(request.getParameter("country"));
-
-      savedlocation_val =
-        Utils.get_string_no_null(request.getParameter("savedlocation"));
-
-      if (request.getParameter("save_loc_to_user") != null) {
-        save_loc_to_user_checked = "checked";
-      }
-
-
-      boolean validation_error = false;
-
-      de = request.getParameter("description").trim();
-      if (de.length() == 0) {
-        has_desc_error = true;
-        validation_error |= true;
-      }
-
-      //parse out the categories from a string the client gave us
-      selected_cat = Utils.parse_int(request.getParameter("categories"));
-      
-      if (selected_cat == null) {
-        validation_error |= true;
-        has_cat_error = true;
-      }
-
-      boolean user_entered_a_location = 
-        Utils.parse_int(savedlocation_val) != null ||
-        !Utils.is_null_or_empty(strt_addr_1_val) ||
-        !Utils.is_null_or_empty(strt_addr_2_val) ||
-        !Utils.is_null_or_empty(city_val) ||
-        !Utils.is_null_or_empty(state_val) ||
-        !Utils.is_null_or_empty(postal_val) ||
-        !Utils.is_null_or_empty(country_val);
-      
-      if (!validation_error) {
-
-        Requestoffer_utils.Put_requestoffer_result prr = null;
-        int new_ro_id = 0;
-
-        //try adding the new requestoffer - if failed, go to error page
-        if ((prr = Requestoffer_utils.put_requestoffer(user_id, de, selected_cat)).pe == Requestoffer_utils.Pro_enum.GENERAL_ERROR) {
-          response.sendRedirect("general_error.jsp");
-          return;
-        }
-        new_ro_id = prr.id; //get the requestoffer id from the result.
-
-        if (prr.pe == Requestoffer_utils.Pro_enum.DATA_TOO_LARGE) {
-          has_size_error = true;
-          return;
-        }
-       
-        //if we got here, a requestoffer was successfully added.
-        if (user_entered_a_location) {
-
-          Integer location_id = 0;
-          if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
-            Requestoffer_utils.assign_location_to_requestoffer(location_id, new_ro_id);
-          } else {
-            int uid = request.getParameter("save_loc_to_user") != null ? user_id : 0;
-            Requestoffer_utils.put_location(
-              uid, new_ro_id,
-              strt_addr_1_val, strt_addr_2_val, 
-              city_val, state_val, postal_val, country_val);
-          }
-        }
-
-        response.sendRedirect("requestoffer_created.jsp?requestoffer=" + new_ro_id);
-        return;
-      }
-    }
+  //address values
+  String strt_addr_1_val = "";
+  String strt_addr_2_val = "";
+  String city_val        = "";
+  String state_val       = "";
+  String postal_val      = "";
+  String country_val     = "";
+  String savedlocation_val = "";
+  String save_loc_to_user_checked = ""; 
   %>
-	
-    <div>
-        <h3><%=loc.get(2,"Request Favor")%></h3>
-    </div>
-                       
-    <form method="POST" action="create_requestoffer.jsp">	
-      <fieldset>
-      <legend><%=loc.get(22,"Favor Details")%></legend>
-      <div>
-        <label for="description">* <%=loc.get(10,"Description")%>:</label>
-        <textarea 
-          id="description"
-          maxlength="200" 
-          name="description" 
-          placeholder="<%=loc.get(10,"Description")%>" ><%=de%></textarea>
-        <%if(has_size_error){%>  
-        <span class="error"><%=loc.get(208,"Description text too large - please stay within 200 characters")%></span>
-        <%}%> 
-        <%if(has_desc_error){%>  
-        <span class="error"><%=loc.get(5, "Please enter a description")%></span>
-        <%}%> 
-      </div>
-      <div>
-        <label for="categories">* <%=loc.get(13,"Categories")%>:</label>
-        <select 
-          id="categories" 
-          name="categories" >
-              <option disabled selected> -- <%=loc.get(198,"Select a Category")%> -- </option>			            
-          <% for(Integer category : Requestoffer_utils.get_all_categories()){ %>
-            <% if (category.equals(selected_cat)) {%>
-              <option selected value="<%=category%>"><%=loc.get(category,"")%></option>    
-            <%} else {%>
-              <option value="<%=category%>"><%=loc.get(category,"")%></option>    
-            <% } %>			           		             
-          <% } %>			           		             
-        </select>
-        <%if(has_cat_error){%>  
-          <span class="error">
-            <%=loc.get(197,"You must choose a category for this favor")%>
-          </span>
-        <%}%> 
-      </div>
-    </fieldset>
-      <fieldset>
-        <legend>Location</legend>
-        </span>
-
-          <% 
-          User_location[] locations = 
-          Requestoffer_utils.get_my_saved_locations(user_id);
-          if (locations.length > 0) {
-          %>
-
-        <div>
-          <label for="savedlocation"><%=loc.get(158,"Select one of your saved locations")%>:</label>
-          <select 
-            id="savedlocation" 
-            name="savedlocation">
-            <option><%=loc.get(192,"No address selected")%></option>
-            <%for (User_location loca : locations) {%>
-              <%if(Integer.toString(loca.id).equals(savedlocation_val)){%>
-                <option selected value="<%=loca.id%>">
-              <%} else { %>
-                <option value="<%=loca.id%>">
-              <% } %>
-              <%=loca.str_addr_1%>
-              <%=loca.str_addr_2%>
-              <%=loca.city%>
-              <%=loca.state%>
-              <%=loca.postcode%>
-              <%=loca.country%>
-              </option>
-            <%}%>
-          </select>                       
-        </div>
-
-          <h4 class="enternew"><%=loc.get(159,"Or enter a new address")%>:</h4>            
-
-          <%}%>
-
-        <div>
-          <label for="save_loc_to_user"><%=loc.get(160,"Save to my favorites")%></label>
-          <input id="save_loc_to_user" name="save_loc_to_user" <%=save_loc_to_user_checked%> type="checkbox"/>
-        </div>
-          
-        <div>
-          <label for="strt_addr_1"><%=loc.get(152,"Street Address 1")%>:</label>
-          <input maxlength=100 type="text" id="strt_addr_1" name="strt_addr_1" value="<%=strt_addr_1_val%>">
-        </div>
-          
-        <div>
-          <label for="strt_addr_2"><%=loc.get(153,"Street Address 2")%>:</label>
-          <input maxlength=100 type="text" id="strt_addr_2" name="strt_addr_2" value="<%=strt_addr_2_val%>">
-        </div>
-          
-        <div>
-          <label for="city"><%=loc.get(154,"City")%>:</label>
-          <input maxlength=40 type="text" id="city" name="city" value="<%=city_val%>">
-        </div>
-          
-        <div>
-          <label for="state"><%=loc.get(155,"State")%>:</label>
-          <input maxlength=30 type="text" id="state" name="state" value="<%=state_val%>">
-        </div>
-          
-        <div>
-          <label for="postal" ><%=loc.get(156,"Postal code")%>:</label>
-          <input maxlength=20 type="text" id="postal" vname="postal" value="<%=postal_val%>">
-        </div>
-          
-        <div>
-          <label for="country"><%=loc.get(157,"Country")%>:</label>
-          <input maxlength=40 type="text" id="country" vname="country" value="<%=country_val%>">
-        </div>
-
-      </fieldset>
-      <button type="submit"><%=loc.get(2,"Request Favor")%></button>
-    </form>	
+  <div>
+      <h3><%=loc.get(2,"Request Favor")%></h3>
   </div>
+
+  <%@include file="create_requestoffer_html.jsp" %>	
+</div>
+
 <% // CREATE REQUESTOFFER ENDS %>
+
 </div>
 
 <% // MY PROFILE STARTS %>
