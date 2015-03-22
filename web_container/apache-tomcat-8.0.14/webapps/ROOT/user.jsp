@@ -28,7 +28,7 @@
       <li>Rank average: <%=the_user.rank_av%></li>
     <%}%>
     <%int l_step = Requestoffer_utils.get_ladder_step(the_user.rank_ladder);%>
-    <li>Rank ladder: <%=l_step%></li>
+    <li>Rank ladder: <%=Utils.get_stars(l_step)%></li>
     <li>Points: <%=the_user.points%></li>
   </ul>
 

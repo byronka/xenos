@@ -26,6 +26,32 @@ public final class Utils {
 
 
   /**
+    * render out a number of stars for their current ranking
+    */
+  public static String get_stars(int num_stars) {
+    String star = "\u2605";
+    switch(num_stars) {
+      case 0:
+        return "\u2606"; // empty star
+      case 1:
+        return star ;
+      case 2:
+        return star + star;
+      case 3:
+        return star + star + star;
+      case 4:
+        return star + star + star + star;
+      case 5:
+        return star + star + star + star + star;
+      case 6:
+        return star + star + star + star + star + star;
+      default:
+        return "ERROR_WITH_STARS_PLEASE_FIX";
+    }
+  }
+
+
+  /**
     * helper method to convert long strings into shortened strings
     * suffixed with elipses
     */

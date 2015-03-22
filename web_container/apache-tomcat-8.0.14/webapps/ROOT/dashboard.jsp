@@ -30,6 +30,7 @@
   </div>
 
   <%
+  // have to initialize these for use in advanced_search_html.jsp 
   String[] statuses = new String[0];
   String desc = "";
   String startdate = "";
@@ -186,6 +187,7 @@
 <div id="create-requestoffer-container">
 
   <%
+  // have to initialize these for use in create_requestoffer_html 
   String de = "";
   Integer selected_cat = null;
   boolean has_cat_error = false;
@@ -230,7 +232,7 @@
   <ul>
     <li>Rank average: <%=user.rank_av%></li>
     <%int l_step = Requestoffer_utils.get_ladder_step(user.rank_ladder);%>
-    <li>Rank ladder: <%=l_step%></li>
+    <li>Rank ladder: <%=Utils.get_stars(l_step)%></li>
     <li>Points: <%=user.points%></li>
   </ul>
 
