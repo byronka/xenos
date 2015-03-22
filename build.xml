@@ -527,6 +527,7 @@
     <exec executable="${tomcat.home.bin}startup.bat" osfamily="windows" />
     <echo message=""/>
     <echo message="Installing language data."/>
+    <echo message="Installing postal code data."/>
     <echo message="Xenos is ready at https://localhost:8443"/>
     <echo message="or (non-ssl) at http://localhost:8080"/>
   </target>
