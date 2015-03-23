@@ -869,8 +869,13 @@ public final class Requestoffer_utils {
     * 
     * @return that particular saved location, or null
     */
-  public static User_location get_location_for_user(int user_id, int location_id) {
+  public static User_location 
+    get_location_for_user(int user_id, Integer location_id) {
     
+    if (location_id == null) {
+      return null;
+    }
+
     // location id would be sufficient, but here I want to make
     //double sure that we aren't getting a location that the user doesn't
     //own.

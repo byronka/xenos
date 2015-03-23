@@ -3,8 +3,6 @@
 <%@ page import="com.renomad.xenos.User_location" %>
 <%
 
-    User_location uloc = Requestoffer_utils
-      .get_location_for_user(user_id, user.current_location);
 
     //address values
     String strt_addr_1_val = "";
@@ -77,13 +75,13 @@
           int requestoffer_id = 0; //don't tie to any particular RO
           Integer location_id = 0;
           if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
-            Requestoffer_utils.assign_location_to_current(location_id, user_id);
+            Requestoffer_utils.assign_location_to_current(location_id, logged_in_user_id);
           } else {
             int new_loc_id = Requestoffer_utils.put_location(
-              user_id, requestoffer_id,
+              logged_in_user_id, requestoffer_id,
               strt_addr_1_val, strt_addr_2_val, 
               city_val, state_val, postal_val, country_val);
-            Requestoffer_utils.assign_location_to_current(new_loc_id, user_id);
+            Requestoffer_utils.assign_location_to_current(new_loc_id, logged_in_user_id);
           }
           response.sendRedirect("dashboard.jsp");
           return;
@@ -104,6 +102,11 @@
   <h3><%=loc.get(209,"Change current location")%></h3>
   <form method="POST" action="change_current_location.jsp">
       <fieldset>
+      <%
+      User_location uloc = Requestoffer_utils
+      .get_location_for_user(logged_in_user_id, logged_in_user.current_location); 
+      %>
+      <% if (uloc != null) { %>
         <p>Your current location is:</p>
         <p><em><%=uloc.str_addr_1%></em></p>
         <p><em><%=uloc.str_addr_2%></em></p>
@@ -111,12 +114,13 @@
         <p><em><%=uloc.state%></em></p>
         <p><em><%=uloc.postcode%></em></p>
         <p><em><%=uloc.country%></em></p>
+      <% } %>
 
 
 
           <% 
           User_location[] locations = 
-          Requestoffer_utils.get_my_saved_locations(user_id);
+          Requestoffer_utils.get_my_saved_locations(logged_in_user_id);
           if (locations.length > 0) {
           %>
 

@@ -43,7 +43,7 @@
 
           <% 
           User_location[] locations = 
-          Requestoffer_utils.get_my_saved_locations(user_id);
+          Requestoffer_utils.get_my_saved_locations(logged_in_user_id);
           if (locations.length > 0) {
           %>
 

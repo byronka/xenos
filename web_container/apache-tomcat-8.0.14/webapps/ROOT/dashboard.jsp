@@ -119,7 +119,7 @@
                                           srch_postcode
                                           );
       Requestoffer_utils.OR_Package or_package = 
-        Requestoffer_utils.get_others_requestoffers(user_id, 
+        Requestoffer_utils.get_others_requestoffers(logged_in_user_id, 
                                           so , 
                                           which_page);
       for (Others_Requestoffer r : or_package.get_requestoffers()) { %>
@@ -227,7 +227,7 @@
       Current location: 
       <%
       String user_postcode = 
-        Utils.is_null_or_empty(user.postcode) ? "none" : user.postcode; %>
+        Utils.is_null_or_empty(logged_in_user.postcode) ? "none" : logged_in_user.postcode; %>
       <a href="change_current_location.jsp" ><%=user_postcode%></button>
     </div>
   <p>
@@ -237,20 +237,20 @@
     <a href="generate_icode.jsp"><%=loc.get(206,"Generate invitation code")%></a>
   </p>
 
-  <h3><%=Utils.safe_render(user.username)%></h3>
+  <h3><%=Utils.safe_render(logged_in_user.username)%></h3>
   <ul>
-    <li>Rank average: <%=user.rank_av%></li>
-    <%int l_step = Requestoffer_utils.get_ladder_step(user.rank_ladder);%>
+    <li>Rank average: <%=logged_in_user.rank_av%></li>
+    <%int l_step = Requestoffer_utils.get_ladder_step(logged_in_user.rank_ladder);%>
     <li>Rank ladder: <%=Utils.get_stars(l_step)%></li>
-    <% if (user.points < 0) { %>
+    <% if (logged_in_user.points < 0) { %>
       <li>
-        <%=user.username%> 
-        <%=String.format(loc.get(27,"owes people %d points"),-user.points)%>
+        <%=logged_in_user.username%> 
+        <%=String.format(loc.get(27,"owes people %d points"),-logged_in_user.points)%>
       </li>
     <% } else { %>
       <li>
-        <%=user.username%> 
-        <%=String.format(loc.get(9,"is owed %d points"),user.points)%>
+        <%=logged_in_user.username%> 
+        <%=String.format(loc.get(9,"is owed %d points"),logged_in_user.points)%>
       </li>
     <% } %>
   </ul>
@@ -259,7 +259,7 @@
 
   <%
     Requestoffer_utils.Rank_detail[] rank_details = 
-      Requestoffer_utils.get_rank_detail(user_id);
+      Requestoffer_utils.get_rank_detail(logged_in_user_id);
   %>
 
     <%if (rank_details.length == 0) {%>
@@ -274,7 +274,7 @@
 
     <%
     //there's two parties here: the judging and the judged
-    if (rd.judging_user_id == user_id) { // if we are the judge
+    if (rd.judging_user_id == logged_in_user_id) { // if we are the judge
     %>
 
       <div class="rank-detail">
@@ -354,7 +354,7 @@
 		<%
 			Requestoffer_utils.Offer_I_made[] offers = 
 				Requestoffer_utils
-        .get_requestoffers_I_offered_to_service(user_id);
+        .get_requestoffers_I_offered_to_service(logged_in_user_id);
     %>
 
     <%if (offers.length == 0) {%>
@@ -373,7 +373,7 @@
   <h3><%=loc.get(120, "Offers to service my favors")%></h3>
 		<%
 			Requestoffer_utils.Service_request[] service_requests = 
-				Requestoffer_utils.get_service_requests(user_id);
+				Requestoffer_utils.get_service_requests(logged_in_user_id);
     %>
 
     <%if (service_requests.length == 0) {%>
@@ -400,7 +400,7 @@
   <h3><%=loc.get(102, "Favors I am handling")%>:</h3>
 		<%
 			Requestoffer[] handling_requestoffers = 
-				Requestoffer_utils.get_requestoffers_I_am_handling(user_id);
+				Requestoffer_utils.get_requestoffers_I_am_handling(logged_in_user_id);
     %>
 
     <%if (handling_requestoffers.length == 0) {%>
@@ -424,7 +424,7 @@
 		<%
 			Requestoffer[] my_closed_requestoffers = 
 				Requestoffer_utils
-        .get_requestoffers_for_user_by_status(user_id,77);
+        .get_requestoffers_for_user_by_status(logged_in_user_id,77);
         if (my_closed_requestoffers.length == 0) {%>
         <p>(<%=loc.get(103,"None")%>)</p>
         <% } 
@@ -444,7 +444,7 @@
 		<%
 			Requestoffer[] my_taken_requestoffers = 
 				Requestoffer_utils
-        .get_requestoffers_for_user_by_status(user_id,78);
+        .get_requestoffers_for_user_by_status(logged_in_user_id,78);
         if (my_taken_requestoffers.length == 0) {%>
         <p>(<%=loc.get(103,"None")%>)</p>
         <% } 
@@ -467,7 +467,7 @@
 		<%
 			Requestoffer[] my_open_requestoffers = 
 				Requestoffer_utils
-        .get_requestoffers_for_user_by_status(user_id,76);
+        .get_requestoffers_for_user_by_status(logged_in_user_id,76);
         if (my_open_requestoffers.length == 0) {%>
         <p>(<%=loc.get(103,"None")%>)</p>
         <% } 
@@ -493,7 +493,7 @@
 		<%
 			Requestoffer[] my_draft_requestoffers = 
 				Requestoffer_utils
-        .get_requestoffers_for_user_by_status(user_id,109);
+        .get_requestoffers_for_user_by_status(logged_in_user_id,109);
         if (my_draft_requestoffers.length == 0) {%>
         <p>(<%=loc.get(103,"None")%>)</p>
         <% } 
@@ -524,7 +524,7 @@
     </thead>
     <tbody>
    <% Requestoffer_utils.MyMessages[] mms 
-     = Requestoffer_utils.get_my_conversations(user_id);
+     = Requestoffer_utils.get_my_conversations(logged_in_user_id);
    for (Requestoffer_utils.MyMessages mm : mms) {%>
     <tr>
       <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"><%=Utils.get_trunc(Utils.safe_render(mm.desc),15)%></a> </td>

@@ -95,7 +95,7 @@
         int new_ro_id = 0;
 
         //try adding the new requestoffer - if failed, go to error page
-        if ((prr = Requestoffer_utils.put_requestoffer(user_id, de, selected_cat)).pe == Requestoffer_utils.Pro_enum.GENERAL_ERROR) {
+        if ((prr = Requestoffer_utils.put_requestoffer(logged_in_user_id, de, selected_cat)).pe == Requestoffer_utils.Pro_enum.GENERAL_ERROR) {
           response.sendRedirect("general_error.jsp");
           return;
         }
@@ -113,7 +113,7 @@
           if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
             Requestoffer_utils.assign_location_to_requestoffer(location_id, new_ro_id);
           } else {
-            int uid = request.getParameter("save_loc_to_user") != null ? user_id : 0;
+            int uid = request.getParameter("save_loc_to_user") != null ? logged_in_user_id : 0;
             Requestoffer_utils.put_location(
               uid, new_ro_id,
               strt_addr_1_val, strt_addr_2_val, 
