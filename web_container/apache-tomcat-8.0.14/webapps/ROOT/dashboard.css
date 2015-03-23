@@ -32,7 +32,6 @@
    margin: 4px;
    padding: 5px;
    border: 1px solid #cccc33;
-   border-radius: 7pt;
    background: #dddd88;
    -webkit-flex: 3 1 60%;
            flex: 3 1 60%;
@@ -155,7 +154,6 @@ div.category {
    margin: 4px;
    padding: 5px;
    border: 1px solid #8888bb;
-   border-radius: 7pt;
    background: #ccccff;
    -webkit-flex: 1 6 33%;
            flex: 1 6 33%;
@@ -169,7 +167,6 @@ div.category {
   margin: 4px;
    padding: 5px;
    border: 1px solid #8888bb;
-   border-radius: 7pt;
    background: #ccccff;
    -webkit-flex: 1 6 33%;
            flex: 1 6 33%;
@@ -241,7 +238,6 @@ div.help-text {
    margin: 4px;
    padding: 5px;
    border: 1px solid #8888bb;
-   border-radius: 7pt;
    background: #ccccff;
    -webkit-flex: 1 6 40%;
            flex: 1 6 40%;
