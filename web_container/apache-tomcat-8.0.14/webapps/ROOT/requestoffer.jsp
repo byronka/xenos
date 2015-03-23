@@ -2,10 +2,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
-   <link rel="stylesheet" href="includes/reset.css">
-   <link rel="stylesheet" href="requestoffer.css">
+    <link rel="stylesheet" href="includes/reset.css">
+    <link rel="stylesheet" href="requestoffer.css">
     <link rel="stylesheet" href="includes/header.css" >
-		<title><%=loc.get(22,"Requestoffer Details")%></title>
+    <script type="text/javascript" src="includes/utils.js"></script>
+    <title><%=loc.get(22,"Requestoffer Details")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
@@ -56,6 +57,7 @@
 
 %>
 <body>
+    <img id='my_background' style="z-index:-1;top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
   <h3>
     <%=Utils.safe_render(r.description)%>

@@ -53,7 +53,7 @@ VALUES
 ---DELIMITER---
 INSERT INTO location_to_requestoffer (location_id, requestoffer_id) VALUES (1,1);
 ---DELIMITER---
-INSERT INTO location_to_user (location_id, user_id) VALUES (1,4),(2,4),(2,5);
+INSERT INTO location_to_user (location_id, user_id) VALUES (1,4),(2,4),(2,5),(1,6);
 ---DELIMITER---
 INSERT INTO requestoffer (requestoffer_id, datetime, description, points, category, requestoffering_user_id, handling_user_id) VALUES (1,'2015-03-11 01:31:28','Babysit my unruly kids',1,143,4,5);
 ---DELIMITER---

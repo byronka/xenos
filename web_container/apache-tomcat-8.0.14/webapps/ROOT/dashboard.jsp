@@ -13,11 +13,13 @@
     <link rel="stylesheet" href="includes/reset.css">
     <link rel="stylesheet" href="dashboard.css" >
     <link rel="stylesheet" href="includes/header.css" >
+    <script type="text/javascript" src="includes/utils.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=loc.get(16,"The dashboard")%></title>
   </head>
 
 <body>
+    <img id='my_background' style="z-index:-1;top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
 <%@include file="includes/header.jsp" %>
 <div id="overall-container">
 
@@ -240,7 +242,17 @@
     <li>Rank average: <%=user.rank_av%></li>
     <%int l_step = Requestoffer_utils.get_ladder_step(user.rank_ladder);%>
     <li>Rank ladder: <%=Utils.get_stars(l_step)%></li>
-    <li>Points: <%=user.points%></li>
+    <% if (user.points < 0) { %>
+      <li>
+        <%=user.username%> 
+        <%=String.format(loc.get(27,"owes people %d points"),-user.points)%>
+      </li>
+    <% } else { %>
+      <li>
+        <%=user.username%> 
+        <%=String.format(loc.get(9,"is owed %d points"),user.points)%>
+      </li>
+    <% } %>
   </ul>
 
   <h3><%=loc.get(79, "Rank")%></h3>
