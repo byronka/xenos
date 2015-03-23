@@ -94,14 +94,26 @@
 	<head>
     <link rel="stylesheet" href="includes/reset.css">
     <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="change_current_location.css" >
 		<title><%=loc.get(209,"Change current location")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
   <%@include file="includes/header.jsp" %>
-  <h3><%=loc.get(209,"Change current location")%></h3>
+  
   <form method="POST" action="change_current_location.jsp">
       <fieldset>
+        <legend><%=loc.get(209,"Change current location")%></legend>
+  <% if (has_posted_but_given_no_data) { %>
+    <div class="error">
+      <%=loc.get(210,"You have not provided any information on a current location.  There is a cancel button if you do not wish to add or change this")%>
+    </div>
+  <% } %>
+  <% if (has_not_given_postal_code) { %>
+    <div class="error">
+      <%=loc.get(211,"At the very least, you must provide a postal code.  That's what we use to determine your distance to favors")%>
+    </div>
+  <% } %>
       <%
       User_location uloc = Requestoffer_utils
       .get_location_for_user(logged_in_user_id, logged_in_user.current_location); 
