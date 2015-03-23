@@ -221,6 +221,13 @@
   <div>
       <h3><%=loc.get(97,"My Profile")%></h3>
   </div>
+    <div>
+      Current location: 
+      <%
+      String user_postcode = 
+        Utils.is_null_or_empty(user.postcode) ? "none" : user.postcode; %>
+      <a href="change_current_location.jsp" ><%=user_postcode%></button>
+    </div>
   <p>
     <a href="change_password.jsp"><%=loc.get(113,"Change password")%></a>
   </p>

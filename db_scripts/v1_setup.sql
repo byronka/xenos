@@ -305,7 +305,8 @@ VALUES
 (401,'New location was created'),
 (402,'Location was attached to requestoffer'),
 (403,'Location was attached to user'),
-(404,'location was deleted, since there were no related users or requestoffers');
+(404,'location was deleted, since there were no related users or requestoffers'),
+(405,'location was set as current for a user');
 
 
 

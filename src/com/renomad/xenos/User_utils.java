@@ -256,7 +256,7 @@ public final class User_utils {
   public static User get_user(int user_id) {
     String sqlText = 
       "SELECT COUNT(urdp.judged_user_id) AS urdp_count,u.username,u.points,  " +
-      "u.timeout_seconds, u.rank_average, u.rank_ladder, loc.postal_code  " +
+      "u.timeout_seconds, u.rank_average, u.rank_ladder, loc.postal_code, u.current_location  " +
       "FROM user u  " +
       "LEFT JOIN user_rank_data_point urdp  " +
       "  ON urdp.judged_user_id = u.user_id AND urdp.is_inside_window = 1  " +
@@ -283,11 +283,15 @@ public final class User_utils {
       float rank_av = resultSet.getFloat("rank_average");
       int rank_ladder = resultSet.getInt("rank_ladder");
       int urdp_count = resultSet.getInt("urdp_count");
+      Integer current_location = resultSet.getInt("current_location");
+      if (resultSet.wasNull()) {
+        current_location = null;
+      }
       String postal_code = resultSet.getString("postal_code");
       if (resultSet.wasNull()) {
         postal_code = "";
       }
-      return new User(username, "", points, timeout_seconds, rank_av, rank_ladder, urdp_count, postal_code);
+      return new User(username, "", points, timeout_seconds, rank_av, rank_ladder, urdp_count, current_location, postal_code);
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return null;

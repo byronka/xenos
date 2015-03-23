@@ -214,6 +214,7 @@ VALUES
   (206, 1,  'Generate invitation code'),
   (207, 1,  'Here is an invitation code.  It is valid for a week'),
   (208, 1,  'Description text too large - please stay within 200 characters'),
+  (209, 1,  'Change current location'),
   (1,   2,  'Recherche'),
   (2,   2,  'Demande Favor'),
   (3,   2,  'Déconnexion'),
@@ -422,6 +423,7 @@ VALUES
   (206, 2,  'Générer du code d''invitation'),
   (207, 2,  'Voici un code d''invitation . Il est valable pour 30 minutes de cette époque'),
   (208, 2,  'Description Texte trop grande - se il vous plaît rester à moins de 200 caractères'),
+  (209, 2,  'Changer l''emplacement actuel'),
   (1,   3,  'Búsqueda'),
   (2,   3,  'Solicitud Favor'),
   (3,   3,  'Cerrar sesión'),
@@ -630,6 +632,7 @@ VALUES
   (206, 3,  'Generar código de invitación'),
   (207, 3,  'Aquí hay un código de invitación . Tiene una validez de 30 minutos de este tiempo'),
   (208, 3,  'Descripción de texto demasiado grande - por favor, quédate dentro de los 200 caracteres'),
+  (209, 3,  'Cambiar ubicación actual'),
   (1,   4,  '搜索'),
   (2,   4,  '请求青睐'),
   (3,   4,  '注销'),
@@ -838,6 +841,7 @@ VALUES
   (206, 4,  '生成邀请码'),
   (207, 4,  '下面是一个邀请码。它是有效的，从这个时间的30分钟'),
   (208, 4,  '说明文太大 - 请留在200个字符'),
+  (209, 4,  '改变当前位置'),
   (1,   5,  'חיפוש'),
   (2,   5,  'בעד בקשה'),
   (3,   5,  'התנתקות'),
@@ -1045,5 +1049,6 @@ VALUES
   (205, 5,  'קוד הזמנה נדרש לרישום'),
   (206, 5,  'ליצור קוד הזמנה'),
   (207, 5,  'הנהקוד הזמנה . זה תקף למשך 30 דקות מהזמן הזה'),
-  (208, 5,  'טקסט תיאור גדול מדי - בבקשה להישאר בתוך 200 תווים');
+  (208, 5,  'טקסט תיאור גדול מדי - בבקשה להישאר בתוך 200 תווים'),
+  (209, 5,  'לשנות את המיקום נוכחי');
 

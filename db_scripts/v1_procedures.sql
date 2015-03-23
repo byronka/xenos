@@ -1313,7 +1313,8 @@ CREATE PROCEDURE put_user_location
   my_city NVARCHAR(255),
   my_state NVARCHAR(255),
   my_postcode VARCHAR(30), -- most important value - see http://en.wikipedia.org/wiki/Postal_code for more info!
-  my_country NVARCHAR(255)
+  my_country NVARCHAR(255),
+  OUT new_location_id INT UNSIGNED
 ) 
 BEGIN 
 
@@ -1347,9 +1348,44 @@ BEGIN
     CALL add_audit(402, NULL, NULL, rid, @new_location_id, NULL);
   END IF;
 
+  SET new_location_id = @new_location_id;
 
 END
 
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS assign_location_to_current;   
+
+---DELIMITER---
+
+-- assign a particular location as a user's current location
+
+CREATE PROCEDURE assign_location_to_current
+(
+  lid INT UNSIGNED, -- the location id
+  uid INT UNSIGNED -- the user id that will have this location as their current location
+) 
+BEGIN 
+
+  SELECT COUNT(*) INTO @lid_count
+  FROM location
+  WHERE location_id = lid;
+
+  IF (@lid_count <> 1) THEN
+      SET @msg = CONCAT(
+        'location_id ',lid,' does not exist in the location table');
+      SIGNAL SQLSTATE '45000' 
+      SET message_text = @msg;
+  END IF;
+
+  UPDATE user
+  SET current_location = lid
+  WHERE user_id = uid;
+
+  -- audit: we just set a location as the user's current location
+  CALL add_audit(405, uid,uid, NULL,lid, NULL);
+
+END
 ---DELIMITER---
 
 DROP PROCEDURE IF EXISTS assign_location_to_requestoffer;   

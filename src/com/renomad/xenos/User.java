@@ -17,11 +17,13 @@ public class User {
   public final int rank_ladder; // shows contemporary status on rank
   public final int urdp_count; // count of rankings in this rolling window
   public final String postcode; // where the user has said they currently are, used to show distance to RO
+  public final Integer current_location; 
 
 
   public User (
       String username, String password, int points, 
-      int timeout_seconds, float rank_av, int rank_ladder, int urdp_count, String postcode) {
+      int timeout_seconds, float rank_av, int rank_ladder, 
+      int urdp_count, Integer current_location, String postcode) {
     this.username = username;
     this.password = password;
     this.points = points;
@@ -29,6 +31,7 @@ public class User {
     this.rank_av = rank_av;
     this.rank_ladder = rank_ladder;
     this.urdp_count = urdp_count;
+    this.current_location = current_location;
     this.postcode = postcode;
   }
   

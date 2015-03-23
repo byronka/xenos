@@ -864,6 +864,57 @@ public final class Requestoffer_utils {
 
 
   /**
+    * Gets a particular saved location by location id, must be
+    * one owned by the user in user_id
+    * 
+    * @return that particular saved location, or null
+    */
+  public static User_location get_location_for_user(int user_id, int location_id) {
+    
+    // location id would be sufficient, but here I want to make
+    //double sure that we aren't getting a location that the user doesn't
+    //own.
+    String sqlText = 
+      "SELECT l.location_id, l.address_line_1, " +
+      "l.address_line_2, l.city," + 
+      "l.state, l.postal_code, l.country " + 
+      "FROM location l "+
+      "JOIN location_to_user ltu "+
+      "  ON ltu.location_id = l.location_id AND user_id = ? "+
+      "WHERE l.location_id = ?";
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setInt( 1, user_id);
+      pstmt.setInt( 2, location_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return null;
+      }
+
+      resultSet.next();
+      int lid = resultSet.getInt("location_id");
+      String sa1 = resultSet.getNString("address_line_1");
+      String sa2 = resultSet.getNString("address_line_2");
+      String city = resultSet.getNString("city");
+      String state = resultSet.getNString("state");
+      String post = resultSet.getString("postal_code"); // non-unicode on purpose
+      String country = resultSet.getNString("country");
+      User_location uloc = new User_location(lid,sa1,sa2,city,state,post,country);
+      return uloc;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return null;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
     * Gets all the saved locations for a given user
     * 
     * @return all their saved locations, or empty array otherwise.
@@ -913,6 +964,28 @@ public final class Requestoffer_utils {
 
 
   /**
+    * assign an existing location to the user's current location
+    */
+  public static boolean
+    assign_location_to_current(int location_id, int user_id) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall("{call assign_location_to_current(?,?)}");
+      cs.setInt(1, location_id);
+      cs.setInt(2, user_id);
+      cs.executeQuery();
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+      return true;
+    }
+
+
+  /**
     * assign an existing location to a requestoffer
     */
   public static boolean
@@ -938,20 +1011,20 @@ public final class Requestoffer_utils {
   /**
     * add a location to the database.  That's an address.
     * We also link it to a requestoffer or user if provided.
-    * returns true if all is well, false otherwise.
+    * returns an integer greater than 0 (the new location id) if good, 0 otherwise.
     * @param user_id if user_id is given, the new location will be associated
     * with that user.
     * @param requestoffer_id if requestoffer_id is given, the new location will be
     * associated with that requestoffer
     */
-  public static boolean 
+  public static int 
     put_location(int user_id, int requestoffer_id, 
         String str_addr_1, String str_addr_2, String city, 
         String state, String postcode, String country) {
     CallableStatement cs = null;
     try {
       Connection conn = Database_access.get_a_connection();
-      cs = conn.prepareCall("{call put_user_location(?,?,?,?,?,?,?,?)}");
+      cs = conn.prepareCall("{call put_user_location(?,?,?,?,?,?,?,?,?)}");
       cs.setInt(1, user_id);
       cs.setInt(2, requestoffer_id);
       cs.setNString(3, str_addr_1);
@@ -960,14 +1033,16 @@ public final class Requestoffer_utils {
       cs.setNString(6, state);
       cs.setString(7, postcode); // postal code uses latin characters.
       cs.setNString(8, country);
+      cs.registerOutParameter(9, java.sql.Types.INTEGER);
       cs.executeQuery();
+      int new_location_id = cs.getInt(9);
+      return new_location_id;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
-      return false;
+      return 0;
     } finally {
       Database_access.close_statement(cs);
     }
-    return true;
   }
 
   // Put Requestoffer enum
