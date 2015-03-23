@@ -278,7 +278,6 @@
     %>
 
       <div class="rank-detail">
-        <%=rd.timestamp%>
         <%=loc.get(165,"You")%>
 
         <% if(rd.status_id == 3) {%>
@@ -317,7 +316,6 @@
     %>
 
       <div class="rank-detail">
-        <%=rd.timestamp%>
         <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
           <%=Utils.safe_render(rd.judging_username)%>
         </a>
@@ -520,7 +518,6 @@
   <table border="1">
     <thead>
       <tr>
-        <th><%=loc.get(172,"Timestamp")%></th>
         <th><%=loc.get(32,"Favor")%></th>
         <th><%=loc.get(171,"Message")%></th>
       </tr>
@@ -530,7 +527,6 @@
      = Requestoffer_utils.get_my_conversations(user_id);
    for (Requestoffer_utils.MyMessages mm : mms) {%>
     <tr>
-      <td><%=mm.timestamp%> </td>
       <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"><%=Utils.get_trunc(Utils.safe_render(mm.desc),15)%></a> </td>
       <td><%=Utils.safe_render(mm.message)%></td>
     </tr>

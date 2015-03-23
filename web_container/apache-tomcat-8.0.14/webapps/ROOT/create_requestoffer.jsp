@@ -4,9 +4,10 @@
 	<head>
     <title><%=loc.get(2, "Request Favor")%></title>	
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-   <link rel="stylesheet" href="includes/reset.css">
-   <link rel="stylesheet" href="includes/header.css" title="desktop">
-   <link rel="stylesheet" href="create_requestoffer.css" title="desktop">
+    <link rel="stylesheet" href="includes/reset.css">
+    <link rel="stylesheet" href="includes/header.css" title="desktop">
+    <link rel="stylesheet" href="create_requestoffer.css" title="desktop">
+    <script type="text/javascript" src="includes/utils.js"></script>
 	</head>
 	
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
@@ -127,9 +128,11 @@
   %>
 	
 	<body>
+    <img id='my_background' style="z-index:-1;top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
     <%@include file="includes/header.jsp" %>	
     <%@include file="create_requestoffer_html.jsp" %>	
 
 	     
+  <%@include file="includes/footer.jsp" %>
 	</body>
 </html>

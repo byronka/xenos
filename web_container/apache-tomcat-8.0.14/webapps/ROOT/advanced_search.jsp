@@ -169,6 +169,7 @@ if (request.getMethod().equals("POST")) {
     <%@include file="includes/header.jsp" %>
     <h3 class="error">Invalid input received - check and resubmit</h3>
     <%@include file="advanced_search_html.jsp" %>
+    <%@include file="includes/footer.jsp" %>
   </body>
 </html>
 
