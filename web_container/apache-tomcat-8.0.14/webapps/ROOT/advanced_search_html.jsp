@@ -7,12 +7,13 @@
 
     <div class="form-row">
       <label for="distance_input"><%=loc.get(212,"Distance")%>: </label>
-      <input id="distance_input" name="distance" placeholder="3.5" value="<%=distance%>"/> 
+      <input id="distance_input" name="distance" value="<%=distance%>"/> 
     </div>
 
     <div class="form-row">
       <label for="postcode_input"><%=loc.get(156,"Postal code")%>: </label>
-      <input type="text" id="postcode_input" placeholder="12345" name="postcode" value="<%=Utils.safe_render(postcode)%>"/> 
+      <input type="text" id="postcode_input" 
+        name="postcode" value="<%=Utils.safe_render(postcode)%>"/> 
     </div>
     <% if (has_distance_error) { %>
       <span class="error">
@@ -22,7 +23,8 @@
 
     <div class="form-row">
       <label for="startdate_input"><%=loc.get(86,"Start date")%>: </label>
-      <input type="date" id="startdate_input" name="startdate" placeholder="2012-10-31" value="<%=startdate%>" /> 
+      <input type="date" id="startdate_input" 
+        name="startdate"  value="<%=startdate%>" /> 
     </div>
     <% if (has_st_da_error) { %>
       <span class="error">
@@ -32,7 +34,8 @@
 
     <div class="form-row">
       <label for="enddate_input"><%=loc.get(87,"End date")%>: </label>
-      <input type="date" id="enddate_input" name="enddate" placeholder="2012-10-31" value="<%=enddate%>" /> 
+      <input type="date" id="enddate_input" 
+        name="enddate" value="<%=enddate%>" /> 
     </div>
     <% if (has_end_da_error) { %>
       <span class="error">

@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="includes/footer.css">
 <footer>
     footer
 </footer>

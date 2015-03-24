@@ -13,15 +13,16 @@
     <link rel="stylesheet" href="includes/reset.css">
     <link rel="stylesheet" href="dashboard.css" >
     <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="includes/footer.css">
     <script type="text/javascript" src="includes/utils.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=loc.get(16,"The dashboard")%></title>
   </head>
 
 <body>
-    <img id='my_background' style="z-index:-1;top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
-<%@include file="includes/header.jsp" %>
-<div id="overall-container">
+  <img alt="background" id='my_background' style="z-index:-1;top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
+  <%@include file="includes/header.jsp" %>
+  <div id="overall-container">
 
 
 <div id="see-and-create-requestoffer">
@@ -97,11 +98,11 @@
                   <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
                 </div>
              </div> 
-            <div class="category c-<%=r.category%>" />
+             <div class="category c-<%=r.category%>" >&nbsp;</div>
           </li>
 
           <li class="requestoffering-user-id">
-            <label><%=loc.get(80, "User")%>:</label>
+            <div><%=loc.get(80, "User")%>:</div>
             <%
               User ru = User_utils.get_user(r.requestoffering_user_id);
             %>
@@ -109,7 +110,7 @@
           </li>
 
           <li class="categories">
-            <label><%=loc.get(13, "Categories")%>:</label>
+            <div><%=loc.get(13, "Categories")%>:</div>
             <span >
               <%=loc.get(r.category,"")%> 
             </span>
@@ -223,7 +224,7 @@
       <%
       String user_postcode = 
         Utils.is_null_or_empty(logged_in_user.postcode) ? "none" : logged_in_user.postcode; %>
-      <%=user_postcode%></button>
+      <%=user_postcode%></a>
     </div>
   <p>
     <a href="change_password.jsp"><%=loc.get(113,"Change password")%></a>
@@ -459,7 +460,7 @@
             <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
               <%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> </a>
               <a class="button" 
-                href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
+                href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
                 <%=loc.get(21,"Delete")%>
               </a>
               <a class="button" href="retract_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
@@ -481,7 +482,7 @@
 				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
 					<%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> </a>
           <a class="button" 
-            href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
+            href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
             <%=loc.get(21,"Delete")%>
           </a>
           <a class="button" href="publish_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
