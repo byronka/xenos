@@ -13,7 +13,6 @@
 
 #see-and-create-requestoffer {
    min-height: 800px;
-   min-width: 300px;
    margin: 0px;
    padding: 0px;
    display: -webkit-inline-flex;
@@ -30,6 +29,7 @@
 
 #ro-container {
    margin: 4px;
+   min-width: 350px;
    padding: 5px;
    border: 1px solid #cccc33;
    -webkit-flex: 3 1 60%;
@@ -150,6 +150,7 @@ div.category {
 /* stuff related to My_Profile */
 
 #profile-container {
+   min-width: 350px;
    margin: 4px;
    padding: 5px;
    border: 1px solid #8888bb;
@@ -164,13 +165,14 @@ div.category {
 
 #search_section {
   margin: 4px;
-   padding: 5px;
-   border: 1px solid #8888bb;
-   background: #ccccff;
-   -webkit-flex: 1 6 33%;
-           flex: 1 6 33%;
-   -webkit-order: 3;
-           order: 3;
+  min-width: 350px;
+  padding: 5px;
+  border: 1px solid #8888bb;
+  background: #ccccff;
+  -webkit-flex: 1 6 33%;
+         flex: 1 6 33%;
+  -webkit-order: 3;
+         order: 3;
 }
 
 
@@ -315,7 +317,7 @@ span.error {
 
 
 /* handling situation where things get too narrow */
-@media all and (max-width: 640px) {
+@media all and (max-width: 1050px) {
 
   #overall-container {
     -webkit-flex-flow: column;
