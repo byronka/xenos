@@ -204,9 +204,8 @@ CREATE PROCEDURE get_others_requestoffers
   user_id VARCHAR(50), -- can be many INT's separated by commas
   page INT UNSIGNED,
   description NVARCHAR(50),
-  minrank FLOAT, -- must be between 0 and 1, or null
-  maxrank FLOAT, -- must be between 0 and 1, or null
   postcode VARCHAR(50), 
+  max_dist DOUBLE,
 	OUT total_pages INT UNSIGNED
 ) 
 BEGIN 
@@ -257,21 +256,10 @@ BEGIN
       " AND description LIKE CONCAT('%' , @desc , '%') ");
   END IF;
 
-  -- searching by rank_average
-  IF minrank > 0.0 AND maxrank > 0.0 THEN
-    SET @minrank = minrank;
-    SET @maxrank = maxrank;
-    SET @search_clauses = 
-      CONCAT(@search_clauses, 
-        ' AND @minrank <= u.rank_average AND u.rank_average <= @maxrank ');
-  ELSEIF minrank > 0 THEN
-    SET @minrank = minrank;
-    SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND @minrank <= u.rank_average ');
-  ELSEIF maxrank > 0 THEN
-    SET @maxrank = maxrank;
-    SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND @maxrank >= u.rank_average ');
+  -- searching by distance
+  IF max_dist > 0.0 THEN
+    SET @max_dist = max_dist;
+    SET @having_clauses = ' HAVING distance <= @max_dist ';
   END IF;
 
   -- searching by postcode - right now, only an exact match
@@ -323,7 +311,8 @@ BEGIN
             LEFT JOIN location l
               ON l.location_id = ltr.location_id
             WHERE rs.status = 109 AND r.requestoffering_user_id = @ruid
-            ', @search_clauses ,'
+            ', @search_clauses ,
+             @having_clauses ,'
           )
 
             UNION ALL
@@ -355,7 +344,8 @@ BEGIN
             LEFT JOIN location l
               ON l.location_id = ltr.location_id
             WHERE rs.status <> 109
-            ', @search_clauses ,'
+            ', @search_clauses ,
+             @having_clauses ,'
           )
             ORDER BY datetime DESC
             LIMIT ',@first_row,',',@last_row );

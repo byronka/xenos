@@ -20,9 +20,8 @@ String desc = "";
 String startdate = "";
 String enddate = "";
 String users = "";
-String minrank = "";
-String maxrank = "";
 String postcode = "";
+Double distance = null;
 String[] categories = new String[0];
 
 // all these errors should only occur on plain text entry
@@ -30,10 +29,7 @@ boolean has_stat_error = false; // when status doesn't exist
 boolean has_st_da_error = false; //date
 boolean has_end_da_error = false; //date
 boolean has_user_error = false;  // when user cannot be found
-boolean has_min_rank_error = false;  // when rank not between 0.0 and 1.0
-boolean has_max_rank_error = false; 
-boolean has_min_rank_greater_error = false; // when min rank is greater than max rank
-boolean has_max_rank_lesser_error = false;
+boolean has_distance_error = false; // if distance is not a double
 
 if (request.getMethod().equals("POST")) {
   boolean validation_error = false;
@@ -45,55 +41,6 @@ if (request.getMethod().equals("POST")) {
 
   if ((postcode = request.getParameter("postcode")) == null) {
     postcode = "";
-  }
-  postcode = Utils.safe_render(postcode);
-
-
-  Float minrankvalue = null;
-  Float maxrankvalue = null;
-
-  // rank has to be from 0.0 to 1.0
-  minrank = request.getParameter("minrank");
-  maxrank = request.getParameter("maxrank");
-
-  // check that minrank is either empty or a valid number
-  if (Utils.is_null_or_empty(minrank)) {
-    minrank = "";
-  } else {
-    try {
-      minrankvalue = Float.valueOf(minrank);
-      if ( !(minrankvalue >= 0.0 && minrankvalue <= 1.0)) {
-        has_min_rank_error = true;
-        validation_error |= true;
-      }
-    } catch (Exception ex) {
-      validation_error |= true;
-      has_min_rank_error = true;
-    }
-  }
-
-  // check that maxrank is either empty or a valid number
-  if (Utils.is_null_or_empty(maxrank)) {
-    maxrank = "";
-  } else {
-    try{
-      maxrankvalue = Float.valueOf(maxrank);
-      if ( !(maxrankvalue >= 0.0 && maxrankvalue <= 1.0)) {
-        has_max_rank_error = true;
-        validation_error |= true;
-      }
-    } catch (Exception ex) {
-      validation_error |= true;
-      has_max_rank_error = true;
-    }
-  }
-  
-  // make sure that minrank is less than maxrank
-  if (maxrankvalue != null && minrankvalue != null && 
-        (maxrankvalue - minrankvalue) < 0) {
-      validation_error |= true;
-      has_min_rank_greater_error = true;
-      has_max_rank_lesser_error = true;
   }
 
 
@@ -124,6 +71,12 @@ if (request.getMethod().equals("POST")) {
     has_end_da_error = true;
   }
 
+  if (!Utils.is_null_or_empty(request.getParameter("distance")) && 
+    (distance = Utils.parse_double(request.getParameter("distance"))) == null) {
+    validation_error |= true;
+    has_distance_error = true;
+  }
+
   //parse out the user
   if ((users = request.getParameter("users")) == null) {
     users = "";
@@ -148,16 +101,15 @@ if (request.getMethod().equals("POST")) {
 
   if(!validation_error) {
     String dashboard_string = String.format(
-      "dashboard.jsp?da=%s,%s&cat=%s&us=%s&sta=%s&desc=%s&minrank=%f&maxrank=%f&postcode=%s",
+      "dashboard.jsp?da=%s,%s&cat=%s&us=%s&sta=%s&desc=%s&postcode=%s&distance=%.2f",
       startdate,
       enddate,
       Utils.string_array_to_string(categories),
       user_ids,
       Utils.string_array_to_string(statuses),
       desc,
-      minrankvalue,
-      maxrankvalue,
-      postcode );
+      postcode,
+      distance );
     response.sendRedirect(dashboard_string);
     return;
   }

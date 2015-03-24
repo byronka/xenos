@@ -23,24 +23,30 @@
   <%@include file="includes/header.jsp" %>
 
   <h3><%=Utils.safe_render(the_user.username)%></h3>
-  <ul>
     <%if (the_user.urdp_count >= 30) {%>
-      <li>Rank average: <%=the_user.rank_av%></li>
+    <div>Rank average: <%=the_user.rank_av%></div>
     <%}%>
     <%int l_step = Requestoffer_utils.get_ladder_step(the_user.rank_ladder);%>
-    <li>Rank ladder: <%=Utils.get_stars(l_step)%></li>
-    <li>Points: <%=the_user.points%></li>
-  </ul>
+    <div>Rank ladder: <%=Utils.get_stars(l_step)%></div>
+    <% if (logged_in_user.points < 0) { %>
+      <div>
+        <%=logged_in_user.username%> 
+        <%=String.format(loc.get(27,"owes people %d points"),-logged_in_user.points)%>
+      </div>
+    <% } else { %>
+      <div>
+        <%=logged_in_user.username%> 
+        <%=String.format(loc.get(9,"is owed %d points"),logged_in_user.points)%>
+      </div>
+    <% } %>
 
-  <h3><%=loc.get(79, "Rank")%></h3>
   <%
     Requestoffer_utils.Rank_detail[] rank_details = 
       Requestoffer_utils.get_rank_detail(uid);
   %>
 
-  <%if (rank_details.length == 0) {%>
-      <p>(<%=loc.get(103,"None")%>)</p>
-  <% } %> 
+  <%if (rank_details.length != 0) {%>
+    <div><em><%=loc.get(79, "Rank")%></em></div>
 
   <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
 
@@ -130,10 +136,11 @@
 
   <% } %>
   <% } %>
+  <% } %> 
 
 
-	<h3 class="my-requestoffers-header">
-		<%=loc.get(173, "Their open Favors")%>:</h3>
+  <div class="my-requestoffers-header"><em >
+      <%=loc.get(173, "Their open Favors")%>:</em></div>
 		<div class="requestoffers mine">
 		<%
 			Requestoffer[] my_open_requestoffers = 

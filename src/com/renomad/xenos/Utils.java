@@ -305,6 +305,21 @@ public final class Utils {
 
 
   /**
+    * gets a double from the value, avoiding boilerplate.
+    * @param my_double a potential double
+    * @return a Double, or null if failed parsing.
+    */
+  public static Double parse_double(String my_double) {
+      try {
+        Double value = Double.parseDouble(my_double);
+        return value;
+      } catch (Exception ex) {
+        return null;
+      }
+    }
+
+
+  /**
     * gets an integer from the value, avoiding boilerplate.
     * @param my_int a potential int
     * @return an Integer, or null if failed parsing.

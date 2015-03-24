@@ -26,14 +26,14 @@
 
   User_location[] locations = Requestoffer_utils.get_locations_for_requestoffer(r.requestoffer_id);
 
-  boolean is_requestoffering_user = user_id == r.requestoffering_user_id;
-  boolean is_handling_user = user_id == r.handling_user_id;
+  boolean is_requestoffering_user = logged_in_user_id == r.requestoffering_user_id;
+  boolean is_handling_user = logged_in_user_id == r.handling_user_id;
   boolean is_deleting = qs.indexOf("delete=true") > 0;
 
   boolean show_handle_button = 
     (r.status == 76) && //'open'
     !is_requestoffering_user && 
-    !User_utils.has_offered_to_service(r.requestoffer_id, user_id) &&
+    !User_utils.has_offered_to_service(r.requestoffer_id, logged_in_user_id) &&
     !is_deleting;
   boolean show_delete_info = 
       is_requestoffering_user && is_deleting;
@@ -49,7 +49,7 @@
   String msg = request.getParameter("message");
 
   if (!Utils.is_null_or_empty(msg)) {
-    Requestoffer_utils.set_message(msg, r.requestoffer_id, user_id);
+    Requestoffer_utils.set_message(msg, r.requestoffer_id, logged_in_user_id);
     response.sendRedirect(
       "requestoffer.jsp?requestoffer="+r.requestoffer_id+"&service=true");
     return;
@@ -107,8 +107,8 @@
     %>
       <div class="form-row">
           <%
-            if (user_id == r.handling_user_id || 
-            user_id == r.requestoffering_user_id) { 
+            if (logged_in_user_id == r.handling_user_id || 
+            logged_in_user_id == r.requestoffering_user_id) { 
           %>
       </div>
 
@@ -190,7 +190,7 @@
       <%}
 
         String[] messages = 
-          Requestoffer_utils.get_messages(r.requestoffer_id, user_id);
+          Requestoffer_utils.get_messages(r.requestoffer_id, logged_in_user_id);
          for (String m : messages) { %>
 
         <p><%=Utils.safe_render(m)%></p>

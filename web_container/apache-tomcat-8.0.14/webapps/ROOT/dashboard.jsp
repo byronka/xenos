@@ -38,19 +38,15 @@
   String startdate = "";
   String enddate = "";
   String users = "";
-  String minrank = "";
-  String maxrank = "";
   String postcode = "";
+  String distance = "";
   String[] categories = new String[0];
 
   boolean has_stat_error = false; // when status doesn't exist
   boolean has_st_da_error = false; //date
   boolean has_end_da_error = false; //date
   boolean has_user_error = false;  // when user cannot be found
-  boolean has_min_rank_error = false;  // when rank not between 0.0 and 1.0
-  boolean has_max_rank_error = false; 
-  boolean has_min_rank_greater_error = false; // when min rank is greater than max rank
-  boolean has_max_rank_lesser_error = false;
+  boolean has_distance_error = false; 
   %>
   <%@include file="advanced_search_html.jsp" %>
  
@@ -88,9 +84,8 @@
       String srch_desc = params.get("desc"); // description
       String srch_us = params.get("us"); //users
       String srch_sta = params.get("sta"); //status
-      String srch_minrank = params.get("minrank"); //rank
-      String srch_maxrank = params.get("maxrank"); //rank
       String srch_postcode = params.get("postcode"); //postcode
+      String srch_distance = params.get("distance"); 
 
       Integer which_page = Utils.parse_int(params.get("page"));
       if (which_page == null) {which_page = 0;}
@@ -114,9 +109,8 @@
                                           decoded_srch_desc,
                                           srch_sta, 
                                           srch_us,
-                                          srch_minrank,
-                                          srch_maxrank,
-                                          srch_postcode
+                                          srch_postcode,
+                                          srch_distance
                                           );
       Requestoffer_utils.OR_Package or_package = 
         Requestoffer_utils.get_others_requestoffers(logged_in_user_id, 
@@ -221,14 +215,15 @@
 
 <div id="profile-container">
   <div>
-      <h3><%=loc.get(97,"My Profile")%></h3>
+      <h3><%=Utils.safe_render(logged_in_user.username)%></h3>
   </div>
     <div>
+       <a href="change_current_location.jsp" >
       Current location: 
       <%
       String user_postcode = 
         Utils.is_null_or_empty(logged_in_user.postcode) ? "none" : logged_in_user.postcode; %>
-      <a href="change_current_location.jsp" ><%=user_postcode%></button>
+      <%=user_postcode%></button>
     </div>
   <p>
     <a href="change_password.jsp"><%=loc.get(113,"Change password")%></a>
@@ -237,23 +232,20 @@
     <a href="generate_icode.jsp"><%=loc.get(206,"Generate invitation code")%></a>
   </p>
 
-  <h3><%=Utils.safe_render(logged_in_user.username)%></h3>
-  <ul>
-    <li>Rank average: <%=logged_in_user.rank_av * 100%>%</li>
+    <div>Rank average: <%=logged_in_user.rank_av * 100%>%</div>
     <%int l_step = Requestoffer_utils.get_ladder_step(logged_in_user.rank_ladder);%>
-    <li>Rank ladder: <%=Utils.get_stars(l_step)%></li>
+    <div>Rank ladder: <%=Utils.get_stars(l_step)%></div>
     <% if (logged_in_user.points < 0) { %>
-      <li>
+      <div>
         <%=logged_in_user.username%> 
         <%=String.format(loc.get(27,"owes people %d points"),-logged_in_user.points)%>
-      </li>
+      </div>
     <% } else { %>
-      <li>
+      <div>
         <%=logged_in_user.username%> 
         <%=String.format(loc.get(9,"is owed %d points"),logged_in_user.points)%>
-      </li>
+      </div>
     <% } %>
-  </ul>
 
 
   <%

@@ -455,10 +455,8 @@ public final class Requestoffer_utils {
       */
     public final String user_ids;
 
-    public final Float minrank; //the user's ranking - might be null.
-    public final Float maxrank; //the user's ranking - might be null.
-
     public final String postcode; // postal code
+    public final Double distance;
 
 
     public Search_Object(
@@ -468,9 +466,8 @@ public final class Requestoffer_utils {
         String description,
         String statuses,
         String user_ids,
-        String minrank,
-        String maxrank,
-        String postcode
+        String postcode,
+        String distance
         ) {
       this.startdate = startdate;
       this.enddate = enddate;
@@ -484,9 +481,8 @@ public final class Requestoffer_utils {
       this.user_ids = Utils.is_comma_delimited_numbers(user_ids) ? 
         user_ids 
         : null;
-      this.minrank = Utils.parse_float(minrank);
-      this.maxrank = Utils.parse_float(maxrank);
       this.postcode = postcode;
+      this.distance = Utils.parse_double(distance);
     }
 
   }
@@ -575,9 +571,7 @@ public final class Requestoffer_utils {
       Connection conn = Database_access.get_a_connection();
       // see db_scripts/v1_procedures.sql get_others_requestoffers for
       // details on this stored procedure.
-      cs = conn.prepareCall(String.format(
-        "{call get_others_requestoffers(?,?,?,?,?,?,?,?,?,?,?,?)}"
-        ,ruid, page));
+      cs = conn.prepareCall("{call get_others_requestoffers(?,?,?,?,?,?,?,?,?,?,?)}" );
       cs.setInt(1, ruid);
       cs.setString(2, so.startdate);
       cs.setString(3, so.enddate);
@@ -586,20 +580,15 @@ public final class Requestoffer_utils {
       cs.setString(6, so.user_ids);
       cs.setInt(7, page);
       cs.setString(8, so.description);
-      if (so.minrank != null) {
-        cs.setFloat(9, so.minrank);
+      cs.setString(9, so.postcode);
+      if (so.distance != null) {
+        cs.setDouble(10, so.distance);
       } else {
-        cs.setNull(9, java.sql.Types.FLOAT);
+        cs.setNull(10, java.sql.Types.DOUBLE);
       }
-      if (so.maxrank != null) {
-        cs.setFloat(10, so.maxrank);
-      } else {
-        cs.setNull(10, java.sql.Types.FLOAT);
-      }
-      cs.setString(11, so.postcode);
-      cs.registerOutParameter(12, java.sql.Types.INTEGER);
+      cs.registerOutParameter(11, java.sql.Types.INTEGER);
       ResultSet resultSet = cs.executeQuery();
-      int pages = cs.getInt(12);
+      int pages = cs.getInt(11);
 
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new OR_Package(new Others_Requestoffer[0],1);

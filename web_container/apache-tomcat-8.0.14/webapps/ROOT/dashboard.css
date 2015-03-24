@@ -193,11 +193,12 @@ span.error {
 }
 
 #search_section div.form-row label{
+  vertical-align: top;
   display: table-cell;
   width: 30%;
 }
 
-#search_section input[type="text"] {
+#search_section input{
   display: table-cell;
   background: 12px 11px no-repeat, linear-gradient(to bottom, #f7f7f8 0%,#ffffff 100%);
   border-radius: 3px;
@@ -213,23 +214,19 @@ span.error {
   padding-left: 30px;
 }
 
-#search_section input[type="text"]:-webkit-input-placeholder {
+#search_section input:-webkit-input-placeholder {
   color: #999999;
 }
   
-#search_section input[type="text"]:-moz-placeholder {
+#search_section input:-moz-placeholder {
     color: #999999;
 }
 
-#search_section input[type="text"]:focus{
+#search_section input:focus{
   box-shadow: 0 1px 0 #2392F3 inset, 0 -1px 0 #2392F3 inset, 1px 0 0 #2392F3 inset, -1px 0 0 #2392F3 inset, 0 0 4px rgba(35,146,243,0.5);
   outline: none;
 }
 
-div.help-text {
-  display: table-cell;
-  font-style: italic;
-}
 
 /* stuff related to create requestoffer */
 
@@ -282,6 +279,7 @@ span.error {
 }
 
 #create-requestoffer-container label {
+  vertical-align: top;
   display: table-cell;
   width: 250px;
 }
