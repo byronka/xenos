@@ -62,7 +62,7 @@ CREATE TABLE
 INSERT INTO user (username, email, password, salt, language, rank_average, is_admin)
 VALUES 
 ('xenos_system',NULL,NULL,NULL,1,1.0, true),
-('admin_bk','byron@renomad.com','AC31960F3FD5CBFCA9A76B6082D276D4BE65AED73C11150E5FC5891257C7F0AC','3181459404718211989', 1,1.0, true)
+('byron','byron@renomad.com','AC31960F3FD5CBFCA9A76B6082D276D4BE65AED73C11150E5FC5891257C7F0AC','3181459404718211989', 1,1.0, true)
 
 
 ---DELIMITER---
