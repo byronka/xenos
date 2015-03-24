@@ -1,76 +1,77 @@
                        
     <form method="POST" action="create_requestoffer.jsp">	
-      <fieldset>
-      <legend><%=loc.get(22,"Favor Details")%></legend>
-      <div>
-        <label for="description">* <%=loc.get(10,"Description")%>:</label>
-        <textarea 
-          id="description"
-          maxlength="200" 
-          name="description" 
-          placeholder="<%=loc.get(10,"Description")%>" ><%=de%></textarea>
-        <%if(has_size_error){%>  
-        <span class="error"><%=loc.get(208,"Description text too large - please stay within 200 characters")%></span>
-        <%}%> 
-        <%if(has_desc_error){%>  
-        <span class="error"><%=loc.get(5, "Please enter a description")%></span>
-        <%}%> 
-      </div>
-      <div>
-        <label for="categories">* <%=loc.get(13,"Categories")%>:</label>
-        <select 
-          id="categories" 
-          name="categories" >
-              <option disabled selected> -- <%=loc.get(198,"Select a Category")%> -- </option>			            
-          <% for(Integer category : Requestoffer_utils.get_all_categories()){ %>
-            <% if (category.equals(selected_cat)) {%>
-              <option selected value="<%=category%>"><%=loc.get(category,"")%></option>    
-            <%} else {%>
-              <option value="<%=category%>"><%=loc.get(category,"")%></option>    
+      <div id="basic-section">
+        <div>
+          <label for="description">* <%=loc.get(10,"Description")%>:</label>
+          <textarea 
+            id="description"
+            maxlength="200" 
+            name="description" 
+            placeholder="<%=loc.get(10,"Description")%>" ><%=de%></textarea>
+          <%if(has_size_error){%>  
+          <span class="error"><%=loc.get(208,"Description text too large - please stay within 200 characters")%></span>
+          <%}%> 
+          <%if(has_desc_error){%>  
+          <span class="error"><%=loc.get(5, "Please enter a description")%></span>
+          <%}%> 
+        </div>
+        <div>
+          <label for="categories">* <%=loc.get(13,"Categories")%>:</label>
+          <select 
+            id="categories" 
+            name="categories" >
+                <option disabled selected> -- <%=loc.get(198,"Select a Category")%> -- </option>			            
+            <% for(Integer category : Requestoffer_utils.get_all_categories()){ %>
+              <% if (category.equals(selected_cat)) {%>
+                <option selected value="<%=category%>"><%=loc.get(category,"")%></option>    
+              <%} else {%>
+                <option value="<%=category%>"><%=loc.get(category,"")%></option>    
+              <% } %>			           		             
             <% } %>			           		             
-          <% } %>			           		             
-        </select>
-        <%if(has_cat_error){%>  
-          <span class="error">
-            <%=loc.get(197,"You must choose a category for this favor")%>
-          </span>
-        <%}%> 
+          </select>
+          <%if(has_cat_error){%>  
+            <span class="error">
+              <%=loc.get(197,"You must choose a category for this favor")%>
+            </span>
+          <%}%> 
+        </div>
       </div>
-    </fieldset>
-      <fieldset>
-        <legend>Location</legend>
-        </span>
+
+          <hr />
 
           <% 
-          User_location[] locations = 
-          Requestoffer_utils.get_my_saved_locations(logged_in_user_id);
-          if (locations.length > 0) {
+            User_location[] locations = 
+            Requestoffer_utils.get_my_saved_locations(logged_in_user_id);
           %>
 
-        <div>
-          <label for="savedlocation"><%=loc.get(158,"Select one of your saved locations")%>:</label>
-          <select 
-            id="savedlocation" 
-            name="savedlocation">
-            <option><%=loc.get(192,"No address selected")%></option>
-            <%for (User_location loca : locations) {%>
-              <%if(Integer.toString(loca.id).equals(savedlocation_val)){%>
-                <option selected value="<%=loca.id%>">
-              <%} else { %>
-                <option value="<%=loca.id%>">
-              <% } %>
-              <%=loca.str_addr_1%>
-              <%=loca.str_addr_2%>
-              <%=loca.city%>
-              <%=loca.state%>
-              <%=loca.postcode%>
-              <%=loca.country%>
-              </option>
-            <%}%>
-          </select>                       
-        </div>
 
-          <h4 class="enternew"><%=loc.get(159,"Or enter a new address")%>:</h4>            
+        <div id="location-section">
+          <% if (locations.length > 0) { %>
+
+            <div>
+              <label for="savedlocation"><%=loc.get(158,"Select one of your saved locations")%>:</label>
+              <select 
+                id="savedlocation" 
+                name="savedlocation">
+                <option><%=loc.get(192,"No address selected")%></option>
+                <%for (User_location loca : locations) {%>
+                  <%if(Integer.toString(loca.id).equals(savedlocation_val)){%>
+                    <option selected value="<%=loca.id%>">
+                  <%} else { %>
+                    <option value="<%=loca.id%>">
+                  <% } %>
+                  <%=loca.str_addr_1%>
+                  <%=loca.str_addr_2%>
+                  <%=loca.city%>
+                  <%=loca.state%>
+                  <%=loca.postcode%>
+                  <%=loca.country%>
+                  </option>
+                <%}%>
+              </select>                       
+            </div>
+
+            <div class="enternew"><em><%=loc.get(159,"Or enter a new address")%>:</em></div>
 
           <%}%>
 
@@ -108,7 +109,7 @@
           <label for="country"><%=loc.get(157,"Country")%>:</label>
           <input maxlength=40 type="text" id="country" name="country" value="<%=country_val%>">
         </div>
+      </div>
 
-      </fieldset>
       <button type="submit"><%=loc.get(2,"Request Favor")%></button>
     </form>	
