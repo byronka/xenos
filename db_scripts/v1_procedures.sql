@@ -210,6 +210,7 @@ CREATE PROCEDURE get_others_requestoffers
 ) 
 BEGIN 
 	SET @search_clauses = ""; -- all our search clauses go on this.
+	SET @having_clauses = ""; 
          
   -- searching by status
   IF status <> '' THEN

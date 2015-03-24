@@ -2,7 +2,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="com.renomad.xenos.Security" %>
 <%
-   String icode = Security.generate_invite_code(user_id);
+   String icode = Security.generate_invite_code(logged_in_user_id);
 %>
 <!DOCTYPE html>
 <html>
