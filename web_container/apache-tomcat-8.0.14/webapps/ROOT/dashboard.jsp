@@ -239,7 +239,7 @@
 
   <h3><%=Utils.safe_render(logged_in_user.username)%></h3>
   <ul>
-    <li>Rank average: <%=logged_in_user.rank_av%></li>
+    <li>Rank average: <%=logged_in_user.rank_av * 100%>%</li>
     <%int l_step = Requestoffer_utils.get_ladder_step(logged_in_user.rank_ladder);%>
     <li>Rank ladder: <%=Utils.get_stars(l_step)%></li>
     <% if (logged_in_user.points < 0) { %>
@@ -255,250 +255,236 @@
     <% } %>
   </ul>
 
-  <h3><%=loc.get(79, "Rank")%></h3>
 
   <%
     Requestoffer_utils.Rank_detail[] rank_details = 
       Requestoffer_utils.get_rank_detail(logged_in_user_id);
   %>
 
-    <%if (rank_details.length == 0) {%>
-        <p>(<%=loc.get(103,"None")%>)</p>
+  <%if (rank_details.length != 0) {%>
+    <div><em><%=loc.get(79, "Rank")%></em></div>
+
+    <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
+
+    <% if (rd.status_id == 2 || rd.status_id == 3) { 
+        //don't even show a particular line unless status is 2 or 3
+    %>
+
+      <%
+      //there's two parties here: the judging and the judged
+      if (rd.judging_user_id == logged_in_user_id) { // if we are the judge
+      %>
+
+        <div class="rank-detail">
+          <%=loc.get(165,"You")%>
+
+          <% if(rd.status_id == 3) {%>
+            <% if (rd.meritorious) { %>
+              <%=loc.get(166,"increased")%>
+            <% } else { %>
+              <%=loc.get(167,"decreased")%>
+            <% } %>
+          <% } %>
+            
+          <% if (rd.status_id == 2) { %>
+          <a href="judge.jsp?urdp=<%=rd.urdp_id%>">
+              <%=loc.get(181,"have not yet determined")%>
+            </a>
+          <% }  %>
+
+
+            <%=loc.get(168,"the reputation of")%>
+          <a href="user.jsp?user_id=<%=rd.judged_user_id%>">
+            <%=Utils.safe_render(rd.judged_username)%>
+          </a>
+
+          <%=loc.get(170,"for the favor")%>
+          <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
+            <%=Utils.safe_render(rd.ro_desc)%>
+          </a>
+
+        </div>
+        <%if (rd.comment.length() > 0) {%>
+          <%=loc.get(165,"You")%>
+          commented: "<%=rd.comment%>"
+        <%}%>
+
+      <%
+      } else { //if we are the judged
+      %>
+
+        <div class="rank-detail">
+          <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
+            <%=Utils.safe_render(rd.judging_username)%>
+          </a>
+
+          <% if(rd.status_id == 3) {%>
+            <% if (rd.meritorious) { %>
+              <%=loc.get(166,"increased")%>
+            <% } else { %>
+              <%=loc.get(167,"decreased")%>
+            <% } %>
+          <% } else { %>
+            <%=loc.get(180,"has not yet determined")%>
+          <% }  %>
+          
+          <%=loc.get(169,"your reputation")%>
+          <%=loc.get(170,"for the favor")%>
+
+          <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
+            <%=Utils.safe_render(rd.ro_desc)%>
+          </a>
+
+        </div>
+
+        <%if (rd.comment.length() > 0) {%>
+          <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
+            <%=Utils.safe_render(rd.judging_username)%>
+          </a>
+          commented: "<%=rd.comment%>"
+        <%}%>
+      <% } %>
+
+      <% } %>
+    <% }  %>
     <% } %> 
 
-  <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
-
-  <% if (rd.status_id == 2 || rd.status_id == 3) { 
-      //don't even show a particular line unless status is 2 or 3
-  %>
-
-    <%
-    //there's two parties here: the judging and the judged
-    if (rd.judging_user_id == logged_in_user_id) { // if we are the judge
-    %>
-
-      <div class="rank-detail">
-        <%=loc.get(165,"You")%>
-
-        <% if(rd.status_id == 3) {%>
-          <% if (rd.meritorious) { %>
-            <%=loc.get(166,"increased")%>
-          <% } else { %>
-            <%=loc.get(167,"decreased")%>
-          <% } %>
-        <% } %>
-          
-        <% if (rd.status_id == 2) { %>
-        <a href="judge.jsp?urdp=<%=rd.urdp_id%>">
-            <%=loc.get(181,"have not yet determined")%>
-          </a>
-        <% }  %>
-
-
-          <%=loc.get(168,"the reputation of")%>
-        <a href="user.jsp?user_id=<%=rd.judged_user_id%>">
-          <%=Utils.safe_render(rd.judged_username)%>
-        </a>
-
-        <%=loc.get(170,"for the favor")%>
-        <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
-          <%=Utils.safe_render(rd.ro_desc)%>
-        </a>
-
-      </div>
-      <%if (rd.comment.length() > 0) {%>
-        <%=loc.get(165,"You")%>
-        commented: "<%=rd.comment%>"
-      <%}%>
-
-    <%
-    } else { //if we are the judged
-    %>
-
-      <div class="rank-detail">
-        <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
-          <%=Utils.safe_render(rd.judging_username)%>
-        </a>
-
-        <% if(rd.status_id == 3) {%>
-          <% if (rd.meritorious) { %>
-            <%=loc.get(166,"increased")%>
-          <% } else { %>
-            <%=loc.get(167,"decreased")%>
-          <% } %>
-        <% } else { %>
-          <%=loc.get(180,"has not yet determined")%>
-        <% }  %>
-        
-        <%=loc.get(169,"your reputation")%>
-        <%=loc.get(170,"for the favor")%>
-
-        <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
-          <%=Utils.safe_render(rd.ro_desc)%>
-        </a>
-
-      </div>
-
-      <%if (rd.comment.length() > 0) {%>
-        <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
-          <%=Utils.safe_render(rd.judging_username)%>
-        </a>
-        commented: "<%=rd.comment%>"
-      <%}%>
-    <% } %>
-
-    <% } %>
-  <% }  %>
-
-  <h3><%=loc.get(119, "Favors I have offered to service")%></h3>
 		<%
 			Requestoffer_utils.Offer_I_made[] offers = 
 				Requestoffer_utils
         .get_requestoffers_I_offered_to_service(logged_in_user_id);
     %>
 
-    <%if (offers.length == 0) {%>
-        <p>(<%=loc.get(103,"None")%>)</p>
+    <%if (offers.length != 0) {%>
+      <div><em><%=loc.get(119, "Favors I have offered to service")%></em></div>
+      <%	for (Requestoffer_utils.Offer_I_made o : offers) { %>
+        <div class="requestoffer serviceoffered">
+          <a 
+            href="requestoffer.jsp?requestoffer=<%=o.requestoffer_id%>">
+            <%=Utils.get_trunc(Utils.safe_render(o.description), 15)%>
+          </a>
+        </div>
+      <% } %>
     <% } %> 
 
-    <%	for (Requestoffer_utils.Offer_I_made o : offers) { %>
-			<div class="requestoffer serviceoffered">
-        <a 
-          href="requestoffer.jsp?requestoffer=<%=o.requestoffer_id%>">
-          <%=Utils.get_trunc(Utils.safe_render(o.description), 15)%>
-        </a>
-			</div>
-		<% } %>
 
-  <h3><%=loc.get(120, "Offers to service my favors")%></h3>
 		<%
 			Requestoffer_utils.Service_request[] service_requests = 
 				Requestoffer_utils.get_service_requests(logged_in_user_id);
     %>
 
-    <%if (service_requests.length == 0) {%>
-        <p>(<%=loc.get(103,"None")%>)</p>
+    <%if (service_requests.length != 0) {%>
+      <div><em><%=loc.get(120, "Offers to service my favors")%></em></div>
+      <%for (Requestoffer_utils.Service_request sr : service_requests) { %>
+        <div class="servicerequest">
+          <%User servicer = User_utils.get_user(sr.user_id);%>
+          
+          <a href="user.jsp?user_id=<%=sr.user_id%>">
+            <%=Utils.safe_render(servicer.username)%> 
+          </a>
+          <%=loc.get(138,"wants to service")%>
+          <a href="requestoffer.jsp?requestoffer=<%=sr.requestoffer_id%>">
+            <%=Utils.get_trunc(Utils.safe_render(sr.desc),15)%>
+          </a>
+          <a href="choose_handler.jsp?requestoffer=<%=sr.requestoffer_id%>&user=<%=sr.user_id%>">
+            <%=loc.get(137,"Choose")%>
+          </a>
+        </div>
+      <% } %>
     <% } %> 
 
-    <%for (Requestoffer_utils.Service_request sr : service_requests) { %>
-			<div class="servicerequest">
-        <%User servicer = User_utils.get_user(sr.user_id);%>
-        
-        <a href="user.jsp?user_id=<%=sr.user_id%>">
-          <%=Utils.safe_render(servicer.username)%> 
-        </a>
-        <%=loc.get(138,"wants to service")%>
-        <a href="requestoffer.jsp?requestoffer=<%=sr.requestoffer_id%>">
-          <%=Utils.get_trunc(Utils.safe_render(sr.desc),15)%>
-        </a>
-        <a href="choose_handler.jsp?requestoffer=<%=sr.requestoffer_id%>&user=<%=sr.user_id%>">
-          <%=loc.get(137,"Choose")%>
-        </a>
-			</div>
-		<% } %>
 
-  <h3><%=loc.get(102, "Favors I am handling")%>:</h3>
 		<%
 			Requestoffer[] handling_requestoffers = 
 				Requestoffer_utils.get_requestoffers_I_am_handling(logged_in_user_id);
     %>
 
-    <%if (handling_requestoffers.length == 0) {%>
-        <p>(<%=loc.get(103,"None")%>)</p>
+    <%if (handling_requestoffers.length != 0) {%>
+      <div><em><%=loc.get(102, "Favors I am handling")%>:</em></div>
+      <%	for (Requestoffer r : handling_requestoffers) { %>
+        <div class="requestoffer handling">
+          <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
+            <%=Utils.get_trunc(Utils.safe_render(r.description),15)%> 
+          </a>
+          <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>">
+            <%=loc.get(130,"Cancel")%>
+          </a>
+        </div>
+      <% } %>
     <% } %> 
 
-    <%	for (Requestoffer r : handling_requestoffers) { %>
-			<div class="requestoffer handling">
-				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-					<%=Utils.get_trunc(Utils.safe_render(r.description),15)%> 
-        </a>
-        <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>">
-          <%=loc.get(130,"Cancel")%>
-        </a>
-			</div>
-		<% } %>
 
-	<h3 class="my-requestoffers-header">
-		<%=loc.get(124, "My closed Favors")%>:</h3>
-		<div class="requestoffers mine">
 		<%
 			Requestoffer[] my_closed_requestoffers = 
 				Requestoffer_utils
         .get_requestoffers_for_user_by_status(logged_in_user_id,77);
-        if (my_closed_requestoffers.length == 0) {%>
-        <p>(<%=loc.get(103,"None")%>)</p>
-        <% } 
-			for (Requestoffer r : my_closed_requestoffers) {
-		%>
-			<div class="requestoffer mine">
-				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-					<%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> 
-        </a>
-			</div>
-		<% } %>
-		</div>
+        %>
 
-	<h3 class="my-requestoffers-header">
-		<%=loc.get(123, "My Favors being serviced")%>:</h3>
-		<div class="requestoffers mine">
+     <% if (my_closed_requestoffers.length != 0) {%>
+
+        <div><em class="my-requestoffers-header"><%=loc.get(124, "My closed Favors")%>:</em></div>
+        <%	for (Requestoffer r : my_closed_requestoffers) { %>
+          <div class="requestoffer mine">
+            <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
+              <%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> 
+            </a>
+          </div>
+        <% } %>
+
+    <% } %>
+
+
 		<%
 			Requestoffer[] my_taken_requestoffers = 
 				Requestoffer_utils
         .get_requestoffers_for_user_by_status(logged_in_user_id,78);
-        if (my_taken_requestoffers.length == 0) {%>
-        <p>(<%=loc.get(103,"None")%>)</p>
-        <% } 
-			for (Requestoffer r : my_taken_requestoffers) {
-		%>
-			<div class="requestoffer mine">
-				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-					<%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> 
-        </a>
-        <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>">
-          <%=loc.get(130,"Cancel")%>
-        </a>
-			</div>
-		<% } %>
-		</div>
+    %>
 
-	<h3 class="my-requestoffers-header">
-		<%=loc.get(122, "My open Favors")%>:</h3>
-		<div class="requestoffers mine">
+    <% if (my_taken_requestoffers.length != 0) {%>
+        <div><em><%=loc.get(123, "My Favors being serviced")%>:</em></div>
+        <%for (Requestoffer r : my_taken_requestoffers) { %>
+        <div class="requestoffer mine">
+          <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
+            <%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> 
+          </a>
+          <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>">
+            <%=loc.get(130,"Cancel")%>
+          </a>
+        </div>
+      <% } %>
+    <% } %>
+
 		<%
 			Requestoffer[] my_open_requestoffers = 
 				Requestoffer_utils
         .get_requestoffers_for_user_by_status(logged_in_user_id,76);
-        if (my_open_requestoffers.length == 0) {%>
-        <p>(<%=loc.get(103,"None")%>)</p>
-        <% } 
-			for (Requestoffer r : my_open_requestoffers) {
-		%>
-			<div class="requestoffer mine">
-				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-					<%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> </a>
-          <a class="button" 
-            href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
-            <%=loc.get(21,"Delete")%>
-          </a>
-          <a class="button" href="retract_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-            <%=loc.get(194,"Retract")%>
-          </a>
-			</div>
-		<% } %>
-		</div>
+    %>
 
-	<h3 class="my-requestoffers-header">
-		<%=loc.get(125, "My draft Favors")%>:</h3>
-		<div class="requestoffers mine">
+      <% if (my_open_requestoffers.length != 0) {%>
+          <div><em><%=loc.get(122, "My open Favors")%>:</em></div>
+          <% for (Requestoffer r : my_open_requestoffers) { %>
+          <div class="requestoffer mine">
+            <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
+              <%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> </a>
+              <a class="button" 
+                href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
+                <%=loc.get(21,"Delete")%>
+              </a>
+              <a class="button" href="retract_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                <%=loc.get(194,"Retract")%>
+              </a>
+          </div>
+        <% } %>
+      <% } %>
+
 		<%
 			Requestoffer[] my_draft_requestoffers = 
 				Requestoffer_utils
         .get_requestoffers_for_user_by_status(logged_in_user_id,109);
-        if (my_draft_requestoffers.length == 0) {%>
-        <p>(<%=loc.get(103,"None")%>)</p>
-        <% } 
-			for (Requestoffer r : my_draft_requestoffers) {
-		%>
+    %>
+    <% if (my_draft_requestoffers.length != 0) {%>
+      <div><em><%=loc.get(125, "My draft Favors")%>:</em></div>
+			<% for (Requestoffer r : my_draft_requestoffers) { %>
 			<div class="requestoffer mine">
 				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
 					<%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> </a>
@@ -510,33 +496,35 @@
             <%=loc.get(6,"Publish")%>
           </a>
 			</div>
-		<% } %>
-		</div>
+      <% } %>
+    <% } %>
 
-	<h3><%=loc.get(96, "My conversations")%></h3>
 
-  <table border="1">
-    <thead>
-      <tr>
-        <th><%=loc.get(32,"Favor")%></th>
-        <th><%=loc.get(171,"Message")%></th>
-      </tr>
-    </thead>
-    <tbody>
    <% Requestoffer_utils.MyMessages[] mms 
      = Requestoffer_utils.get_my_conversations(logged_in_user_id);
-   for (Requestoffer_utils.MyMessages mm : mms) {%>
-    <tr>
-      <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"><%=Utils.get_trunc(Utils.safe_render(mm.desc),15)%></a> </td>
-      <td><%=Utils.safe_render(mm.message)%></td>
-    </tr>
-		<% } %>
-    </tbody>
-  </table>
-    <% if (mms.length == 0) { %>
-      <p>(<%=loc.get(103,"None")%>)</p>
-    <% } %>
-  </div>
+   %>
+  <% if (mms.length != 0) { %>
+    <div><em><%=loc.get(96, "My conversations")%></em></div>
+    <table border="1">
+      <thead>
+        <tr>
+          <th><%=loc.get(32,"Favor")%></th>
+          <th><%=loc.get(171,"Message")%></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (Requestoffer_utils.MyMessages mm : mms) {%>
+          <tr>
+            <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"><%=Utils.get_trunc(Utils.safe_render(mm.desc),15)%></a> </td>
+            <td><%=Utils.safe_render(mm.message)%></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  <% } %>
+
+
+    </div>
 
 
 <% // MY PROFILE ENDS %>
