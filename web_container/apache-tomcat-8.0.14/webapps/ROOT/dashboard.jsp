@@ -148,37 +148,6 @@
 
 <% // REQUESTOFFER ENTRIES END %>
 
-<% // ADVANCED SEARCH STARTS %>
-
-<div id="search_section">
-
-  <div>
-      <h3><%=loc.get(81,"Advanced Search")%></h3>
-  </div>
-
-  <%
-  // have to initialize these for use in advanced_search_html.jsp 
-  String[] statuses = new String[0];
-  String desc = "";
-  String startdate = "";
-  String enddate = "";
-  String users = "";
-  String postcode = "";
-  String distance = "";
-  String[] categories = new String[0];
-
-  boolean has_stat_error = false; // when status doesn't exist
-  boolean has_st_da_error = false; //date
-  boolean has_end_da_error = false; //date
-  boolean has_user_error = false;  // when user cannot be found
-  boolean has_distance_error = false; 
-  %>
-  <%@include file="advanced_search_html.jsp" %>
- 
-</div>
-
-
-<% // ADVANCED SEARCH ENDS %>
 <% // CREATE REQUESTOFFER STARTS %>
 
 <div id="create-requestoffer-container">
@@ -211,6 +180,37 @@
 <% // CREATE REQUESTOFFER ENDS %>
 
 </div>
+<% // ADVANCED SEARCH STARTS %>
+
+<div id="search_section">
+
+  <div>
+      <h3><%=loc.get(81,"Advanced Search")%></h3>
+  </div>
+
+  <%
+  // have to initialize these for use in advanced_search_html.jsp 
+  String[] statuses = new String[0];
+  String desc = "";
+  String startdate = "";
+  String enddate = "";
+  String users = "";
+  String postcode = "";
+  String distance = "";
+  String[] categories = new String[0];
+
+  boolean has_stat_error = false; // when status doesn't exist
+  boolean has_st_da_error = false; //date
+  boolean has_end_da_error = false; //date
+  boolean has_user_error = false;  // when user cannot be found
+  boolean has_distance_error = false; 
+  %>
+  <%@include file="advanced_search_html.jsp" %>
+ 
+</div>
+
+
+<% // ADVANCED SEARCH ENDS %>
 
 <% // MY PROFILE STARTS %>
 
