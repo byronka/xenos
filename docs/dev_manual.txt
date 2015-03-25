@@ -24,6 +24,7 @@ Useful SQL scripts
 Testing
 Definitions
 Deploy checklist
+Servers
 Troubleshooting
 
 
@@ -638,6 +639,29 @@ smoke test the application in Hebrew and French
 smoke test it on Chrome, Firefox, and Iphone, Android
 
 ** There can be no known defects at release. **
+
+
+
+
+
+
+Servers
+===============
+ssh.renomad.com - backup for youtrack, code repo, 
+  at Byron's house under the TV
+youtrack.renomad.com - the youtrack server, located with ChicagoVPS
+dev.renomad.com aka favir.co - server exposed to the world, 
+  running Tomcat and master database, with chicagoVPS
+prime.renomad.com - central Git code repo. automatically sends 
+  backup to ssh.renomad.com. Email server. chicagoVPS
+db2.renomad.com - chicagoVPS, openvz, runs replication of database 
+  and is backed up by chicagoVPS and onto ssh.renomad.com
+
+namesecure is the SOA for renomad.com
+godaddy is the SOA for favir.co
+
+passwords for everything is in Secret Server, at ss.renomad.com
+
 
 
 
