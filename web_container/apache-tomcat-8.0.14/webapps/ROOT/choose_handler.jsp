@@ -3,6 +3,10 @@
 <html>
 	<head>
 		<title><%=loc.get(139,"Choose a handler")%></title>
+    <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="includes/footer.css" >
+    <link rel="stylesheet" href="small_dialog.css" >
+    <script type="text/javascript" src="includes/utils.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
@@ -24,7 +28,7 @@
   //make sure the requesting user isn't setting themselves as the
   // handler on the favor.  That's not allowed.
   User potential_handler = User_utils.get_user(huid);
-  if (potential_handler == null || huid == user_id) {
+  if (potential_handler == null || huid == logged_in_user_id) {
     response.sendRedirect("general_error.jsp");
     return;
   }
@@ -36,7 +40,7 @@
   }
 
   //make sure this user is the owner.
-  if (user_id != r.requestoffering_user_id) {
+  if (logged_in_user_id != r.requestoffering_user_id) {
     response.sendRedirect("general_error.jsp");
     return;
   }
@@ -56,18 +60,36 @@
 
 %>
 <body>
+  <img id='my_background' style="z-index:-1;top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
-  <p>
-    <%=loc.get(140,"Confirm that you would like the following user to handle this request.")%>
-  </p>
-  <p>
-  <a href="choose_handler.jsp?requestoffer=<%=r.requestoffer_id%>&user=<%=huid%>&confirm=true">
-      <%=loc.get(95, "Confirm")%> 
-    </a>
-  </p>
-  <ul>
-    <li>Name: <%=Utils.safe_render(potential_handler.username)%></li>
-    <li>Rank: <%=potential_handler.rank_av%></li>
-    <li>Points: <%=potential_handler.points%></li>
-  </ul>
+  <div class="container">
+    <div class="table">
+      <h3>
+        <%=loc.get(140,"Confirm that you would like the following user to handle this request.")%>
+      </h3>
+      <div class="table">
+        <div class="form-row">
+          <label>Name:</label>
+          <span><%=Utils.safe_render(potential_handler.username)%></span>
+        </div>
+        <%if (potential_handler.urdp_count >= 30) {%>
+          <div class="form-row">
+            <label><%=loc.get(18,"Rank average")%>:</label>
+            <span><%=potential_handler.rank_av%></span>
+          </div>
+        <%}%>
+
+        <%int l_step = Requestoffer_utils.get_ladder_step(potential_handler.rank_ladder);%>
+
+        <div class="form-row">
+          <label><%=loc.get(19,"Rank ladder")%>:</label>
+          <span><%=Utils.get_stars(l_step)%></span>
+        </div>
+        <a href="choose_handler.jsp?requestoffer=<%=r.requestoffer_id%>&user=<%=huid%>&confirm=true">
+            <%=loc.get(95, "Confirm")%> 
+          </a>
+      </div>
+    </div>
+  </div>
+  <%@include file="includes/footer.jsp" %>
 </body>

@@ -12,14 +12,15 @@ span.error {
 }
 
 div.container {
-  display: table;
-  margin-left: auto;
-  margin-right: auto;
   margin-top: 10px;
   margin-bottom: 10px;
-  border-spacing: 20px 20px;
   background-color: white;
   height 1000px;
+}
+
+.table {
+  display: table;
+  border-spacing: 20px 20px;
 }
 
 div.container div.form-row {
@@ -32,4 +33,10 @@ div.container div.form-row label{
 
 div.container span {
   display: table-cell;
+}
+
+footer {
+  position: fixed;
+  bottom:0px;
+  width:100%;
 }

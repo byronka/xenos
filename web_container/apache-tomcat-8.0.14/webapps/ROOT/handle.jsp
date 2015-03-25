@@ -3,6 +3,10 @@
 <html>
 	<head>
 		<title><%=loc.get(94,"Handle requestoffer")%></title>
+    <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="includes/footer.css" >
+    <link rel="stylesheet" href="small_dialog.css" >
+    <script type="text/javascript" src="includes/utils.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
@@ -21,7 +25,7 @@
 
   //handle bad scenario - if the offering user *is* the owning user.
 
-  if (user_id == r.requestoffering_user_id) {
+  if (logged_in_user_id == r.requestoffering_user_id) {
     response.sendRedirect("general_error.jsp");
     return;
   }
@@ -30,7 +34,7 @@
   String is_confirmed = params.get("confirm");
   if (is_confirmed != null && is_confirmed.equals("true")) {
   if (Requestoffer_utils.offer_to_take_requestoffer(
-    user_id, r.requestoffer_id)) {
+    logged_in_user_id, r.requestoffer_id)) {
     response.sendRedirect("offer_received.jsp");
     return;
     } else {
@@ -45,7 +49,11 @@
 
 %>
 <body>
+  <img id='my_background' style="z-index:-1;top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
+  <div class="container">
   <p><%=loc.get(121,"If you would like to take this requestoffer, click the confirm button below")%></p>
     <a href="handle.jsp?requestoffer=<%=r.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
+  </div>
+  <%@include file="includes/footer.jsp" %>
 </body>
