@@ -15,7 +15,7 @@
   }
 
 	boolean result = Requestoffer_utils.
-		complete_transaction(r.requestoffer_id, user_id);
+		complete_transaction(r.requestoffer_id, logged_in_user_id);
 	if (result == true) {
 		response.sendRedirect(
 			"requestoffer_closed.jsp?requestoffer=" + r.requestoffer_id);
