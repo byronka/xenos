@@ -8,7 +8,7 @@
   String comment = request.getParameter("is_satis_comment");
 
 	boolean result = Requestoffer_utils.
-		rank_other_user(user_id, urdp_id, is_satisfied, comment);
+		rank_other_user(logged_in_user_id, urdp_id, is_satisfied, comment);
 
 	if (result == true) {
 		response.sendRedirect("judging_confirmed.jsp");

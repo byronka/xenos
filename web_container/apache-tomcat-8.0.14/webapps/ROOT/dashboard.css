@@ -13,14 +13,15 @@
 
 #see-and-create-requestoffer {
    min-height: 800px;
+   min-width: 350px;
    margin: 0px;
    padding: 0px;
    display: -webkit-inline-flex;
    display:         inline-flex;
    -webkit-flex-flow: column;
            flex-flow: column;
-   -webkit-flex: 3 1 34%;
-           flex: 3 1 34%;
+   -webkit-flex: 1 1 34%;
+           flex: 1 1 34%;
    -webkit-order: 2;
            order: 2;
 }
@@ -32,8 +33,8 @@
    min-width: 350px;
    padding: 5px;
    border: 1px solid #cccc33;
-   -webkit-flex: 3 1 60%;
-           flex: 3 1 60%;
+   -webkit-flex: 1 1 60%;
+           flex: 1 1 60%;
    -webkit-order: 1;
            order: 1;
 }
@@ -237,8 +238,8 @@ span.error {
    padding: 5px;
    border: 1px solid #8888bb;
    background: #ccccff;
-   -webkit-flex: 1 6 40%;
-           flex: 1 6 40%;
+   -webkit-flex: 1 1 40%;
+           flex: 1 1 40%;
    -webkit-order: 2;
            order: 2;
 }
