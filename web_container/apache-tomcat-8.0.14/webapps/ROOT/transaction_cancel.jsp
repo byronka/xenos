@@ -6,8 +6,6 @@
 
   //get query string information
   String qs = request.getQueryString();
-  java.util.Map<String, String> qs_params = Utils.parse_qs(qs);
-  boolean is_satisfied = Boolean.parseBoolean(qs_params.get("satisfied"));
   Requestoffer r = Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
   if (r == null) {
     response.sendRedirect("general_error.jsp");
@@ -15,14 +13,14 @@
   }
 
   // make sure the user doing this is one of the valid users to do so.
-   if (user_id != r.requestoffering_user_id && 
-      user_id != r.handling_user_id) {
+   if (logged_in_user_id != r.requestoffering_user_id && 
+      logged_in_user_id != r.handling_user_id) {
     response.sendRedirect("general_error.jsp");
     return;
   } 
 
 	boolean result = Requestoffer_utils.
-		cancel_taken_requestoffer(user_id, r.requestoffer_id, is_satisfied);
+		cancel_taken_requestoffer(logged_in_user_id, r.requestoffer_id);
 	if (result == true) {
 		response.sendRedirect("offer_canceled.jsp?");
 	} else {

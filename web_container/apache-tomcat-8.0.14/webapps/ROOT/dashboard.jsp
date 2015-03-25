@@ -148,37 +148,6 @@
 
 <% // REQUESTOFFER ENTRIES END %>
 
-<% // CREATE REQUESTOFFER STARTS %>
-
-<div id="create-requestoffer-container">
-
-  <%
-  // have to initialize these for use in create_requestoffer_html 
-  String de = "";
-  Integer selected_cat = null;
-  boolean has_cat_error = false;
-  boolean has_desc_error = false;
-  boolean has_size_error = false;
-
-  //address values
-  String strt_addr_1_val = "";
-  String strt_addr_2_val = "";
-  String city_val        = "";
-  String state_val       = "";
-  String postal_val      = "";
-  String country_val     = "";
-  String savedlocation_val = "";
-  String save_loc_to_user_checked = ""; 
-  %>
-  <div>
-      <h3><%=loc.get(2,"Request Favor")%></h3>
-  </div>
-
-  <%@include file="create_requestoffer_html.jsp" %>	
-</div>
-
-<% // CREATE REQUESTOFFER ENDS %>
-
 <% // MY PROFILE STARTS %>
 
 <div id="profile-container">
@@ -226,87 +195,25 @@
 
     <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
 
-    <% if (rd.status_id == 2 || rd.status_id == 3) { 
+    <% if (rd.status_id == 2 ) { 
         //don't even show a particular line unless status is 2 or 3
     %>
 
-      <%
+    <%
       //there's two parties here: the judging and the judged
       if (rd.judging_user_id == logged_in_user_id) { // if we are the judge
-      %>
+    %>
 
         <div class="rank-detail">
-          <%=loc.get(165,"You")%>
-
-          <% if(rd.status_id == 3) {%>
-            <% if (rd.meritorious) { %>
-              <%=loc.get(166,"increased")%>
-            <% } else { %>
-              <%=loc.get(167,"decreased")%>
-            <% } %>
-          <% } %>
-            
-          <% if (rd.status_id == 2) { %>
           <a href="judge.jsp?urdp=<%=rd.urdp_id%>">
-              <%=loc.get(181,"have not yet determined")%>
-            </a>
-          <% }  %>
-
-
-            <%=loc.get(168,"the reputation of")%>
-          <a href="user.jsp?user_id=<%=rd.judged_user_id%>">
+            <%=loc.get(79, "Rank")%>
             <%=Utils.safe_render(rd.judged_username)%>
           </a>
-
-          <%=loc.get(170,"for the favor")%>
-          <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
-            <%=Utils.safe_render(rd.ro_desc)%>
-          </a>
-
-        </div>
-        <%if (rd.comment.length() > 0) {%>
-          <%=loc.get(165,"You")%>
-          commented: "<%=rd.comment%>"
-        <%}%>
-
-      <%
-      } else { //if we are the judged
-      %>
-
-        <div class="rank-detail">
-          <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
-            <%=Utils.safe_render(rd.judging_username)%>
-          </a>
-
-          <% if(rd.status_id == 3) {%>
-            <% if (rd.meritorious) { %>
-              <%=loc.get(166,"increased")%>
-            <% } else { %>
-              <%=loc.get(167,"decreased")%>
-            <% } %>
-          <% } else { %>
-            <%=loc.get(180,"has not yet determined")%>
-          <% }  %>
-          
-          <%=loc.get(169,"your reputation")%>
-          <%=loc.get(170,"for the favor")%>
-
-          <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
-            <%=Utils.safe_render(rd.ro_desc)%>
-          </a>
-
         </div>
 
-        <%if (rd.comment.length() > 0) {%>
-          <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
-            <%=Utils.safe_render(rd.judging_username)%>
-          </a>
-          commented: "<%=rd.comment%>"
-        <%}%>
-      <% } %>
-
-      <% } %>
-    <% }  %>
+    <% } %> 
+    <% } %> 
+    <% } %> 
     <% } %> 
 
 		<%
@@ -355,21 +262,35 @@
 
 
 		<%
-			Requestoffer[] handling_requestoffers = 
-				Requestoffer_utils.get_requestoffers_I_am_handling(logged_in_user_id);
+			Others_Requestoffer[] handling_requestoffers = 
+				Requestoffer_utils.get_requestoffers_I_am_handling(logged_in_user_id,logged_in_user.postcode);
     %>
 
     <%if (handling_requestoffers.length != 0) {%>
       <div><em><%=loc.get(102, "Favors I am handling")%>:</em></div>
-      <%	for (Requestoffer r : handling_requestoffers) { %>
-        <div class="requestoffer handling">
-          <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-            <%=Utils.get_trunc(Utils.safe_render(r.description),15)%> 
+
+
+      <%	for (Others_Requestoffer r : handling_requestoffers) { %>
+
+          <% // requestoffer view starts HERE %>
+          <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+              <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                    <%=Utils.safe_render(r.description)%>
+                    <div class="datetime">
+                      <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
+                    </div>
+                 </div> 
+                 <div class="category c-<%=r.category%>" >&nbsp;</div>
+
+              <%if (r.distance != null ) {%>
+                <li class="distance">
+                  about <%=String.format("%.1f",r.distance)%> miles
+                </li>
+              <% } %>
+
           </a>
-          <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>">
-            <%=loc.get(130,"Cancel")%>
-          </a>
-        </div>
+          <% // requestoffer view ENDS HERE %>
+
       <% } %>
     <% } %> 
 
@@ -406,9 +327,6 @@
         <div class="requestoffer mine">
           <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
             <%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> 
-          </a>
-          <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>">
-            <%=loc.get(130,"Cancel")%>
           </a>
         </div>
       <% } %>
@@ -460,34 +378,61 @@
     <% } %>
 
 
-   <% Requestoffer_utils.MyMessages[] mms 
-     = Requestoffer_utils.get_my_conversations(logged_in_user_id);
-   %>
-  <% if (mms.length != 0) { %>
-    <div><em><%=loc.get(96, "My conversations")%></em></div>
-    <table >
-      <thead>
-        <tr>
-          <th style="text-align: left"><%=loc.get(32,"Favor")%></th>
-          <th style="text-align: left"><%=loc.get(171,"Message")%></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for (Requestoffer_utils.MyMessages mm : mms) {%>
-          <tr>
-            <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"><%=Utils.get_trunc(Utils.safe_render(mm.desc),15)%></a> </td>
-            <td><%=Utils.safe_render(mm.message)%></td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
-  <% } %>
-
-
+       <% Requestoffer_utils.MyMessages[] mms 
+         = Requestoffer_utils.get_my_conversations(logged_in_user_id);
+       %>
+      <% if (mms.length != 0) { %>
+        <div><em><%=loc.get(96, "My conversations")%></em></div>
+        <table >
+          <thead>
+            <tr>
+              <th style="text-align: left"><%=loc.get(32,"Favor")%></th>
+              <th style="text-align: left"><%=loc.get(171,"Message")%></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (Requestoffer_utils.MyMessages mm : mms) {%>
+              <tr>
+                <td><a href="requestoffer.jsp?requestoffer=<%=mm.requestoffer_id%>"><%=Utils.get_trunc(Utils.safe_render(mm.desc),15)%></a> </td>
+                <td style="width: 250px"><%=Utils.safe_render(mm.message)%></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      <% } %>
     </div>
-
-
 <% // MY PROFILE ENDS %>
+
+<% // CREATE REQUESTOFFER STARTS %>
+
+<div id="create-requestoffer-container">
+
+  <%
+  // have to initialize these for use in create_requestoffer_html 
+  String de = "";
+  Integer selected_cat = null;
+  boolean has_cat_error = false;
+  boolean has_desc_error = false;
+  boolean has_size_error = false;
+
+  //address values
+  String strt_addr_1_val = "";
+  String strt_addr_2_val = "";
+  String city_val        = "";
+  String state_val       = "";
+  String postal_val      = "";
+  String country_val     = "";
+  String savedlocation_val = "";
+  String save_loc_to_user_checked = ""; 
+  %>
+  <div>
+      <h3><%=loc.get(2,"Request Favor")%></h3>
+  </div>
+
+  <%@include file="create_requestoffer_html.jsp" %>	
+</div>
+
+<% // CREATE REQUESTOFFER ENDS %>
 </div>
 <% // ADVANCED SEARCH STARTS %>
 

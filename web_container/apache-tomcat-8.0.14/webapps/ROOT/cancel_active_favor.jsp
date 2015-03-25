@@ -21,8 +21,8 @@
 
   //handle bad scenario - if this user is not either the handler or owner.
 
-  if (user_id != r.requestoffering_user_id && 
-      user_id != r.handling_user_id) {
+  if (logged_in_user_id != r.requestoffering_user_id && 
+      logged_in_user_id != r.handling_user_id) {
     response.sendRedirect("general_error.jsp");
     return;
   }

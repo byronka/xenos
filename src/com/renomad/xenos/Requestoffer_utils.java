@@ -664,17 +664,27 @@ public final class Requestoffer_utils {
     * Gets all the requestoffers a user is handling
     * 
     * @param user_id a particular user's id
-    * @return an array of Requestoffers handled by that user.
+    * @return an array of Requestoffers handled by that user., or empty array otherwise
     */
-  public static Requestoffer[] 
-      get_requestoffers_I_am_handling(int user_id) {
+  public static Others_Requestoffer[] 
+      get_requestoffers_I_am_handling(int user_id, String postcode) {
     String sqlText = 
       
-      "SELECT r.requestoffer_id, r.datetime, r.description, "+
-      "r.points, r.category, rs.status, r.requestoffering_user_id, r.handling_user_id "+
+      "SELECT "+
+        "r.requestoffer_id, "+
+        "r.datetime, "+
+        "r.description, "+
+        "r.points, "+
+        "r.category, "+
+        "rs.status, "+
+        "r.requestoffering_user_id, "+
+        "r.handling_user_id, "+
+        "calc_approx_dist(l.postal_code, ?) as distance "+
       "FROM requestoffer r "+
       "JOIN requestoffer_state rs "+
         "ON rs.requestoffer_id = r.requestoffer_id " +
+      "LEFT JOIN location_to_requestoffer ltr ON ltr.requestoffer_id = r.requestoffer_id "+
+      "LEFT JOIN location l ON l.location_id = ltr.location_id "+
       "WHERE r.handling_user_id = ? AND rs.status <> 77"; // 77 is closed.
 
     PreparedStatement pstmt = null;
@@ -682,15 +692,16 @@ public final class Requestoffer_utils {
       Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      pstmt.setInt( 1, user_id);
+      pstmt.setString( 1, postcode);
+      pstmt.setInt( 2, user_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return new Requestoffer[0];
+        return new Others_Requestoffer[0];
       }
 
       //keep adding rows of data while there is more data
-      ArrayList<Requestoffer> requestoffers = 
-        new ArrayList<Requestoffer>();
+      ArrayList<Others_Requestoffer> requestoffers = 
+        new ArrayList<Others_Requestoffer>();
       while(resultSet.next()) {
         int rid = resultSet.getInt("requestoffer_id");
         String dt = resultSet.getString("datetime");
@@ -700,17 +711,21 @@ public final class Requestoffer_utils {
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
         int ca = resultSet.getInt("category");
-        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,ca);
-        requestoffers.add(requestoffer);
+        Double di = resultSet.getDouble("distance");
+        if (resultSet.wasNull()) {
+          di = null;
+        }
+        Others_Requestoffer or = new Others_Requestoffer( dt, d, s, 0.0f, 0, p, rid, ru, hu, ca, false, "", "", di);
+        requestoffers.add(or);
       }
 
       //convert arraylist to array
-      Requestoffer[] array_of_requestoffers = 
-        requestoffers.toArray(new Requestoffer[requestoffers.size()]);
+      Others_Requestoffer[] array_of_requestoffers = 
+        requestoffers.toArray(new Others_Requestoffer[requestoffers.size()]);
       return array_of_requestoffers;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
-      return null;
+      return new Others_Requestoffer[0];
     } finally {
       Database_access.close_statement(pstmt);
     }

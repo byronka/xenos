@@ -2,13 +2,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-    <style>
-      footer {
-        position: fixed;
-        bottom:0px;
-        width:100%;
-      }
-    </style>
     <link rel="stylesheet" href="includes/reset.css">
     <link rel="stylesheet" href="small_dialog.css">
     <link rel="stylesheet" href="includes/header.css" >
@@ -172,9 +165,7 @@
 
       <% if (r.status == 109) { %>
         <a href="publish_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(6,"Publish")%></a>
-      <% }
-      
-        if (show_delete_info) {%>
+      <% } if (show_delete_info) {%>
 
         <p>
           <%=loc.get(39,"Are you sure you want to delete this requestoffer?")%> 
@@ -194,9 +185,16 @@
           <a href="handle.jsp?requestoffer=<%=r.requestoffer_id%>">
             <%=loc.get(37,"Handle")%>
           </a>
-        <%}
 
-          String[] messages = 
+        <%}%>
+
+        <% if ( r.status == 78 && (is_requestoffering_user || is_handling_user)) { %> 
+          <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>" >
+            <%=loc.get(130,"Cancel")%>
+          </a>
+        <% } %>
+
+         <% String[] messages = 
             Requestoffer_utils.get_messages(r.requestoffer_id, logged_in_user_id);
            for (String m : messages) { %>
 

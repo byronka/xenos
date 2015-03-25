@@ -86,40 +86,41 @@
    -webkit-order: 3;
            order: 3;
 }
+
 #ro-container ul {
   list-style: none;
   padding: 0px;
 }
 
-#ro-container a.rank_6 {
+a.rank_6 {
   border: 5px solid #accb2f;
 }
 
-#ro-container a.rank_5 {
+a.rank_5 {
   border: 5px solid #3c9aae;
 }
 
-#ro-container a.rank_4 {
+a.rank_4 {
   border: 5px solid #bf9a76;
 }
 
-#ro-container a.rank_3 {
+a.rank_3 {
   border: 5px solid #5fd9c9;
 }
 
-#ro-container a.rank_2 {
+a.rank_2 {
   border: 5px solid #bef9f1;
 }
 
-#ro-container a.rank_1 {
+a.rank_1 {
   border: 5px solid #417c74;
 }
 
-#ro-container a.rank_0 {
+a.rank_0 {
   border: 5px solid #192f2c;
 }
 
-#ro-container a.requestoffer {
+a.requestoffer {
   background-color: grey;
   margin-left: auto;
   margin-right: auto;
@@ -129,7 +130,7 @@
   display: block;
 }
 
-#ro-container .datetime{
+.datetime{
   font-size: 7px;
 }
 
@@ -293,7 +294,7 @@ span.error {
 #create-requestoffer-container label {
   vertical-align: top;
   display: table-cell;
-  width: 250px;
+  width: 30%;
 }
 
 #create-requestoffer-container input[type="text"] {
