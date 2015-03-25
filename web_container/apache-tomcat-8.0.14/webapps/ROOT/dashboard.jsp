@@ -199,6 +199,7 @@
   String distance = "";
   String[] categories = new String[0];
 
+  boolean validation_error = false; // when status doesn't exist
   boolean has_stat_error = false; // when status doesn't exist
   boolean has_st_da_error = false; //date
   boolean has_end_da_error = false; //date

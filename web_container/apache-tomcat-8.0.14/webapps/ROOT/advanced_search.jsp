@@ -23,6 +23,7 @@ String users = "";
 String postcode = "";
 Double distance = null;
 String[] categories = new String[0];
+boolean validation_error = false;
 
 // all these errors should only occur on plain text entry
 boolean has_stat_error = false; // when status doesn't exist
@@ -32,7 +33,6 @@ boolean has_user_error = false;  // when user cannot be found
 boolean has_distance_error = false; // if distance is not a double
 
 if (request.getMethod().equals("POST")) {
-  boolean validation_error = false;
 
   //these guys don't require validation.
   if ((desc = request.getParameter("desc")) == null) {
@@ -119,7 +119,6 @@ if (request.getMethod().equals("POST")) {
 
   <body>
     <%@include file="includes/header.jsp" %>
-    <h3 class="error">Invalid input received - check and resubmit</h3>
     <%@include file="advanced_search_html.jsp" %>
     <%@include file="includes/footer.jsp" %>
   </body>

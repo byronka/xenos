@@ -1,4 +1,7 @@
     <form method="POST" action="advanced_search.jsp">
+    <% if (validation_error) { %>
+      <h3 class="error">Invalid input received - check and resubmit</h3>
+    <% } %>
 
     <div class="form-row">
       <label for="desc_input"><%=loc.get(10,"Description")%>: </label>
@@ -7,39 +10,39 @@
 
     <div class="form-row">
       <label for="distance_input"><%=loc.get(212,"Distance")%>: </label>
-      <input id="distance_input" name="distance" value="<%=distance%>"/> 
+      <input type="text" id="distance_input" name="distance" value="<%=distance == null ? "" : distance%>"/> 
     </div>
+    <% if (has_distance_error) { %>
+      <span class="error">
+        <%=loc.get(213,"distance error - needs to be a number")%>
+      </span>
+    <% } %>
 
     <div class="form-row">
       <label for="postcode_input"><%=loc.get(156,"Postal code")%>: </label>
       <input type="text" id="postcode_input" 
         name="postcode" value="<%=Utils.safe_render(postcode)%>"/> 
     </div>
-    <% if (has_distance_error) { %>
-      <span class="error">
-        <%=loc.get(213,"distance error")%>
-      </span>
-    <% } %>
 
     <div class="form-row">
       <label for="startdate_input"><%=loc.get(86,"Start date")%>: </label>
-      <input type="date" id="startdate_input" 
+      <input type="text" id="startdate_input" 
         name="startdate"  value="<%=startdate%>" /> 
     </div>
     <% if (has_st_da_error) { %>
       <span class="error">
-        <%=loc.get(83,"Invalid date")%>
+        <%=loc.get(83,"Invalid date - try something like 2014-1-2 for January 2, 2014")%>
       </span>
     <% } %>
 
     <div class="form-row">
       <label for="enddate_input"><%=loc.get(87,"End date")%>: </label>
-      <input type="date" id="enddate_input" 
+      <input type="text" id="enddate_input" 
         name="enddate" value="<%=enddate%>" /> 
     </div>
     <% if (has_end_da_error) { %>
       <span class="error">
-        <%=loc.get(83,"Invalid date")%>
+        <%=loc.get(83,"Invalid date - try something like 2014-1-2 for January 2, 2014")%>
       </span>
     <% } %>
 
