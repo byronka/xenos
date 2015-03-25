@@ -317,7 +317,7 @@ span.error {
 
 
 /* handling situation where things get too narrow */
-@media all and (max-width: 1050px) {
+@media all and (max-width: 650px) {
 
   #overall-container {
     -webkit-flex-flow: column;

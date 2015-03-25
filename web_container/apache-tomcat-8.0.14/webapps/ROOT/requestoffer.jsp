@@ -2,9 +2,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
+    <style>
+      footer {
+        position: fixed;
+        bottom:0px;
+        width:100%;
+      }
+    </style>
     <link rel="stylesheet" href="includes/reset.css">
     <link rel="stylesheet" href="requestoffer.css">
     <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="includes/footer.css" >
     <script type="text/javascript" src="includes/utils.js"></script>
     <title><%=loc.get(22,"Requestoffer Details")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -57,12 +65,10 @@
 
 %>
 <body>
-    <img id='my_background' style="z-index:-1;top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
+  <img id='my_background' style="z-index:-1;top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
-  <h3>
-    <%=Utils.safe_render(r.description)%>
-  </h3>
   <div class="container">
+    <h3> <%=Utils.safe_render(r.description)%> </h3>
     <div class="form-row">
       <label for="status_span"><%=loc.get(24,"Status")%>:</label>
       <span id="status_span"><%=loc.get(r.status,"")%></span>

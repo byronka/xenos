@@ -4,8 +4,18 @@
 <!DOCTYPE html>
 <html>
 	<head>
+    <style>
+      footer {
+        position: fixed;
+        bottom:0px;
+        width:100%;
+      }
+    </style>
     <link rel="stylesheet" href="includes/reset.css">
     <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="includes/footer.css" >
+    <script type="text/javascript" src="includes/utils.js"></script>
+    <link rel="stylesheet" href="user.css" >
     <title><%=loc.get(97,"My Profile")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
@@ -20,23 +30,33 @@
   }
 %>
 	<body>
+  <img id='my_background' style="z-index:-1;top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
 
-  <h3><%=Utils.safe_render(the_user.username)%></h3>
+  <div class="container">
+    <h3><%=Utils.safe_render(the_user.username)%></h3>
+
     <%if (the_user.urdp_count >= 30) {%>
-    <div>Rank average: <%=the_user.rank_av%></div>
+      <div class="form-row">
+        <label><%=loc.get(18,"Rank average")%>:</label>
+        <span><%=the_user.rank_av%></span>
+      </div>
     <%}%>
+
     <%int l_step = Requestoffer_utils.get_ladder_step(the_user.rank_ladder);%>
-    <div>Rank ladder: <%=Utils.get_stars(l_step)%></div>
-    <% if (logged_in_user.points < 0) { %>
-      <div>
-        <%=logged_in_user.username%> 
-        <%=String.format(loc.get(27,"owes people %d points"),-logged_in_user.points)%>
+
+    <div class="form-row">
+      <label><%=loc.get(19,"Rank ladder")%>:</label>
+      <span><%=Utils.get_stars(l_step)%></span>
+    </div>
+
+    <% if (the_user.points < 0) { %>
+      <div class="form-row">
+        <label><%=the_user.username%> <%=String.format(loc.get(27,"owes people %d points"),-the_user.points)%></label>
       </div>
     <% } else { %>
-      <div>
-        <%=logged_in_user.username%> 
-        <%=String.format(loc.get(9,"is owed %d points"),logged_in_user.points)%>
+      <div class="form-row">
+        <label><%=the_user.username%> <%=String.format(loc.get(9,"is owed %d points"),the_user.points)%></label>
       </div>
     <% } %>
 
@@ -48,91 +68,91 @@
   <%if (rank_details.length != 0) {%>
     <div><em><%=loc.get(79, "Rank")%></em></div>
 
-  <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
+    <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
 
 
-  <% if (rd.status_id == 2 || rd.status_id == 3) { 
-      //don't even show a particular line unless status is 2 or 3
-  %>
-  <%
-  //there's two parties here: the judging and the judged
-  if (rd.judging_user_id == uid) { // if this user is the judge
-  %>
+    <% if (rd.status_id == 2 || rd.status_id == 3) { 
+        //don't even show a particular line unless status is 2 or 3
+    %>
+    <%
+    //there's two parties here: the judging and the judged
+    if (rd.judging_user_id == uid) { // if this user is the judge
+    %>
 
-    <div class="rank-detail">
-      <%=rd.timestamp%>
-      <%=Utils.safe_render(rd.judging_username)%>
+      <div class="rank-detail">
+        <%=rd.timestamp%>
+        <%=Utils.safe_render(rd.judging_username)%>
 
-      <% if(rd.meritorious != null) {%>
-        <% if (rd.meritorious) { %>
-          <%=loc.get(166,"increased")%>
+        <% if(rd.meritorious != null) {%>
+          <% if (rd.meritorious) { %>
+            <%=loc.get(166,"increased")%>
+          <% } else { %>
+            <%=loc.get(167,"decreased")%>
+          <% } %>
         <% } else { %>
-          <%=loc.get(167,"decreased")%>
-        <% } %>
-      <% } else { %>
-        <%=loc.get(180,"has not yet determined")%>
-      <% }  %>
+          <%=loc.get(180,"has not yet determined")%>
+        <% }  %>
 
-      <%=loc.get(168,"the reputation of")%>
+        <%=loc.get(168,"the reputation of")%>
 
-      <a href="user.jsp?user_id=<%=rd.judged_user_id%>">
+        <a href="user.jsp?user_id=<%=rd.judged_user_id%>">
+          <%=Utils.safe_render(rd.judged_username)%>
+        </a>
+
+        <%=loc.get(170,"for the favor")%>
+        <span>
+          <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
+            <%=Utils.safe_render(rd.ro_desc)%>
+          </a>
+        </span>
+
+      </div>
+      <%if (rd.comment.length() > 0) {%>
+        <%=Utils.safe_render(rd.judging_username)%>
+        commented: "<%=rd.comment%>"
+      <%}%>
+
+    <%
+    } else { 
+    %>
+
+      <div class="rank-detail">
+        <%=rd.timestamp%>
+        <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
+          <%=Utils.safe_render(rd.judging_username)%>
+        </a>
+
+        <% if(rd.meritorious != null) {%>
+          <% if (rd.meritorious) { %>
+            <%=loc.get(166,"increased")%>
+          <% } else { %>
+            <%=loc.get(167,"decreased")%>
+          <% } %>
+        <% } else { %>
+          <%=loc.get(180,"has not yet determined")%>
+        <% }  %>
+        
+        <%=loc.get(168,"the reputation of")%>
+        
         <%=Utils.safe_render(rd.judged_username)%>
-      </a>
 
-      <%=loc.get(170,"for the favor")%>
-      <span>
-        <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
-          <%=Utils.safe_render(rd.ro_desc)%>
+        <%=loc.get(170,"for the favor")%>
+
+        <span>
+          <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
+            <%=Utils.safe_render(rd.ro_desc)%>
+          </a>
+        </span>
+
+      </div>
+
+      <%if (rd.comment.length() > 0) {%>
+        <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
+          <%=Utils.safe_render(rd.judging_username)%>
         </a>
-      </span>
-
-    </div>
-    <%if (rd.comment.length() > 0) {%>
-      <%=Utils.safe_render(rd.judging_username)%>
-      commented: "<%=rd.comment%>"
-    <%}%>
-
-  <%
-  } else { 
-  %>
-
-    <div class="rank-detail">
-      <%=rd.timestamp%>
-      <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
-        <%=Utils.safe_render(rd.judging_username)%>
-      </a>
-
-      <% if(rd.meritorious != null) {%>
-        <% if (rd.meritorious) { %>
-          <%=loc.get(166,"increased")%>
-        <% } else { %>
-          <%=loc.get(167,"decreased")%>
-        <% } %>
-      <% } else { %>
-        <%=loc.get(180,"has not yet determined")%>
-      <% }  %>
-      
-      <%=loc.get(168,"the reputation of")%>
-      
-      <%=Utils.safe_render(rd.judged_username)%>
-
-      <%=loc.get(170,"for the favor")%>
-
-      <span>
-        <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
-          <%=Utils.safe_render(rd.ro_desc)%>
-        </a>
-      </span>
-
-    </div>
-
-    <%if (rd.comment.length() > 0) {%>
-      <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
-        <%=Utils.safe_render(rd.judging_username)%>
-      </a>
-      commented: "<%=rd.comment%>"
-    <%}%>
-  <% } %>
+        commented: "<%=rd.comment%>"
+      <%}%>
+    <% } %>
 
   <% } %>
   <% } %>
@@ -157,5 +177,7 @@
 			</div>
 		<% } %>
 		</div>
+		</div>
+  <%@include file="includes/footer.jsp" %>
 	</body>
 </html>
