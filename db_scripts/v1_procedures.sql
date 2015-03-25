@@ -238,15 +238,15 @@ BEGIN
     SET @enddate = enddate;
     SET @search_clauses = 
       CONCAT(@search_clauses, 
-        ' AND datetime >= @startdate AND datetime <= @enddate ');
+        ' AND r.datetime >= @startdate AND r.datetime <= @enddate ');
   ELSEIF startdate <> '' THEN
     SET @startdate = startdate;
     SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND datetime >= @startdate ');
+      CONCAT(@search_clauses, ' AND r.datetime >= @startdate ');
   ELSEIF enddate <> '' THEN
     SET @enddate = enddate;
     SET @search_clauses = CONCAT(@search_clauses, 
-      ' AND datetime <= @enddate ');
+      ' AND r.datetime <= @enddate ');
   END IF;
 
   -- searching by description
