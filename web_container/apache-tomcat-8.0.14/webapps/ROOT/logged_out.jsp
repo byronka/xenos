@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="logged_out.css" title="desktop">
 </head>
 <body>
-  <img id='my_background' style="top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/sad.jpg" onload="xenos_utils.fade_in_background()"/>
+  <img id='my_background' src="img/sad.jpg" onload="xenos_utils.fade_in_background()"/>
   <div class="trademark">Xenos</div>
   <nav class="cl-effect-1">
     <p><%=loc.get(66,"You have successfully logged out")%></p>

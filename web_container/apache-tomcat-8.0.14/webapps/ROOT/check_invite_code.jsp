@@ -56,7 +56,7 @@
   <link rel="stylesheet" href="register.css" title="desktop">
   </head>
 <body>
-    <img id='my_background' style="top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/cool2.jpg" onload="xenos_utils.fade_in_background()"/>
+    <img id='my_background' src="img/cool2.jpg" onload="xenos_utils.fade_in_background()"/>
   <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
   <div class="register">
     <form id="enter_name_form" action="check_invite_code.jsp" method="post">

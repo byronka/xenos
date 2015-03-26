@@ -65,7 +65,7 @@
     <link rel="stylesheet" href="login.css" title="desktop">
 	</head>
   <body>
-    <img id='my_background' style="top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
+    <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
     <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
     <div class="signin">
       <form method="POST" action="login.jsp">

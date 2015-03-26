@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="index.css" title="desktop">
 </head>
 <body>
-  <img id='my_background' style="top:0;left:0;width:100%;height:100%;opacity:0;position:fixed;" src="img/cool.jpg" onload="xenos_utils.fade_in_background()"/>
+  <img id='my_background' src="img/cool.jpg" onload="xenos_utils.fade_in_background()"/>
 	<div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
   <div class="actions">
     <section>
