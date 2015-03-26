@@ -2,7 +2,7 @@
 #overall-container {
    margin-left: auto;
    margin-right: auto;
-   max-width: 1000px;
+   max-width: 875px;
    min-height: 1000px;
    padding: 0px;
    display: -webkit-flex;
@@ -64,7 +64,6 @@
 
 @media all and (min-width: 875px) {
   #search_section {
-    position: absolute;
     top: 60px;
     right: 50px;
     -webkit-flex: 0 1 auto;
@@ -257,49 +256,82 @@ span.error {
   background-color: red;
 }
 
-#create-requestoffer-container select {
-  width: 100%;
-  overflow: hidden;
+
+#create-requestoffer-container div#location-expander{
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#create-requestoffer-container button#submitter{
+  display: inline-block;
+  margin-top: 10px;
+  float: right;
+}
+
+  #create-requestoffer-container select {
+    overflow: hidden;
+  }
+
+  #create-requestoffer-container textarea {
+    vertical-align: top;
+    display: table-cell;
+  }
+
+@media all and (min-width: 875px) {
+  #create-requestoffer-container select {
+    width: 200px;
+  }
+
+  #create-requestoffer-container textarea {
+    width: 200px;
+  }
+
+  #create-requestoffer-container input[type="text"] {
+    width: 200px;
+  }
+  
+  #create-requestoffer-container #basic-section {
+    display: table;
+    table-layout: auto;
+    border-spacing: 5px 5px;
+  }
+
+  #create-requestoffer-container #location-section {
+    display: table;
+    table-layout: auto;
+    border-spacing: 5px 5px;
+  }
+
+  #create-requestoffer-container div {
+    vertical-align: top;
+    display: table-row;
+  }
+
+  #create-requestoffer-container label {
+    vertical-align: top;
+    display: table-cell;
+    width: 120px;
+  }
 }
 
 #create-requestoffer-container #basic-section {
-  display: table;
-  table-layout: auto;
   margin-top: 10px;
   margin-bottom: 10px;
-  border-spacing: 5px 5px;
-  width:100%;
+}
+
+#create-requestoffer-container #location-wrapper {
+  display: none;
 }
 
 #create-requestoffer-container #location-section {
-  display: table;
-  table-layout: auto;
-  width:100%;
   margin-top: 10px;
   margin-bottom: 10px;
-  border-spacing: 5px 5px;
 }
 
-#create-requestoffer-container div {
-  vertical-align: top;
-  display: table-row;
-}
-
-#create-requestoffer-container textarea {
-  vertical-align: top;
-  display: table-cell;
-  width: 100%;
-}
-
-#create-requestoffer-container label {
-  vertical-align: top;
-  display: table-cell;
-  width: 30%;
-}
 
 #create-requestoffer-container input[type="text"] {
   display: table-cell;
-  width: 100%;
   background: 12px 11px no-repeat, linear-gradient(to bottom, #f7f7f8 0%,#ffffff 100%);
   border-radius: 3px;
   border: 1px solid grey;
@@ -325,9 +357,34 @@ span.error {
   outline: none;
 }
 
+footer {
+  position: fixed;
+  bottom:0px;
+  width:100%;
+}
 
 /* handling situation where things get too narrow */
 @media all and (max-width: 874px) {
+
+  #create-requestoffer-container #basic-section {
+    display: block;
+  }
+
+  #create-requestoffer-container div {
+    width: 100%;
+  }
+
+  #create-requestoffer-container select {
+    width: 100%;
+  }
+
+  #create-requestoffer-container textarea {
+    width: 98%;
+  }
+
+  #create-requestoffer-container input[type="text"] {
+    width: 100%;
+  }
 
   #overall-container {
     -webkit-flex-flow: column;

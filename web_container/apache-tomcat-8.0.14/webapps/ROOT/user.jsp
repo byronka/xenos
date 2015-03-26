@@ -4,13 +4,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-    <style>
-      footer {
-        position: fixed;
-        bottom:0px;
-        width:100%;
-      }
-    </style>
     <link rel="stylesheet" href="includes/reset.css">
     <link rel="stylesheet" href="includes/header.css" >
     <link rel="stylesheet" href="includes/footer.css" >
