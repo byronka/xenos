@@ -38,17 +38,32 @@
       </div>
 
           <script>
-            var dude = function() {
+            var expand_contract = function() {
               var lo_wrapper = document.getElementById('location-wrapper');
+              var expander = document.getElementById('location-expander');
               if (lo_wrapper.style.display == 'none' || lo_wrapper.style.display == '') {
+                lo_wrapper.style.opacity = 0;
                 lo_wrapper.style.display = 'block';
+
+                var do_the_fade = function() {
+                  var curr_opac = lo_wrapper.style.opacity;
+                  curr_opac = Number(curr_opac) + 0.1;
+                  lo_wrapper.style.opacity = curr_opac;
+                  if (curr_opac < 1) { 
+                    setTimeout(do_the_fade,40);
+                  }
+                };
+
+                expander.textContent = "Forget it - I don't need a location";
+                do_the_fade(); //kick it off.
               } else {
                 lo_wrapper.style.display = 'none';
+                expander.textContent = "Add location";
               }
             };
           </script>
 
-          <div id="location-expander" onclick="dude()" >-Add location-</div>
+          <div id="location-expander" class="expander" onclick="expand_contract()" >Add location</div>
 
           <% 
             User_location[] locations = 

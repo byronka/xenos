@@ -306,9 +306,17 @@
         <div><em class="my-requestoffers-header"><%=loc.get(124, "My closed Favors")%>:</em></div>
         <%	for (Requestoffer r : my_closed_requestoffers) { %>
           <div class="requestoffer mine">
-            <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-              <%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> 
+            <% // requestoffer view starts HERE %>
+            <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                      <%=Utils.safe_render(r.description)%>
+                      <div class="datetime">
+                        <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
+                      </div>
+                   </div> 
+                   <div class="category c-<%=r.category%>" >&nbsp;</div>
             </a>
+            <% // requestoffer view ENDS HERE %>
           </div>
         <% } %>
 
@@ -325,9 +333,17 @@
         <div><em><%=loc.get(123, "My Favors being serviced")%>:</em></div>
         <%for (Requestoffer r : my_taken_requestoffers) { %>
         <div class="requestoffer mine">
-          <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-            <%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> 
-          </a>
+            <% // requestoffer view starts HERE %>
+            <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                      <%=Utils.safe_render(r.description)%>
+                      <div class="datetime">
+                        <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
+                      </div>
+                   </div> 
+                   <div class="category c-<%=r.category%>" >&nbsp;</div>
+            </a>
+            <% // requestoffer view ENDS HERE %>
         </div>
       <% } %>
     <% } %>
@@ -342,15 +358,17 @@
           <div><em><%=loc.get(122, "My open Favors")%>:</em></div>
           <% for (Requestoffer r : my_open_requestoffers) { %>
           <div class="requestoffer mine">
-            <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-              <%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> </a>
-              <a class="button" 
-                href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
-                <%=loc.get(21,"Delete")%>
-              </a>
-              <a class="button" href="retract_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                <%=loc.get(194,"Retract")%>
-              </a>
+            <% // requestoffer view starts HERE %>
+            <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                      <%=Utils.safe_render(r.description)%>
+                      <div class="datetime">
+                        <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
+                      </div>
+                   </div> 
+                   <div class="category c-<%=r.category%>" >&nbsp;</div>
+            </a>
+            <% // requestoffer view ENDS HERE %>
           </div>
         <% } %>
       <% } %>
@@ -364,15 +382,17 @@
       <div><em><%=loc.get(125, "My draft Favors")%>:</em></div>
 			<% for (Requestoffer r : my_draft_requestoffers) { %>
 			<div class="requestoffer mine">
-				<a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-					<%=Utils.get_trunc(Utils.safe_render(r.description), 15) %> </a>
-          <a class="button" 
-            href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&amp;delete=true">
-            <%=loc.get(21,"Delete")%>
+          <% // requestoffer view starts HERE %>
+          <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+              <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                    <%=Utils.safe_render(r.description)%>
+                    <div class="datetime">
+                      <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
+                    </div>
+                 </div> 
+                 <div class="category c-<%=r.category%>" >&nbsp;</div>
           </a>
-          <a class="button" href="publish_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-            <%=loc.get(6,"Publish")%>
-          </a>
+          <% // requestoffer view ENDS HERE %>
 			</div>
       <% } %>
     <% } %>

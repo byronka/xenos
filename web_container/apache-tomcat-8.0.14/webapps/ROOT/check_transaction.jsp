@@ -2,6 +2,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
+    <link rel="stylesheet" href="includes/reset.css">
+    <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="includes/footer.css" >
+    <link rel="stylesheet" href="small_dialog.css" >
+    <script type="text/javascript" src="includes/utils.js"></script>
 		<title><%=loc.get(22,"Favor Details")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
@@ -21,10 +26,16 @@
   }
 %>
 <body>
-  <p>
-    Click on <a href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>">confirm</a> if you are sure you want to complete
-    this Favor.  You will be given an opportunity to provide feedback
-    for the other user afterwards.
-  </p>
+  <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
+  <%@include file="includes/header.jsp" %>
+
+  <div class="container">
+    <p>
+      Click on <a href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>">confirm</a> if you are sure you want to complete
+      this Favor.  You will be given an opportunity to provide feedback
+      for the other user afterwards.
+    </p>
+  </div>
+  <%@include file="includes/footer.jsp" %>
 </body>
 </html>

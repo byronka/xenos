@@ -9,6 +9,34 @@
   opacity: 0;
 }
 
+.expander {
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    border: solid 1px #da7c0c;
+    background: #478dad;
+    text-align: center;
+    text-decoration: none;
+    font: 14px/100% Arial, Helvetica, sans-serif;
+    padding: .5em 2em .55em;
+    text-shadow: 0 1px 1px rgba(0,0,0,.3);
+    -webkit-border-radius: .5em; 
+    -moz-border-radius: .5em;
+    border-radius: .3em;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+.expander:hover {
+    background: #f47c20;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f88e11), to(#f06015));
+    background: -moz-linear-gradient(top,  #f88e11,  #f06015);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f88e11', endColorstr='#f06015');
+}
+.expander:active {
+    position: relative;
+    top: 1px;
+}
 /* stuff related to the entire dashboard */
 #overall-container {
    margin-left: auto;
@@ -75,12 +103,9 @@
 
 @media all and (min-width: 660px) {
   #search_section {
+    position: fixed;
     top: 60px;
-    right: 50px;
-    -webkit-flex: 0 1 auto;
-           flex: 0 1 auto;
-    -webkit-order: 2;
-           order: 2;
+    right: 10px;
   }
 }
 
