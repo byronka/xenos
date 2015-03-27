@@ -216,19 +216,26 @@
   <% } %> 
 
 		<%
-			Requestoffer_utils.Offer_I_made[] offers = 
+			Requestoffer[] offers = 
 				Requestoffer_utils
         .get_requestoffers_I_offered_to_service(logged_in_user_id);
     %>
 
     <%if (offers.length != 0) {%>
       <div><em><%=loc.get(119, "Favors I have offered to service")%></em></div>
-      <%	for (Requestoffer_utils.Offer_I_made o : offers) { %>
+      <%	for (Requestoffer r : offers) { %>
         <div class="requestoffer serviceoffered">
-          <a 
-            href="requestoffer.jsp?requestoffer=<%=o.requestoffer_id%>">
-            <%=Utils.get_trunc(Utils.safe_render(o.description), 15)%>
-          </a>
+            <% // requestoffer view starts HERE %>
+            <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                      <%=Utils.safe_render(r.description)%>
+                      <div class="datetime">
+                        <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
+                      </div>
+                   </div> 
+                   <div class="category c-<%=r.category%>" >&nbsp;</div>
+            </a>
+            <% // requestoffer view ENDS HERE %>
         </div>
       <% } %>
     <% } %> 
@@ -240,6 +247,8 @@
     %>
 
     <%if (service_requests.length != 0) {%>
+
+    <div style="padding-top: 20px; padding-bottom: 20px;">
       <div><em><%=loc.get(120, "Offers to service my favors")%></em></div>
       <%for (Requestoffer_utils.Service_request sr : service_requests) { %>
         <div class="servicerequest">
@@ -252,11 +261,12 @@
           <a href="requestoffer.jsp?requestoffer=<%=sr.requestoffer_id%>">
             <%=Utils.get_trunc(Utils.safe_render(sr.desc),15)%>
           </a>
-          <a href="choose_handler.jsp?requestoffer=<%=sr.requestoffer_id%>&user=<%=sr.user_id%>">
+          <a class="button" href="choose_handler.jsp?requestoffer=<%=sr.requestoffer_id%>&user=<%=sr.user_id%>">
             <%=loc.get(137,"Choose")%>
           </a>
         </div>
       <% } %>
+    </div>
     <% } %> 
 
 

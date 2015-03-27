@@ -85,7 +85,7 @@
           <label><%=loc.get(19,"Rank ladder")%>:</label>
           <span><%=Utils.get_stars(l_step)%></span>
         </div>
-        <a href="choose_handler.jsp?requestoffer=<%=r.requestoffer_id%>&user=<%=huid%>&confirm=true">
+        <a class="button" href="choose_handler.jsp?requestoffer=<%=r.requestoffer_id%>&user=<%=huid%>&confirm=true">
             <%=loc.get(95, "Confirm")%> 
           </a>
       </div>

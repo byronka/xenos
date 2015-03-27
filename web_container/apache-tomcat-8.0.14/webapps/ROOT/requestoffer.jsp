@@ -194,11 +194,6 @@
 
         <%}%>
 
-        <% if ( r.status == 78 && (is_requestoffering_user || is_handling_user)) { %> 
-          <a class="button" href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>" >
-            <%=loc.get(130,"Cancel")%>
-          </a>
-        <% } %>
 
          <% String[] messages = 
             Requestoffer_utils.get_messages(r.requestoffer_id, logged_in_user_id);
@@ -214,10 +209,18 @@
             <button class="button" type="submit"><%=loc.get(36,"Send message")%></button>
           </form>
         <% } %>
-        <%if (is_requestoffering_user && r.status == 78) {%>
-          <a class="button" href="check_transaction.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(98,"Transaction is complete")%>
-          </a>
-        <%}%>
+        <div>
+          <% if ( r.status == 78 && (is_requestoffering_user || is_handling_user)) { %> 
+            <a class="button" href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>" >
+              <%=loc.get(130,"Cancel")%>
+            </a>
+          <% } %>
+
+          <%if (is_requestoffering_user && r.status == 78) {%>
+            <a class="button" href="check_transaction.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(98,"Transaction is complete")%>
+            </a>
+          <%}%>
+      </div>
       </div>
     </div>
   <%@include file="includes/footer.jsp" %>

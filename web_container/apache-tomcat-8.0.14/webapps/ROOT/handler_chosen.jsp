@@ -18,7 +18,7 @@
     <div class="table">
       <h3><%=loc.get(141, "You have selected a handler for your Favor!")%></h3>
       <p><%=loc.get(142, "You have now selected someone to handle your favor.  That user will be informed, and we will also inform the other users (if any) that they have not been selected.")%></p>
-      <p><a href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
+      <p><a class="button" href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
     </div>
   </div>
   <%@include file="includes/footer.jsp" %>

@@ -239,38 +239,23 @@ public final class Requestoffer_utils {
   }
 
 
-  public static class Offer_I_made {
-
-    public final int requestoffer_id;
-    public String description;
-    public String date_created;
-
-    public Offer_I_made(
-        int requestoffer_id, 
-        String description, 
-        String date_created) {
-      this.requestoffer_id = requestoffer_id;
-      this.description = description;
-      this.date_created = date_created;
-    }
-  }
-
-
   /**
     * Gets an array of offers I made on requestoffers
     * 
     * @param user_id the user who made offers on requestoffers
     * @return an array of offers, or empty array if failure
     */
-  public static Offer_I_made[] 
+  public static Requestoffer[] 
     get_requestoffers_I_offered_to_service(int user_id) {
     
     String sqlText = 
-      "SELECT ro.requestoffer_id, ro.description, "+
-        "rsr.date_created " +
-      "FROM requestoffer_service_request rsr " +
-      "JOIN requestoffer ro "+
-        "ON ro.requestoffer_id = rsr.requestoffer_id " +
+      "SELECT r.requestoffer_id, r.datetime, r.description, r.points,"+
+      "rs.status, r.requestoffering_user_id, r.handling_user_id, r.category "+
+      "FROM requestoffer r "+
+      "JOIN requestoffer_state rs "+
+        "ON rs.requestoffer_id = r.requestoffer_id " +
+      "JOIN requestoffer_service_request rsr "+
+        "ON r.requestoffer_id = rsr.requestoffer_id " +
       "WHERE rsr.user_id = ? AND rsr.status = 106";
 
     PreparedStatement pstmt = null;
@@ -281,26 +266,32 @@ public final class Requestoffer_utils {
       pstmt.setInt( 1, user_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return new Offer_I_made[0];
+        return new Requestoffer[0];
       }
 
-      ArrayList<Offer_I_made> offers = 
-        new ArrayList<Offer_I_made>();
+      ArrayList<Requestoffer> offers = 
+        new ArrayList<Requestoffer>();
       while(resultSet.next()) {
         int rid = resultSet.getInt("requestoffer_id");
-        String desc = resultSet.getNString("description");
-        String dt = resultSet.getString("date_created");
-        offers.add(new Offer_I_made(rid, desc, dt));
+        String dt = resultSet.getString("datetime");
+        String d = resultSet.getNString("description");
+        int p = resultSet.getInt("points");
+        int s = resultSet.getInt("status");
+        int ru = resultSet.getInt("requestoffering_user_id");
+        int hu = resultSet.getInt("handling_user_id");
+        int ca = resultSet.getInt("category");
+        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,ca);
+        offers.add(requestoffer);
       }
 
       //convert arraylist to array
-      Offer_I_made[] array_of_offers = 
-        offers.toArray(new Offer_I_made[offers.size()]);
+      Requestoffer[] array_of_offers = 
+        offers.toArray(new Requestoffer[offers.size()]);
 
       return array_of_offers;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
-      return new Offer_I_made[0];
+      return new Requestoffer[0];
     } finally {
       Database_access.close_statement(pstmt);
     }
