@@ -31,7 +31,8 @@
       <%=loc.get(185,"it now if you wish.  Until you publish, it will remain hidden.  You can also publish this favor from your profile page.")%>
 
     </p>
-    <p><a href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
+    <p><a class="button" href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a>
+    <a class="button" href="requestoffer.jsp?requestoffer=<%=requestoffer_id%>">View the new favor</a></p>
   </div>
   <%@include file="includes/footer.jsp" %>
 </body>

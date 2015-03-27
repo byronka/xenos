@@ -42,28 +42,32 @@
       </a>
     </p>
 
+    <div class="table">
     <form method="POST" action="judged.jsp" >
-      <fieldset>
-        <input type="hidden" name="urdp_id" value="<%=urdp_id%>" />
-        <legend><%=loc.get(22,"Favor Details")%></legend>
+      <input type="hidden" name="urdp_id" value="<%=urdp_id%>" />
 
-        <input type="radio" name="is_satis" id="happy" value="true" />
+      <div class="row">
         <label for="happy">Happy</label>
+        <input type="radio" name="is_satis" id="happy" value="true" />
+      </div>
 
-        <input type="radio" name="is_satis" id="sad" value="false" />
+      <div class="row">
         <label for="sad">Sad</label>
+        <input type="radio" name="is_satis" id="sad" value="false" />
+      </div>
 
-        <div>
+        <div class="row">
           <label for="is_satis_comment">Comment</label>
           <textarea 
+            style="width: 350px"
             id="is_satis_comment" 
             name="is_satis_comment" 
             placeholder="I really appreciate ..." ></textarea>
         </div>
 
-        <button type="submit">submit</button>
-      </fieldset>
+        <button class="button" type="submit">submit</button>
     </form>
+    </div>
   </div>
   <%@include file="includes/footer.jsp" %>
 </body>

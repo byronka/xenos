@@ -15,7 +15,7 @@
 
 body {
   background-color: #5f2d1d;
-  line-height: 1.98em;
+  line-height: 1.28em;
 }
 
 span.error {
@@ -36,18 +36,18 @@ div.container {
 
 .table {
   display: table;
-  border-spacing: 20px 20px;
+  border-spacing: 8px;
 }
 
-div.container div.form-row {
+.table div.row {
   display: table-row;
 }
 
-div.container div.form-row label{
+.table div.row label{
   display: table-cell;
 }
 
-div.container span {
+.table span {
   display: table-cell;
 }
 
@@ -55,4 +55,38 @@ footer {
   position: fixed;
   bottom:0px;
   width:100%;
+}
+
+.button {
+    display: inline-block;
+    outline: none;
+    margin: 10px;
+    cursor: pointer;
+    border: solid 1px #da7c0c;
+    background: #478dad;
+    color: white;
+    height: 17px;
+    text-decoration: none;
+    font: 14px/100% Arial, Helvetica, sans-serif;
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -ms-box-sizing: content-box;
+    padding: .5em 2em .55em;
+    text-shadow: 0 1px 1px rgba(0,0,0,.3);
+    -webkit-border-radius: .5em; 
+    -moz-border-radius: .5em;
+    border-radius: .3em;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+.button:hover {
+    background: #f47c20;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f88e11), to(#f06015));
+    background: -moz-linear-gradient(top,  #f88e11,  #f06015);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f88e11', endColorstr='#f06015');
+}
+.button:active {
+    position: relative;
+    top: 1px;
 }

@@ -5,7 +5,9 @@
 		<title><%=loc.get(81, "Advanced search")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="includes/header.css" >
-    <link rel="stylesheet" href="advanced_search.css" >
+    <link rel="stylesheet" href="includes/footer.css" >
+    <link rel="stylesheet" href="small_dialog.css" >
+    <script type="text/javascript" src="includes/utils.js"></script>
 		<meta http-equiv="content-type" value="text/html; charset=UTF8" />
 	</head>
 
@@ -118,6 +120,7 @@ if (request.getMethod().equals("POST")) {
 %>
 
   <body>
+    <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
     <%@include file="includes/header.jsp" %>
     <%@include file="advanced_search_html.jsp" %>
     <%@include file="includes/footer.jsp" %>

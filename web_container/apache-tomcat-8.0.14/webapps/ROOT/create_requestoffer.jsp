@@ -3,11 +3,11 @@
 <html>
 	<head>
     <title><%=loc.get(2, "Request Favor")%></title>	
-		<meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="includes/reset.css">
-    <link rel="stylesheet" href="includes/header.css" title="desktop">
-    <link rel="stylesheet" href="create_requestoffer.css" title="desktop">
+    <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="small_dialog.css" >
     <script type="text/javascript" src="includes/utils.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
@@ -24,6 +24,8 @@
     boolean has_cat_error = false;
     boolean has_desc_error = false;
     boolean has_size_error = false;
+    boolean user_entered_a_location = false;
+    boolean user_selected_a_location = false;
 
     //address values
     String strt_addr_1_val = "";
@@ -80,14 +82,16 @@
         has_cat_error = true;
       }
 
-      boolean user_entered_a_location = 
-        Utils.parse_int(savedlocation_val) != null ||
+      user_entered_a_location = 
         !Utils.is_null_or_empty(strt_addr_1_val) ||
         !Utils.is_null_or_empty(strt_addr_2_val) ||
         !Utils.is_null_or_empty(city_val) ||
         !Utils.is_null_or_empty(state_val) ||
         !Utils.is_null_or_empty(postal_val) ||
         !Utils.is_null_or_empty(country_val);
+
+      user_selected_a_location = 
+        Utils.parse_int(savedlocation_val) != null;
       
       if (!validation_error) {
 
@@ -95,7 +99,8 @@
         int new_ro_id = 0;
 
         //try adding the new requestoffer - if failed, go to error page
-        if ((prr = Requestoffer_utils.put_requestoffer(logged_in_user_id, de, selected_cat)).pe == Requestoffer_utils.Pro_enum.GENERAL_ERROR) {
+        if ((prr = Requestoffer_utils.put_requestoffer(
+          logged_in_user_id, de, selected_cat)).pe == Requestoffer_utils.Pro_enum.GENERAL_ERROR) {
           response.sendRedirect("general_error.jsp");
           return;
         }
@@ -107,18 +112,20 @@
         }
        
         //if we got here, a requestoffer was successfully added.
-        if (user_entered_a_location) {
+        // we will prioritize getting text fields entered over the
+        // user selecting an address.  that is why "user_entered_a_location"
+        // comes first.
+        if (user_entered_a_location ) {
 
-          Integer location_id = 0;
-          if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
-            Requestoffer_utils.assign_location_to_requestoffer(location_id, new_ro_id);
-          } else {
-            int uid = request.getParameter("save_loc_to_user") != null ? logged_in_user_id : 0;
-            Requestoffer_utils.put_location(
-              uid, new_ro_id,
-              strt_addr_1_val, strt_addr_2_val, 
-              city_val, state_val, postal_val, country_val);
-          }
+          int uid = request.getParameter("save_loc_to_user") != null ? logged_in_user_id : 0;
+          Requestoffer_utils.put_location(
+            uid, new_ro_id,
+            strt_addr_1_val, strt_addr_2_val, 
+            city_val, state_val, postal_val, country_val);
+
+        } else if (user_selected_a_location ) {
+          Integer location_id = Utils.parse_int(savedlocation_val);
+          Requestoffer_utils.assign_location_to_requestoffer(location_id, new_ro_id);
         }
 
         response.sendRedirect("requestoffer_created.jsp?requestoffer=" + new_ro_id);
@@ -131,8 +138,6 @@
     <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
     <%@include file="includes/header.jsp" %>	
     <%@include file="create_requestoffer_html.jsp" %>	
-
-	     
-  <%@include file="includes/footer.jsp" %>
+    <%@include file="includes/footer.jsp" %>
 	</body>
 </html>

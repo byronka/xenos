@@ -21,9 +21,9 @@
     <p>
       <%=loc.get(191,"Thanks!  By providing a ranking for this user, you make the system a safer place for everyone.")%>
     </p>
-    <p><a href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
-    <%@include file="includes/footer.jsp" %>
+    <p><a class="button" href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
   </div>
+  <%@include file="includes/footer.jsp" %>
   </body>
 </html>
 

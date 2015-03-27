@@ -63,7 +63,8 @@ public final class Build_db_schema {
 
 
   public static void main(String[] args) {
-		//first check that we are using the right version of the database software
+		//first check that we are using the right version 
+    //of the database software
 		Statement stmt = null;
 		try {
 			String sqlText = "Select VERSION() as version";
@@ -102,7 +103,12 @@ public final class Build_db_schema {
       create_database(); //will create the db and set version to 0
       version = 0;
     }
+    // This is where we add our statements for each of the scripts we will run.
+    // once we deploy, we increment the version number and "previous version"
+    // scripts won't get run. 
     if (version == 0) { run_multiple_statements("db_scripts/v1_setup.sql"); }
+    //for the future...
+    //if (version == 1) { run_multiple_statements("db_scripts/v2_setup.sql"); }
   }
 
 

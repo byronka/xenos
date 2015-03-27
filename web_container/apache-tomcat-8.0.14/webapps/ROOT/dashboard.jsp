@@ -155,7 +155,7 @@
       <h3><%=Utils.safe_render(logged_in_user.username)%></h3>
   </div>
     <div>
-       <a href="change_current_location.jsp" >
+       <a class="button" href="change_current_location.jsp" >
       Current location: 
       <%
       String user_postcode = 
@@ -163,15 +163,22 @@
       <%=user_postcode%></a>
     </div>
   <p>
-    <a href="change_password.jsp"><%=loc.get(113,"Change password")%></a>
+    <a class="button" href="change_password.jsp"><%=loc.get(113,"Change password")%></a>
   </p>
   <p>
-    <a href="generate_icode.jsp"><%=loc.get(206,"Generate invitation code")%></a>
+    <a class="button" href="generate_icode.jsp"><%=loc.get(206,"Generate invitation code")%></a>
   </p>
 
-    <div>Rank average: <%=logged_in_user.rank_av * 100%>%</div>
+  <div class="table">
+    <div class="row">
+      <label>Rank average:</label>
+      <span><%=logged_in_user.rank_av * 100%>%</span>
+    </div>
     <%int l_step = Requestoffer_utils.get_ladder_step(logged_in_user.rank_ladder);%>
-    <div>Rank ladder: <%=Utils.get_stars(l_step)%></div>
+    <div class="row">
+      <label>Rank ladder:</label>
+      <span><%=Utils.get_stars(l_step)%></span>
+    </div>
     <% if (logged_in_user.points < 0) { %>
       <div>
         <%=logged_in_user.username%> 
@@ -183,6 +190,7 @@
         <%=String.format(loc.get(9,"is owed %d points"),logged_in_user.points)%>
       </div>
     <% } %>
+  </div>
 
 
   <%
@@ -191,30 +199,21 @@
   %>
 
   <%if (rank_details.length != 0) {%>
-    <div><em><%=loc.get(79, "Rank")%></em></div>
+    <% for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
+      <% if (rd.status_id == 2 ) { %>
+        <% if (rd.judging_user_id == logged_in_user_id) { %>
 
-    <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
+          <div class="rank-detail">
+            <a class="button" href="judge.jsp?urdp=<%=rd.urdp_id%>">
+              <%=loc.get(79, "Rank")%>
+              <%=Utils.safe_render(rd.judged_username)%>
+            </a>
+          </div>
 
-    <% if (rd.status_id == 2 ) { 
-        //don't even show a particular line unless status is 2 or 3
-    %>
-
-    <%
-      //there's two parties here: the judging and the judged
-      if (rd.judging_user_id == logged_in_user_id) { // if we are the judge
-    %>
-
-        <div class="rank-detail">
-          <a href="judge.jsp?urdp=<%=rd.urdp_id%>">
-            <%=loc.get(79, "Rank")%>
-            <%=Utils.safe_render(rd.judged_username)%>
-          </a>
-        </div>
-
+        <% } %> 
+      <% } %> 
     <% } %> 
-    <% } %> 
-    <% } %> 
-    <% } %> 
+  <% } %> 
 
 		<%
 			Requestoffer_utils.Offer_I_made[] offers = 
@@ -434,6 +433,8 @@
   boolean has_cat_error = false;
   boolean has_desc_error = false;
   boolean has_size_error = false;
+  boolean user_entered_a_location = false;
+  boolean user_selected_a_location = false;
 
   //address values
   String strt_addr_1_val = "";

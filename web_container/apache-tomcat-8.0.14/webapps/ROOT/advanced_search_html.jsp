@@ -1,14 +1,16 @@
+  <div class="container">
+  <div class="table">
     <form method="POST" action="advanced_search.jsp">
     <% if (validation_error) { %>
       <h3 class="error">Invalid input received - check and resubmit</h3>
     <% } %>
 
-    <div class="form-row">
+    <div class="row">
       <label for="desc_input"><%=loc.get(10,"Description")%>: </label>
       <input type="text" id="desc_input" name="desc" value="<%=Utils.safe_render(desc)%>"/> 
     </div>
 
-    <div class="form-row">
+    <div class="row">
       <label for="distance_input"><%=loc.get(212,"Distance")%>: </label>
       <input type="text" id="distance_input" name="distance" value="<%=distance == null ? "" : distance%>"/> 
     </div>
@@ -18,13 +20,13 @@
       </span>
     <% } %>
 
-    <div class="form-row">
+    <div class="row">
       <label for="postcode_input"><%=loc.get(156,"Postal code")%>: </label>
       <input type="text" id="postcode_input" 
         name="postcode" value="<%=Utils.safe_render(postcode)%>"/> 
     </div>
 
-    <div class="form-row">
+    <div class="row">
       <label for="startdate_input"><%=loc.get(86,"Start date")%>: </label>
       <input type="text" id="startdate_input" 
         name="startdate"  value="<%=startdate%>" /> 
@@ -35,7 +37,7 @@
       </span>
     <% } %>
 
-    <div class="form-row">
+    <div class="row">
       <label for="enddate_input"><%=loc.get(87,"End date")%>: </label>
       <input type="text" id="enddate_input" 
         name="enddate" value="<%=enddate%>" /> 
@@ -47,7 +49,7 @@
     <% } %>
 
       <%for (int s : Requestoffer_utils.get_requestoffer_statuses()) {%>
-        <div class="form-row">
+        <div class="row">
           <label for="status_checkbox_<%=s%>"><%=loc.get(s,"")%></label>
           <% if(java.util.Arrays.asList(statuses).contains(Integer.toString(s))) { %>
             <input type="checkbox" id="status_checkbox_<%=s%>" checked name="statuses" value="<%=s%>" />
@@ -57,7 +59,7 @@
         </div>
       <% } %>
 
-    <div class="form-row">
+    <div class="row">
       <label for="users_input"><%=loc.get(80,"User")%>: </label>
       <input type="text" id="users_input" name="users" value="<%=users%>" />
     </div>
@@ -69,7 +71,7 @@
 
 
       <%for(int c : Requestoffer_utils.get_all_categories()) {%>
-      <div class="form-row"> 
+      <div class="row"> 
         <label for="cat_checkbox_<%=c%>"><%=loc.get(c,"")%></label>
           <% if(java.util.Arrays.asList(categories).contains(Integer.toString(c))) { %>
             <input type="checkbox" id="cat_checkbox_<%=c%>" checked name="categories" value="<%=c%>" />
@@ -79,5 +81,7 @@
         </div>
       <%}%>
 
-      <button type="submit"><%=loc.get(1,"Search")%></button>
+      <button class="button" type="submit"><%=loc.get(1,"Search")%></button>
     </form>
+  </div>
+  </div>

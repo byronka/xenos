@@ -19,7 +19,7 @@
   <div class="container">
     <h3><%=loc.get(110, "Favor published")%></h3>
     <p><%=loc.get(111,"Other users can now view your favor and may offer to handle it.")%></p>
-    <p><a href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
+    <p><a class="button" href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
   </div>
   <%@include file="includes/footer.jsp" %>
 </body>

@@ -1,7 +1,8 @@
                        
+<div class="container">
     <form method="POST" action="create_requestoffer.jsp">	
-      <div id="basic-section">
-        <div>
+      <div class="table" id="basic-section">
+        <div class="row">
           <label for="description">* <%=loc.get(10,"Description")%>:</label>
           <textarea 
             id="description"
@@ -15,7 +16,7 @@
           <span class="error"><%=loc.get(5, "Please enter a description")%></span>
           <%}%> 
         </div>
-        <div>
+        <div class="row">
           <label for="categories">* <%=loc.get(13,"Categories")%>:</label>
           <select 
             id="categories" 
@@ -37,33 +38,6 @@
         </div>
       </div>
 
-          <script>
-            var expand_contract = function() {
-              var lo_wrapper = document.getElementById('location-wrapper');
-              var expander = document.getElementById('location-expander');
-              if (lo_wrapper.style.display == 'none' || lo_wrapper.style.display == '') {
-                lo_wrapper.style.opacity = 0;
-                lo_wrapper.style.display = 'block';
-
-                var do_the_fade = function() {
-                  var curr_opac = lo_wrapper.style.opacity;
-                  curr_opac = Number(curr_opac) + 0.1;
-                  lo_wrapper.style.opacity = curr_opac;
-                  if (curr_opac < 1) { 
-                    setTimeout(do_the_fade,40);
-                  }
-                };
-
-                expander.textContent = "Forget it - I don't need a location";
-                do_the_fade(); //kick it off.
-              } else {
-                lo_wrapper.style.display = 'none';
-                expander.textContent = "Add location";
-              }
-            };
-          </script>
-
-          <div id="location-expander" class="expander" onclick="expand_contract()" >Add location</div>
 
           <% 
             User_location[] locations = 
@@ -71,11 +45,15 @@
           %>
 
 
+      <% if (user_entered_a_location  || user_selected_a_location) {%>
         <div id="location-wrapper">
-          <div id="location-section" >
+      <% } else { %>
+        <div style="display:none" id="location-wrapper">
+      <% } %>
+          <div class="table" id="location-section" >
             <% if (locations.length > 0) { %>
 
-              <div>
+              <div class="row">
                 <label for="savedlocation"><%=loc.get(158,"Select one of your saved locations")%>:</label>
                 <select 
                   id="savedlocation" 
@@ -102,42 +80,80 @@
 
             <%}%>
 
-          <div>
+          <div class="row">
             <label for="save_loc_to_user"><%=loc.get(160,"Save to my favorites")%></label>
             <input id="save_loc_to_user" name="save_loc_to_user" <%=save_loc_to_user_checked%> type="checkbox"/>
           </div>
             
-          <div>
+          <div class="row">
             <label for="strt_addr_1"><%=loc.get(152,"Street Address 1")%>:</label>
             <input maxlength=100 type="text" id="strt_addr_1" name="strt_addr_1" value="<%=strt_addr_1_val%>">
           </div>
             
-          <div>
+          <div class="row">
             <label for="strt_addr_2"><%=loc.get(153,"Street Address 2")%>:</label>
             <input maxlength=100 type="text" id="strt_addr_2" name="strt_addr_2" value="<%=strt_addr_2_val%>">
           </div>
             
-          <div>
+          <div class="row">
             <label for="city"><%=loc.get(154,"City")%>:</label>
             <input maxlength=40 type="text" id="city" name="city" value="<%=city_val%>">
           </div>
             
-          <div>
+          <div class="row">
             <label for="state"><%=loc.get(155,"State")%>:</label>
             <input maxlength=30 type="text" id="state" name="state" value="<%=state_val%>">
           </div>
             
-          <div>
+          <div class="row">
             <label for="postal" ><%=loc.get(156,"Postal code")%>:</label>
             <input maxlength=20 type="text" id="postal" name="postal" value="<%=postal_val%>">
           </div>
             
-          <div>
+          <div class="row">
             <label for="country"><%=loc.get(157,"Country")%>:</label>
             <input maxlength=40 type="text" id="country" name="country" value="<%=country_val%>">
           </div>
         </div>
       </div>
 
-      <button id="submitter" type="submit"><%=loc.get(2,"Request Favor")%></button>
+        <script>
+          var expand_contract = function() {
+            var lo_wrapper = document.getElementById('location-wrapper');
+            var expander = document.getElementById('location-expander');
+            if (lo_wrapper.style.display == 'none' || lo_wrapper.style.display == '') {
+              lo_wrapper.style.opacity = 0;
+              lo_wrapper.style.display = 'block';
+
+              var do_the_fade = function() {
+                var curr_opac = lo_wrapper.style.opacity;
+                curr_opac = Number(curr_opac) + 0.1;
+                lo_wrapper.style.opacity = curr_opac;
+                if (curr_opac < 1) { 
+                  setTimeout(do_the_fade,40);
+                }
+              };
+
+              expander.textContent = "Forget it - I don't need a location";
+              do_the_fade(); //kick it off.
+            } else {
+              lo_wrapper.style.display = 'none';
+              expander.textContent = "Add location";
+            }
+          };
+        </script>
+
+    <table>
+      <tbody>
+        <tr>
+          <td>
+            <div id="location-expander" class="button expander" onclick="expand_contract()" >Add location</div>
+          </td>
+          <td>
+            <button class="button" id="submitter" type="submit"><%=loc.get(2,"Request Favor")%></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
     </form>	
+  </div>

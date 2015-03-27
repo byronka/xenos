@@ -1335,7 +1335,7 @@ public final class Requestoffer_utils {
       "JOIN requestoffer ro "+
         "ON ro.requestoffer_id = rm.requestoffer_id " +
       "WHERE from_user_id = %d OR to_user_id = %d " +
-      "ORDER BY timestamp DESC", user_id, user_id);
+      "ORDER BY timestamp DESC LIMIT 10", user_id, user_id);
     PreparedStatement pstmt = null;
     try {
       Connection conn = Database_access.get_a_connection();

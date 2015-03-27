@@ -7,7 +7,7 @@
   int requestoffer_id = 
     Integer.parseInt(Utils.parse_qs(qs).get("requestoffer"));
   boolean success = 
-    Requestoffer_utils.retract_requestoffer(user_id, requestoffer_id );
+    Requestoffer_utils.retract_requestoffer(logged_in_user_id, requestoffer_id );
   if (!success) {
     response.sendRedirect("general_error.jsp");
     } else {

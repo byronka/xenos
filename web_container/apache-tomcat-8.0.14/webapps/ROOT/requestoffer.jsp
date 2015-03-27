@@ -63,15 +63,15 @@
   <div class="container">
     <h3> <%=Utils.safe_render(r.description)%> </h3>
     <div class="table">
-      <div class="form-row">
+      <div class="row">
         <label for="status_span"><%=loc.get(24,"Status")%>:</label>
         <span id="status_span"><%=loc.get(r.status,"")%></span>
       </div>
-      <div class="form-row">
+      <div class="row">
         <label for="datetime_span"><%=loc.get(25,"Date")%>: </label>
         <span id="datetime_span"><%=r.datetime%></span>
       </div>
-      <div class="form-row">
+      <div class="row">
         <label for="owning_span"><%=loc.get(100,"Owning User")%>: </label>
         <span id="owning_span">
           <%if(is_requestoffering_user) {%><em><%=loc.get(165,"You")%></em>, <%}%>
@@ -80,7 +80,7 @@
           </a>
         </span>
       </div>
-      <div class="form-row">
+      <div class="row">
         <label for=handling_span"><%=loc.get(101,"Handling User")%>: </label>
         <span id="handling_span">
         <%if(is_handling_user) {%>
@@ -96,86 +96,92 @@
         <%}%>
         </span>
       </div>
-      <div class="form-row">
+      <div class="row">
         <label for="cat_span"><%=loc.get(28,"Categories")%>: </label>
         <span id="cat_span" class="category">
           <%=loc.get(r.category,"")%> 
         </span>
       </div>
-      <% 
-          for (User_location lo : locations) { 
-      %>
-        <div class="form-row">
-            <%
-              if (logged_in_user_id == r.handling_user_id || 
-              logged_in_user_id == r.requestoffering_user_id) { 
-            %>
-        </div>
+      <% for (User_location lo : locations) { %>
 
-        <div class="form-row">
-              <%if (!Utils.is_null_or_empty(lo.str_addr_1)) {%>
-                <label for="strt1_span"><%=loc.get(152,"Street address 1")%>: </label>
-                <span id="strt1_span"><%=Utils.safe_render(lo.str_addr_1)%></span>
-              <%}%>
-        </div>
+        <%
+          if (logged_in_user_id == r.handling_user_id || 
+          logged_in_user_id == r.requestoffering_user_id) { 
+        %>
 
-        <div class="form-row">
-              <%if (!Utils.is_null_or_empty(lo.str_addr_2)) {%>
-                <label for="strt2_span"><%=loc.get(153,"Street address 2")%>: </label>
-                <span id="strt2_span"><%=Utils.safe_render(lo.str_addr_2)%></span>
-              <%}%>
-        </div>
+          <%if (!Utils.is_null_or_empty(lo.str_addr_1)) {%>
+            <div class="row">
+              <label for="strt1_span"><%=loc.get(152,"Street address 1")%>: </label>
+              <span id="strt1_span"><%=Utils.safe_render(lo.str_addr_1)%></span>
+            </div>
+          <%}%>
 
-        <div class="form-row">
-              <%if (!Utils.is_null_or_empty(lo.state)) {%>
-                <label for="state_span"><%=loc.get(155,"State")%>: </label>
-                <span id="state_span"><%=Utils.safe_render(lo.state)%></span>
-              <%}%>
-        </div>
+          <%if (!Utils.is_null_or_empty(lo.str_addr_2)) {%>
+            <div class="row">
+              <label for="strt2_span"><%=loc.get(153,"Street address 2")%>: </label>
+              <span id="strt2_span"><%=Utils.safe_render(lo.str_addr_2)%></span>
+            </div>
+          <%}%>
 
-        <div class="form-row">
-              <%if (!Utils.is_null_or_empty(lo.country)) {%>
-                <label for="country_span"><%=loc.get(157,"Country")%>:</label>
-                <span id="country_span"><%=Utils.safe_render(lo.country)%></span>
-              <%}%>
-        </div>
+          <%if (!Utils.is_null_or_empty(lo.state)) {%>
+            <div class="row">
+              <label for="state_span"><%=loc.get(155,"State")%>: </label>
+              <span id="state_span"><%=Utils.safe_render(lo.state)%></span>
+            </div>
+          <%}%>
 
-          <% } %>
+          <%if (!Utils.is_null_or_empty(lo.country)) {%>
+            <div class="row">
+              <label for="country_span"><%=loc.get(157,"Country")%>:</label>
+              <span id="country_span"><%=Utils.safe_render(lo.country)%></span>
+            </div>
+          <%}%>
 
-        <div class="form-row">
-            <%if (!Utils.is_null_or_empty(lo.city)) {%>
-              <label for="city_span"><%=loc.get(154,"City")%>:</label>
-              <span id="city_span"><%=Utils.safe_render(lo.city)%></span>
-            <%}%>
-        </div>
+        <% } %>
 
-        <div class="form-row">
-            <%if (!Utils.is_null_or_empty(lo.postcode)) {%>
-              <label for="post_span"><%=loc.get(156,"Postal code")%>: </label>
-              <span id="post_span"><%=Utils.safe_render(lo.postcode)%></span>
+        <%if (!Utils.is_null_or_empty(lo.city)) {%>
+          <div class="row">
+            <label for="city_span"><%=loc.get(154,"City")%>:</label>
+            <span id="city_span"><%=Utils.safe_render(lo.city)%></span>
+          </div>
+        <%}%>
 
+        <%if (!Utils.is_null_or_empty(lo.postcode)) {%>
+          <div class="row">
+            <label for="post_span"><%=loc.get(156,"Postal code")%>: </label>
+            <span id="post_span"><%=Utils.safe_render(lo.postcode)%></span>
+          </div>
+        <%}%>
 
-            <%}%>
-        </div>
-
-        </p>
-      <% 
-          } 
-      %>
+      <% } %>
 
       <% if (r.status == 109) { %>
-        <a href="publish_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(6,"Publish")%></a>
-      <% } if (show_delete_info) {%>
+        <a class="button" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
+          <%=loc.get(21,"Delete")%>
+        </a>
+      <% } %>
+
+      <% if (is_requestoffering_user && r.status == 76) { %>
+        <a class="button" href="retract_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+          <%=loc.get(194,"Retract")%>
+        </a>
+      <% } %>
+
+      <% if (r.status == 109) { %>
+        <a class="button" href="publish_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(6,"Publish")%></a>
+      <% } %>
+
+      <% if (show_delete_info) {%>
 
         <p>
           <%=loc.get(39,"Are you sure you want to delete this requestoffer?")%> 
         </p>
 
         <p>
-          <a href="delete_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(29, "Yes, delete!")%></a>
+          <a class="button" href="delete_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(29, "Yes, delete!")%></a>
         </p>
         <p>
-          <a href="dashboard.jsp">
+          <a class="button" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
             <%=loc.get(30,"Nevermind, do not delete it")%></a>
         </p>
 

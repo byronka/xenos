@@ -8,7 +8,7 @@
   int requestoffer_id = 
     Integer.parseInt(Utils.parse_qs(qs).get("requestoffer"));
   boolean success = 
-    Requestoffer_utils.delete_requestoffer(requestoffer_id, user_id);
+    Requestoffer_utils.delete_requestoffer(requestoffer_id, logged_in_user_id);
   if (!success) {
     response.sendRedirect("error_deleting.jsp");
     } else {
