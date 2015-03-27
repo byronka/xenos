@@ -20,7 +20,10 @@
   </head>
 
 <body>
-  <img alt="background" id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
+  <img alt="background" 
+    id='my_background' 
+    src="img/galaxy_universe-normal.jpg" 
+    onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
   <div id="overall-container">
 
