@@ -47,6 +47,11 @@ div.container {
   display: table-cell;
 }
 
+.table div.row select {
+  display: table-cell;
+  max-width: 200px;
+}
+
 .table span {
   display: table-cell;
 }

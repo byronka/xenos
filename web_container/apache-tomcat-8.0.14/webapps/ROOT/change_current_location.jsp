@@ -94,17 +94,18 @@
 	<head>
     <link rel="stylesheet" href="includes/reset.css">
     <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="includes/footer.css" >
     <link rel="stylesheet" href="small_dialog.css" >
+    <script type="text/javascript" src="includes/utils.js"></script>
 		<title><%=loc.get(209,"Change current location")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
+  <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
   
   <div class="container">
     <form method="POST" action="change_current_location.jsp">
-        <fieldset>
-          <legend><%=loc.get(209,"Change current location")%></legend>
     <% if (has_posted_but_given_no_data) { %>
       <div class="error">
         <%=loc.get(210,"You have not provided any information on a current location.  There is a cancel button if you do not wish to add or change this")%>
@@ -195,12 +196,15 @@
             <input maxlength=40 type="text" id="country" name="country" value="<%=country_val%>">
           </div>
 
-          <button class="button" type="submit">Change</button>
-          <a class="button" href="dashboard.jsp">Cancel</a>
+          <div>
+            <button class="button" type="submit">Change</button>
+            <a class="button" href="dashboard.jsp">Cancel</a>
+          </div>
 
-        </fieldset>
 
     </form>
   </div>
+  </div>
+  <%@include file="includes/footer.jsp" %>
   </body>
 </html>

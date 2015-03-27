@@ -53,7 +53,8 @@
   <%@include file="includes/header.jsp" %>
   <div class="container">
   <p><%=loc.get(121,"If you would like to take this requestoffer, click the confirm button below")%></p>
-    <a href="handle.jsp?requestoffer=<%=r.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
+    <a class="button" href="handle.jsp?requestoffer=<%=r.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
+    <a class="button" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(130, "Cancel")%></a>
   </div>
   <%@include file="includes/footer.jsp" %>
 </body>

@@ -188,7 +188,7 @@
         <%} 
         
         if (show_handle_button) {%>
-          <a href="handle.jsp?requestoffer=<%=r.requestoffer_id%>">
+          <a class="button" href="handle.jsp?requestoffer=<%=r.requestoffer_id%>">
             <%=loc.get(37,"Handle")%>
           </a>
 

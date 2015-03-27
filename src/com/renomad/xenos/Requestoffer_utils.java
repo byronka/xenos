@@ -1492,7 +1492,8 @@ public final class Requestoffer_utils {
       "   JOIN user u ON u.user_id = urdp.judged_user_id      "+
       "   JOIN requestoffer ro                                "+
       "     ON ro.requestoffer_id = urdp.requestoffer_id      "+
-      "WHERE ju.user_id = %d OR u.user_id = %d                ",
+      "WHERE ju.user_id = %d OR u.user_id = %d                "+
+      "ORDER BY urdp.date_entered DESC                        ",
         user_id, user_id);
 
     PreparedStatement pstmt = null;

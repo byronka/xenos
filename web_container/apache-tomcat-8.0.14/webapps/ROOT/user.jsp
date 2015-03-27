@@ -27,11 +27,10 @@
   <%@include file="includes/header.jsp" %>
 
   <div class="container">
-    <div class="table">
       <h3><%=Utils.safe_render(the_user.username)%></h3>
 
       <%if (the_user.urdp_count >= 30) {%>
-        <div class="form-row">
+        <div class="row">
           <label><%=loc.get(18,"Rank average")%>:</label>
           <span><%=the_user.rank_av%></span>
         </div>
@@ -39,17 +38,17 @@
 
       <%int l_step = Requestoffer_utils.get_ladder_step(the_user.rank_ladder);%>
 
-      <div class="form-row">
+      <div class="row">
         <label><%=loc.get(19,"Rank ladder")%>:</label>
         <span><%=Utils.get_stars(l_step)%></span>
       </div>
 
       <% if (the_user.points < 0) { %>
-        <div class="form-row">
+        <div class="row">
           <label><%=the_user.username%> <%=String.format(loc.get(27,"owes people %d points"),-the_user.points)%></label>
         </div>
       <% } else { %>
-        <div class="form-row">
+        <div class="row">
           <label><%=the_user.username%> <%=String.format(loc.get(9,"is owed %d points"),the_user.points)%></label>
         </div>
       <% } %>
@@ -60,92 +59,59 @@
     %>
 
     <%if (rank_details.length != 0) {%>
-      <div><em><%=loc.get(79, "Rank")%></em></div>
 
       <%	for (Requestoffer_utils.Rank_detail rd : rank_details) { %>
 
 
-      <% if (rd.status_id == 2 || rd.status_id == 3) { 
-          //don't even show a particular line unless status is 2 or 3
-      %>
+      <% if (rd.status_id == 3) { %>
       <%
       //there's two parties here: the judging and the judged
       if (rd.judging_user_id == uid) { // if this user is the judge
       %>
 
         <div class="rank-detail">
-          <%=rd.timestamp%>
-          <%=Utils.safe_render(rd.judging_username)%>
 
           <% if(rd.meritorious != null) {%>
             <% if (rd.meritorious) { %>
-              <%=loc.get(166,"increased")%>
+              +1 to
             <% } else { %>
-              <%=loc.get(167,"decreased")%>
+              -1 to
             <% } %>
-          <% } else { %>
-            <%=loc.get(180,"has not yet determined")%>
-          <% }  %>
-
-          <%=loc.get(168,"the reputation of")%>
+          <% } %>
 
           <a href="user.jsp?user_id=<%=rd.judged_user_id%>">
             <%=Utils.safe_render(rd.judged_username)%>
           </a>
 
-          <%=loc.get(170,"for the favor")%>
-          <span>
-            <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
-              <%=Utils.safe_render(rd.ro_desc)%>
-            </a>
-          </span>
 
-        </div>
         <%if (rd.comment.length() > 0) {%>
-          <%=Utils.safe_render(rd.judging_username)%>
-          commented: "<%=rd.comment%>"
+          ("<%=rd.comment%>")
         <%}%>
+        </div>
 
       <%
       } else { 
       %>
 
         <div class="rank-detail">
-          <%=rd.timestamp%>
-          <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
-            <%=Utils.safe_render(rd.judging_username)%>
-          </a>
 
           <% if(rd.meritorious != null) {%>
             <% if (rd.meritorious) { %>
-              <%=loc.get(166,"increased")%>
+           +1 from
             <% } else { %>
-              <%=loc.get(167,"decreased")%>
+           -1 from
             <% } %>
-          <% } else { %>
-            <%=loc.get(180,"has not yet determined")%>
-          <% }  %>
-          
-          <%=loc.get(168,"the reputation of")%>
-          
-          <%=Utils.safe_render(rd.judged_username)%>
+          <% } %>
 
-          <%=loc.get(170,"for the favor")%>
-
-          <span>
-            <a href="requestoffer.jsp?requestoffer=<%=rd.ro_id%>">
-              <%=Utils.safe_render(rd.ro_desc)%>
-            </a>
-          </span>
-
-        </div>
-
-        <%if (rd.comment.length() > 0) {%>
           <a href="user.jsp?user_id=<%=rd.judging_user_id%>">
             <%=Utils.safe_render(rd.judging_username)%>
           </a>
-          commented: "<%=rd.comment%>"
+
+
+        <%if (rd.comment.length() > 0) {%>
+          ("<%=rd.comment%>")
         <%}%>
+        </div>
       <% } %>
 
     <% } %>
@@ -153,7 +119,7 @@
     <% } %> 
 
 
-    <div class="my-requestoffers-header"><em >
+    <div style="padding-top: 20px;" class="my-requestoffers-header"><em >
         <%=loc.get(173, "Their open Favors")%>:</em></div>
       <div class="requestoffers mine">
       <%
@@ -171,7 +137,6 @@
         </div>
       <% } %>
       </div>
-		</div>
   </div>
   <%@include file="includes/footer.jsp" %>
 	</body>
