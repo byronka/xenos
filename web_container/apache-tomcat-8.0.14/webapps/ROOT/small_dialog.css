@@ -63,8 +63,6 @@ footer {
 }
 
 .button {
-    display: inline-block;
-    outline: none;
     margin: 10px;
     cursor: pointer;
     border: solid 1px #da7c0c;

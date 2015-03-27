@@ -30,7 +30,7 @@
     <p>
       <%=loc.get(99, "Requestoffer has been closed")%>
     </p>
-    <p><a href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
+    <p><a class="button" href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
   </div>
   <%@include file="includes/footer.jsp" %>
 </body>

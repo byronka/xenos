@@ -24,7 +24,7 @@
       <pre>
       
         Hi! Join me and my friends on a system that encourages trading of favors, at
-        http://localhost:8080/register.jsp?icode=<%=icode%>
+        https://favir.co/register.jsp?icode=<%=icode%>
       
       
       </pre>

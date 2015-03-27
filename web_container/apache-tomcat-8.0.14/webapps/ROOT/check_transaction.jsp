@@ -31,7 +31,7 @@
 
   <div class="container">
     <p>
-      Click on <a href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>">confirm</a> if you are sure you want to complete
+      Click on <a class="button" href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>">confirm</a> if you are sure you want to complete
       this Favor.  You will be given an opportunity to provide feedback
       for the other user afterwards.
     </p>

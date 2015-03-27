@@ -50,25 +50,38 @@
 	<head>
     <link rel="stylesheet" href="includes/reset.css">
     <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="includes/footer.css" >
+    <link rel="stylesheet" href="small_dialog.css" >
+    <script type="text/javascript" src="includes/utils.js"></script>
 		<title><%=loc.get(113,"Change password")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
+  <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
-  <h3><%=loc.get(113,"Change password")%></h3>
-    <span><%=error_msg %></span>
-    <form method="POST" action="change_password.jsp">
-      <div>
-        <%=loc.get(174,"Old password")%>: 
-        <input autofocus="autofocus" type="password" name="old_password" />
-      </div>
-      <div>
-        <%=loc.get(175,"New password")%>: 
-        <input type="password" name="new_password" />
-      </div>
-      <button type="submit">
-        <%=loc.get(113,"Change password")%>
-      </button>
-    </form>
+  <div class="container">
+    <h3><%=loc.get(113,"Change password")%></h3>
+      <span><%=error_msg %></span>
+      <form method="POST" action="change_password.jsp">
+        <div class="table">
+          <div class="row">
+            <label for="password" ><%=loc.get(174,"Old password")%>: </label>
+            <input id="password" autofocus="autofocus" type="password" name="old_password" />
+          </div>
+          <div class="row">
+            <label for="new_password"><%=loc.get(175,"New password")%>: </label>
+            <input id="new_password" type="password" name="new_password" />
+          </div>
+        </div>
+        <div>
+        <button class="button" type="submit">
+          <%=loc.get(113,"Change password")%>
+        </button>
+        <a class="button" href="dashboard.jsp"><%=loc.get(130,"Cancel")%></a>
+        </div>
+      </form>
+    </div>
+
+    <%@include file="includes/footer.jsp" %>
   </body>
 </html>
