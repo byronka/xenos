@@ -107,8 +107,8 @@ DO
 DROP EVENT IF EXISTS revert_open_requestoffers_to_draft;
 ---DELIMITER---
 
--- this sql does the following: every 5 minutes, run a script to revert
--- any requestoffers more than a day old that have not been 
+-- this sql does the following: every 1 hour, run a script to revert
+-- any requestoffers more than 7 days old that have not been 
 -- taken to the draft status.
 
 CREATE EVENT revert_open_requestoffers_to_draft
@@ -125,7 +125,7 @@ DO
       SELECT requestoffer_id
       FROM requestoffer_state
       WHERE status = 76
-        AND UTC_TIMESTAMP() > (datetime + INTERVAL 24 HOUR)
+        AND UTC_TIMESTAMP() > (datetime + INTERVAL 7 DAY)
     );
 
     -- update the requestoffers to be draft status
