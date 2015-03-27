@@ -154,6 +154,7 @@
         <%}%>
 
       <% } %>
+    </div>
 
       <% if (r.status == 109) { %>
         <a class="button" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
@@ -220,7 +221,6 @@
             <a class="button" href="check_transaction.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(98,"Transaction is complete")%>
             </a>
           <%}%>
-      </div>
       </div>
     </div>
   <%@include file="includes/footer.jsp" %>

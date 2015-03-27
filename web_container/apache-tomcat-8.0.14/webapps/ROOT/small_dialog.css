@@ -35,6 +35,7 @@ div.container {
 }
 
 .table {
+  padding: 10px;
   display: table;
   border-spacing: 8px;
 }
@@ -97,6 +98,17 @@ footer {
 
 /* handling situation where things get too narrow */
 @media all and (max-width: 659px) {
+
+.button {
+    margin: 10px;
+    border: solid 2px #da7c0c;
+    background: #478dad;
+    color: white;
+    height: 19px;
+    text-decoration: none;
+    font: 16px/100% Arial, Helvetica, sans-serif;
+    padding: 12px;
+  }
 
   .table {
     display: block;
