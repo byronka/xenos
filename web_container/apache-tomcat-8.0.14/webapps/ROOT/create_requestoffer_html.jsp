@@ -135,10 +135,12 @@
               };
 
               expander.textContent = "Forget it - I don't need a location";
+              expander.style.height = "37px";
               do_the_fade(); //kick it off.
             } else {
               lo_wrapper.style.display = 'none';
               expander.textContent = "Add location";
+              expander.style.height = "17px";
             }
           };
         </script>
@@ -147,7 +149,10 @@
       <tbody>
         <tr>
           <td>
-            <div id="location-expander" class="button expander" onclick="expand_contract()" >Add location</div>
+            <div id="location-expander" 
+                style="width: 80px;" 
+                class="button expander" 
+                onclick="expand_contract()" >Add location</div>
           </td>
           <td>
             <button class="button" id="submitter" type="submit"><%=loc.get(2,"Request Favor")%></button>

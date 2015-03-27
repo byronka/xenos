@@ -93,3 +93,39 @@ footer {
     position: relative;
     top: 1px;
 }
+
+
+/* handling situation where things get too narrow */
+@media all and (max-width: 659px) {
+
+  .table {
+    display: block;
+    width: 100%;
+  }
+
+  .table div.row {
+    display: block;
+    width: 100%;
+  }
+
+  .table div.row label{
+    display: block;
+    width: 100%;
+  }
+
+  .table div.row select {
+    display: block;
+    width: 100%;
+  }
+
+  .table div.row textarea {
+    display: block;
+    width: 100%;
+  }
+
+  .table span {
+    display: block;
+    width: 100%;
+  }
+
+}
