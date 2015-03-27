@@ -195,7 +195,7 @@
         <%}%>
 
         <% if ( r.status == 78 && (is_requestoffering_user || is_handling_user)) { %> 
-          <a href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>" >
+          <a class="button" href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>" >
             <%=loc.get(130,"Cancel")%>
           </a>
         <% } %>
@@ -211,11 +211,11 @@
             action="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&service=true">
             <p><%=String.format(loc.get(38,"Message (up to %d characters)"), 200)%></p>
             <input type="text" name="message" maxlength="200" />
-            <button type="submit"><%=loc.get(36,"Send message")%></button>
+            <button class="button" type="submit"><%=loc.get(36,"Send message")%></button>
           </form>
         <% } %>
         <%if (is_requestoffering_user && r.status == 78) {%>
-          <a href="check_transaction.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(98,"Transaction is complete")%>
+          <a class="button" href="check_transaction.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(98,"Transaction is complete")%>
           </a>
         <%}%>
       </div>
