@@ -131,7 +131,7 @@
     <% } %>
 
     <%if(or_package.page_count > 1) {%>
-      <span><%=loc.get(93, "Page")%>: </span>
+      <span style="color:white"><%=loc.get(93, "Page")%>: </span>
       <% 	
       String qs_without_page = "";
       if (!Utils.is_null_or_empty(thequerystring)) {
@@ -141,9 +141,9 @@
         if (which_page == i) {%>
         <a 
           href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>" 
-          class="button page-link current-page"><%=i+1%></a>
+          class="page-link current-page"><%=i+1%></a>
         <% } else {%>
-        <a class="button page-link" href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>"><%=i+1%></a>
+        <a class="page-link" href="dashboard.jsp?<%=qs_without_page%>&amp;page=<%=i%>"><%=i+1%></a>
         <%  }
       }%>
     <%}%>
@@ -189,13 +189,13 @@
     </div>
     <% if (logged_in_user.points < 0) { %>
       <div>
-        <%=logged_in_user.username%> 
-        <%=String.format(loc.get(27,"owes people %d points"),-logged_in_user.points)%>
+        <%=loc.get(165,"You")%> 
+        <%=String.format(loc.get(27,"owe people %d points"),-logged_in_user.points)%>
       </div>
     <% } else { %>
       <div>
-        <%=logged_in_user.username%> 
-        <%=String.format(loc.get(9,"is owed %d points"),logged_in_user.points)%>
+        <%=loc.get(165,"You")%> 
+        <%=String.format(loc.get(9,"are owed %d points"),logged_in_user.points)%>
       </div>
     <% } %>
   </div>

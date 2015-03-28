@@ -145,20 +145,11 @@
           };
         </script>
 
-    <table>
-      <tbody>
-        <tr>
-          <td>
+        <div class="row">
             <div id="location-expander" 
-                style="width: 80px;" 
                 class="button expander" 
                 onclick="expand_contract()" >Add location</div>
-          </td>
-          <td>
             <button class="button" id="submitter" type="submit"><%=loc.get(2,"Request Favor")%></button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        </div>
     </form>	
   </div>
