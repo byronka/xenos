@@ -12,6 +12,10 @@ xenos_user_notify.message_displayer = function() {
       "<div id='notification_dialog' >" + text_to_show + "</div>";
 
     document.body.insertAdjacentHTML('afterbegin', notification_dialog);
+    var dialog = document.getElementById('notification_dialog');
+    dialog.onclick = function() {
+      document.body.removeChild(dialog);
+    }
     setTimeout(message_hider, 3000);
   }    
 
@@ -22,8 +26,7 @@ xenos_user_notify.message_displayer = function() {
     dialog.style.opacity = 1; 
     var fade = function() {
       if ((dialog.style.opacity-=.1) < 0) { 
-        var dialog_kill = document.getElementById('notification_dialog');
-        document.body.removeChild(dialog_kill);
+        document.body.removeChild(dialog);
       } else {
         setTimeout(fade,40);
       }

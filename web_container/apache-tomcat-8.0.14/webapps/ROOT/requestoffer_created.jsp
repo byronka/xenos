@@ -28,7 +28,7 @@
       <a class="button" href="publish_requestoffer.jsp?requestoffer=<%=requestoffer_id%>">
         <%=loc.get(6,"Publish")%>
       </a>
-      <%=loc.get(185,"it now if you wish.  Until you publish, it will remain hidden.  You can also publish this favor from your profile page.")%>
+      <%=loc.get(185,"it now if you wish.  Until you publish, it will remain hidden.")%>
 
     </p>
     <p><a class="button" href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a>

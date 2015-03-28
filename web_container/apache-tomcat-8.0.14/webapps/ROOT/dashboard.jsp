@@ -175,7 +175,7 @@
   <div class="table">
     <div class="row">
       <label>Rank average:</label>
-      <span><%=logged_in_user.rank_av * 100%>%</span>
+      <span><%=String.format("%.0f",logged_in_user.rank_av * 100)%>%</span>
     </div>
     <%int l_step = Requestoffer_utils.get_ladder_step(logged_in_user.rank_ladder);%>
     <div class="row">
@@ -470,7 +470,7 @@
 </div>
 <% // ADVANCED SEARCH STARTS %>
 
-<div id="search_section">
+<div id="search-section">
 
   <div>
       <h3><%=loc.get(81,"Advanced Search")%></h3>

@@ -65,7 +65,8 @@
       // if a user is not selecting from the dropdown, and 
       // is not providing a postal code, we need
       // to inform them they aren't giving us what we need.
-      if (Utils.parse_int(savedlocation_val) == null && !postal_code_was_entered) {
+      if (Utils.parse_int(savedlocation_val) == null && 
+        !postal_code_was_entered) {
         validation_error |= true;
         has_not_given_postal_code = true;
       }
@@ -75,13 +76,15 @@
           int requestoffer_id = 0; //don't tie to any particular RO
           Integer location_id = 0;
           if ((location_id = Utils.parse_int(savedlocation_val)) != null) {
-            Requestoffer_utils.assign_location_to_current(location_id, logged_in_user_id);
+            Requestoffer_utils.assign_location_to_current(
+              location_id, logged_in_user_id);
           } else {
             int new_loc_id = Requestoffer_utils.put_location(
               logged_in_user_id, requestoffer_id,
               strt_addr_1_val, strt_addr_2_val, 
               city_val, state_val, postal_val, country_val);
-            Requestoffer_utils.assign_location_to_current(new_loc_id, logged_in_user_id);
+            Requestoffer_utils.assign_location_to_current(
+              new_loc_id, logged_in_user_id);
           }
           response.sendRedirect("dashboard.jsp");
           return;

@@ -2,6 +2,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
+    <link rel="stylesheet" href="includes/reset.css">
+    <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="includes/footer.css" >
+    <link rel="stylesheet" href="small_dialog.css" >
+    <script type="text/javascript" src="includes/utils.js"></script>
 		<title><%=loc.get(126,"Cancel an active Favor")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
@@ -30,18 +35,17 @@
 
 %>
 <body>
+  <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
+
+  <div class="container">
   <p>
     <%=loc.get(129,"If you would like to cancel this active Favor, click the confirm button below.  This will give you the chance provide a grade for the other person, as well as giving them a chance to grade you.")%>
   </p>
   <p>
-    <a href="transaction_cancel.jsp?requestoffer=<%=r.requestoffer_id%>&amp;satisfied=true">
-      <%=loc.get(95, "Confirm")%> Happy
+    <a class="button" href="transaction_cancel.jsp?requestoffer=<%=r.requestoffer_id%>">
+      <%=loc.get(95, "Confirm")%> 
     </a>
   </p>
-  <p>
-    <a href="transaction_cancel.jsp?requestoffer=<%=r.requestoffer_id%>&amp;satisfied=false">
-      <%=loc.get(95, "Confirm")%> Unhappy
-    </a>
-  </p>
+  <%@include file="includes/footer.jsp" %>
 </body>
