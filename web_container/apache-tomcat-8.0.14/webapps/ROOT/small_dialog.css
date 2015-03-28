@@ -2,6 +2,10 @@
   margin: 0;
 }
 
+p {
+  margin: 10px;
+}
+
 #my_background {
   position: fixed; 
   top: 0; 

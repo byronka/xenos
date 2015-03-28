@@ -14,3 +14,28 @@ footer div {
   display: inline-block;
 }
 
+#notification_dialog {
+  font-size: 17px;
+  width: 200px; 
+  height: 200px;
+  top: 5px;
+  right:10px; 
+  z-index: 2; 
+  position: fixed;
+  border: 8px solid black;
+  padding: 10px;
+  margin: 10px;
+  color: #3d485b;
+}
+
+#notification_dialog {
+  background: #cedce7; /* Old browsers */
+  background: -moz-linear-gradient(top,  #cedce7 0%, #596a72 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cedce7), color-stop(100%,#596a72)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #cedce7 0%,#596a72 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #cedce7 0%,#596a72 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #cedce7 0%,#596a72 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #cedce7 0%,#596a72 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cedce7', endColorstr='#596a72',GradientType=0 ); /* IE6-9 */
+}
+

@@ -9,12 +9,7 @@ xenos_user_notify.message_displayer = function() {
   //This sets up the actual element, and puts it on the page.
   var display_dialog = function(text_to_show) {
     var notification_dialog = 
-      "<div id='notification_dialog' " +                    
-      " style='font-size: 17px;width: 200px; height: 200px;" +
-      "   top: 5px;right:10px; background-color: gold;" +
-      "   z-index: 2; position: fixed;'>" +
-      text_to_show +
-      "</div>";
+      "<div id='notification_dialog' >" + text_to_show + "</div>";
 
     document.body.insertAdjacentHTML('afterbegin', notification_dialog);
     setTimeout(message_hider, 3000);
