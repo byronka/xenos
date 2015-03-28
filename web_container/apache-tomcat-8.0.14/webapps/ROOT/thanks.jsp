@@ -15,7 +15,7 @@
   <img id='my_background' src="img/thanks.jpeg" onload="xenos_utils.fade_in_background()"/>
   <div class="trademark">Xenos</div>
   <nav class="cl-effect-1">
-    <p><%=loc.get(70,"You are awesome! thanks so much for entering your name!")%></p>
+    <p><%=loc.get(70,"You are awesome! Thanks so much for entering your name!")%></p>
     <p><a href="login.jsp"><%=loc.get(42,"Login")%></a></p>
   </nav>
 </body>

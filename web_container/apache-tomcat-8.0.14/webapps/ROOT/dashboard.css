@@ -75,6 +75,7 @@
 
 #see-and-create-requestoffer {
   min-height: 800px;
+  max-width: 400px;
   margin: 0px;
   padding: 0px;
   display: -webkit-inline-flex;
