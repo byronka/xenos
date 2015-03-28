@@ -125,17 +125,19 @@ CREATE PROCEDURE validate_user_id
   uid INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE valid_uid INT;
+  DECLARE msg VARCHAR(100);
 
-  SELECT COUNT(*) INTO @valid_uid 
+  SELECT COUNT(*) INTO valid_uid 
   FROM user 
   WHERE user_id = uid;
 
-  IF (@valid_uid <> 1) THEN
-      SET @msg = CONCAT('user does not exist in the system: ', 
+  IF (valid_uid <> 1) THEN
+      SET msg = CONCAT('user does not exist in the system: ', 
         uid);
       
       SIGNAL SQLSTATE '45000' 
-      SET message_text = @msg;
+      SET message_text = msg;
   END IF;
 END
 
@@ -178,7 +180,8 @@ BEGIN
     INSERT INTO audit_notes (notes) VALUES(my_notes);
     SET the_audit_notes_id = LAST_INSERT_ID();
     INSERT INTO audit (
-      datetime, audit_action_id, user1_id, user2_id, requestoffer_id, extra_id, notes_id)
+      datetime, audit_action_id, user1_id, 
+      user2_id, requestoffer_id, extra_id, notes_id)
       VALUES(
         UTC_TIMESTAMP(),     -- the current time and date
         my_audit_action_id,  -- the action, e.g. create, delete, etc.
@@ -201,164 +204,211 @@ DROP PROCEDURE IF EXISTS get_others_requestoffers;
 CREATE PROCEDURE get_others_requestoffers
 (
   ruid INT UNSIGNED, -- the user asking to see the request offers
-  startdate VARCHAR(10),
-  enddate VARCHAR(10),
-  status VARCHAR(50), -- can be many INT's separated by commas
-  categories VARCHAR(50), -- several INT's separated by commas.
-  user_id VARCHAR(50), -- can be many INT's separated by commas
+  my_startdate VARCHAR(10),
+  my_enddate VARCHAR(10),
+  my_status VARCHAR(50), -- can be many INT's separated by commas
+  my_categories VARCHAR(50), -- several INT's separated by commas.
+  my_user_id VARCHAR(50), -- can be many INT's separated by commas
   page INT UNSIGNED,
-  description NVARCHAR(50),
-  postcode VARCHAR(50), 
-  max_dist DOUBLE,
+  my_desc NVARCHAR(50),
+  my_postcode VARCHAR(50),  -- the postcode they are searching
+  my_max_dist DOUBLE,
 	OUT total_pages INT UNSIGNED
 ) 
 BEGIN 
-	SET @search_clauses = ""; -- all our search clauses go on this.
-	SET @having_clauses = ""; 
-         
-  -- searching by status
-  IF status <> '' THEN
-    SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND rs.status IN (',status,') ');
-  END IF;
-
-
-  -- searching by categories
-  IF categories <> '' THEN
-    SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND r.category IN (',categories,') ');
-  END IF;
-
-  -- searching by requestoffering user
-  IF user_id <> '' THEN
-    SET @search_clauses = 
-			CONCAT(@search_clauses, 
-				' AND requestoffering_user_id IN (', user_id ,')');
-  END IF;
-  
-  -- searching by dates
-  IF startdate <> '' AND enddate <> '' THEN
-    SET @startdate = startdate;
-    SET @enddate = enddate;
-    SET @search_clauses = 
-      CONCAT(@search_clauses, 
-        ' AND r.datetime >= @startdate AND r.datetime <= @enddate ');
-  ELSEIF startdate <> '' THEN
-    SET @startdate = startdate;
-    SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND r.datetime >= @startdate ');
-  ELSEIF enddate <> '' THEN
-    SET @enddate = enddate;
-    SET @search_clauses = CONCAT(@search_clauses, 
-      ' AND r.datetime <= @enddate ');
-  END IF;
-
-  -- searching by description
-  IF description <> '' THEN
-    SET @desc = description;
-    SET @search_clauses = 
-    CONCAT(@search_clauses, 
-      " AND description LIKE CONCAT('%' , @desc , '%') ");
-  END IF;
-
-  -- searching by distance
-  IF max_dist > 0.0 THEN
-    SET @max_dist = max_dist;
-    SET @having_clauses = ' HAVING distance <= @max_dist ';
-  END IF;
-
-  -- searching by postcode - right now, only an exact match
-  IF postcode <> '' THEN
-    SET @postcode = postcode;
-    SET @search_clauses = 
-      CONCAT(@search_clauses, ' AND l.postal_code = @postcode ');
-  END IF;
+  DECLARE user_postal_code VARCHAR(30);
+  DECLARE first_row, last_row INT;
 
   -- get current user's postal code if they have one
   -- we'll use this to get distances per requestoffer
-  SELECT loc.postal_code INTO @user_postal_code
+  SELECT loc.postal_code INTO user_postal_code
   FROM location loc
   JOIN user u ON u.current_location = loc.location_id
   WHERE u.user_id = ruid;
 
-  SET @ruid = ruid;
-
   -- set up paging.  Right now it's always 10 or less rows on the page.
-  SET @first_row = page * 10;
-  SET @last_row = (page * 10) + 10;
+  SET first_row = page * 10;
+  SET last_row = (page * 10) + 10;
 
-  SET @get_requestoffer = 
-     CONCAT('
-        (
-            SELECT SQL_CALC_FOUND_ROWS r.requestoffer_id, 
-            r.datetime, 
-            r.description, 
-            rs.status, 
-            r.points, 
-            u.rank_average, 
-            u.rank_ladder,
-            rsr.user_id AS been_offered,
-            r.requestoffering_user_id, 
-            r.handling_user_id, 
-            r.category,
-            l.postal_code,
-            l.city,
-            calc_approx_dist(l.postal_code, @user_postal_code) AS distance
-            FROM requestoffer r 
-            JOIN requestoffer_state rs
-              ON rs.requestoffer_id = r.requestoffer_id
-            JOIN user u ON u.user_id = r.requestoffering_user_id 
-            LEFT JOIN requestoffer_service_request rsr
-              ON r.requestoffer_id = rsr.requestoffer_id 
-              AND rsr.user_id = @ruid AND rsr.status = 106 -- 106 is "NEW"
-            LEFT JOIN location_to_requestoffer ltr
-              ON r.requestoffer_id = ltr.requestoffer_id
-            LEFT JOIN location l
-              ON l.location_id = ltr.location_id
-            WHERE rs.status = 109 AND r.requestoffering_user_id = @ruid
-            ', @search_clauses ,
-             @having_clauses ,'
-          )
+  (
+    SELECT SQL_CALC_FOUND_ROWS r.requestoffer_id, 
+    r.datetime, 
+    r.description, 
+    rs.status, 
+    r.points, 
+    u.rank_average, 
+    u.rank_ladder,
+    rsr.user_id AS been_offered,
+    r.requestoffering_user_id, 
+    r.handling_user_id, 
+    r.category,
+    l.postal_code,
+    l.city,
+    calc_approx_dist(l.postal_code, user_postal_code) AS distance
+    FROM requestoffer r 
+    JOIN requestoffer_state rs
+    ON rs.requestoffer_id = r.requestoffer_id
+    JOIN user u ON u.user_id = r.requestoffering_user_id 
+    LEFT JOIN requestoffer_service_request rsr
+    ON r.requestoffer_id = rsr.requestoffer_id 
+    AND rsr.user_id = ruid AND rsr.status = 106 -- 106 is "NEW"
+    LEFT JOIN location_to_requestoffer ltr
+    ON r.requestoffer_id = ltr.requestoffer_id
+    LEFT JOIN location l
+    ON l.location_id = ltr.location_id
+    WHERE rs.status = 109 AND r.requestoffering_user_id = ruid
 
-            UNION ALL
+    AND
 
-          (
-            SELECT r.requestoffer_id, 
-            r.datetime, 
-            r.description, 
-            rs.status, 
-            r.points, 
-            u.rank_average, 
-            u.rank_ladder,
-            rsr.user_id AS been_offered,
-            r.requestoffering_user_id, 
-            r.handling_user_id, 
-            r.category,
-            l.postal_code,
-            l.city,
-            calc_approx_dist(l.postal_code, @user_postal_code) AS distance
-            FROM requestoffer r 
-            JOIN requestoffer_state rs
-              ON rs.requestoffer_id = r.requestoffer_id
-            JOIN user u ON u.user_id = r.requestoffering_user_id 
-            LEFT JOIN requestoffer_service_request rsr
-              ON r.requestoffer_id = rsr.requestoffer_id 
-              AND rsr.user_id = @ruid AND rsr.status = 106 -- 106 is "NEW"
-            LEFT JOIN location_to_requestoffer ltr
-              ON r.requestoffer_id = ltr.requestoffer_id
-            LEFT JOIN location l
-              ON l.location_id = ltr.location_id
-            WHERE rs.status <> 109
-            ', @search_clauses ,
-             @having_clauses ,'
-          )
-            ORDER BY datetime DESC
-            LIMIT ',@first_row,',',@last_row );
+    -- searching by status
+    CASE WHEN my_status <> '' THEN
+    rs.status IN (my_status)
+    ELSE TRUE
+    END
 
+    AND 
 
-  -- prepare and execute!
-	PREPARE get_requestoffer FROM @get_requestoffer;
-	EXECUTE get_requestoffer; 
+    -- searching by categories
+    CASE WHEN my_categories <> '' THEN
+    r.category IN (my_categories)
+    ELSE TRUE
+    END
+
+    AND
+
+    -- searching by requestoffering user
+    CASE WHEN my_user_id <> '' THEN
+    requestoffering_user_id IN (my_user_id)
+    ELSE TRUE
+    END
+
+    AND
+
+    -- searching by dates
+    CASE WHEN my_startdate <> '' AND my_enddate <> '' THEN
+    r.datetime >= my_startdate AND r.datetime <= my_enddate
+    WHEN my_startdate <> '' THEN
+    r.datetime >= my_startdate
+    WHEN my_enddate <> '' THEN
+    r.datetime <= my_enddate
+    ELSE TRUE
+    END
+
+    AND
+
+    -- searching by description
+    CASE WHEN description <> '' THEN
+    description LIKE CONCAT('%' , my_desc , '%')
+    ELSE TRUE
+    END
+
+    AND
+
+    -- searching by postcode
+    CASE WHEN my_postcode <> '' THEN
+    l.postal_code = my_postcode
+    ELSE TRUE
+    END
+
+    HAVING
+    -- searching by distance
+    CASE WHEN my_max_dist > 0.0 THEN
+    distance <= my_max_dist
+    ELSE TRUE
+    END
+
+  )
+
+  UNION ALL
+
+  (
+    SELECT r.requestoffer_id, 
+    r.datetime, 
+    r.description, 
+    rs.status, 
+    r.points, 
+    u.rank_average, 
+    u.rank_ladder,
+    rsr.user_id AS been_offered,
+    r.requestoffering_user_id, 
+    r.handling_user_id, 
+    r.category,
+    l.postal_code,
+    l.city,
+    calc_approx_dist(l.postal_code, user_postal_code) AS distance
+    FROM requestoffer r 
+    JOIN requestoffer_state rs
+    ON rs.requestoffer_id = r.requestoffer_id
+    JOIN user u ON u.user_id = r.requestoffering_user_id 
+    LEFT JOIN requestoffer_service_request rsr
+    ON r.requestoffer_id = rsr.requestoffer_id 
+    AND rsr.user_id = ruid AND rsr.status = 106 -- 106 is "NEW"
+    LEFT JOIN location_to_requestoffer ltr
+    ON r.requestoffer_id = ltr.requestoffer_id
+    LEFT JOIN location l
+    ON l.location_id = ltr.location_id
+    WHERE rs.status <> 109
+
+    AND
+
+    -- searching by status
+    CASE WHEN my_status <> '' THEN
+    rs.status IN (my_status)
+    ELSE TRUE
+    END
+
+    AND 
+
+    -- searching by categories
+    CASE WHEN my_categories <> '' THEN
+    r.category IN (my_categories)
+    ELSE TRUE
+    END
+
+    AND
+
+    -- searching by requestoffering user
+    CASE WHEN my_user_id <> '' THEN
+    requestoffering_user_id IN (my_user_id)
+    ELSE TRUE
+    END
+
+    AND
+
+    -- searching by dates
+    CASE WHEN my_startdate <> '' AND my_enddate <> '' THEN
+    r.datetime >= my_startdate AND r.datetime <= my_enddate
+    WHEN my_startdate <> '' THEN
+    r.datetime >= my_startdate
+    WHEN my_enddate <> '' THEN
+    r.datetime <= my_enddate
+    ELSE TRUE
+    END
+
+    AND
+
+    -- searching by description
+    CASE WHEN description <> '' THEN
+    description LIKE CONCAT('%' , my_desc , '%')
+    END
+
+    AND
+
+    -- searching by postcode
+    CASE WHEN my_postcode <> '' THEN
+    l.postal_code = my_postcode
+    ELSE TRUE
+    END
+
+    HAVING
+    -- searching by distance
+    CASE WHEN my_max_dist > 0.0 THEN
+    distance <= my_max_dist
+    ELSE TRUE
+    END
+  )
+  ORDER BY datetime DESC
+  LIMIT first_row,last_row; 
 
 	SET total_pages = CEIL(FOUND_ROWS()/10);
 
@@ -379,10 +429,11 @@ CREATE PROCEDURE put_requestoffer
   OUT new_requestoffer_id INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE cat_err_msg VARCHAR(100);
 
   IF (cat <= 0) THEN
-      SET @cat_err_msg = 'no category set- not allowed in this proc';
-      SIGNAL SQLSTATE '45000' set message_text = @cat_err_msg;
+      SET cat_err_msg = 'no category set- not allowed in this proc';
+      SIGNAL SQLSTATE '45000' set message_text = cat_err_msg;
   END IF;
 
   -- check the user exists
@@ -394,10 +445,11 @@ BEGIN
    VALUES (my_desc, UTC_TIMESTAMP(), pts, cat, ruid); 
          
   SET new_requestoffer_id = LAST_INSERT_ID();
-  SET @status = 109; -- requestoffers always start 'draft'
+
+  -- 109 requestoffers always start 'draft'
 
   INSERT INTO requestoffer_state (requestoffer_id, status, datetime)
-  VALUES (new_requestoffer_id, @status, UTC_TIMESTAMP());
+  VALUES (new_requestoffer_id, 109, UTC_TIMESTAMP());
 
 
   -- D) Add an audit
@@ -505,33 +557,36 @@ CREATE PROCEDURE put_message
   rid INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE to_user_id, ro_uid, h_uid INT UNSIGNED;
+  DECLARE full_msg NVARCHAR(200);
+
   CALL is_non_empty_string('put_message','my_message',my_message);
   call validate_requestoffer_id(rid);
   call validate_user_id(fr_uid);
 
 	-- whoever is the user id in the parameter is doing the talking,
   -- and we know both parties - a requestoffer owner and its handler.
-	SELECT requestoffering_user_id , handling_user_id INTO @ro_uid,@h_uid
+	SELECT requestoffering_user_id , handling_user_id INTO ro_uid,h_uid
 	FROM requestoffer ro
 	WHERE ro.requestoffer_id = rid;
 
-	IF fr_uid = @ro_uid
+	IF fr_uid = ro_uid
 		THEN
-		SET @to_user_id = @h_uid;
-	ELSEIF fr_uid = @h_uid
+		SET to_user_id = h_uid;
+	ELSEIF fr_uid = h_uid
 		THEN
-		SET @to_user_id = @ro_uid;
+		SET to_user_id = ro_uid;
 	END IF;
 
   SELECT 
-    CONCAT(username,' says:', my_message) INTO @full_msg
+    CONCAT(username,' says:', my_message) INTO full_msg
   FROM user WHERE user_id = fr_uid;
 
   INSERT into requestoffer_message (
 		message, requestoffer_id, from_user_id, to_user_id, timestamp)
-  VALUES (@full_msg, rid, fr_uid, @to_user_id, UTC_TIMESTAMP());
+  VALUES (full_msg, rid, fr_uid, to_user_id, UTC_TIMESTAMP());
 
-  CALL put_temporary_message(@to_user_id, NULL, @full_msg);
+  CALL put_temporary_message(to_user_id, NULL, full_msg);
 
 END
 
@@ -547,33 +602,36 @@ CREATE PROCEDURE offer_to_take_requestoffer
   rid INT UNSIGNED -- the id of the requestoffer
 ) 
 BEGIN 
+  DECLARE can_take BOOLEAN;
+  DECLARE msg VARCHAR(100);
+  DECLARE ro_owner INT UNSIGNED;
 
   call validate_requestoffer_id(rid);
   call validate_user_id(uid);
 
-	SELECT COUNT(*) INTO @can_take
+	SELECT COUNT(*) INTO can_take
 	FROM requestoffer_state rs
 	WHERE rs.status = 76 -- 'open'
 	AND rs.requestoffer_id = rid;
 	
-  IF (@can_take <> 1) THEN
-      SET @msg = CONCAT('cannot take requestoffer', rid,', not open');
-      SIGNAL SQLSTATE '45000' SET message_text = @msg;
+  IF (can_take <> 1) THEN
+      SET msg = CONCAT('cannot take requestoffer', rid,', not open');
+      SIGNAL SQLSTATE '45000' SET message_text = msg;
   END IF;
 
   INSERT INTO requestoffer_service_request 
     (requestoffer_id, user_id, date_created, status)
   VALUES (rid, uid, UTC_TIMESTAMP(), 106); -- starts with 'new' status
 
-	SELECT r.requestoffering_user_id INTO @ro_owner
+	SELECT r.requestoffering_user_id INTO ro_owner
 	FROM requestoffer r
 	WHERE r.requestoffer_id = rid;
 
   -- send a message to the owner of that requestoffer
-  CALL put_system_to_user_message(148, @ro_owner, rid);
+  CALL put_system_to_user_message(148, ro_owner, rid);
 
   -- Add an audit that this user is offering to take the requestoffer
-  CALL add_audit(209,uid,@ro_owner,rid,NULL,NULL);
+  CALL add_audit(209,uid,ro_owner,rid,NULL,NULL);
 
 END
 
@@ -589,18 +647,21 @@ CREATE PROCEDURE take_requestoffer
   rid INT UNSIGNED -- the id of the requestoffer
 ) 
 BEGIN 
+  DECLARE can_take BOOLEAN;
+  DECLARE msg VARCHAR(100);
+  DECLARE urdp_id, owner_id INT;
 
   call validate_requestoffer_id(rid);
   call validate_user_id(uid);
 
-	SELECT COUNT(*) INTO @can_take
+	SELECT COUNT(*) INTO can_take
 	FROM requestoffer_state rs
 	WHERE rs.status = 76 -- 'open'
 	AND rs.requestoffer_id = rid;
 	
-  IF (@can_take <> 1) THEN
-      SET @msg = CONCAT('cannot take requestoffer', rid,', not open');
-      SIGNAL SQLSTATE '45000' SET message_text = @msg;
+  IF (can_take <> 1) THEN
+      SET msg = CONCAT('cannot take requestoffer', rid,', not open');
+      SIGNAL SQLSTATE '45000' SET message_text = msg;
   END IF;
 
   -- modify the requestoffer to indicate this user has taken it
@@ -613,7 +674,7 @@ BEGIN
   WHERE requestoffer_id = rid;
 
   -- get the owner's user id
-  SELECT requestoffering_user_id INTO @owner_id
+  SELECT requestoffering_user_id INTO owner_id
   FROM requestoffer
   WHERE requestoffer_id = rid;
   
@@ -623,14 +684,14 @@ BEGIN
   INSERT INTO user_rank_data_point
   (date_entered, judge_user_id, judged_user_id, requestoffer_id, status_id, is_inside_window, meritorious)
   VALUES 
-  (UTC_TIMESTAMP(), @owner_id,uid, rid, 1, 1, 1), 
-  (UTC_TIMESTAMP(), uid,@owner_id, rid, 1, 1, 1); 
+  (UTC_TIMESTAMP(), owner_id,uid, rid, 1, 1, 1), 
+  (UTC_TIMESTAMP(), uid,owner_id, rid, 1, 1, 1); 
 
-  SET @urdp_id = LAST_INSERT_ID();
+  SET urdp_id = LAST_INSERT_ID();
 
   -- Add an audit that these users are going into ACTIVE state
-  CALL add_audit(306,uid,@owner_id,rid,@urdp_id,NULL);
-  CALL add_audit(306,@owner_id,uid,rid,@urdp_id,NULL);
+  CALL add_audit(306,uid,owner_id,rid,urdp_id,NULL);
+  CALL add_audit(306,owner_id,uid,rid,urdp_id,NULL);
 
   -- change the service request to accepted for the winning user
   UPDATE requestoffer_service_request 
@@ -640,7 +701,7 @@ BEGIN
   WHERE requestoffer_id = rid AND user_id = uid AND status = 106;
 
   -- Add an audit for the winning user
-  CALL add_audit(207,@owner_id,uid,rid,NULL,NULL);
+  CALL add_audit(207,owner_id,uid,rid,NULL,NULL);
 
   -- send a message to the winnng user
   CALL put_system_to_user_message(132, uid, rid);
@@ -648,7 +709,7 @@ BEGIN
   -- Add an audit for the losing users
   INSERT INTO audit (
     datetime, audit_action_id, user1_id, user2_id, requestoffer_id)
-  SELECT UTC_TIMESTAMP(), 208, @owner_id, user_id, rid
+  SELECT UTC_TIMESTAMP(), 208, owner_id, user_id, rid
   FROM requestoffer_service_request 
   WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
 
@@ -687,6 +748,10 @@ CREATE PROCEDURE delete_requestoffer
   rid INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE status_id INT;
+  DECLARE status VARCHAR(50);
+  DECLARE msg,delete_msg VARCHAR(100);
+
   -- check that the requestoffer exists
   call validate_requestoffer_id(rid);
   call validate_user_id(uid);
@@ -694,7 +759,7 @@ BEGIN
 
   -- get a string version of the status
   SELECT requestoffer_status_id, requestoffer_status_value 
-  INTO @status_id, @status
+  INTO status_id, status
   FROM requestoffer_status 
   WHERE requestoffer_status_id = 
     (
@@ -703,10 +768,10 @@ BEGIN
       WHERE requestoffer_id = rid
     );
 
-  IF (@status_id <> 76 AND @status_id <> 109) THEN
-    SET @msg = CONCAT('not possible to delete request ',rid,
+  IF (status_id <> 76 AND status_id <> 109) THEN
+    SET msg = CONCAT('not possible to delete request ',rid,
     ' since it is not open or draft');
-    SIGNAL SQLSTATE '45000' SET message_text = @msg;
+    SIGNAL SQLSTATE '45000' SET message_text = msg;
   END IF;
 
   -- get a message for the deletion audit
@@ -717,7 +782,7 @@ BEGIN
       '|',
       'pts:', points,
       '|',
-      'st:',@status) INTO @delete_msg
+      'st:',status) INTO delete_msg
     FROM requestoffer
     WHERE requestoffer_id = rid;
 
@@ -727,7 +792,7 @@ BEGIN
 
 
       -- Add an audit about deleting the requestoffer
-      CALL add_audit(205,uid,NULL,rid,NULL,@delete_msg);
+      CALL add_audit(205,uid,NULL,rid,NULL,delete_msg);
 
     
 END
@@ -743,6 +808,9 @@ CREATE PROCEDURE retract_requestoffer
   rid INT UNSIGNED -- the requestoffer id
 ) 
 BEGIN 
+  DECLARE my_points INT;
+  DECLARE ruid INT UNSIGNED;
+
   CALL validate_user_id(uid);
   CALL validate_requestoffer_id(rid);
 
@@ -751,21 +819,21 @@ BEGIN
   WHERE requestoffer_id = rid AND status = 76; -- 76 is "OPEN"
 
   -- get the points on this requestoffer.
-  SELECT points, requestoffering_user_id into @points, @ruid
+  SELECT points, requestoffering_user_id into my_points, ruid
   FROM requestoffer 
   WHERE requestoffer_id = rid;
 
   -- give points back to the user
   UPDATE user 
-  SET points = points + @points 
-  WHERE user_id = @ruid;
+  SET points = points + my_points 
+  WHERE user_id = ruid;
 
 
   -- audit that the requestoffer was reverted
-  call add_audit(206, uid, @ruid, rid, NULL, NULL);
+  call add_audit(206, uid, ruid, rid, NULL, NULL);
 
   -- audit that the point was returned to the user who owns the requestoffer
-  call add_audit(303, 1, @ruid, rid, NULL, NULL);
+  call add_audit(303, 1, ruid, rid, NULL, NULL);
 
 END
 ---DELIMITER---
@@ -783,6 +851,13 @@ CREATE PROCEDURE create_new_user
   my_invite_code VARCHAR(100)
 ) 
 BEGIN 
+  DECLARE count_email_username INT;
+  DECLARE count_invite_code INT;
+  DECLARE my_ipaddr VARCHAR(50);
+  DECLARE msg NVARCHAR(150);
+  DECLARE message NVARCHAR(150);
+  DECLARE the_user_name NVARCHAR(15);
+  DECLARE new_user_id INT UNSIGNED;
 
   -- make sure the username and password and salt are non-empty
   call is_non_empty_string('create_new_user','uname',uname);
@@ -790,45 +865,45 @@ BEGIN
   call is_non_empty_string('create_new_user','slt',slt);
 
   -- check that this username doesn't match an email in the system
-  SELECT COUNT(*) INTO @count_email_username
+  SELECT COUNT(*) INTO count_email_username
   FROM user 
   WHERE uname = user.email;
     
-  IF (@count_email_username > 0) THEN
-      SET @msg = CONCAT(
+  IF (count_email_username > 0) THEN
+      SET msg = CONCAT(
 				'username matches existing email during insert: ', uname );
       
       SIGNAL SQLSTATE '45000' 
-      SET message_text = @msg;
+      SET message_text = msg;
   END IF;
 
   -- check that the invite code is valid
-  SELECT COUNT(*) INTO @count_invite_code
+  SELECT COUNT(*) INTO count_invite_code
   FROM invite_code
   WHERE value = my_invite_code;
 
   -- guard against the count of valid invite codes being zero
   -- we will use this error message back on the client side.
-  IF @count_invite_code = 0 THEN
+  IF count_invite_code = 0 THEN
       -- if the ip address is too long, truncate
       IF LENGTH(ipaddr) > 20 THEN
-        SET @my_ipaddr = CONCAT(SUBSTR(ipaddr,1,20),'...');
+        SET my_ipaddr = CONCAT(SUBSTR(ipaddr,1,20),'...');
       ELSE
-        SET @my_ipaddr = ipaddr;
+        SET my_ipaddr = ipaddr;
       END IF;
 
       -- if the username is too long, truncate
       IF LENGTH(uname) > 10 THEN
-        SET @name = CONCAT(SUBSTR(uname,1,10),'...');
+        SET the_user_name = CONCAT(SUBSTR(uname,1,10),'...');
       ELSE
-        SET @name = uname;
+        SET the_user_name = uname;
       END IF;
 
-      SET @message = CONCAT('ip: ',@my_ipaddr,' name: ',@name,
+      SET message = CONCAT('ip: ',my_ipaddr,' name: ',the_user_name,
         ' invite code: ', SUBSTR(my_invite_code,1,10),'...');
 
       -- audit that they failed the invite-code check
-      CALL add_audit(110,NULL,NULL,NULL,NULL,@message);
+      CALL add_audit(110,NULL,NULL,NULL,NULL,message);
       
       -- return an error so we can indicate that on the client
       SIGNAL SQLSTATE '45000' 
@@ -842,14 +917,14 @@ BEGIN
   FROM invite_code
   WHERE value = my_invite_code;
 
-  SET @new_user_id = LAST_INSERT_ID();
+  SET new_user_id = LAST_INSERT_ID();
 
   -- delete that invite code
   DELETE FROM invite_code
   WHERE value = my_invite_code;
 
   -- Add an audit about registering a new user
-  CALL add_audit(101,@new_user_id,NULL,NULL,NULL,ipaddr);
+  CALL add_audit(101,new_user_id,NULL,NULL,NULL,ipaddr);
 
 END
 
@@ -866,15 +941,17 @@ CREATE PROCEDURE register_user_and_get_cookie
   OUT new_cookie VARCHAR(200)
 ) 
 BEGIN 
+  DECLARE my_timestamp DATETIME;
+  DECLARE cookie_val_plaintext,p_phrase VARCHAR(130);
 
   call validate_user_id(uid);
   call is_non_empty_string('register_user_and_get_cookie','ip',ip);
 
-  SELECT UTC_TIMESTAMP() INTO @timestamp;
+  SELECT UTC_TIMESTAMP() INTO my_timestamp;
 
   -- set registration values
   UPDATE user
-  SET is_logged_in = 1, last_time_logged_in = @timestamp,
+  SET is_logged_in = 1, last_time_logged_in = my_timestamp,
   last_ip_logged_in = ip
   WHERE user_id = uid;
 
@@ -885,16 +962,16 @@ BEGIN
   -- for example:
   -- "123|108.91.12.198|2014-01-02 13:04:19"
   -- Notice the delimiter is a pipe symbol.
-  SELECT CONCAT(uid,'|',ip,'|',@timestamp) 
-    INTO @cookie_val_plaintext;
+  SELECT CONCAT(uid,'|',ip,'|',my_timestamp) 
+    INTO cookie_val_plaintext;
 
-  SELECT config_value INTO @p_phrase 
+  SELECT config_value INTO p_phrase 
   FROM config
   WHERE config_item = 'cookie_passphrase';
 
   SELECT HEX(
     AES_ENCRYPT(
-      @cookie_val_plaintext, SHA2(@p_phrase,512))) INTO new_cookie;
+      cookie_val_plaintext, SHA2(p_phrase,512))) INTO new_cookie;
 
   -- register that a user logged in
   CALL add_audit(102, uid, NULL, NULL, NULL, NULL);
@@ -930,21 +1007,25 @@ CREATE PROCEDURE check_login
 	OUT user_id_found INT
 ) 
 BEGIN 
+  DECLARE pass NVARCHAR(15);
+  DECLARE message NVARCHAR(100);
+  DECLARE ip_msg VARCHAR(100);
+  DECLARE last_ip VARCHAR(50);
 
-  SELECT user_id, last_ip_logged_in into user_id_found, @last_ip
+  SELECT user_id, last_ip_logged_in into user_id_found, last_ip
   FROM user
   WHERE BINARY username = their_username AND BINARY password = their_password;
 
   -- audit that their username / password didn't match anything in our db
   IF user_id_found IS null THEN
-    SET @pass = SUBSTR(IFNULL(their_password,'WAS_NULL'), 1, 10);
-    SET @message = CONCAT('ip: ',their_ip_address,' name: ',their_username,' pass: ',@pass,'...');
-    CALL add_audit(104,NULL,NULL,NULL,NULL,@message);
+    SET pass = SUBSTR(IFNULL(their_password,'WAS_NULL'), 1, 10);
+    SET message = CONCAT('ip: ',their_ip_address,' name: ',their_username,' pass: ',pass,'...');
+    CALL add_audit(104,NULL,NULL,NULL,NULL,message);
   END IF;
 
   -- audit that they are coming from a different ip now.
-  IF @last_ip <> their_ip_address THEN
-    SET @ip_msg = CONCAT('old ip: ',@last_ip,' new_ip:',their_ip_address);
+  IF last_ip <> their_ip_address THEN
+    SET ip_msg = CONCAT('old ip: ',last_ip,' new_ip:',their_ip_address);
     CALL add_audit(108,user_id_found,NULL,NULL,NULL,message);
   END IF;
 
@@ -964,59 +1045,65 @@ CREATE PROCEDURE decrypt_cookie_and_check_validity
   OUT user_id_out INT
 ) 
 BEGIN 
+  DECLARE plaintext_cookie,msg,p_phrase VARCHAR(120);
+  DECLARE my_user_id INT UNSIGNED;
+  DECLARE found_users,user_id_length INT;
+  DECLARE ip_address VARCHAR(50);
+  DECLARE my_timestamp VARCHAR(40);
+
   call is_non_empty_string(
     'decrypt_cookie_and_check_validity','enc_cookie',enc_cookie);
 
-  SELECT config_value INTO @p_phrase 
+  SELECT config_value INTO p_phrase 
   FROM config
   WHERE config_item = 'cookie_passphrase';
 
   -- See register_user_and_get_cookie for more info on cookie format
   -- if this fails, it should put a null into plaintext_cookie
   SELECT 
-    AES_DECRYPT(UNHEX(enc_cookie), SHA2(@p_phrase,512)) 
-    INTO @plaintext_cookie;
+    AES_DECRYPT(UNHEX(enc_cookie), SHA2(p_phrase,512)) 
+    INTO plaintext_cookie;
 
   -- if there's an error...
-  IF (@plaintext_cookie IS NULL OR @plaintext_cookie = '')
+  IF (plaintext_cookie IS NULL OR plaintext_cookie = '')
     THEN
-      SET @msg = 
+      SET msg = 
       CONCAT(
 				'got null when trying to unencrypt cookie '
         ,SUBSTR(IFNULL(enc_cookie,''), 1, 6)
         ,'...'
         ,' with passphrase: '
-        ,SUBSTR(IFNULL(@p_phrase,''), 1, 4)
+        ,SUBSTR(IFNULL(p_phrase,''), 1, 4)
         , '...'
         ,'Ip: '
         ,ip_address
       );
-      CALL add_audit(107,NULL,NULL,NULL,NULL,@msg);
-      SIGNAL SQLSTATE '45000' SET message_text = @msg;
+      CALL add_audit(107,NULL,NULL,NULL,NULL,msg);
+      SIGNAL SQLSTATE '45000' SET message_text = msg;
   END IF;
 
-  SELECT SUBSTRING_INDEX(@plaintext_cookie, '|',1) INTO @my_user_id;
+  SELECT SUBSTRING_INDEX(plaintext_cookie, '|',1) INTO my_user_id;
   SELECT LENGTH(
-    SUBSTRING_INDEX(@plaintext_cookie, '|',1)) INTO @user_id_length;
+    SUBSTRING_INDEX(plaintext_cookie, '|',1)) INTO user_id_length;
   SELECT SUBSTR(
     SUBSTRING_INDEX(
-      @plaintext_cookie, '|',2),@user_id_length+2) INTO @ip_address;
-  SELECT SUBSTRING_INDEX(@plaintext_cookie, '|',-1) INTO @timestamp;
+      plaintext_cookie, '|',2),user_id_length+2) INTO ip_address;
+  SELECT SUBSTRING_INDEX(plaintext_cookie, '|',-1) INTO my_timestamp;
   
-  SELECT COUNT(*) INTO @found_users
+  SELECT COUNT(*) INTO found_users
   FROM user
   WHERE 
     is_logged_in = 1 
-    AND last_time_logged_in = @timestamp
-    AND user_id = @my_user_id
-    AND last_ip_logged_in = @ip_address;
+    AND last_time_logged_in = my_timestamp
+    AND user_id = my_user_id
+    AND last_ip_logged_in = ip_address;
 
-  IF (@found_users <> 1) THEN
-    SET @msg = CONCAT(IFNULL(@found_users,-1), ' users found. user_id: '
-      , IFNULL(@user_id , -1)
-      ,' ip_address: ',IFNULL(@ip_address, '')
-      ,' timestamp: ',IFNULL(@timestamp, ''));
-    CALL add_audit(106,NULL,NULL,NULL,NULL,@msg);
+  IF (found_users <> 1) THEN
+    SET msg = CONCAT(IFNULL(found_users,-1), ' users found. user_id: '
+      , IFNULL(my_user_id , -1)
+      ,' ip_address: ',IFNULL(ip_address, '')
+      ,' timestamp: ',IFNULL(my_timestamp, ''));
+    CALL add_audit(106,NULL,NULL,NULL,NULL,msg);
     SET user_id_out = -1;
   -- if we got here, the user's info is good.
   ELSEIF update_last_activity = 1 THEN
@@ -1025,10 +1112,10 @@ BEGIN
     -- to be logged out automatically.
     UPDATE user 
     SET last_activity_time = UTC_TIMESTAMP() 
-    WHERE user_id = @my_user_id;
-    SET user_id_out = @my_user_id;
+    WHERE user_id = my_user_id;
+    SET user_id_out = my_user_id;
   ELSE
-    SET user_id_out = @my_user_id;
+    SET user_id_out = my_user_id;
   END IF;
 
  
@@ -1048,24 +1135,28 @@ uid INT UNSIGNED, -- the user who owns this requestoffer
 rid INT UNSIGNED -- the requestoffer
 )
 BEGIN
+  DECLARE is_valid BOOLEAN;
+  DECLARE msg VARCHAR(120);
+  DECLARE the_handling_user_id INT UNSIGNED;
+  DECLARE owner_urdp_id, handler_urdp_id INT;
 
   -- first some guard clauses
 	call validate_requestoffer_id(rid);	
 	call validate_user_id(uid);
 
   -- make sure a valid requestoffer exists for completion
-	SELECT COUNT(*) INTO @is_valid
+	SELECT COUNT(*) INTO is_valid
 	FROM requestoffer r
   JOIN requestoffer_state rs ON rs.requestoffer_id = r.requestoffer_id
 	WHERE r.requestoffering_user_id = uid 
 		AND r.requestoffer_id = rid
 		AND rs.status = 78; -- taken
 
-	IF (@is_valid <> 1) THEN
-		SET @msg = CONCAT('requestoffer ',
+	IF (is_valid <> 1) THEN
+		SET msg = CONCAT('requestoffer ',
 		  rid,' does not have a requestoffering user id of ',
 			uid,' for completion, or it is not in the right status (taken)');
-		SIGNAL SQLSTATE '45000' SET message_text = @msg;
+		SIGNAL SQLSTATE '45000' SET message_text = msg;
 	END IF;
 
 	-- at this point we are pretty sure it's all cool.
@@ -1079,28 +1170,32 @@ BEGIN
   datetime = UTC_TIMESTAMP()
 	WHERE requestoffer_id = rid;
 
+  SELECT handling_user_id INTO the_handling_user_id
+  FROM requestoffer
+  WHERE requestoffer_id = rid;
+
   -- audit that the owner is making this RO complete
-	CALL add_audit(203,uid,@handling_user_id,rid,NULL,NULL);
+	CALL add_audit(203,uid,the_handling_user_id,rid,NULL,NULL);
 
   -- get the handling user's id
-  SELECT handling_user_id INTO @handling_user_id
+  SELECT handling_user_id INTO the_handling_user_id
   FROM requestoffer 
   WHERE requestoffer_id = rid;
 
   -- give the handling user their points
   UPDATE user
   SET points = points + 1
-  WHERE user_id = @handling_user_id;
+  WHERE user_id = the_handling_user_id;
 
   -- only the owner of the requestoffer can "COMPLETE" one.
   
   -- we need the servicer to provide input, so...
   -- change the state for the servicer to COMPLETE_FEEDBACK_POSSIBLE
 
-  SELECT urdp_id INTO @handler_urdp_id
+  SELECT urdp_id INTO handler_urdp_id
   FROM user_rank_data_point
   WHERE
-    judge_user_id = @handling_user_id 
+    judge_user_id = the_handling_user_id 
     AND judged_user_id = uid
     AND requestoffer_id = rid
     AND status_id = 1;
@@ -1110,16 +1205,16 @@ BEGIN
       date_entered = UTC_TIMESTAMP(),  -- last modified date update
       status_id = 2 -- move them to needing to provide feedback
     WHERE 
-    urdp_id = @handler_urdp_id;
+    urdp_id = handler_urdp_id;
 
   -- audit that we're putting the handling user in COMPLETE_FEEDBACK_POSSIBLE
-	CALL add_audit(307,@handling_user_id,uid,rid,@handler_urdp_id,'From status_id 1');
+	CALL add_audit(307,the_handling_user_id,uid,rid,handler_urdp_id,'From status_id 1');
 
-  SELECT urdp_id INTO @owner_urdp_id
+  SELECT urdp_id INTO owner_urdp_id
   FROM user_rank_data_point
   WHERE
     judge_user_id = uid
-    AND judged_user_id = @handling_user_id
+    AND judged_user_id = the_handling_user_id
     AND requestoffer_id = rid
     AND status_id = 1;
 
@@ -1128,14 +1223,14 @@ BEGIN
       date_entered = UTC_TIMESTAMP(),  -- last modified date update
       status_id = 2 -- COMPLETE_FEEDBACK_POSSIBLE
     WHERE 
-      urdp_id = @owner_urdp_id;
+      urdp_id = owner_urdp_id;
 
 
   -- Audit that we're putting the owner into COMPLETE_FEEDBACK_POSSIBLE
-	CALL add_audit(307,uid,@handling_user_id,rid,@owner_urdp_id,'From status_id 1');
+	CALL add_audit(307,uid,the_handling_user_id,rid,owner_urdp_id,'From status_id 1');
 
   -- audit that the handling user earned a point off this
-	CALL add_audit(302,uid,@handling_user_id,rid,NULL,NULL);
+	CALL add_audit(302,uid,the_handling_user_id,rid,NULL,NULL);
 
 END
 
@@ -1151,21 +1246,25 @@ CREATE PROCEDURE publish_requestoffer
   rid INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE is_valid BOOLEAN;
+  DECLARE msg VARCHAR(120);
+  DECLARE pts INT;
+
 	call validate_requestoffer_id(rid);	
 	call validate_user_id(uid);
 
-	SELECT COUNT(*) INTO @is_valid
+	SELECT COUNT(*) INTO is_valid
 	FROM requestoffer r
   JOIN requestoffer_state rs ON rs.requestoffer_id = r.requestoffer_id
 	WHERE r.requestoffering_user_id = uid 
 		AND r.requestoffer_id = rid
 		AND rs.status = 109; -- draft status
 
-	IF (@is_valid <> 1) THEN
-		SET @msg = CONCAT('requestoffer ',
+	IF (is_valid <> 1) THEN
+		SET msg = CONCAT('requestoffer ',
 		  rid,' does not have a requestoffering user id of ',
 			uid,' , or it is not in the right status (draft)');
-		SIGNAL SQLSTATE '45000' SET message_text = @msg;
+		SIGNAL SQLSTATE '45000' SET message_text = msg;
 	END IF;
 
 	-- at this point we are pretty sure it's all cool.
@@ -1177,12 +1276,12 @@ BEGIN
   -- Add an audit that the user published their requestoffer
   CALL add_audit(202,uid,NULL,rid,NULL,NULL);
 
-  SELECT points INTO @pts 
+  SELECT points INTO pts 
   FROM requestoffer 
   WHERE requestoffer_id = rid;
 
   -- Deduct points from the user
-  UPDATE user SET points = points - @pts WHERE user_id = uid;
+  UPDATE user SET points = points - pts WHERE user_id = uid;
 
   -- audit that we deducted points from the user
   CALL add_audit(301,1,uid,rid,NULL,NULL);
@@ -1228,68 +1327,76 @@ CREATE PROCEDURE cancel_taken_requestoffer
   rid INT UNSIGNED -- the requestoffer
 ) 
 BEGIN 
-    CALL validate_user_id(uid);
-    CALL validate_requestoffer_id(rid);
+  DECLARE the_handling_user_id, the_requestoffering_user_id INT UNSIGNED;
+  DECLARE other_party INT UNSIGNED;
+  DECLARE handler_urdp_id INT;
 
-    -- get the other party on this requestoffer.
-    -- if we are the owner, get the handler, and vice versa
-    SELECT handling_user_id, requestoffering_user_id 
-    INTO @handling_user_id, @requestoffering_user_id
-    FROM requestoffer
-    WHERE requestoffer_id = rid;
-    
-    -- here we will set the id for the other member
-    -- of this transaction
-    IF (uid = @handling_user_id) THEN
-      SET @other_party = @requestoffering_user_id;
-    ELSE
-      SET @other_party = @handling_user_id;
-    END IF;
+  CALL validate_user_id(uid);
+  CALL validate_requestoffer_id(rid);
 
-    -- change the status on the requestoffer
-    UPDATE requestoffer
-    SET handling_user_id = NULL  -- clear out the handling user
-    WHERE requestoffer_id = rid;
+  -- get the other party on this requestoffer.
+  -- if we are the owner, get the handler, and vice versa
+  SELECT handling_user_id, requestoffering_user_id 
+  INTO the_handling_user_id, the_requestoffering_user_id
+  FROM requestoffer
+  WHERE requestoffer_id = rid;
+  
+  -- here we will set the id for the other member
+  -- of this transaction
+  IF (uid = the_handling_user_id) THEN
+    SET other_party = the_requestoffering_user_id;
+  ELSE
+    SET other_party = the_handling_user_id;
+  END IF;
 
-    UPDATE requestoffer_state
-    SET status = 76 -- "OPEN", datetime = UTC_TiMESTAMP()
-    WHERE requestoffer_id = rid;
+  -- change the status on the requestoffer
+  UPDATE requestoffer
+  SET handling_user_id = NULL  -- clear out the handling user
+  WHERE requestoffer_id = rid;
 
-    -- audit that this user canceled
-    CALL add_audit(204,uid,@other_party,rid,NULL, NULL);
+  UPDATE requestoffer_state
+  SET status = 76 -- "OPEN", datetime = UTC_TiMESTAMP()
+  WHERE requestoffer_id = rid;
 
-    UPDATE user_rank_data_point
-      SET 
-        date_entered = UTC_TIMESTAMP(),  -- last modified date update
-        status_id = 2 -- move them to needing to provide feedback
-      WHERE judge_user_id = @other_party
-      AND judged_user_id = uid
-      AND requestoffer_id = rid
-      AND status_id = 1;
+  -- audit that this user canceled
+  CALL add_audit(204,uid,other_party,rid,NULL, NULL);
 
-      -- audit that the other party is going into COMPLETE_FEEDBACK_POSSIBLE
-    CALL add_audit(307,@other_party,uid,rid,@handler_urdp_id,'From status_id 1');
+  SELECT urdp_id INTO handler_urdp_id
+  FROM user_rank_data_point
+  WHERE judge_user_id = other_party
+    AND judged_user_id = uid
+    AND requestoffer_id = rid
+    AND status_id = 1;
 
-    UPDATE user_rank_data_point
-      SET 
-        date_entered = UTC_TIMESTAMP(),  -- last modified date update
-        status_id = 2 -- they have provided feedback, they're done.
-      WHERE judge_user_id = uid
-      AND judged_user_id = @other_party
-      AND requestoffer_id = rid
-      AND status_id = 1;
+  UPDATE user_rank_data_point
+    SET 
+      date_entered = UTC_TIMESTAMP(),  -- last modified date update
+      status_id = 2 -- move them to needing to provide feedback
+    WHERE urdp_id = handler_urdp_id;
 
-      -- audit that the cancelling user is going into COMPLETE_FEEDBACK_POSSIBLE
-    CALL add_audit(307,uid,@other_party,rid,@handler_urdp_id,'From status_id 1');
+    -- audit that the other party is going into COMPLETE_FEEDBACK_POSSIBLE
+  CALL add_audit(307,other_party,uid,rid,handler_urdp_id,'From status_id 1');
 
-    -- inform the other user the transaction is canceled.
-    CALL put_system_to_user_message(131, @other_party, rid);
+  UPDATE user_rank_data_point
+    SET 
+      date_entered = UTC_TIMESTAMP(),  -- last modified date update
+      status_id = 2 -- they have provided feedback, they're done.
+    WHERE judge_user_id = uid
+    AND judged_user_id = other_party
+    AND requestoffer_id = rid
+    AND status_id = 1;
 
-    -- inform the acting user they have canceled the transaction
-    CALL put_system_to_user_message(136, uid, rid);
-    
-    -- set audit for removal of handling user due to cancellation
-    CALL add_audit(210,uid,@handling_user_id,rid,NULL,NULL); 
+    -- audit that the cancelling user is going into COMPLETE_FEEDBACK_POSSIBLE
+  CALL add_audit(307,uid,other_party,rid,handler_urdp_id,'From status_id 1');
+
+  -- inform the other user the transaction is canceled.
+  CALL put_system_to_user_message(131, other_party, rid);
+
+  -- inform the acting user they have canceled the transaction
+  CALL put_system_to_user_message(136, uid, rid);
+  
+  -- set audit for removal of handling user due to cancellation
+  CALL add_audit(210,uid,the_handling_user_id,rid,NULL,NULL); 
 
 END
 
@@ -1318,32 +1425,30 @@ BEGIN
   VALUES
     (addr1, addr2, my_city, my_state, my_postcode, my_country);
 
-  SET @new_location_id = LAST_INSERT_ID();
+  SET new_location_id = LAST_INSERT_ID();
 
   -- audit: we just created a new location
-  CALL add_audit(401, uid, NULL,NULL,@new_location_id, NULL);
+  CALL add_audit(401, uid, NULL,NULL,new_location_id, NULL);
 
   -- link it to a user, if they asked to save it
   IF uid > 0 THEN
     CALL validate_user_id(uid); -- it's a valid user, right?
     INSERT INTO location_to_user (location_id, user_id)
-    VALUES (@new_location_id, uid);
+    VALUES (new_location_id, uid);
 
     -- audit that we connected a location to a user
-    CALL add_audit(403, uid, NULL, NULL, @new_location_id, NULL);
+    CALL add_audit(403, uid, NULL, NULL, new_location_id, NULL);
   END IF;
 
   -- link it to a requestoffer, if that's the situation
   IF rid > 0 THEN
     CALL validate_requestoffer_id(rid); -- valid requestoffer, right?
     INSERT INTO location_to_requestoffer (location_id, requestoffer_id)
-    VALUES (@new_location_id, rid);
+    VALUES (new_location_id, rid);
 
     -- audit that we connected a location to a requestoffer
-    CALL add_audit(402, NULL, NULL, rid, @new_location_id, NULL);
+    CALL add_audit(402, NULL, NULL, rid, new_location_id, NULL);
   END IF;
-
-  SET new_location_id = @new_location_id;
 
 END
 
@@ -1361,16 +1466,18 @@ CREATE PROCEDURE assign_location_to_current
   uid INT UNSIGNED -- the user id that will have this location as their current location
 ) 
 BEGIN 
+  DECLARE lid_count INT;
+  DECLARE msg VARCHAR(120);
 
-  SELECT COUNT(*) INTO @lid_count
+  SELECT COUNT(*) INTO lid_count
   FROM location
   WHERE location_id = lid;
 
-  IF (@lid_count <> 1) THEN
-      SET @msg = CONCAT(
+  IF (lid_count <> 1) THEN
+      SET msg = CONCAT(
         'location_id ',lid,' does not exist in the location table');
       SIGNAL SQLSTATE '45000' 
-      SET message_text = @msg;
+      SET message_text = msg;
   END IF;
 
   UPDATE user
@@ -1393,16 +1500,18 @@ CREATE PROCEDURE assign_location_to_requestoffer
   rid INT UNSIGNED -- the requestoffer id
 ) 
 BEGIN 
+  DECLARE lid_count INT;
+  DECLARE msg VARCHAR(120);
 
-  SELECT COUNT(*) INTO @lid_count
+  SELECT COUNT(*) INTO lid_count
   FROM location
   WHERE location_id = lid;
 
-  IF (@lid_count <> 1) THEN
-      SET @msg = CONCAT(
+  IF (lid_count <> 1) THEN
+      SET msg = CONCAT(
         'location_id ',lid,' does not exist in the location table');
       SIGNAL SQLSTATE '45000' 
-      SET message_text = @msg;
+      SET message_text = msg;
   END IF;
 
   CALL validate_requestoffer_id(rid); -- valid requestoffer, right?
@@ -1425,16 +1534,17 @@ CREATE PROCEDURE get_my_temporary_msgs
   uid INT UNSIGNED -- the user id
 ) 
 BEGIN 
+  DECLARE count_msgs INT;
 
   CALL validate_user_id(uid);
 
   -- check that we have some temporary messages for this user
-  SELECT COUNT(*) INTO @count_msgs
+  SELECT COUNT(*) INTO count_msgs
   FROM temporary_message
   WHERE user_id = uid;
 
   -- only if we actually have messages, do we keep going
-  IF @count_msgs > 0 THEN
+  IF count_msgs > 0 THEN
 
     -- select the messages
     SELECT tm.message_localization_id, tmt.text
@@ -1470,13 +1580,16 @@ CREATE PROCEDURE rank_other_user
   comment NVARCHAR(500) -- a comment by the judging user
 ) 
 BEGIN 
+  DECLARE count_valid_urdps INT;
+  DECLARE msg VARCHAR(120);
+  DECLARE judged_uid,rid INT UNSIGNED;
 
   CALL validate_user_id(uid);
 
   -- we only allow feedback in these situations: this user is, in fact,
   -- the judge.  status is "feedback possible".  date is within 30 days
   -- of going to status 2 (feedback possible)
-  SELECT COUNT(*) INTO @count_valid_urdps
+  SELECT COUNT(*) INTO count_valid_urdps
   FROM user_rank_data_point
   WHERE urdp_id = my_urdp_id 
     AND judge_user_id = uid 
@@ -1484,15 +1597,15 @@ BEGIN
     AND UTC_TIMESTAMP() < (date_entered + INTERVAL 30 DAY);
 
   -- check that a user rank data point exists with this id.
-  IF @count_valid_urdps = 0 THEN
-    SET @msg = CONCAT('no urdp having an id of ', my_urdp_id,
+  IF count_valid_urdps = 0 THEN
+    SET msg = CONCAT('no urdp having an id of ', my_urdp_id,
      ' status_id of 2 ,judge_user_id of ', uid, 'inside 30 day window');
     
     SIGNAL SQLSTATE '45000' 
-    SET message_text = @msg;
+    SET message_text = msg;
   END IF;
 
-  SELECT judged_user_id, requestoffer_id INTO @judged_uid, @rid
+  SELECT judged_user_id, requestoffer_id INTO judged_uid, rid
   FROM user_rank_data_point
   WHERE urdp_id = my_urdp_id;
 
@@ -1508,15 +1621,15 @@ BEGIN
     VALUES (my_urdp_id, uid, comment);
   END IF;
 
-  CALL recalculate_rank_on_user(@judged_uid, is_satis);
+  CALL recalculate_rank_on_user(judged_uid, is_satis);
 
-	CALL add_audit(308,uid,@judged_uid,@rid,my_urdp_id,'from status_id 2');
+	CALL add_audit(308,uid,judged_uid,rid,my_urdp_id,'from status_id 2');
 
   -- audit that the user is raising or lowering the other party's rank
   IF (is_satis) THEN
-    CALL add_audit(304,uid,@judged_uid,@rid,my_urdp_id,NULL);
+    CALL add_audit(304,uid,judged_uid,rid,my_urdp_id,NULL);
   ELSE
-    CALL add_audit(305,uid,@judged_uid,@rid,my_urdp_id,NULL);
+    CALL add_audit(305,uid,judged_uid,rid,my_urdp_id,NULL);
   END IF;
 
 END
@@ -1557,11 +1670,13 @@ CREATE PROCEDURE generate_invite_code
   OUT new_invite_code VARCHAR(100)
 )
 BEGIN
-  SET @code = sha2(concat(UTC_TIMESTAMP(), '_',my_user_id,'_', rand()),256);
-  SET new_invite_code = @code;
+  DECLARE the_code VARCHAR(256);
+
+  SET the_code = sha2(concat(UTC_TIMESTAMP(), '_',my_user_id,'_', rand()),256);
+  SET new_invite_code = the_code;
 
   INSERT INTO invite_code (user_id, timestamp, value)
-  VALUES (my_user_id, UTC_TIMESTAMP(), @code);
+  VALUES (my_user_id, UTC_TIMESTAMP(), the_code);
 
   CALL add_audit(109, my_user_id, NULL, NULL, NULL, NULL);
 END
