@@ -30,15 +30,16 @@ CREATE FUNCTION calc_approx_dist
 )
 RETURNS DOUBLE DETERMINISTIC READS SQL DATA
 BEGIN
-    DECLARE lat_first, lat_second INT;
-    DECLARE long_first, long_second INT; 
+    DECLARE lat_first, lat_second DOUBLE;
+    DECLARE long_first, long_second DOUBLE; 
     DECLARE lat_first_rad, lat_second_rad DOUBLE;
     DECLARE long_first_rad, long_second_rad DOUBLE;
     DECLARE delta_long DOUBLE;
     DECLARE earth_radius DOUBLE;
     DECLARE distance DOUBLE;
 
-    IF pcode1 IS NULL OR pcode1 = '' OR pcode2 IS NULL OR pcode2 = '' THEN 
+    IF pcode1 IS NULL OR pcode1 = '' OR 
+      pcode2 IS NULL OR pcode2 = '' THEN 
       RETURN NULL;
     END IF;
 
@@ -47,7 +48,7 @@ BEGIN
     FROM postal_codes
     WHERE postal_code = pcode1;
 
-    SELECT latitude, longitude INTO @lat_second, long_second
+    SELECT latitude, longitude INTO lat_second, long_second
     FROM postal_codes
     WHERE postal_code = pcode2;
 
@@ -65,12 +66,12 @@ BEGIN
     SET distance = 
         ACOS
           ( 
-          SIN(@lat_first_rad) *
-          SIN(@lat_second_rad) + 
-          COS(@lat_first_rad) *
-          COS(@lat_second_rad) * 
-          COS(@delta_long) 
-          ) * @earth_radius;
+          SIN(lat_first_rad) *
+          SIN(lat_second_rad) + 
+          COS(lat_first_rad) *
+          COS(lat_second_rad) * 
+          COS(delta_long) 
+          ) * earth_radius;
 
   RETURN distance;
 END
