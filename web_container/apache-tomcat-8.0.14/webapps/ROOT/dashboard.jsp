@@ -25,6 +25,7 @@
     src="img/galaxy_universe-normal.jpg" 
     onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
+
   <div id="overall-container">
 
 
@@ -155,7 +156,7 @@
 
 <div id="profile-container">
   <div>
-      <h3><%=Utils.safe_render(logged_in_user.username)%></h3>
+    <h3><%=loc.get(97,"My profile")%>: <%=Utils.safe_render(logged_in_user.username)%></h3>
   </div>
     <div>
        <a class="button" href="change_current_location.jsp" >
@@ -166,10 +167,14 @@
       <%=user_postcode%></a>
     </div>
   <p>
-    <a class="button" href="change_password.jsp"><%=loc.get(113,"Change password")%></a>
+    <a class="button" href="change_password.jsp">
+      <%=loc.get(113,"Change password")%>
+    </a>
   </p>
   <p>
-    <a class="button" href="generate_icode.jsp"><%=loc.get(206,"Generate invitation code")%></a>
+    <a class="button" href="generate_icode.jsp">
+      <%=loc.get(206,"Generate invitation code")%>
+    </a>
   </p>
 
   <div class="table">
@@ -471,7 +476,7 @@
 <% // ADVANCED SEARCH STARTS %>
 
 <div id="search-section">
-
+  <div id="inner-search-section">
   <div>
       <h3><%=loc.get(81,"Advanced Search")%></h3>
   </div>
@@ -500,10 +505,7 @@
 
 
 <% // ADVANCED SEARCH ENDS %>
-
-
-
-
+  </div>
 </div>
   <%@include file="includes/footer.jsp" %>
 </body>
