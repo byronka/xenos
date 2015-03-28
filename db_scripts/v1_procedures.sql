@@ -17,12 +17,13 @@ CREATE PROCEDURE is_non_empty_string
   text_value NVARCHAR(200) -- the actual text to check
 ) 
 BEGIN
+  DECLARE msg VARCHAR(100);
   IF (text_value IS NULL OR text_value = '') THEN
-      SET @msg = CONCAT(
+      SET msg = CONCAT(
         fieldname,' value in ',procname,' was empty or null');
       
       SIGNAL SQLSTATE '45000' 
-      SET message_text = @msg;
+      SET message_text = msg;
   END IF;
 END
 
@@ -48,18 +49,19 @@ CREATE PROCEDURE recalculate_rank_on_user
   is_thumbs_up BOOL -- the opinion of the other party
 ) 
 BEGIN
+  DECLARE ladder INT;
 
-  SELECT rank_ladder INTO @ladder
+  SELECT rank_ladder INTO ladder
   FROM user
   WHERE user_id = uid;
 
   -- adjust the ranking ladder.
   IF is_thumbs_up = 1 THEN -- ladder only goes up one at a time
-    IF @ladder < 15 THEN
+    IF ladder < 15 THEN
       UPDATE user SET rank_ladder = rank_ladder + 1 WHERE user_id = uid;
     END IF;
   ELSEIF is_thumbs_up = 0 THEN -- ladder drops 3 at a time
-    IF @ladder - 3 < -3 THEN
+    IF ladder - 3 < -3 THEN
       UPDATE user SET rank_ladder = -3 WHERE user_id = uid;
     ELSE
       UPDATE user SET rank_ladder = rank_ladder - 3 WHERE user_id = uid;
@@ -97,17 +99,19 @@ CREATE PROCEDURE validate_requestoffer_id
   rid INT UNSIGNED
 ) 
 BEGIN 
+  DECLARE valid_rid INT UNSIGNED;
+  DECLARE msg VARCHAR(100);
 
-  SELECT COUNT(*) INTO @valid_rid 
+  SELECT COUNT(*) INTO valid_rid 
   FROM requestoffer 
   WHERE requestoffer_id = rid;
 
-  IF (@valid_rid <> 1) THEN
-      SET @msg = CONCAT('requestoffer does not exist in the system: ', 
+  IF (valid_rid <> 1) THEN
+      SET msg = CONCAT('requestoffer does not exist in the system: ', 
         rid);
       
       SIGNAL SQLSTATE '45000' 
-      SET message_text = @msg;
+      SET message_text = msg;
   END IF;
 END
 ---DELIMITER---

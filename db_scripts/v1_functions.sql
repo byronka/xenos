@@ -30,29 +30,39 @@ CREATE FUNCTION calc_approx_dist
 )
 RETURNS DOUBLE DETERMINISTIC READS SQL DATA
 BEGIN
+    DECLARE lat_first, lat_second INT;
+    DECLARE long_first, long_second INT; 
+    DECLARE lat_first_rad, lat_second_rad DOUBLE;
+    DECLARE long_first_rad, long_second_rad DOUBLE;
+    DECLARE delta_long DOUBLE;
+    DECLARE earth_radius DOUBLE;
+    DECLARE distance DOUBLE;
 
     IF pcode1 IS NULL OR pcode1 = '' OR pcode2 IS NULL OR pcode2 = '' THEN 
       RETURN NULL;
     END IF;
 
-    SELECT latitude, longitude INTO @lat_first, @long_first
+
+    SELECT latitude, longitude INTO lat_first, long_first
     FROM postal_codes
     WHERE postal_code = pcode1;
 
-    SELECT latitude, longitude INTO @lat_second, @long_second
+    SELECT latitude, longitude INTO @lat_second, long_second
     FROM postal_codes
     WHERE postal_code = pcode2;
 
-    SET @lat_first_rad = dec_deg_to_rad(@lat_first);
-    SET @lat_second_rad = dec_deg_to_rad(@lat_second);
 
-    SET @long_first_rad = dec_deg_to_rad(@long_first);
-    SET @long_second_rad = dec_deg_to_rad(@long_second);
+    SET lat_first_rad = dec_deg_to_rad(lat_first);
+    SET lat_second_rad = dec_deg_to_rad(lat_second);
 
-    SET @delta_long = @long_second_rad - @long_first_rad;
-    SET @earth_radius = 3958.76; -- earth radius in miles approximately
+    SET long_first_rad = dec_deg_to_rad(long_first);
+    SET long_second_rad = dec_deg_to_rad(long_second);
 
-    SET @distance = 
+
+    SET delta_long = long_second_rad - long_first_rad;
+    SET earth_radius = 3958.76; -- earth radius in miles approximately
+
+    SET distance = 
         ACOS
           ( 
           SIN(@lat_first_rad) *
@@ -62,6 +72,6 @@ BEGIN
           COS(@delta_long) 
           ) * @earth_radius;
 
-    RETURN @distance;
+  RETURN distance;
 END
 

@@ -48,6 +48,7 @@ public final class Database_access {
       ds = get_a_datasource();
       conn = get_a_connection(ds);
     } else {
+      System.out.println("we are skipping Tomcat connections");
       //if this is set, we might be coming from Junit and don't want
       //to use connection pools from tomcat
       try {
@@ -69,9 +70,7 @@ public final class Database_access {
 
 
   /**
-    * Helper to get a connection.  This is to be used for cases
-    * where you need to run multiple statements on a single connection.
-    * @return a connection set up for multiple statements in transaction.
+    * Helper to get a connection.  
     */
   private static Connection get_a_connection(javax.sql.DataSource ds) {
     try { 
