@@ -21,13 +21,14 @@
     <div class="container">
       <h3><%=loc.get(207, "Here is an invitation code.  It is valid for a week")%></h3>
       <p><em>Copy the following text and send it to whoever you are inviting to the system.</em></p>
-      <pre>
+
+      <p>
       
         Hi! Join me and my friends on a system that encourages trading of favors, at
         https://favir.co/register.jsp?icode=<%=icode%>
       
       
-      </pre>
+      </p>
     </div>
     <%@include file="includes/footer.jsp" %>
   </body>

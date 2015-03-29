@@ -34,6 +34,7 @@
 <% // REQUESTOFFER ENTRIES START%>
 
   <div id="ro-container">
+    <h3 style="color: white">Favors you can handle:</h3>
     <%
 
       String thequerystring = request.getQueryString();

@@ -5,6 +5,7 @@
     <title><%=loc.get(2, "Request Favor")%></title>	
     <link rel="stylesheet" href="includes/reset.css">
     <link rel="stylesheet" href="includes/header.css" >
+    <link rel="stylesheet" href="includes/footer.css" >
     <link rel="stylesheet" href="small_dialog.css" >
     <script type="text/javascript" src="includes/utils.js"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1">

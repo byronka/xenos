@@ -73,11 +73,11 @@
             <input id="new_password" type="password" name="new_password" />
           </div>
         </div>
-        <div>
-        <button class="button" type="submit">
-          <%=loc.get(113,"Change password")%>
-        </button>
-        <a class="button" href="dashboard.jsp"><%=loc.get(130,"Cancel")%></a>
+        <div class="row">
+          <button class="button" type="submit">
+            <%=loc.get(113,"Change password")%>
+          </button>
+          <a class="button" href="dashboard.jsp"><%=loc.get(130,"Cancel")%></a>
         </div>
       </form>
     </div>
