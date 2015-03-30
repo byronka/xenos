@@ -25,6 +25,7 @@ Testing
 Definitions
 Deploy checklist
 Servers
+Web Designers
 Troubleshooting
 
 
@@ -664,6 +665,10 @@ passwords for everything is in Secret Server, at ss.renomad.com
 
 
 
+
+Web Designers
+===============
+http://codepen.io/chrisdothtml
 
 
 

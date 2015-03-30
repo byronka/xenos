@@ -45,7 +45,7 @@
     }
 
     int uid = 0;
-    String ip_address = request.getRemoteAddr();
+    String ip_address = com.renomad.xenos.Utils.get_remote_address(request);
     if ((uid = Security.check_login(user, pass, ip_address)) > 0) {
       String cookie = Security.register_user(uid, ip_address);
       response.addCookie(new Cookie("xenos_cookie", cookie));

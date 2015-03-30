@@ -30,7 +30,7 @@
     
     boolean success = false;
     if (error_msg.length() == 0) { // if no error
-      String ip_address = request.getRemoteAddr();
+      String ip_address = Utils.get_remote_address(request);
       if ((uid = Security.check_login(logged_in_user.username, old_pass, ip_address)) > 0) {
         success = User_utils.change_password(uid, uid, new_pass);
       } else {
@@ -73,11 +73,13 @@
             <input id="new_password" type="password" name="new_password" />
           </div>
         </div>
-        <div class="row">
-          <button class="button" type="submit">
-            <%=loc.get(113,"Change password")%>
-          </button>
-          <a class="button" href="dashboard.jsp"><%=loc.get(130,"Cancel")%></a>
+        <div class="table">
+          <div class="row">
+            <button class="button" type="submit">
+              <%=loc.get(113,"Change password")%>
+            </button>
+            <a class="button" href="dashboard.jsp"><%=loc.get(130,"Cancel")%></a>
+          </div>
         </div>
       </form>
     </div>

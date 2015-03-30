@@ -58,7 +58,7 @@
     }
 
     if (!validation_error) {
-      String ip_address = request.getRemoteAddr();
+      String ip_address = com.renomad.xenos.Utils.get_remote_address(request);
       User_utils.Put_user_result result = User_utils.put_user( username, password, ip_address, invite_code);
       switch (result) {
         case OK:

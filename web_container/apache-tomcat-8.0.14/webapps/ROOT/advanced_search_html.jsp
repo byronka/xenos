@@ -1,6 +1,6 @@
   <div class="container">
+  <form method="POST" action="advanced_search.jsp">
   <div class="table">
-    <form method="POST" action="advanced_search.jsp">
     <% if (validation_error) { %>
       <h3 class="error">Invalid input received - check and resubmit</h3>
     <% } %>
@@ -82,6 +82,6 @@
       <%}%>
 
       <button class="button" type="submit"><%=loc.get(1,"Search")%></button>
+    </div>
     </form>
-  </div>
   </div>

@@ -252,8 +252,7 @@ span.error {
     top: 1px;
 }
 
-  #overall-container input[type="text"]{
-    display: table-cell;
+#overall-container input[type="text"]{
     background: 12px 11px no-repeat, linear-gradient(to bottom, #f7f7f8 0%,#ffffff 100%);
     border-radius: 3px;
     border: 1px solid grey;
@@ -262,10 +261,10 @@ span.error {
     font-family: "Helvetica Neue", sans-serif;
     font-size: 13px;
     color: #222222;
-    position: relative;
     height: 36px;
     width: 100%;
-    padding-left: 30px;
+    display: table-cell;
+    padding-left: 10px;
   }
 
   input[type="text"]:focus{
@@ -276,6 +275,7 @@ span.error {
   .table {
     display: table;
     border-spacing: 8px 8px;
+    width: 100%;
   }
 
   .table div.row {
@@ -296,9 +296,9 @@ span.error {
   }
 
   #search-section {
-    width: 28%;
+    width: 26%;
     position: fixed;
-    top: 60px;
+    top: 35px;
     right: 0px;
   }
 
