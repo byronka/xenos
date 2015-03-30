@@ -271,6 +271,8 @@ VALUES
 (108,'User came in from a different ip'),
 (109,'User generated an invite code'),
 (110,'User tried an invalid invite code'),
+(111,'User edited their description'),
+(112,'User deleted their description'),
 
 -- requestoffers - 200s
 
