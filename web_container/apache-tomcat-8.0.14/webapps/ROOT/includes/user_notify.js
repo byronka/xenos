@@ -42,7 +42,7 @@ xenos_user_notify.message_displayer = function() {
 }
 
 
-//Modele 2: a message queue.  Takes in new messages and 
+//Module 2: a message queue.  Takes in new messages and 
 //displays them in an even, timely manner.  The way it does
 //this is it has a function that gets run every few seconds,
 //and at that time it tries popping an element off the array

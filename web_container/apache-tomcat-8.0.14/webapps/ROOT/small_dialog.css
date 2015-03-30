@@ -27,11 +27,6 @@ span.error {
   background-color: red;
 }
 
-div.container input[type="text"] {
-  width: 97%;
-  height: 40px;
-}
-
 div.container {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -43,28 +38,6 @@ div.container {
   margin-right: 20px;
 }
 
-.table {
-  padding: 10px;
-  display: table;
-  border-spacing: 8px;
-}
-
-.table div.row {
-  display: table-row;
-}
-
-.table div.row label{
-  display: table-cell;
-}
-
-.table div.row select {
-  display: table-cell;
-  max-width: 200px;
-}
-
-.table span {
-  display: table-cell;
-}
 
 footer {
   position: fixed;
@@ -73,7 +46,6 @@ footer {
 }
 
 .button {
-    margin: 10px;
     cursor: pointer;
     border: solid 1px #da7c0c;
     background: #478dad;
@@ -92,8 +64,6 @@ footer {
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
     -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
     box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    display: block;
-    width: 85%;
     text-align: center;
 }
 .button:hover {
@@ -107,11 +77,47 @@ footer {
     top: 1px;
 }
 
+@media all and (min-width: 660px) {
+
+  div.container input[type="text"] {
+    width: 97%;
+    height: 40px;
+  }
+
+  .table {
+    padding: 10px;
+    display: table;
+    border-spacing: 8px;
+  }
+
+  .row {
+    display: table-row;
+  }
+
+  .row label{
+    display: table-cell;
+  }
+
+  .row select {
+    display: table-cell;
+    max-width: 200px;
+  }
+
+  .table span {
+    display: table-cell;
+  }
+
+  .button {
+      display: table-cell;
+  }
+
+}
 
 /* handling situation where things get too narrow */
 @media all and (max-width: 659px) {
 
 .button {
+    display: block;
     margin: 10px;
     border: solid 2px #da7c0c;
     background: #478dad;
@@ -121,6 +127,7 @@ footer {
     text-decoration: none;
     font: 16px/100% Arial, Helvetica, sans-serif;
     padding: 12px;
+    width: 85%;
   }
 
   .table {
@@ -128,29 +135,40 @@ footer {
     width: 100%;
   }
 
-  .table div.row {
+  .row {
     display: block;
     width: 100%;
   }
 
-  .table div.row label{
+  .row label{
     display: block;
     width: 100%;
   }
 
-  .table div.row select {
+  .row select {
     display: block;
+    height: 25px;
     width: 100%;
   }
 
-  .table div.row textarea {
+  .row textarea {
     display: block;
+    height: 25px;
     width: 100%;
   }
 
-  .table span {
+  .row span {
     display: block;
+    background: grey;
+    color: white;
+    border: 1px solid white;
+    margin-left: 15px;
     width: 100%;
+  }
+
+  .row input[type="password"], .row input[type="text"] {
+    width: 97%;
+    height: 40px;
   }
 
 }
