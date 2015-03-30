@@ -14,6 +14,8 @@ import java.sql.PreparedStatement;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
   * Utils holds utilities that apply across many situations
   */
@@ -63,6 +65,15 @@ public final class Utils {
     }
   }
 
+
+public static String get_remote_address(HttpServletRequest r) {
+  String forwarded_header = r.getHeader("x-forwarded-for");
+  if (forwarded_header != null) {
+    return forwarded_header;
+  }
+  
+  return r.getRemoteAddr();
+}
 
   /**
     * Will add an audit record
