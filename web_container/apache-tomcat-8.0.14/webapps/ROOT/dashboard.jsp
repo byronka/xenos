@@ -157,7 +157,11 @@
 
 <div id="profile-container">
   <div>
-    <h3><%=loc.get(97,"My profile")%>: <%=Utils.safe_render(logged_in_user.username)%></h3>
+    <h3><%=loc.get(97,"My profile")%>: 
+      <a href="user.jsp?user_id=<%=logged_in_user_id%>">
+        <%=Utils.safe_render(logged_in_user.username)%>
+      </a>
+    </h3>
   </div>
     <div>
        <a class="button" href="change_current_location.jsp" >
