@@ -29,6 +29,20 @@
   <div class="container">
       <h3><%=Utils.safe_render(the_user.username)%></h3>
 
+      <p class="user-description">
+        <em>
+        <%=Utils.safe_render(User_utils.get_user_description(uid))%>
+        </em>
+      <p>
+
+      <% if (uid == logged_in_user_id) { %>
+      <div class="row">
+        <a class="button" href="user.jsp?user_id=<%=uid%>edit_desc=true">Edit description</a>
+      </div>
+      <% } %>
+
+
+
       <%if (the_user.urdp_count >= 30) {%>
         <div class="row">
           <label><%=loc.get(18,"Rank average")%>:</label>
@@ -45,11 +59,17 @@
 
       <% if (the_user.points < 0) { %>
         <div class="row">
-          <label><%=the_user.username%> <%=String.format(loc.get(27,"owes people %d points"),-the_user.points)%></label>
+          <label>
+            <%=the_user.username%> 
+            <%=String.format(loc.get(27,"owes people %d points"),-the_user.points)%>
+          </label>
         </div>
       <% } else { %>
         <div class="row">
-          <label><%=the_user.username%> <%=String.format(loc.get(9,"is owed %d points"),the_user.points)%></label>
+          <label>
+            <%=the_user.username%> 
+            <%=String.format(loc.get(9,"is owed %d points"),the_user.points)%>
+          </label>
         </div>
       <% } %>
 
@@ -118,25 +138,27 @@
     <% } %>
     <% } %> 
 
+    <%
+      Requestoffer[] my_open_requestoffers = 
+        Requestoffer_utils
+        .get_requestoffers_for_user_by_status(uid,76);
+    %>
 
-    <div style="padding-top: 20px;" class="my-requestoffers-header"><em >
-        <%=loc.get(173, "Their open Favors")%>:</em></div>
-      <div class="requestoffers mine">
-      <%
-        Requestoffer[] my_open_requestoffers = 
-          Requestoffer_utils
-          .get_requestoffers_for_user_by_status(uid,76);
-          if (my_open_requestoffers.length == 0) {%>
-          <p>(<%=loc.get(103,"None")%>)</p>
-          <% } 
-        for (Requestoffer r : my_open_requestoffers) {
-      %>
-        <div class="requestoffer mine">
-          <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
-            <%=Utils.get_trunc(Utils.safe_render(r.description), 50) %> </a>
-        </div>
-      <% } %>
+    <% if (my_open_requestoffers.length != 0) {%>
+      <div style="padding-top: 20px;" class="my-requestoffers-header">
+        <em>
+          <%=loc.get(173, "Their open Favors")%>:
+        </em>
       </div>
+      <div class="requestoffers mine">
+        <%for (Requestoffer r : my_open_requestoffers) { %>
+          <div class="requestoffer mine">
+            <a href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id %>"> 
+              <%=Utils.get_trunc(Utils.safe_render(r.description), 50) %> </a>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
   </div>
   <%@include file="includes/footer.jsp" %>
 	</body>
