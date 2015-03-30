@@ -11,7 +11,7 @@ public final class Add_postal_code_data_to_db {
 
   public static void main(String[] args) {
     Build_db_schema.run_multiple_statements(
-        "db_scripts/v1_postal_code_data.sql");
+        "db_scripts/postal_code_data.sql");
   }
 
 }

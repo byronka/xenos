@@ -11,7 +11,7 @@ public final class Build_procedures {
 
   public static void main(String[] args) {
     Build_db_schema.run_multiple_statements(
-        "db_scripts/v1_procedures.sql");
+        "db_scripts/procedures.sql");
   }
 
 }
