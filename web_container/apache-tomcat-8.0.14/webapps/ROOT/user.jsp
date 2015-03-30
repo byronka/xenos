@@ -38,6 +38,7 @@
       <% if (uid == logged_in_user_id) { %>
       <div class="row">
         <a class="button" href="user.jsp?user_id=<%=uid%>edit_desc=true">Edit description</a>
+        <a class="button" href="user.jsp?user_id=<%=uid%>edit_desc=true">Delete description</a>
       </div>
       <% } %>
 
