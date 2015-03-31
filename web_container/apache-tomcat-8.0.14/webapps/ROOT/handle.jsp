@@ -10,7 +10,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
-<%@ page import="com.renomad.xenos.Utils" %>
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%@ page import="com.renomad.xenos.Requestoffer" %>
 <%

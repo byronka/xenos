@@ -1681,3 +1681,35 @@ BEGIN
   CALL add_audit(109, my_user_id, NULL, NULL, NULL, NULL);
 END
 
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS set_user_description;   
+
+---DELIMITER---
+
+CREATE PROCEDURE set_user_description
+(
+  my_user_id INT UNSIGNED,
+  my_text NVARCHAR(500)
+)
+BEGIN
+  DECLARE existing_count INT;
+
+  -- get the count of existing user descriptions for this user.
+  SELECT COUNT(*) INTO existing_count
+  FROM user_description
+  WHERE user_id = my_user_id;
+
+  -- if they already have a description, update it.  Otherwise, add a row
+  IF existing_count = 1 THEN
+    UPDATE user_description 
+    SET text = my_text 
+    WHERE user_id = my_user_id;
+  ELSE
+    INSERT INTO user_description (user_id, text)
+    VALUES (my_user_id, my_text);
+  END IF;
+
+  CALL add_audit(111, my_user_id, NULL, NULL, NULL, NULL);
+END
+

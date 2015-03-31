@@ -57,6 +57,16 @@ CREATE TABLE
 
 ---DELIMITER---
 
+CREATE TABLE
+  user_description (
+    user_id INT UNSIGNED NOT NULL,
+    text NVARCHAR(500),
+    FOREIGN KEY FK_user_description_user_id (user_id) 
+      REFERENCES user (user_id)
+  );
+
+---DELIMITER---
+
 
 -- create the system user and admin users
 INSERT INTO user (username, email, password, salt, language, rank_average, is_admin)
@@ -272,7 +282,6 @@ VALUES
 (109,'User generated an invite code'),
 (110,'User tried an invalid invite code'),
 (111,'User edited their description'),
-(112,'User deleted their description'),
 
 -- requestoffers - 200s
 

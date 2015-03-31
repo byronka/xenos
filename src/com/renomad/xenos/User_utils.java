@@ -24,6 +24,63 @@ public final class User_utils {
 
 
   /**
+    * sets a description that will be publicly viewable
+    * for the user.
+    * @return true if successful, false otherwise
+    */
+  public static boolean edit_description(
+      int user_id, String description) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall("{call set_user_description(?,?)}");
+      cs.setInt(1,user_id);
+      cs.setNString(2,description);
+      cs.execute();
+      return true;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+  }
+
+
+  /**
+    * returns the publicly viewable description of a 
+    * user, or empty string otherwise.
+    */
+  public static String
+    get_user_description(int user_id) {
+    String sqlText = 
+      "SELECT text "+
+      "FROM user_description "+
+      "WHERE user_id = ?";
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setInt( 1, user_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return "";
+      }
+
+      resultSet.next(); //move to the first set of results.
+      String text = resultSet.getNString("text");
+      return text;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return "";
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+
+    }
+
+  /**
     * gets an array of user ids by names of users. used in searching
     * requestoffers by users.  
     * @param usernames an array of user usernames

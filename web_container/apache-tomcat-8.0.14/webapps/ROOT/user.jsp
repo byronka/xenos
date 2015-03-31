@@ -13,14 +13,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 <%
+  if (request.getMethod().equals("POST")) {
+    String the_user_desc = Utils.get_string_no_null(request.getParameter("user_description"));
+    if (!User_utils.edit_description(logged_in_user_id, the_user_desc)) {
+      response.sendRedirect("general_error.jsp");
+      return;
+    } else {
+      response.sendRedirect("user.jsp?user_id="+logged_in_user_id);
+      return;
+    }
+  }
+
   String qs = request.getQueryString();
   Integer uid = Utils.parse_int(Utils.parse_qs(qs).get("user_id"));
+  if (uid == null) {
+    uid = -1;
+  }
+  Boolean edit_desc = Boolean.parseBoolean(Utils.parse_qs(qs).get("edit_desc"));
 
   User the_user = User_utils.get_user(uid);
   if (the_user == null) {
     response.sendRedirect("general_error.jsp");
     return;
   }
+
 %>
 	<body>
   <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
@@ -30,16 +46,29 @@
       <h3><%=Utils.safe_render(the_user.username)%></h3>
 
       <p class="user-description">
+      <%if (edit_desc) { %>
+
+        <form method="POST" action="user.jsp">
+          <textarea id="user_description" name="user_description" maxlength="500"
+            ><%=Utils.safe_render(User_utils.get_user_description(uid))%></textarea>
+          <div class="row">
+            <button type="submit" >Save description</button>
+          </div>
+        </form>
+
+      <% } else { %>
         <em>
-        <%=Utils.safe_render(User_utils.get_user_description(uid))%>
+          <%=Utils.safe_render(User_utils.get_user_description(uid))%>
         </em>
+      <% } %>
       <p>
 
       <% if (uid == logged_in_user_id) { %>
-      <div class="row">
-        <a class="button" href="user.jsp?user_id=<%=uid%>edit_desc=true">Edit description</a>
-        <a class="button" href="user.jsp?user_id=<%=uid%>edit_desc=true">Delete description</a>
-      </div>
+
+          <div class="row">
+            <a class="button" href="user.jsp?user_id=<%=uid%>&amp;edit_desc=true">Edit description</a>
+          </div>
+
       <% } %>
 
 
