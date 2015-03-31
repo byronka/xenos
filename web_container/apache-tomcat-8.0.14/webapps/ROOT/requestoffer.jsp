@@ -16,7 +16,7 @@
 <%@ page import="com.renomad.xenos.User_location" %>
 <%@ page import="com.renomad.xenos.Requestoffer" %>
 <%
-	request.setCharacterEncoding("UTF-8");
+
   String qs = request.getQueryString();
   Requestoffer r = 
     Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
@@ -25,11 +25,27 @@
     return;
   }
 
+  if (request.getMethod().equals("POST")) {
+    String msg = request.getParameter("message");
+    Integer to_user = Utils.parse_int(request.getParameter("to_user"));
+
+    if (!Utils.is_null_or_empty(msg)) {
+      Requestoffer_utils.set_message(msg, r.requestoffer_id, logged_in_user_id, to_user);
+      response.sendRedirect(
+        "requestoffer.jsp?requestoffer="+r.requestoffer_id+"&service=true");
+      return;
+    }
+  }
+
+	request.setCharacterEncoding("UTF-8");
   User_location[] locations = Requestoffer_utils.get_locations_for_requestoffer(r.requestoffer_id);
 
   boolean is_requestoffering_user = logged_in_user_id == r.requestoffering_user_id;
   boolean is_handling_user = logged_in_user_id == r.handling_user_id;
   boolean is_deleting = qs.indexOf("delete=true") > 0;
+  boolean is_offering_to_service = 
+    Requestoffer_utils.is_offering_to_service(logged_in_user_id, r.requestoffer_id);
+
 
   boolean show_handle_button = 
     (r.status == 76) && //'open'
@@ -38,8 +54,17 @@
     !is_deleting;
   boolean show_delete_info = 
       is_requestoffering_user && is_deleting;
+
+  Requestoffer_utils.Service_request[] service_request =
+    Requestoffer_utils.get_service_requests(r.requestoffering_user_id);
+
   boolean show_message_input = 
-      (is_requestoffering_user || is_handling_user) && r.status == 78 && !is_deleting;
+    !is_deleting &&
+    (
+      (is_requestoffering_user && (service_request.length > 0 && r.status == 76) || r.status == 78) ||
+      (is_handling_user) ||
+      (is_offering_to_service)
+    );
 
   //handle bad scenarios
   if (!is_requestoffering_user && is_deleting) {
@@ -47,14 +72,6 @@
     return;
   }
 
-  String msg = request.getParameter("message");
-
-  if (!Utils.is_null_or_empty(msg)) {
-    Requestoffer_utils.set_message(msg, r.requestoffer_id, logged_in_user_id);
-    response.sendRedirect(
-      "requestoffer.jsp?requestoffer="+r.requestoffer_id+"&service=true");
-    return;
-  }
 
 %>
 <body>
@@ -202,13 +219,63 @@
 
           <p><%=Utils.safe_render(m)%></p>
 
-        <%} if (show_message_input || (is_requestoffering_user && r.status == 78)) { %>
+        <%} if (show_message_input) { %>
+
           <form method="POST" 
             action="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&service=true">
-            <p><%=String.format(loc.get(38,"Message (up to %d characters)"), 200)%></p>
-            <input type="text" name="message" maxlength="200" />
+
+            <% 
+              // if we are in OPEN status 
+              if (r.status == 76) { 
+            %>
+
+              <% // if this user is the owner %>
+              <% if (logged_in_user_id == r.requestoffering_user_id) { %>
+
+                <% // if there is only one offerer %>
+                <% if (service_request.length == 1) { %>
+                  <input type="hidden" id="to_user" name="to_user" value="<%=service_request[0].user_id%>" />
+
+                <% // if there are multiple offerers, show a dropdown %>
+                <% } else { %>
+
+                  <select id="to_user" name="to_user" >
+                    <option disabled selected> -- Select a user -- </option>			            
+                    <%                                       
+                      for(int i = 0; i < service_request.length; i++) { 
+                    %>
+                      <option value="<%=service_request[i].user_id%>"><%=service_request[i].username%></option>    
+                    <% } %>			           		             
+                  </select>
+
+                <% } %>
+              <% } else { %>
+                <input type="hidden" id="to_user" name="to_user" value="<%=r.requestoffering_user_id%>" />
+              <% } %>
+
+            <% } else if (r.status == 78) { // TAKEN status %>
+              <% // if this user is the owner %>
+              <% if (logged_in_user_id == r.requestoffering_user_id) { %>
+                <input type="hidden" id="to_user" name="to_user" value="<%=r.handling_user_id%>" />
+              <% // if this user is the handling user %>
+              <% } else { %>
+                <input type="hidden" id="to_user" name="to_user" value="<%=r.requestoffering_user_id%>" />
+              <% } %>
+            <% } %>
+
+            <div class="row">
+              <label for="message">
+                <%=String.format(loc.get(38,"Message (up to %d characters)"), 200)%>
+              </label>
+
+              <textarea id="message" name="message" maxlength="200" ></textarea>
+
+            </div>
+
             <button class="button" type="submit"><%=loc.get(36,"Send message")%></button>
+
           </form>
+
         <% } %>
         <div>
           <% if ( r.status == 78 && (is_requestoffering_user || is_handling_user)) { %> 

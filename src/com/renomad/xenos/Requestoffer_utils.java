@@ -301,19 +301,62 @@ public final class Requestoffer_utils {
   public static class Service_request {
 
     public final int requestoffer_id;
-    public String desc;
-    public final int user_id;
-    public String date_created;
+    public final String desc;
+    public final int user_id; // the user offering to handle it
+    public final String date_created;
+    public final String username;
 
     public Service_request(
         int requestoffer_id, 
         int user_id, 
         String date_created,
-        String desc) {
+        String desc, String username) {
       this.requestoffer_id = requestoffer_id;
       this.user_id = user_id;
       this.date_created = date_created;
       this.desc = desc;
+      this.username = username;
+    }
+  }
+
+
+  /**
+    * returns true if the user in user_id is indeed offering
+    * to service this requestoffer
+    * 
+    * @param user_id a user potentially offering to service the requestoffer
+    * @return true if they are offering to service, false otherwise.
+    */
+  public static boolean is_offering_to_service(int user_id, int requestoffer_id) {
+    
+    String sqlText = 
+      "SELECT COUNT(*) as the_count " +
+      "FROM requestoffer_service_request " +
+      "WHERE user_id = ? AND requestoffer_id = ? AND status = 106 ";
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setInt( 1, user_id);
+      pstmt.setInt( 2, requestoffer_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return false;
+      }
+
+      resultSet.next();
+      int count = resultSet.getInt("the_count");
+      if (resultSet.wasNull()) {
+        return false;
+      }
+      return count == 1;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(pstmt);
     }
   }
 
@@ -330,10 +373,12 @@ public final class Requestoffer_utils {
     
     String sqlText = 
       "SELECT rsr.requestoffer_id, rsr.user_id, rsr.date_created, " +
-      "ro.description " +
+      "ro.description, u.username " +
       "FROM requestoffer_service_request rsr " +
       "JOIN requestoffer ro "+
         "ON ro.requestoffer_id = rsr.requestoffer_id " +
+      "JOIN user u " +
+        "ON u.user_id = rsr.user_id " +
       "WHERE ro.requestoffering_user_id = ? AND rsr.status = 106";
 
     PreparedStatement pstmt = null;
@@ -353,8 +398,9 @@ public final class Requestoffer_utils {
         int rid = resultSet.getInt("requestoffer_id");
         int uid = resultSet.getInt("user_id");
         String dt = resultSet.getString("date_created");
-        String desc = resultSet.getString("description");
-        service_requests.add(new Service_request(rid, uid, dt, desc));
+        String desc = resultSet.getNString("description");
+        String username = resultSet.getNString("username");
+        service_requests.add(new Service_request(rid, uid, dt, desc, username));
       }
 
       //convert arraylist to array
@@ -1174,11 +1220,13 @@ public final class Requestoffer_utils {
     * correspondence between users of the system on a given requestoffer.
     * @param msg the message to store.
     * @param requestoffer_id the id of the requestoffer
-    * @param user_id the user creating the message
+    * @param from_user_id the user creating the message
+    * @param to_user_id the user receiving the message
     * @return true if successful
     */
   public static boolean 
-    set_message(String msg, int requestoffer_id, int user_id) {
+    set_message(String msg, int requestoffer_id, 
+        int from_user_id, int to_user_id) {
 
     CallableStatement cs = null;
     try {
@@ -1186,8 +1234,8 @@ public final class Requestoffer_utils {
       // see db_scripts/v1_procedures.sql for
       // details on this stored procedure.
       cs = conn.prepareCall(String.format(
-        "{call put_message(?,%d,%d)}" 
-				,user_id, requestoffer_id));
+        "{call put_message(?,%d,%d,%d)}" 
+				,from_user_id, to_user_id, requestoffer_id));
       cs.setNString(1, msg);
       cs.execute();
     } catch (SQLException ex) {

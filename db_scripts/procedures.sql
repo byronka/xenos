@@ -548,45 +548,33 @@ DROP PROCEDURE IF EXISTS put_message;
 ---DELIMITER---
 
 -- a message sent from one user to another within
--- the context of a requestoffer
+-- the context of a requestoffer.  Can be done while the
+-- requestoffer is being handled or by offerers to handle in
+-- OPEN status.
 
 CREATE PROCEDURE put_message
 (
   my_message NVARCHAR(200),
-  fr_uid INT UNSIGNED,
-  rid INT UNSIGNED
+  fr_uid INT UNSIGNED, -- "from" user id - the person sending the message
+  to_uid INT UNSIGNED,-- "to" user id - the user the message is intended for
+  rid INT UNSIGNED -- the requestoffer id
 ) 
 BEGIN 
-  DECLARE to_user_id, ro_uid, h_uid INT UNSIGNED;
   DECLARE full_msg NVARCHAR(200);
 
   CALL is_non_empty_string('put_message','my_message',my_message);
-  call validate_requestoffer_id(rid);
-  call validate_user_id(fr_uid);
+  CALL validate_requestoffer_id(rid);
+  CALL validate_user_id(fr_uid);
+  CALL validate_user_id(to_uid);
 
-	-- whoever is the user id in the parameter is doing the talking,
-  -- and we know both parties - a requestoffer owner and its handler.
-	SELECT requestoffering_user_id , handling_user_id INTO ro_uid,h_uid
-	FROM requestoffer ro
-	WHERE ro.requestoffer_id = rid;
-
-	IF fr_uid = ro_uid
-		THEN
-		SET to_user_id = h_uid;
-	ELSEIF fr_uid = h_uid
-		THEN
-		SET to_user_id = ro_uid;
-	END IF;
-
-  SELECT 
-    CONCAT(username,' says:', my_message) INTO full_msg
+  SELECT CONCAT(username,' says: ', my_message) INTO full_msg
   FROM user WHERE user_id = fr_uid;
 
   INSERT into requestoffer_message (
 		message, requestoffer_id, from_user_id, to_user_id, timestamp)
-  VALUES (full_msg, rid, fr_uid, to_user_id, UTC_TIMESTAMP());
+  VALUES (full_msg, rid, fr_uid, to_uid, UTC_TIMESTAMP());
 
-  CALL put_temporary_message(to_user_id, NULL, full_msg);
+  CALL put_temporary_message(to_uid, NULL, full_msg);
 
 END
 
