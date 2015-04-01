@@ -583,3 +583,16 @@ postal_codes (
   longitude DOUBLE
 )
 
+---DELIMITER---
+-- this table holds the groups for the system.  users can create groups
+-- and use them to be discriminating in their choice of favor handlers.
+
+CREATE TABLE
+group (
+  group_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+  name NVARCHAR(50),
+  owner_id INT UNSIGNED,
+  FOREIGN KEY FK_owner_user_id (owner_id) 
+    REFERENCES user (user_id)
+);
+
