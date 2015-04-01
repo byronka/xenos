@@ -584,6 +584,7 @@ postal_codes (
 )
 
 ---DELIMITER---
+
 -- this table holds the groups for the system.  users can create groups
 -- and use them to be discriminating in their choice of favor handlers.
 
@@ -593,6 +594,20 @@ group (
   name NVARCHAR(50),
   owner_id INT UNSIGNED,
   FOREIGN KEY FK_owner_user_id (owner_id) 
+    REFERENCES user (user_id)
+);
+
+---DELIMITER---
+
+-- this table holds the groups for the system.  users can create groups
+-- and use them to be discriminating in their choice of favor handlers.
+
+CREATE TABLE
+user_group_description (
+  user_id INT UNSIGNED NOT NULL, -- the user this description applies to
+  group_id INT UNSIGNED NOT NULL, -- the group they're a member of
+  text NVARCHAR(500), -- the description
+  FOREIGN KEY FK_user_group_description (user_id) 
     REFERENCES user (user_id)
 );
 
