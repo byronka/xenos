@@ -625,3 +625,18 @@ user_group_description (
     REFERENCES user (user_id)
 );
 
+
+---DELIMITER---
+
+-- This provides an easy way to map between users and the groups they
+-- are members of.
+CREATE TABLE
+user_to_group (
+  user_id INT UNSIGNED,
+  group_id INT UNSIGNED,
+  PRIMARY KEY (user_id, group_id),
+  FOREIGN KEY FK_user_to_group_group_id (group_id) 
+    REFERENCES group (group_id),
+  FOREIGN KEY FK_user_to_group_user_id (user_id) 
+    REFERENCES user (user_id)
+);
