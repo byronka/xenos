@@ -599,14 +599,28 @@ group (
 
 ---DELIMITER---
 
--- this table holds the groups for the system.  users can create groups
--- and use them to be discriminating in their choice of favor handlers.
+-- holds descriptions of groups
+
+CREATE TABLE
+group_description (
+  group_id INT UNSIGNED NOT NULL,
+  text NVARCHAR(500), -- the description
+  FOREIGN KEY FK_group_description_id (group_id) 
+    REFERENCES group (group_id)
+);
+
+---DELIMITER---
+
+-- holds descriptions for users as they want the other members of the
+-- group to view them.  Only other group members can see this.
 
 CREATE TABLE
 user_group_description (
   user_id INT UNSIGNED NOT NULL, -- the user this description applies to
   group_id INT UNSIGNED NOT NULL, -- the group they're a member of
   text NVARCHAR(500), -- the description
+  FOREIGN KEY FK_user_group_description_group_id (group_id) 
+    REFERENCES group (group_id),
   FOREIGN KEY FK_user_group_description (user_id) 
     REFERENCES user (user_id)
 );
