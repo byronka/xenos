@@ -1,6 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <header>
-  <a class="trademark" href="dashboard.jsp">Xenos</a>
+  <a class="trademark" href="dashboard.jsp">Zenia</a>
   <a href="logout.jsp" >
     <%=loc.get(3, "Logout")%>
   </a>

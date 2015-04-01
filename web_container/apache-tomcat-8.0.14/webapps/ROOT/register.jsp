@@ -89,7 +89,7 @@
   </head>
 <body>
     <img id='my_background' src="img/cool2.jpg" onload="xenos_utils.fade_in_background()"/>
-  <div class="trademark cl-effect-1"><a href="index.jsp">Xenos</a></div>
+  <div class="trademark cl-effect-1"><a href="index.jsp">Zenia</a></div>
   <div class="register">
     <form id="enter_name_form" action="register.jsp" method="post">
       <input type="hidden" name="icode" value="<%=invite_code%>" >
