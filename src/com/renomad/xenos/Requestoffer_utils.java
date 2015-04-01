@@ -534,7 +534,7 @@ public final class Requestoffer_utils {
 		public int page_count;
 
 		public OR_Package(Others_Requestoffer[] or, int page_count) {
-			this.or = or;
+			this.or = Arrays.copyOf(or, or.length);
 			this.page_count = page_count;
 		}
 
