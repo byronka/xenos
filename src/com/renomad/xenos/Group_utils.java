@@ -43,7 +43,7 @@ public final class Group_utils {
   /**
     * the possible results from creating a new group.
     */
-  public enum Create_group_result { OK, EMPTY_DESC, EMPTY_NAME, GENERAL_ERR}
+  public enum Create_group_result { OK, EMPTY_DESC, GENERAL_ERR}
 
   /**
     * creates a new user group.
@@ -58,14 +58,10 @@ public final class Group_utils {
         return Create_group_result.EMPTY_NAME;
       }
 
-      if ( Utils.is_null_or_empty(group_desc)) {
-        return Create_group_result.EMPTY_DESC;
-      }
-
       CallableStatement cs = null;
       try {
         Connection conn = Database_access.get_a_connection();
-        cs = conn.prepareCall("{call create_new_user_group(?,?,?)}");
+        cs = conn.prepareCall("{call create_user_group(?,?,?)}");
         cs.setNString(1,group_name);
         cs.setNString(2,group_desc);
         cs.setInt(3,owner_id);
@@ -79,6 +75,7 @@ public final class Group_utils {
       }
 
   }
+
 
   public static Group get_group(int group_id) {
     return null;

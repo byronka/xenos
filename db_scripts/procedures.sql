@@ -1714,12 +1714,23 @@ CREATE PROCEDURE create_user_group
   new_owner_id INT UNSIGNED
 )
 BEGIN
+  DECLARE new_group_id INT UNSIGNED;
 
+  -- validate our input values
   call validate_user_id(new_owner_id);
   call is_non_empty_string(the_group_name);
-  call is_non_empty_string(the_group_description);
 
+  -- add the group
+  INSERT INTO group (name, owner_id)
+  VALUES (the_group_name, new_owner_id);
+
+  SET new_group_id = LAST_INSERT_ID();
+
+  -- add the group description
+  INSERT INTO group_description (group_id, text)
+  VALUES (new_group_id, the_group_description);
 
   CALL add_audit(407, new_owner_id, NULL, NULL, NULL, NULL);
+
 END
 
