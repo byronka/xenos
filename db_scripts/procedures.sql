@@ -1718,7 +1718,8 @@ BEGIN
 
   -- validate our input values
   call validate_user_id(new_owner_id);
-  call is_non_empty_string(the_group_name);
+  call is_non_empty_string(
+    'create_user_group','the_group_name',the_group_name);
 
   -- add the group
   INSERT INTO user_group (name, owner_id)
@@ -1729,6 +1730,10 @@ BEGIN
   -- add the group description
   INSERT INTO group_description (group_id, text)
   VALUES (new_group_id, the_group_description);
+
+  -- add the owner as a member of the group
+  INSERT INTO user_to_group (user_id, group_id)
+  VALUES (new_owner_id, new_group_id);
 
   CALL add_audit(407, new_owner_id, NULL, NULL, NULL, NULL);
 

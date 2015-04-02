@@ -4,16 +4,35 @@
 <!DOCTYPE html>
 <%
   
+  boolean has_name_validation_error = false;
+  String group_desc = "";
+  String group_name = "";
+
   if (request.getMethod().equals("POST")) {
-    String group_desc = Utils.get_string_no_null(request.getParameter("group_desc"));
-    String group_name = Utils.get_string_no_null(request.getParameter("group_name"));
-    if (!Group_utils.create_new_group(group_name, group_desc, user_id)) {
-      response.sendRedirect("general_error.jsp");
-      return;
-    } else {
-      response.sendRedirect("user_groups.jsp");
-      return;
+    group_desc = Utils.get_string_no_null(request.getParameter("group_desc"));
+    group_name = Utils.get_string_no_null(request.getParameter("group_name"));
+    if (group_name.equals("")) {
+      has_name_validation_error = true;
     }
+
+    if (!has_name_validation_error) {
+      Group_utils.Create_group_result result = Group_utils.create_new_group(group_name, group_desc, logged_in_user_id);
+
+      switch (result) {
+        case GENERAL_ERR:
+          response.sendRedirect("general_error.jsp");
+          return;
+        case EMPTY_NAME:
+          has_name_validation_error = true;
+          break;
+        case OK:
+        // fall through
+        default:
+          response.sendRedirect("user_groups.jsp");
+          return;
+      }
+    }
+
   }
 
 %>
@@ -35,15 +54,20 @@
 
 
     <div class="container">
-      <div class="row">
-        <label for="group_name">Group name</label>
-        <input type="text" maxlength="50" id="group_name" name="group_name" >
-      </div>
-      <div class="row">
-        <label for="group_desc" >Description:</label>
-        <textarea id="group_desc" name="group_desc"></textarea>
-      </div>
-      <button type="submit" class="button">Create my new group</button>
+      <form method="POST" action="create_group.jsp">
+        <div class="row">
+          <label for="group_name">* Group name</label>
+          <input type="text" maxlength="50" id="group_name" name="group_name" >
+          <% if (has_name_validation_error) { %>
+            <div class="error">A name is required for this group</div>
+          <% } %>
+        </div>
+        <div class="row">
+          <label for="group_desc" >Description:</label>
+          <textarea id="group_desc" name="group_desc" ><%=group_desc%></textarea>
+        </div>
+        <button type="submit" class="button">Create my new group</button>
+      </form>
     </div>
 
     <%@include file="includes/footer.jsp" %>

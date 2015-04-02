@@ -31,6 +31,28 @@
   <%@include file="includes/header.jsp" %>
 
   <div class="container">
+    <h3>Details on the group:</h3>
+    <div class="row">
+      <label>Name:</label>
+      <span><%=the_group.group_name%></span>
+    </div>
+    <div class="row">
+      <label>Description:</label>
+      <span><%=the_group.description%></span>
+    </div>
+    <div class="row">
+      <label>Owner:</label>
+      <span><%=the_group.description%></span>
+    </div>
+    <div class="row">
+      <label>Members:</label>
+      <% for (java.util.Map.Entry<Integer, String> member : the_group.get_members().entrySet()) { %>
+          <span>
+            <a href="user.jsp?user_id=<%=member.getKey()%>"><%=member.getValue()%></a>
+          </span>
+        <% } %>
+    </div>
+  </div>
   <%@include file="includes/footer.jsp" %>
 	</body>
 </html>

@@ -29,14 +29,14 @@
   <div class="container">
 
     <h3>You are a member of these groups:</h3>
-      <p><a href="group.jsp?group_id=1">Group 1</a></p>
-      <p><a href="group.jsp?group_id=2">Group 2</a></p>
-      <p><a href="group.jsp?group_id=3">Group 3</a></p>
-      <p><a href="group.jsp?group_id=4">Group 4</a></p>
-      <p><a href="group.jsp?group_id=5">Group 5</a></p>
+      <% for (Group_utils.Group_id_and_name g : Group_utils.get_groups_for_user(logged_in_user_id, false)) {%>
+        <p><a href="group.jsp?group_id=<%=g.id%>"><%=g.name%></a></p>
+      <% } %>
 
     <h3>You own these groups:</h3>
-      <p><a href="group.jsp?group_id=5">Group 5</a></p>
+      <% for (Group_utils.Group_id_and_name g : Group_utils.get_groups_for_user(logged_in_user_id, true)) {%>
+        <p><a href="group.jsp?group_id=<%=g.id%>"><%=g.name%></a></p>
+      <% } %>
 
       <a class="button" href="create_group.jsp">Create a group</a>
 
