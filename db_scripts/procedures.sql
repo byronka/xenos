@@ -1721,7 +1721,7 @@ BEGIN
   call is_non_empty_string(the_group_name);
 
   -- add the group
-  INSERT INTO group (name, owner_id)
+  INSERT INTO user_group (name, owner_id)
   VALUES (the_group_name, new_owner_id);
 
   SET new_group_id = LAST_INSERT_ID();
@@ -1731,6 +1731,56 @@ BEGIN
   VALUES (new_group_id, the_group_description);
 
   CALL add_audit(407, new_owner_id, NULL, NULL, NULL, NULL);
+
+END
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS edit_user_group;   
+
+---DELIMITER---
+
+CREATE PROCEDURE edit_user_group
+(
+  the_group_id INT UNSIGNED,
+  the_group_name NVARCHAR(50),
+  the_group_description NVARCHAR(500),
+  the_user_id INT UNSIGNED -- the id of the user editing this group
+)
+BEGIN
+  DECLARE group_desc_changed BOOL; -- if the group description has been edited
+  DECLARE group_name_changed BOOL; -- if the group description has been edited
+  DECLARE old_group_desc NVARCHAR(500);
+  DECLARE old_group_name NVARCHAR(50);
+
+  -- validate our input values
+  call validate_user_id(the_user_id);
+
+  SELECT (COUNT(*) = 1), gd.text INTO group_desc_changed, old_group_desc
+  FROM user_group g
+  JOIN group_description gd ON gd.group_id = g.group_id
+  WHERE g.group_id = the_group_id AND gd.text = the_group_description;
+
+  SELECT (COUNT(*) = 1), name INTO group_name_changed, old_group_name
+  FROM user_group g
+  WHERE group_id = the_group_id AND name = the_group_name;
+
+  -- if the description changed, update it and audit
+  IF group_desc_changed THEN
+    UPDATE group_description
+    SET text = the_group_description
+    WHERE group_id = the_group_id;
+
+    CALL add_audit(411, the_user_id, NULL, NULL, the_group_id, CONCAT(SUBSTR(old_group_desc,1,50),'...'));
+  END IF;
+  
+  -- if the group name changed, update it and audit
+  IF group_name_changed THEN
+    UPDATE user_group
+    SET name = the_group_name
+    WHERE group_id = the_group_id;
+
+    CALL add_audit(410, the_user_id, NULL, NULL, the_group_id, old_group_name);
+  END IF;
 
 END
 

@@ -591,7 +591,7 @@ postal_codes (
 -- and use them to be discriminating in their choice of favor handlers.
 
 CREATE TABLE
-group (
+user_group (
   group_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   name NVARCHAR(50),
   owner_id INT UNSIGNED,
@@ -608,7 +608,7 @@ group_description (
   group_id INT UNSIGNED NOT NULL,
   text NVARCHAR(500), -- the description
   FOREIGN KEY FK_group_description_id (group_id) 
-    REFERENCES group (group_id)
+    REFERENCES user_group (group_id)
 );
 
 ---DELIMITER---
@@ -622,7 +622,7 @@ user_group_description (
   group_id INT UNSIGNED NOT NULL, -- the group they're a member of
   text NVARCHAR(500), -- the description
   FOREIGN KEY FK_user_group_description_group_id (group_id) 
-    REFERENCES group (group_id),
+    REFERENCES user_group (group_id),
   FOREIGN KEY FK_user_group_description (user_id) 
     REFERENCES user (user_id)
 );
@@ -638,7 +638,7 @@ user_to_group (
   group_id INT UNSIGNED,
   PRIMARY KEY (user_id, group_id),
   FOREIGN KEY FK_user_to_group_group_id (group_id) 
-    REFERENCES group (group_id),
+    REFERENCES user_group (group_id),
   FOREIGN KEY FK_user_to_group_user_id (user_id) 
     REFERENCES user (user_id)
 );

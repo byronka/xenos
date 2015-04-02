@@ -43,7 +43,7 @@ public final class Group_utils {
   /**
     * the possible results from creating a new group.
     */
-  public enum Create_group_result { OK, EMPTY_DESC, GENERAL_ERR}
+  public enum Create_group_result { OK, EMPTY_NAME, GENERAL_ERR}
 
   /**
     * creates a new user group.
@@ -52,7 +52,7 @@ public final class Group_utils {
     * @param owner_id the new owner of the group
     * @return an enum indicating success or a potential few errors, Create_group_result
     */
-  public static Group create_new_group(String group_name, String group_desc, int owner_id) {
+  public static Create_group_result create_new_group(String group_name, String group_desc, int owner_id) {
 
       if ( Utils.is_null_or_empty(group_name)) {
         return Create_group_result.EMPTY_NAME;
