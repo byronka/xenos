@@ -1735,7 +1735,7 @@ BEGIN
   INSERT INTO user_to_group (user_id, group_id)
   VALUES (new_owner_id, new_group_id);
 
-  CALL add_audit(407, new_owner_id, NULL, NULL, NULL, NULL);
+  CALL add_audit(407, new_owner_id, NULL, NULL, new_group_id, NULL);
 
 END
 ---DELIMITER---
