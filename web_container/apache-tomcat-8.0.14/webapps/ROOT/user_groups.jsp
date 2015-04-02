@@ -9,20 +9,14 @@
     <link rel="stylesheet" href="includes/footer.css" >
     <link rel="stylesheet" href="small_dialog.css" >
     <script type="text/javascript" src="includes/utils.js"></script>
-    <title>Group</title>
+    <title>User Groups</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 <%
   String qs = request.getQueryString();
-  Integer gid = Utils.parse_int(Utils.parse_qs(qs).get("group_id"));
-  if (gid == null) {
-    gid = -1;
-  }
-
-  Group_utils.Group the_group = Group_utils.get_group(gid);
-  if (the_group == null) {
-    response.sendRedirect("general_error.jsp");
-    return;
+  Integer uid = Utils.parse_int(Utils.parse_qs(qs).get("user_id"));
+  if (uid == null) {
+    uid = -1;
   }
 
 %>
@@ -30,7 +24,24 @@
   <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
 
+
+
   <div class="container">
+
+    <h3>You are a member of these groups:</h3>
+      <p><a href="group.jsp?group_id=1">Group 1</a></p>
+      <p><a href="group.jsp?group_id=2">Group 2</a></p>
+      <p><a href="group.jsp?group_id=3">Group 3</a></p>
+      <p><a href="group.jsp?group_id=4">Group 4</a></p>
+      <p><a href="group.jsp?group_id=5">Group 5</a></p>
+
+    <h3>You own these groups:</h3>
+      <p><a href="group.jsp?group_id=5">Group 5</a></p>
+
+      <a class="button" href="create_group.jsp">Create a group</a>
+
+  </div>
+
   <%@include file="includes/footer.jsp" %>
 	</body>
 </html>

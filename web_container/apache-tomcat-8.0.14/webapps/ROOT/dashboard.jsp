@@ -177,6 +177,11 @@
     </a>
   </p>
   <p>
+    <a class="button" href="user_groups.jsp">
+      Your groups
+    </a>
+  </p>
+  <p>
     <a class="button" href="generate_icode.jsp">
       <%=loc.get(206,"Generate invitation code")%>
     </a>

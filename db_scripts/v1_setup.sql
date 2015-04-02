@@ -317,10 +317,12 @@ VALUES
 (403,'Location was attached to user'),
 (404,'location was deleted, since there were no related users or requestoffers'),
 (405,'location was set as current for a user'),
-(406,'user leaves group'),
-(407,'user creates group'),
-(408,'user1 sends group invite to user2'),
-(409,'user1 accepts user2''s invite to group (see extra)');
+(406,'user1 leaves group (extra is group id)'),
+(407,'user1 creates group (extra is group id)'),
+(408,'user1 sends group invite to user2 (extra is group id)'),
+(409,'user1 accepts user2''s invite to group (extra is group id)'),
+(410,'user1 edits group name (extra is group id)'),
+(411,'user1 edits group description (extra is group id)');
 
 
 

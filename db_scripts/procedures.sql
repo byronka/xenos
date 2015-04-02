@@ -1701,3 +1701,25 @@ BEGIN
   CALL add_audit(111, my_user_id, NULL, NULL, NULL, NULL);
 END
 
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS create_user_group;   
+
+---DELIMITER---
+
+CREATE PROCEDURE create_user_group
+(
+  the_group_name NVARCHAR(50),
+  the_group_description NVARCHAR(500),
+  new_owner_id INT UNSIGNED
+)
+BEGIN
+
+  call validate_user_id(new_owner_id);
+  call is_non_empty_string(the_group_name);
+  call is_non_empty_string(the_group_description);
+
+
+  CALL add_audit(407, new_owner_id, NULL, NULL, NULL, NULL);
+END
+
