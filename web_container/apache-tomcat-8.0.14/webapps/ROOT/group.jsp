@@ -42,7 +42,9 @@
     </div>
     <div class="row">
       <label>Owner:</label>
-      <span><%=the_group.description%></span>
+          <span>
+            <a href="user.jsp?user_id=<%=the_group.owner_id%>"><%=the_group.owner_username%></a>
+          </span>
     </div>
     <div class="row">
       <label>Members:</label>
