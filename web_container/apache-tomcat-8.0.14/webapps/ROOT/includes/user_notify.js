@@ -23,15 +23,17 @@ xenos_user_notify.message_displayer = function() {
   // the DOM
   var message_hider = function() {
     var dialog = document.getElementById('notification_dialog');
-    dialog.style.opacity = 1; 
-    var fade = function() {
-      if ((dialog.style.opacity-=.1) < 0) { 
-        document.body.removeChild(dialog);
-      } else {
-        setTimeout(fade,40);
-      }
-    };
-    fade(); //kick it off.
+    if (dialog != null) {
+      dialog.style.opacity = 1; 
+      var fade = function() {
+        if ((dialog.style.opacity-=.1) < 0) { 
+          document.body.removeChild(dialog);
+        } else {
+          setTimeout(fade,40);
+        }
+      };
+      fade(); //kick it off.
+    }
   }
 
   //This part is the interface
