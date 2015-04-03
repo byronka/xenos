@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 
 /**
-  * Utilities methods used to work with users
+  * Utilities methods used to work with groups
   */
 public final class Group_utils {
 
@@ -76,9 +76,11 @@ public final class Group_utils {
     * @param group_name the name of the group, maximum 50 chars
     * @param group_desc the description of the group
     * @param owner_id the new owner of the group
-    * @return an enum indicating success or a potential few errors, Create_group_result
+    * @return an enum indicating success or a potential 
+    *    few errors, Create_group_result
     */
-  public static Create_group_result create_new_group(String group_name, String group_desc, int owner_id) {
+  public static Create_group_result 
+    create_new_group(String group_name, String group_desc, int owner_id) {
 
       if ( Utils.is_null_or_empty(group_name)) {
         return Create_group_result.EMPTY_NAME;
@@ -108,7 +110,8 @@ public final class Group_utils {
     * @param find_owned_groups if true, we return only those groups this
     *   user owns.  Otherwise, all groups they are member of.
     */
-  public static Group_id_and_name[] get_groups_for_user(int user_id, boolean find_owned_groups) {
+  public static Group_id_and_name[] 
+    get_groups_for_user(int user_id, boolean find_owned_groups) {
     String sqlText = 
       String.format(
         "SELECT ug.group_id, ug.name "+
@@ -131,7 +134,8 @@ public final class Group_utils {
         return new Group_id_and_name[0];
       }
 
-      ArrayList<Group_id_and_name> groups = new ArrayList<Group_id_and_name>();
+      ArrayList<Group_id_and_name> groups = 
+        new ArrayList<Group_id_and_name>();
       while(resultSet.next()) {
         int gid = resultSet.getInt("group_id");
         String name = resultSet.getNString("name");
@@ -159,7 +163,9 @@ public final class Group_utils {
 
     String sqlText = 
       String.format(
-        "SELECT ug.name, ug.owner_id, owninguser.username AS owner_username, utg.user_id, gd.text, u.username "+
+        "SELECT ug.name, ug.owner_id, "+
+        "owninguser.username AS owner_username, "+
+        "utg.user_id, gd.text, u.username "+
         "FROM user_group ug " +
         "JOIN user_to_group utg ON utg.group_id = ug.group_id " +
         "JOIN group_description gd ON gd.group_id = ug.group_id " +
@@ -201,7 +207,8 @@ public final class Group_utils {
         members.put(member_id, username);
       }
 
-      Group my_group = new Group(members, description, name, oid, owner_username);
+      Group my_group = 
+        new Group(members, description, name, oid, owner_username);
       return my_group;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);

@@ -1756,8 +1756,8 @@ CREATE PROCEDURE edit_user_group
   the_user_id INT UNSIGNED -- the id of the user editing this group
 )
 BEGIN
-  DECLARE group_desc_changed BOOL; -- if the group description has been edited
-  DECLARE group_name_changed BOOL; -- if the group name has been edited
+  DECLARE group_desc_changed BOOL; -- group description has been edited
+  DECLARE group_name_changed BOOL; -- group name has been edited
   DECLARE old_group_desc NVARCHAR(500);
   DECLARE old_group_name NVARCHAR(50);
 
@@ -1789,7 +1789,8 @@ BEGIN
     SET name = the_group_name
     WHERE group_id = the_group_id;
 
-    CALL add_audit(411, the_user_id, NULL, NULL, the_group_id, old_group_name);
+    CALL add_audit(411, the_user_id, NULL, NULL, 
+      the_group_id, old_group_name);
   END IF;
 
 END
@@ -1803,7 +1804,8 @@ DROP PROCEDURE IF EXISTS send_group_invite_to_user;
 
 -- we only need the group and the user we're targeting.  right now, 
 -- only the owner can send invites, so we don't have to think about who
--- is sending the invite - it's the owner of the group, that doesn't change.
+-- is sending the invite - it's the owner of the group, 
+-- that doesn't change.
 
 CREATE PROCEDURE send_group_invite_to_user
 (
@@ -1840,7 +1842,8 @@ DROP PROCEDURE IF EXISTS respond_to_group_invite;
 
 -- we only need the group and the user we're targeting.  right now, 
 -- only the owner can send invites, so we don't have to think about who
--- is sending the invite - it's the owner of the group, that doesn't change.
+-- is sending the invite - it's the owner of the group, 
+-- that doesn't change.
 
 CREATE PROCEDURE respond_to_group_invite
 (
@@ -1862,14 +1865,16 @@ BEGIN
     VALUES (the_user_id, the_group_id);
     CALL put_system_to_user_message(221, the_owner_id, NULL);
     CALL put_system_to_user_message(222, the_user_id, NULL);
-    CALL add_audit(409, the_user_id, the_owner_id, NULL, the_group_id, NULL);
+    CALL add_audit(409, the_user_id, 
+      the_owner_id, NULL, the_group_id, NULL);
 
   -- if it's rejected, we do not add the user to the 
   -- group, but we send a system message to the inviter
   -- and we add an audit message
   ELSE
     CALL put_system_to_user_message(214, the_owner_id, NULL);
-    CALL add_audit(410, the_user_id, the_owner_id, NULL, the_group_id, NULL);
+    CALL add_audit(410, the_user_id, 
+      the_owner_id, NULL, the_group_id, NULL);
 
   END IF;
 
@@ -1891,7 +1896,8 @@ CREATE PROCEDURE leave_group
 (
   the_group_id INT UNSIGNED,
   the_user_id INT UNSIGNED, -- the id of the user who is leaving
-  is_group_owner_initiated BOOL -- if it is the group owner doing this to a member
+  is_group_owner_initiated BOOL -- if it is the group owner 
+                              -- doing this to a member
 )
 BEGIN
   DECLARE the_owner_id INT UNSIGNED;
@@ -1912,7 +1918,8 @@ BEGIN
     CALL put_system_to_user_message(224, the_owner_id, NULL);
 
     -- audit that the user was removed from the group
-    CALL add_audit(414, the_user_id, the_owner_id, NULL, the_group_id, NULL);
+    CALL add_audit(414, the_user_id, 
+      the_owner_id, NULL, the_group_id, NULL);
 
   ELSE
 
@@ -1923,7 +1930,8 @@ BEGIN
     CALL put_system_to_user_message(215, the_owner_id, NULL);
 
     -- audit that the user left the group
-    CALL add_audit(406, the_user_id, the_owner_id, NULL, the_group_id, NULL);
+    CALL add_audit(406, the_user_id, 
+      the_owner_id, NULL, the_group_id, NULL);
 
   END IF;
 END
