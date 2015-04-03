@@ -1,8 +1,8 @@
 <%@include file="includes/init.jsp" %>
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
+<%@ page import="com.renomad.xenos.Group_utils" %>
 <%@ page import="com.renomad.xenos.User_location" %>
 <%@ page import="com.renomad.xenos.Requestoffer" %>
-<%@ page import="com.renomad.xenos.Utils" %>
 <%@ page import="com.renomad.xenos.Others_Requestoffer" %>
 <% request.setCharacterEncoding("UTF-8"); %>
 
@@ -181,6 +181,23 @@
       Your groups
     </a>
   </p>
+  <%
+   Group_utils.Invite_info[] iis = Group_utils.get_invites_for_user(logged_in_user_id);
+  %>
+
+  <% if (iis.length > 0) { %>
+    <p>
+      <em>
+        Your invites to groups:
+      </em>
+    </p>
+
+    <% for (Group_utils.Invite_info ii : iis ) { %>
+    <a href="group.jsp?group_id=<%=ii.group_id%>"><%=ii.groupname%></a>
+    <% } %>
+
+  <% } %>
+
   <p>
     <a class="button" href="generate_icode.jsp">
       <%=loc.get(206,"Generate invitation code")%>

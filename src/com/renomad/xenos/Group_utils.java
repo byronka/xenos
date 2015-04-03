@@ -191,6 +191,41 @@ public final class Group_utils {
 
 
   /**
+    * returns true if this user has an outstanding invitation to join
+    */
+  public static boolean
+    has_been_invited(int user_id, int group_id) {
+    String sqlText = 
+      String.format(
+        "SELECT COUNT(*) as the_count "+
+        "FROM user_group_invite " +
+        "WHERE user_id = %d AND group_id = %d",
+            user_id, group_id);
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return false;
+      }
+
+      resultSet.next();
+      int count = resultSet.getInt("the_count");
+
+      return count == 1;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
     * gets details of a particular group by id
     * @return a group with all sorts of fun stuff, or null if failure.
     */
@@ -321,16 +356,13 @@ public final class Group_utils {
     * your group if this is the owner doing it.
     * @return true if success, false otherwise
     */
-  public static boolean 
-    leave_group(int group_id, int user_id, 
-        boolean is_group_owner_initiated) {
+  public static boolean leave_group(int group_id, int user_id) {
       CallableStatement cs = null;
       try {
         Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall(
             String.format(
-              "{call leave_group(%d,%d,%b)}",
-                group_id, user_id, is_group_owner_initiated));
+              "{call leave_group(%d,%d)}", group_id, user_id));
         cs.execute();
         return true;
       } catch (SQLException ex) {
@@ -340,6 +372,93 @@ public final class Group_utils {
         Database_access.close_statement(cs);
       }
   }
+
+
+  /**
+    * leave a group if you are a member, or remove a member from
+    * your group if this is the owner doing it.
+    * @return true if success, false otherwise
+    */
+  public static boolean 
+    remove_from_group(int owner_id, int group_id, int user_id) {
+      CallableStatement cs = null;
+      try {
+        Connection conn = Database_access.get_a_connection();
+        cs = conn.prepareCall(
+            String.format(
+              "{call remove_from_group(%d,%d,%d)}",
+                owner_id, group_id, user_id));
+        cs.execute();
+        return true;
+      } catch (SQLException ex) {
+        Database_access.handle_sql_exception(ex);
+        return false;
+      } finally {
+        Database_access.close_statement(cs);
+      }
+  }
+
+
+  /**
+    * gets a description for a user within a group.  Viewable only 
+    * by group membes.
+    * returns a description or empty string otherwise.
+    */
+  public static String 
+    get_user_group_description(int group_id, int user_id) {
+    String sqlText = 
+      String.format(
+        "SELECT text " +
+        "FROM user_group_description " +
+        "WHERE group_id = %d AND user_id = %d",
+          group_id, user_id);
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return "";
+      }
+
+      resultSet.next();
+      String desc = resultSet.getNString("text");
+      return desc;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return "";
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
+    * sets a description for a user within a group.  Viewable only 
+    * by group membes.
+    */
+  public static boolean 
+    edit_user_group_description(int group_id, int user_id, String text) {
+      CallableStatement cs = null;
+      try {
+        Connection conn = Database_access.get_a_connection();
+        cs = conn.prepareCall(
+            String.format(
+              "{call edit_user_group_description(%d,%d,?)}",
+                group_id, user_id));
+        cs.setNString(1, text);
+        cs.execute();
+        return true;
+      } catch (SQLException ex) {
+        Database_access.handle_sql_exception(ex);
+        return false;
+      } finally {
+        Database_access.close_statement(cs);
+      }
+  }
+
 
   /**
     * if you are an owner of a group and you extend an invitation to

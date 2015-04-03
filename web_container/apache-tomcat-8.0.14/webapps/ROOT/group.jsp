@@ -78,6 +78,7 @@
 
   }
 
+  boolean is_the_group_owner = logged_in_user_id == the_group.owner_id;
 %>
 	<body>
   <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
@@ -102,6 +103,14 @@
             <a href="user.jsp?user_id=<%=the_group.owner_id%>">
               <%=the_group.owner_username%>
             </a>
+            <div>
+              <span>
+                <%=Group_utils.get_user_group_description(gid, the_group.owner_id)%>
+              </span>
+            </div>
+            <% if (logged_in_user_id == the_group.owner_id) { %>
+              <a href="edit_group_description.jsp?group_id=<%=gid%>">Edit my group description</a>
+            <% } %>
           </span>
     </div>
 
@@ -110,11 +119,24 @@
         <label>Members:</label>
         <% for (java.util.Map.Entry<Integer, String> member : 
             the_group.get_members().entrySet()) { %>
-            <span>
-              <a href="user.jsp?user_id=<%=member.getKey()%>">
-                <%=member.getValue()%>
-              </a>
-            </span>
+            <% if (member.getKey() != the_group.owner_id) { %>
+              <div>
+                <a href="user.jsp?user_id=<%=member.getKey()%>">
+                  <%=member.getValue()%>
+                </a>
+                <div>
+                  <span>
+                    <%=Group_utils.get_user_group_description(gid, member.getKey())%>
+                  </span>
+                </div>
+                <% if (logged_in_user_id == the_group.owner_id) { %>
+                  <a href="remove_from_group.jsp?group_id=<%=gid%>&user_id=<%=member.getKey()%>">Remove</a>
+                <% } %>
+                <% if (member.getKey() == logged_in_user_id) { %>
+                  <a href="edit_group_description.jsp?group_id=<%=gid%>">Edit my group description</a>
+                <% } %>
+              </div>
+            <% } %>
           <% } %>
       </div>
 
@@ -122,40 +144,58 @@
         Group_utils.Invite_info[] sent_invites =  
           Group_utils.get_invites_for_group(gid);
       %>
-      <% if (sent_invites.length > 0) { %>
+      <% if (is_the_group_owner && sent_invites.length > 0) { %>
         <h3>Invites sent to users:</h3>
         <% for (Group_utils.Invite_info ii : sent_invites) {%>
           <p>
             <a href="user.jsp?user_id=<%=ii.user_id%>">
               <%=ii.username%>
             </a>
+            <a href="retract_invitation.jsp?group_id=<%=gid%>&user_id=<%=ii.user_id%>">Retract invitation</a>
           </p>
         <% } %>
       <% } %>
 
-      <form method="POST" action="group.jsp">
-        <div class="row">
-          <input type="hidden" id="group_id" name="group_id" value="<%=gid%>">
-          <input type="text" id="username" name="username" value="<%=the_username%>">
-          <% if (duplicate_invite_error) { %>
-            <div class="error">
-              An invitation has already been sent to this user.
-            </div>
-          <% } %>
-          <% if (in_group_already_error) { %>
-            <div class="error">
-              This user is already in the group
-            </div>
-          <% } %>
-          <% if (username_validation_error) { %>
-            <div class="error">
-              username was not found. 
-            </div>
-          <% } %>
-          <button class="button" type="submit">Send invite</button>
-        </div>
-      </form>
 
+      <% if (is_the_group_owner) { %>
+        <form method="POST" action="group.jsp">
+          <div class="row">
+            <input type="hidden" id="group_id" name="group_id" value="<%=gid%>">
+            <input type="text" id="username" name="username" value="<%=the_username%>">
+            <% if (duplicate_invite_error) { %>
+              <div class="error">
+                An invitation has already been sent to this user.
+              </div>
+            <% } %>
+            <% if (in_group_already_error) { %>
+              <div class="error">
+                This user is already in the group
+              </div>
+            <% } %>
+            <% if (username_validation_error) { %>
+              <div class="error">
+                username was not found. 
+              </div>
+            <% } %>
+            <button class="button" type="submit">Send invite</button>
+          </div>
+        </form>
+      <% } %>
+
+      <% if (!is_the_group_owner) { %>
+        <a href="handle_leave_group.jsp?group_id=<%=gid%>" class="button">Leave group</a>
+      <% } %>
+
+      <% } %>
+
+      <% if (Group_utils.has_been_invited(logged_in_user_id, gid)) { %>
+        <div>
+          You have been invited to join this group.  Click on the button below to confirm joining
+        </div>
+        <div class="row">
+          <a class="button" href="handle_group_invite.jsp?group_id=<%=gid%>&is_accepted=true">Join group</a>
+          <a class="button" href="handle_group_invite.jsp?group_id=<%=gid%>&is_accepted=false">Reject offer</a>
+        </div>
       <% } %>
 
   </div>

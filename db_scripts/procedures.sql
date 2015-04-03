@@ -1913,14 +1913,11 @@ DROP PROCEDURE IF EXISTS leave_group;
 ---DELIMITER---
 
 -- grants the ability for a member to leave a group.
--- or, allows a group owner to remove a user from their group
 
 CREATE PROCEDURE leave_group
 (
   the_group_id INT UNSIGNED,
-  the_user_id INT UNSIGNED, -- the id of the user who is leaving
-  is_group_owner_initiated BOOL -- if it is the group owner 
-                              -- doing this to a member
+  the_user_id INT UNSIGNED -- the id of the user who is leaving
 )
 BEGIN
   DECLARE the_owner_id INT UNSIGNED;
@@ -1932,31 +1929,60 @@ BEGIN
   DELETE FROM user_to_group
   WHERE user_id = the_user_id AND group_id = the_group_id;
 
-  IF is_group_owner_initiated THEN
 
-    -- send a message to the user that they have been removed
-    CALL put_system_to_user_message(223, the_user_id, NULL);
+  -- send a message to the user that they have left the group
+  CALL put_system_to_user_message(216, the_user_id, NULL);
 
-    -- send a message to the owner of the group that they removed the user
-    CALL put_system_to_user_message(224, the_owner_id, NULL);
+  -- send a message to the owner of the group that a member left
+  CALL put_system_to_user_message(215, the_owner_id, NULL);
 
-    -- audit that the user was removed from the group
-    CALL add_audit(414, the_user_id, 
-      the_owner_id, NULL, the_group_id, NULL);
+  -- audit that the user left the group
+  CALL add_audit(406, the_user_id, 
+    the_owner_id, NULL, the_group_id, NULL);
 
-  ELSE
+END
 
-    -- send a message to the user that they have left the group
-    CALL put_system_to_user_message(216, the_user_id, NULL);
+---DELIMITER---
 
-    -- send a message to the owner of the group that a member left
-    CALL put_system_to_user_message(215, the_owner_id, NULL);
+DROP PROCEDURE IF EXISTS remove_from_group;   
 
-    -- audit that the user left the group
-    CALL add_audit(406, the_user_id, 
-      the_owner_id, NULL, the_group_id, NULL);
+---DELIMITER---
 
+-- allows a group owner to remove a user from their group
+
+CREATE PROCEDURE remove_from_group
+(
+  the_owner_id INT UNSIGNED,
+  the_group_id INT UNSIGNED,
+  the_user_id INT UNSIGNED -- the id of the user who is leaving
+)
+BEGIN
+  DECLARE count_valid, count_existing, already_member_count INT; 
+
+  SELECT COUNT(*) INTO count_valid
+  FROM user_group 
+  WHERE group_id = the_group_id AND owner_id = the_owner_id;
+
+  -- if the group didn't have this owner, are they trying to hack us?
+  IF count_valid <> 1 THEN
+      SIGNAL SQLSTATE '45000' 
+      SET message_text = 'error(13) group did not have this owner';
   END IF;
+
+  DELETE FROM user_to_group
+  WHERE user_id = the_user_id AND group_id = the_group_id;
+
+
+  -- send a message to the user that they have been removed
+  CALL put_system_to_user_message(223, the_user_id, NULL);
+
+  -- send a message to the owner of the group that they removed the user
+  CALL put_system_to_user_message(224, the_owner_id, NULL);
+
+  -- audit that the user was removed from the group
+  CALL add_audit(414, the_user_id, 
+    the_owner_id, NULL, the_group_id, NULL);
+
 END
 
 ---DELIMITER---
@@ -1997,5 +2023,37 @@ BEGIN
 
   -- audit that the owner has retracted their invite to the user
   CALL add_audit(413, the_owner_id, the_user_id, NULL, the_group_id, NULL);
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS edit_user_group_description;   
+
+---DELIMITER---
+
+
+CREATE PROCEDURE edit_user_group_description
+(
+  the_group_id INT UNSIGNED,
+  the_user_id INT UNSIGNED,
+  the_text NVARCHAR(500)
+)
+BEGIN
+  DECLARE existing_count INT;
+
+  SELECT COUNT(*) INTO existing_count
+  FROM user_group_description
+  WHERE group_id = the_group_id AND user_id = the_user_id;
+
+  IF existing_count > 0 THEN
+    UPDATE user_group_description
+    SET text = the_text
+    WHERE user_id = the_user_id AND group_id = the_group_id;
+  ELSE
+    INSERT INTO user_group_description (user_id, group_id, text)
+    VALUES (the_user_id, the_group_id, the_text);
+  END IF;
+
+  CALL add_audit(412, the_user_id, NULL, NULL, the_group_id, NULL);
 END
 
