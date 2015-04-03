@@ -1,5 +1,6 @@
 <%@include file="includes/init.jsp" %>
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
+<%@ page import="com.renomad.xenos.Group_utils" %>
 <%@ page import="com.renomad.xenos.Requestoffer" %>
 <!DOCTYPE html>
 <html>
@@ -96,6 +97,20 @@
         <label><%=loc.get(19,"Rank ladder")%>:</label>
         <span><%=Utils.get_stars(l_step)%></span>
       </div>
+
+      <%
+        Group_utils.Group_id_and_name[] shared_groups = 
+          Group_utils.get_shared_groups(logged_in_user_id,uid);
+      %>
+
+      <% if (shared_groups.length > 0) { %>
+        <div class="row">
+          <label>Shared groups:</label>
+          <% for (Group_utils.Group_id_and_name gian : shared_groups) { %>
+            <a href="group.jsp?group_id=<%=gian.id%>"><%=gian.name%></a>
+          <% } %>
+        </div>
+      <% } %>
 
       <% if (the_user.points < 0) { %>
         <div class="row">

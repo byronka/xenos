@@ -607,5 +607,53 @@ public final class Group_utils {
   }
 
 
+  /**
+    * gets the shared groups with another user
+    * @param me the user id of my user
+    * @param them the user id of the user I'm comparing to
+    * @return group names and id's array, or empty array otherwise.
+    */
+  public static Group_id_and_name[] get_shared_groups(int me, int them) {
+    String sqlText = 
+      String.format(
+        "SELECT DISTINCT user1.group_id, ug.name " +
+        "FROM user_to_group user1 " +
+        "JOIN user_to_group user2 " +
+        "  ON user1.group_id = user2.group_id " +
+        "JOIN user_group ug ON ug.group_id = user1.group_id " +
+        "WHERE user1.user_id = %d AND user2.user_id = %d",
+          me, them);
+    
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Group_id_and_name[0];
+      }
+
+      ArrayList<Group_id_and_name> groups = 
+        new ArrayList<Group_id_and_name>();
+      while(resultSet.next()) {
+        int gid = resultSet.getInt("group_id");
+        String name = resultSet.getNString("name");
+        Group_id_and_name gian = new Group_id_and_name(gid, name);
+        groups.add(gian); 
+      }
+
+      Group_id_and_name[] array_of_groups = 
+        groups.toArray(new Group_id_and_name[groups.size()]);
+      return array_of_groups;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new Group_id_and_name[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
 }
 
