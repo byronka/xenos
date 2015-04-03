@@ -280,7 +280,8 @@ public final class Requestoffer_utils {
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
         int ca = resultSet.getInt("category");
-        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,ca);
+        Requestoffer requestoffer = 
+          new Requestoffer(rid,dt,d,p,s,ru,hu,ca);
         offers.add(requestoffer);
       }
 
@@ -324,10 +325,13 @@ public final class Requestoffer_utils {
     * returns true if the user in user_id is indeed offering
     * to service this requestoffer
     * 
-    * @param user_id a user potentially offering to service the requestoffer
-    * @return true if they are offering to service, false otherwise.
+    * @param user_id a user potentially offering to 
+    *   service the requestoffer
+    * @return true if they are offering to service, 
+    *   false otherwise.
     */
-  public static boolean is_offering_to_service(int user_id, int requestoffer_id) {
+  public static boolean 
+    is_offering_to_service(int user_id, int requestoffer_id) {
     
     String sqlText = 
       "SELECT COUNT(*) as the_count " +
