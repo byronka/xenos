@@ -22,7 +22,7 @@ body {
   line-height: 1.28em;
 }
 
-span.error {
+.error {
   color: white;
   background-color: red;
 }
