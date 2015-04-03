@@ -152,8 +152,6 @@ when you push to the central repository.  See Git commit standards.
 4) Directories and files at the top:
 ====================================
 
-build/ - where the built work goes.  Won't exist until you build.
-
 build.xml - the Ant script that provides all sorts of benefits, for
   example, building the project. Note: it is very important that this
   file remain where it is, at the root of the project.  Otherwise, it
@@ -172,6 +170,8 @@ utils/ - some utilities helpful for development.
 
 web_container/ - contains documents and binaries for the web container,
   Tomcat.  Also contains the xenos web application and its client files.
+  note that when the java files get compiled, they are placed in the 
+  classes directory under webapps/Root/WEB-INF/
 
 test_scripts/ - contains lynx scripts for integration testing.  For
   more info, see the dev manual in docs
