@@ -225,7 +225,7 @@ VALUES
   (217, 1,  'You have extended an invitation to a user for your group'),
   (218, 1,  'You have been offered an invitation to join a group'),
   (219, 1,  'Your invitation to the following group has been retracted'),
-  (220, 1,  'You have retracted your invitation to the following user')
+  (220, 1,  'You have retracted your invitation to the following user'),
   (221, 1,  'The following user accepted your group invitation'),
   (222, 1,  'You have joined a new group.  It is now listed in your groups page'),
   (223, 1,  'You have been removed from a group'),

@@ -199,9 +199,11 @@
             <input maxlength=40 type="text" id="country" name="country" value="<%=country_val%>">
           </div>
 
-          <div>
-            <button class="button" type="submit">Change</button>
-            <a class="button" href="dashboard.jsp">Cancel</a>
+          <div class="table">
+            <div class="row">
+              <button class="button" type="submit">Change</button>
+              <a class="button" href="dashboard.jsp">Cancel</a>
+            </div>
           </div>
 
 

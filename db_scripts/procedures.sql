@@ -1802,29 +1802,52 @@ DROP PROCEDURE IF EXISTS send_group_invite_to_user;
 
 ---DELIMITER---
 
--- we only need the group and the user we're targeting.  right now, 
--- only the owner can send invites, so we don't have to think about who
--- is sending the invite - it's the owner of the group, 
--- that doesn't change.
 
 CREATE PROCEDURE send_group_invite_to_user
 (
+  the_owner_id INT UNSIGNED,
   the_group_id INT UNSIGNED,
   the_user_id INT UNSIGNED -- the id of the user we're inviting
 )
 BEGIN
-  DECLARE the_owner_id INT UNSIGNED;
+  DECLARE count_valid, count_existing, already_member_count INT; 
 
-  SELECT owner_id INTO the_owner_id
+  SELECT COUNT(*) INTO count_valid
   FROM user_group 
-  WHERE group_id = the_group_id;
+  WHERE group_id = the_group_id AND owner_id = the_owner_id;
+
+  -- if the group didn't have this owner, are they trying to hack us?
+  IF count_valid <> 1 THEN
+      SIGNAL SQLSTATE '45000' 
+      SET message_text = 'error(12) group did not have this owner';
+  END IF;
+
+  SELECT COUNT(*) INTO count_existing
+  FROM user_group_invite
+  WHERE group_id = the_group_id AND user_id = the_user_id;
+
+  -- if this invite already exists, just reply with an error
+  IF count_existing > 0 THEN
+      SIGNAL SQLSTATE '45000' 
+      SET message_text = 'an invite has already been sent';
+  END IF;
+
+  SELECT COUNT(*) INTO already_member_count
+  FROM user_to_group
+  WHERE group_id = the_group_id AND user_id = the_user_id;
+
+  -- if this user is already a member of the group, disallow
+  IF already_member_count > 0 THEN
+      SIGNAL SQLSTATE '45000' 
+      SET message_text = 'this user already exists in the group';
+  END IF;
 
   -- create the invitation
   INSERT INTO user_group_invite(group_id, user_id, date_created)
   VALUES (the_group_id, the_user_id, UTC_TIMESTAMP());
 
   -- notify the intended user they are getting an invite to a group
-  CALL put_system_to_user_message(218, the_owner_id, NULL);
+  CALL put_system_to_user_message(218, the_user_id , NULL);
 
   -- notify the offering user they have done so
   CALL put_system_to_user_message(217, the_owner_id, NULL);
@@ -1946,15 +1969,22 @@ DROP PROCEDURE IF EXISTS retract_invitation;
 
 CREATE PROCEDURE retract_invitation
 (
+  the_owner_id INT UNSIGNED,
   the_group_id INT UNSIGNED,
   the_user_id INT UNSIGNED
 )
 BEGIN
-  DECLARE the_owner_id INT UNSIGNED;
+  DECLARE count_valid INT; 
 
-  SELECT owner_id INTO the_owner_id
+  SELECT COUNT(*) INTO count_valid
   FROM user_group 
-  WHERE group_id = the_group_id;
+  WHERE group_id = the_group_id AND owner_id = the_owner_id;
+
+  -- if the group didn't have this owner, are they trying to hack us?
+  IF count_valid <> 1 THEN
+    SIGNAL SQLSTATE '45000' 
+    SET message_text = 'error(12) group did not have this owner';
+  END IF;
 
   DELETE FROM user_group_invite
   WHERE user_id = the_user_id AND group_id = the_group_id;

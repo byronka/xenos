@@ -28,17 +28,48 @@
 
   <div class="container">
 
-    <h3>You are a member of these groups:</h3>
-      <% for (Group_utils.Group_id_and_name g : Group_utils.get_groups_for_user(logged_in_user_id, false)) {%>
+    <%
+      Group_utils.Group_id_and_name[] gian_member =  
+        Group_utils.get_groups_for_user(logged_in_user_id, false);
+    %>
+
+    <% if (gian_member.length > 0) { %>
+      <h3>You are a member of these groups:</h3>
+      <% for (Group_utils.Group_id_and_name g : gian_member) {%>
         <p><a href="group.jsp?group_id=<%=g.id%>"><%=g.name%></a></p>
       <% } %>
+    <% } %>
 
-    <h3>You own these groups:</h3>
-      <% for (Group_utils.Group_id_and_name g : Group_utils.get_groups_for_user(logged_in_user_id, true)) {%>
+    <%
+      Group_utils.Group_id_and_name[] gian_owner =  
+        Group_utils.get_groups_for_user(logged_in_user_id, true);
+    %>
+      
+    <% if (gian_owner.length > 0) { %>
+      <h3>You own these groups:</h3>
+      <% for (Group_utils.Group_id_and_name g : gian_owner) {%>
         <p><a href="group.jsp?group_id=<%=g.id%>"><%=g.name%></a></p>
       <% } %>
+    <% } %>
 
+    <%
+      Group_utils.Invite_info[] received_invites =  
+        Group_utils.get_invites_for_user(logged_in_user_id);
+    %>
+    <% if (received_invites.length > 0) { %>
+      <h3>Invites to groups:</h3>
+      <% for (Group_utils.Invite_info ii : received_invites) {%>
+        <p>
+          <a href="group.jsp?group_id=<%=ii.group_id%>">
+            <%=ii.groupname%>
+          </a>
+        </p>
+      <% } %>
+    <% } %>
+
+    <div class="row">
       <a class="button" href="create_group.jsp">Create a group</a>
+    </div>
 
   </div>
 

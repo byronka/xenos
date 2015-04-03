@@ -156,6 +156,41 @@ public final class Group_utils {
 
 
   /**
+    * returns true if this user is a member of this group, false otherwise
+    */
+  public static boolean
+    is_member_of_group(int user_id, int group_id) {
+    String sqlText = 
+      String.format(
+        "SELECT COUNT(*) as the_count "+
+        "FROM user_to_group " +
+        "WHERE user_id = %d AND group_id = %d",
+            user_id, group_id);
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return false;
+      }
+
+      resultSet.next();
+      int count = resultSet.getInt("the_count");
+
+      return count == 1;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
     * gets details of a particular group by id
     * @return a group with all sorts of fun stuff, or null if failure.
     */
@@ -220,23 +255,36 @@ public final class Group_utils {
 
 
   /**
+    * the possible results from sending an invite
+    */
+  public enum Send_invite_result { OK, DUPLICATE_INVITE, ALREADY_IN_GROUP, GENERAL_ERR}
+
+
+  /**
     * sends an invite to a user.
     * @return true if success, false otherwise
     */
-  public static boolean 
-    send_group_invite_to_user(int group_id, int user_id) {
+  public static Send_invite_result 
+    send_group_invite_to_user(int owner_id, int group_id, int user_id) {
       CallableStatement cs = null;
       try {
         Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall(
             String.format(
-              "{call send_group_invite_to_user(%d,%d)}",
-                group_id, user_id));
+              "{call send_group_invite_to_user(%d,%d,%d)}",
+                owner_id, group_id, user_id));
         cs.execute();
-        return true;
+        return Send_invite_result.OK;
       } catch (SQLException ex) {
-        Database_access.handle_sql_exception(ex);
-        return false;
+        String msg = ex.getMessage();
+        if (msg.equals("an invite has already been sent")) {
+          return Send_invite_result.DUPLICATE_INVITE;
+        } else if (msg.equals("this user already exists in the group")) {
+          return Send_invite_result.ALREADY_IN_GROUP;
+        } else {
+          Database_access.handle_sql_exception(ex);
+          return Send_invite_result.GENERAL_ERR;
+        }
       } finally {
         Database_access.close_statement(cs);
       }
@@ -304,15 +352,14 @@ public final class Group_utils {
     * @return true if success, false otherwise
     */
   public static boolean 
-    retract_invitation(int group_id, int user_id, 
-        boolean is_group_owner_initiated) {
+    retract_invitation(int owner_id, int group_id, int user_id) {
       CallableStatement cs = null;
       try {
         Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall(
             String.format(
-              "{call leave_group(%d,%d,%b)}",
-                group_id, user_id, is_group_owner_initiated));
+              "{call retract_invitation(%d,%d,%d)}",
+                owner_id, group_id, user_id));
         cs.execute();
         return true;
       } catch (SQLException ex) {
@@ -326,16 +373,25 @@ public final class Group_utils {
 
   /**
     * a simple class used to display invite info for a group
+    * used in a couple situations: listing the invites for a particular
+    * user, and listing the invites sent out from a particular group.
     */
   public static class Invite_info {
+    public final int group_id;
+    public final String groupname;
     public final int user_id;
     public final String username;
     public final String date_sent;
-    public Invite_info(int user_id, String username, String date_sent) {
+
+    public Invite_info(int user_id, String username, 
+        int group_id, String groupname, String date_sent) {
+      this.group_id = group_id;
+      this.groupname = groupname;
       this.user_id = user_id;
       this.username = username;
       this.date_sent = date_sent;
     }
+
   }
 
 
@@ -345,13 +401,13 @@ public final class Group_utils {
     * @return an array of invite infos, used for display on page, or
     * an empty array of them otherwise.
     */
-  public static Invite_info[] get_invites_for_groups(int group_id) {
+  public static Invite_info[] get_invites_for_group(int group_id) {
     String sqlText = 
       String.format(
         "SELECT ugi.user_id, u.username, ugi.date_created " +
         "FROM user_group_invite ugi " +
         "JOIN user u ON u.user_id = ugi.user_id " +
-        "WHERE group_id = %d ",
+        "WHERE ugi.group_id = %d ",
           group_id);
 
     PreparedStatement pstmt = null;
@@ -370,7 +426,53 @@ public final class Group_utils {
         int uid = resultSet.getInt("user_id");
         String uname = resultSet.getNString("username");
         String dt = resultSet.getString("date_created");
-        Invite_info ii = new Invite_info(uid, uname, dt);
+        Invite_info ii = new Invite_info(uid, uname,-1,"", dt);
+        invites.add(ii); 
+      }
+
+      Invite_info[] array_of_invites = 
+        invites.toArray(new Invite_info[invites.size()]);
+      return array_of_invites;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new Invite_info[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
+    * gets the invites offered to a particular user.
+    * @return an array of invite infos, or
+    * an empty array of them otherwise.
+    */
+  public static Invite_info[] get_invites_for_user(int user_id) {
+    String sqlText = 
+      String.format(
+        "SELECT ug.group_id, ug.name, ugi.date_created " +
+        "FROM user_group_invite ugi " +
+        "JOIN user_group ug ON ug.group_id = ugi.group_id " +
+        "WHERE ugi.user_id = %d ",
+          user_id);
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Invite_info[0];
+      }
+
+      ArrayList<Invite_info> invites = 
+        new ArrayList<Invite_info>();
+      while(resultSet.next()) {
+        int gid = resultSet.getInt("group_id");
+        String gname = resultSet.getNString("name");
+        String dt = resultSet.getString("date_created");
+        Invite_info ii = new Invite_info(-1,"",gid, gname, dt);
         invites.add(ii); 
       }
 

@@ -49,10 +49,16 @@
       <%if (edit_desc) { %>
 
         <form method="POST" action="user.jsp">
-          <textarea id="user_description" name="user_description" maxlength="500"
+          <textarea 
+            id="user_description" 
+            name="user_description" 
+            maxlength="500"
             ><%=Utils.safe_render(User_utils.get_user_description(uid))%></textarea>
           <div class="row">
-            <button type="submit" >Save description</button>
+            <button class="button" type="submit" >Save description</button>
+            <a class="button" href="user.jsp?user_id=<%=uid%>" >
+              Cancel
+            </a>
           </div>
         </form>
 
@@ -63,10 +69,14 @@
       <% } %>
       <p>
 
-      <% if (uid == logged_in_user_id) { %>
+      <% if (uid == logged_in_user_id && !edit_desc ) { %>
 
           <div class="row">
-            <a class="button" href="user.jsp?user_id=<%=uid%>&amp;edit_desc=true">Edit description</a>
+            <a 
+              class="button" 
+              href="user.jsp?user_id=<%=uid%>&amp;edit_desc=true">
+                Edit description
+            </a>
           </div>
 
       <% } %>

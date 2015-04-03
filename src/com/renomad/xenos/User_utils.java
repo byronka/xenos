@@ -80,6 +80,7 @@ public final class User_utils {
 
     }
 
+
   /**
     * gets an array of user ids by names of users. used in searching
     * requestoffers by users.  
@@ -138,6 +139,39 @@ public final class User_utils {
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return "";
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
+  /**
+    * given a name, gets the user id
+    * @return the id for this user, or -1 if not found
+    */
+  public static int get_user_id_by_name(String username) {
+
+    String sqlText = 
+      "SELECT user_id "+
+      "FROM user WHERE username = ?";
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setNString(1, username);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return -1;
+      }
+
+      resultSet.next();
+      int uid = resultSet.getInt("user_id");
+      return uid;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return -1;
     } finally {
       Database_access.close_statement(pstmt);
     }
