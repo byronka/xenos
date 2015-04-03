@@ -14,6 +14,7 @@
 	</head>
 <%
 
+
   boolean username_validation_error = false;
   boolean duplicate_invite_error = false;
   boolean in_group_already_error = false;
@@ -78,7 +79,16 @@
 
   }
 
+  boolean is_invited = Group_utils.has_been_invited(logged_in_user_id, gid);
+  boolean is_a_member = Group_utils.is_member_of_group(logged_in_user_id, gid);
   boolean is_the_group_owner = logged_in_user_id == the_group.owner_id;
+
+
+  if (!(is_invited || is_a_member)) {
+    response.sendRedirect("general_error.jsp");
+    return;
+  }
+
 %>
 	<body>
   <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
@@ -114,7 +124,7 @@
           </span>
     </div>
 
-    <% if (Group_utils.is_member_of_group(logged_in_user_id, gid)) { %>
+    <% if (is_a_member) { %>
       <div class="row">
         <label>Members:</label>
         <% for (java.util.Map.Entry<Integer, String> member : 
@@ -188,7 +198,7 @@
 
       <% } %>
 
-      <% if (Group_utils.has_been_invited(logged_in_user_id, gid)) { %>
+      <% if (is_invited) { %>
         <div>
           You have been invited to join this group.  Click on the button below to confirm joining
         </div>
