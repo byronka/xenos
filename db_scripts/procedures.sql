@@ -1968,3 +1968,4 @@ BEGIN
   -- audit that the owner has retracted their invite to the user
   CALL add_audit(413, the_owner_id, the_user_id, NULL, the_group_id, NULL);
 END
+

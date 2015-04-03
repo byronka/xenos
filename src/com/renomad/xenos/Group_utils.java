@@ -218,5 +218,173 @@ public final class Group_utils {
     }
   }
 
+
+  /**
+    * sends an invite to a user.
+    * @return true if success, false otherwise
+    */
+  public static boolean 
+    send_group_invite_to_user(int group_id, int user_id) {
+      CallableStatement cs = null;
+      try {
+        Connection conn = Database_access.get_a_connection();
+        cs = conn.prepareCall(
+            String.format(
+              "{call send_group_invite_to_user(%d,%d)}",
+                group_id, user_id));
+        cs.execute();
+        return true;
+      } catch (SQLException ex) {
+        Database_access.handle_sql_exception(ex);
+        return false;
+      } finally {
+        Database_access.close_statement(cs);
+      }
+  }
+
+
+  /**
+    * respond to an invite - accepted or rejected
+    * @return true if success, false otherwise
+    */
+  public static boolean 
+    respond_to_group_invite(boolean is_accepted, int group_id, 
+        int user_id) {
+      CallableStatement cs = null;
+      try {
+        Connection conn = Database_access.get_a_connection();
+        cs = conn.prepareCall(
+            String.format(
+              "{call respond_to_group_invite(%b,%d,%d)}",
+                is_accepted, group_id, user_id));
+        cs.execute();
+        return true;
+      } catch (SQLException ex) {
+        Database_access.handle_sql_exception(ex);
+        return false;
+      } finally {
+        Database_access.close_statement(cs);
+      }
+  }
+
+
+  /**
+    * leave a group if you are a member, or remove a member from
+    * your group if this is the owner doing it.
+    * @return true if success, false otherwise
+    */
+  public static boolean 
+    leave_group(int group_id, int user_id, 
+        boolean is_group_owner_initiated) {
+      CallableStatement cs = null;
+      try {
+        Connection conn = Database_access.get_a_connection();
+        cs = conn.prepareCall(
+            String.format(
+              "{call leave_group(%d,%d,%b)}",
+                group_id, user_id, is_group_owner_initiated));
+        cs.execute();
+        return true;
+      } catch (SQLException ex) {
+        Database_access.handle_sql_exception(ex);
+        return false;
+      } finally {
+        Database_access.close_statement(cs);
+      }
+  }
+
+  /**
+    * if you are an owner of a group and you extend an invitation to
+    * someone, but then change your mind, you can use this to take
+    * back the invitation, as long as it hasn't been accepted or 
+    * rejected yet.  This method should only be called after first
+    * checking that an invite exists for that user - if one exists,
+    * then they haven't accepted or rejected - it gets deleted as soon
+    * as they do.
+    * @return true if success, false otherwise
+    */
+  public static boolean 
+    retract_invitation(int group_id, int user_id, 
+        boolean is_group_owner_initiated) {
+      CallableStatement cs = null;
+      try {
+        Connection conn = Database_access.get_a_connection();
+        cs = conn.prepareCall(
+            String.format(
+              "{call leave_group(%d,%d,%b)}",
+                group_id, user_id, is_group_owner_initiated));
+        cs.execute();
+        return true;
+      } catch (SQLException ex) {
+        Database_access.handle_sql_exception(ex);
+        return false;
+      } finally {
+        Database_access.close_statement(cs);
+      }
+  }
+
+
+  /**
+    * a simple class used to display invite info for a group
+    */
+  public static class Invite_info {
+    public final int user_id;
+    public final String username;
+    public final String date_sent;
+    public Invite_info(int user_id, String username, String date_sent) {
+      this.user_id = user_id;
+      this.username = username;
+      this.date_sent = date_sent;
+    }
+  }
+
+
+  /**
+    * gets the invites a group has sent out.  Used to show the owner
+    * of a group, and to allow that owner to retract invites if needed.
+    * @return an array of invite infos, used for display on page, or
+    * an empty array of them otherwise.
+    */
+  public static Invite_info[] get_invites_for_groups(int group_id) {
+    String sqlText = 
+      String.format(
+        "SELECT ugi.user_id, u.username, ugi.date_created " +
+        "FROM user_group_invite ugi " +
+        "JOIN user u ON u.user_id = ugi.user_id " +
+        "WHERE group_id = %d ",
+          group_id);
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Invite_info[0];
+      }
+
+      ArrayList<Invite_info> invites = 
+        new ArrayList<Invite_info>();
+      while(resultSet.next()) {
+        int uid = resultSet.getInt("user_id");
+        String uname = resultSet.getNString("username");
+        String dt = resultSet.getString("date_created");
+        Invite_info ii = new Invite_info(uid, uname, dt);
+        invites.add(ii); 
+      }
+
+      Invite_info[] array_of_invites = 
+        invites.toArray(new Invite_info[invites.size()]);
+      return array_of_invites;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new Invite_info[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
 }
 
