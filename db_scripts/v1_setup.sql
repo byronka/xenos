@@ -317,12 +317,15 @@ VALUES
 (403,'Location was attached to user'),
 (404,'location was deleted, since there were no related users or requestoffers'),
 (405,'location was set as current for a user'),
-(406,'user1 leaves group (extra is group id)'),
+(406,'user1 leaves user2''s group (extra is group id)'),
 (407,'user1 creates group (extra is group id)'),
 (408,'user1 sends group invite to user2 (extra is group id)'),
 (409,'user1 accepts user2''s invite to group (extra is group id)'),
-(410,'user1 edits group name (extra is group id)'),
-(411,'user1 edits group description (extra is group id)');
+(410,'user1 rejects user2''s invite to group (extra is group id)'),
+(411,'user1 edits group name (extra is group id)'),
+(412,'user1 edits group description (extra is group id)'),
+(413,'user1 retracts their group invitation to user2 (group is extra)'),
+(414,'user1 removed user2 from their grouop (group is extra)');
 
 
 
@@ -490,7 +493,18 @@ VALUES
 (135,'A Favor which you were owner of has been completed.'),
 (136,'You have canceled an active transaction.'),
 (147,'You have made an offer to handle a Favor'),
-(148,'You have recieved an offer to handle a Favor');
+(148,'You have recieved an offer to handle a Favor'),
+(214,'The following user did not accept your group invitation'),
+(215,'The following user has left your group'),
+(216,'You have left the following group'),
+(217,'You have extended an invitation to a user for your group'),
+(218,'You have been offered an invitation to join a group'),
+(219,'Your invitation to the following group has been retracted'),
+(220,'You have retracted your invitation to the following user')
+(221,'The following user accepted your group invitation'),
+(222,'You have joined a new group.  It is now listed in your groups page'),
+(223,'You have been removed from a group'),
+(224,'You have removed a user from your group');
 
 ---DELIMITER---
 -- this table holds messages sent by the system to users.
@@ -642,3 +656,25 @@ user_to_group (
   FOREIGN KEY FK_user_to_group_user_id (user_id) 
     REFERENCES user (user_id)
 );
+
+---DELIMITER---
+
+-- this object encapsulates an invite to a user. It's like the 
+-- engraved invitation to a user to join a group.
+--
+-- the user sees the invitation, and as soon as they take an action,
+-- like, "accept" or "reject", the invite is deleted
+
+CREATE TABLE
+user_group_invite (
+  group_id INT UNSIGNED,
+  user_id INT UNSIGNED, -- the user we are inviting to the group
+  date_created DATETIME,
+  FOREIGN KEY FK_group_id_invite (group_id) 
+    REFERENCES user_group (group_id),
+  FOREIGN KEY FK_user_id_invite (user_id) 
+    REFERENCES user (user_id),
+  PRIMARY KEY (group_id, user_id) -- there can only be one invite 
+                          -- to a user from a given group at any time.
+);
+
