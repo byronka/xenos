@@ -354,7 +354,7 @@
 			<classpath>
 				<pathelement 
 					path="
-					build/classes:
+          ${tomcat.webapps.dir}ROOT/WEB-INF/classes:
 					lib/mysql-connector-java-5.1.33-bin.jar:
 					lib/junit-4.12.jar:
 					lib/hamcrest-core-1.3.jar:
@@ -378,7 +378,7 @@
 		<classpath>
 			<pathelement 
 				path="
-				build/classes:
+        ${tomcat.webapps.dir}ROOT/WEB-INF/classes:
 				lib/mysql-connector-java-5.1.33-bin.jar:
 				lib/junit-4.12.jar:
 				lib/hamcrest-core-1.3.jar:
@@ -423,7 +423,7 @@
               output="html"
               outputFile="${lint.output.dir}/findbugs_output.html" >
       <sourcePath path="./src" />
-      <class location="./build/classes" />
+      <class location="${tomcat.webapps.dir}ROOT/WEB-INF/classes" />
     </findbugs>
 		<echo message="output from findbugs is in http://localhost:8080/lint/findbugs_output.html" />
   </target>
@@ -475,7 +475,7 @@
         </dirset>
       </sourcepath>
 			<classpath>
-				<fileset dir="build/classes">
+				<fileset dir="${tomcat.webapps.dir}ROOT/WEB-INF/classes">
 					<include name="**" />
 				</fileset>
 				<pathelement location="${tomcat.lib.dir}servlet-api.jar" />
