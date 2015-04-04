@@ -265,6 +265,19 @@ id of the language as used in localization_lookup, and the string to
 look for in the locale string sent by the client.  Then just add a row
 of data for every word/phrase in that language into localization_lookup.
 
+The syntax for localization is this:
+example: loc.get(123, "Hi this is some text to localize");
+
+Keeping to this syntax means we can easily spot all the localizations
+throughout the codebase.
+
+The first parameter, an integer, represents the index of the text in
+question.  The following text isn't actually necessary (it gets thrown
+away in the function) but it helps to remind the developer of which
+text this is, and having that be a parameter to the function reminds
+the developer they need to include that reminder each time they add
+more text.
+
 
 
 
