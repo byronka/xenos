@@ -125,7 +125,7 @@
         .get_location_for_user(logged_in_user_id, logged_in_user.current_location); 
         %>
         <% if (uloc != null) { %>
-          <p>Your current location is:</p>
+          <p><%=loc.get(73, "Your current location is")%>:</p>
           <p><em><%=Utils.safe_render(uloc.str_addr_1)%></em></p>
           <p><em><%=Utils.safe_render(uloc.str_addr_2)%></em></p>
           <p><em><%=Utils.safe_render(uloc.city)%></em></p>
