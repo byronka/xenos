@@ -37,16 +37,22 @@
     <h3>Your description as seen by others in your group</h3>
         <form method="POST" action="edit_group_description.jsp">
           <input type="hidden" name="group_id" id="group_id" value="<%=the_group_id%>">
-          <textarea 
-            id="user_description" 
-            name="user_description" 
-            maxlength="500"
-            ><%=Utils.safe_render(Group_utils.get_user_group_description(the_group_id, logged_in_user_id))%></textarea>
-          <div class="row">
-            <button class="button" type="submit" >Save description</button>
-            <a class="button" href="group.jsp?group_id=<%=the_group_id%>" >
-              Cancel
-            </a>
+          <div class="table">
+            <div class="row">
+              <textarea 
+                id="user_description" 
+                name="user_description" 
+                maxlength="500"
+                ><%=Utils.safe_render(Group_utils.get_user_group_description(the_group_id, logged_in_user_id))%></textarea>
+            </div>
+          </div>
+          <div class="table">
+            <div class="row">
+              <button class="button" type="submit" >Save description</button>
+              <a class="button" href="group.jsp?group_id=<%=the_group_id%>" >
+                Cancel
+              </a>
+            </div>
           </div>
         </form>
 

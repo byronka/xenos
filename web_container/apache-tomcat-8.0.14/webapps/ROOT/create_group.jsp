@@ -68,7 +68,7 @@
           </div>
           <div class="row">
             <label for="group_desc" >Description:</label>
-            <textarea id="group_desc" name="group_desc" ><%=group_desc%></textarea>
+            <textarea id="group_desc" name="group_desc" ><%=Utils.safe_render(group_desc)%></textarea>
           </div>
         </div>
         <div class="table">

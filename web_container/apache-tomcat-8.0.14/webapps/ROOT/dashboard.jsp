@@ -169,7 +169,7 @@
       <%
       String user_postcode = 
         Utils.is_null_or_empty(logged_in_user.postcode) ? "none" : logged_in_user.postcode; %>
-      <%=user_postcode%></a>
+      <%=Utils.safe_render(user_postcode)%></a>
     </div>
   <p>
     <a class="button" href="change_password.jsp">
@@ -193,7 +193,7 @@
     </p>
 
     <% for (Group_utils.Invite_info ii : iis ) { %>
-    <a href="group.jsp?group_id=<%=ii.group_id%>"><%=ii.groupname%></a>
+    <a href="group.jsp?group_id=<%=ii.group_id%>"><%=Utils.safe_render(ii.groupname)%></a>
     <% } %>
 
   <% } %>

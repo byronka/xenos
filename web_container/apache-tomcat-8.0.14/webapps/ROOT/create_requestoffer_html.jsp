@@ -65,12 +65,12 @@
                     <%} else { %>
                       <option value="<%=loca.id%>">
                     <% } %>
-                    <%=loca.str_addr_1%>
-                    <%=loca.str_addr_2%>
-                    <%=loca.city%>
-                    <%=loca.state%>
-                    <%=loca.postcode%>
-                    <%=loca.country%>
+                    <%=Utils.safe_render(loca.str_addr_1)%>
+                    <%=Utils.safe_render(loca.str_addr_2)%>
+                    <%=Utils.safe_render(loca.city)%>
+                    <%=Utils.safe_render(loca.state)%>
+                    <%=Utils.safe_render(loca.postcode)%>
+                    <%=Utils.safe_render(loca.country)%>
                     </option>
                   <%}%>
                 </select>                       

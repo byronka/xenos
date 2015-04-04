@@ -132,11 +132,11 @@
             <% if (member.getKey() != the_group.owner_id) { %>
               <div>
                 <a href="user.jsp?user_id=<%=member.getKey()%>">
-                  <%=member.getValue()%>
+                  <%=Utils.safe_render(member.getValue())%>
                 </a>
                 <div>
                   <span>
-                    <%=Group_utils.get_user_group_description(gid, member.getKey())%>
+                    <%=Utils.safe_render(Group_utils.get_user_group_description(gid, member.getKey()))%>
                   </span>
                 </div>
                 <% if (logged_in_user_id == the_group.owner_id) { %>
@@ -159,7 +159,7 @@
         <% for (Group_utils.Invite_info ii : sent_invites) {%>
           <p>
             <a href="user.jsp?user_id=<%=ii.user_id%>">
-              <%=ii.username%>
+              <%=Utils.safe_render(ii.username)%>
             </a>
             <a href="retract_invitation.jsp?group_id=<%=gid%>&user_id=<%=ii.user_id%>">Retract invitation</a>
           </p>
@@ -171,7 +171,7 @@
         <form method="POST" action="group.jsp">
           <div class="row">
             <input type="hidden" id="group_id" name="group_id" value="<%=gid%>">
-            <input type="text" id="username" name="username" value="<%=the_username%>">
+            <input type="text" id="username" name="username" value="<%=Utils.safe_render(the_username)%>">
             <% if (duplicate_invite_error) { %>
               <div class="error">
                 An invitation has already been sent to this user.
