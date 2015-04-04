@@ -60,20 +60,20 @@
       <form method="POST" action="create_group.jsp">
         <div class="table">
           <div class="row">
-            <label for="group_name">* Group name</label>
+            <label for="group_name">* <%=loc.get(53,"Group name")%></label>
             <input type="text" maxlength="50" id="group_name" name="group_name" >
             <% if (has_name_validation_error) { %>
-              <div class="error">A name is required for this group</div>
+            <div class="error"><%=loc.get(54,"A name is required for this group")%></div>
             <% } %>
           </div>
           <div class="row">
-            <label for="group_desc" >Description:</label>
+            <label for="group_desc" ><%=loc.get(10,"Description")%>:</label>
             <textarea id="group_desc" name="group_desc" ><%=Utils.safe_render(group_desc)%></textarea>
           </div>
         </div>
         <div class="table">
           <div class="row">
-            <button type="submit" class="button">Create my new group</button>
+            <button type="submit" class="button"><%=loc.get(55,"Create my new group")%></button>
           </div>
         </div>
       </form>

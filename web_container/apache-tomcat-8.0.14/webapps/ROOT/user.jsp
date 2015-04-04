@@ -148,9 +148,9 @@
 
           <% if(rd.meritorious != null) {%>
             <% if (rd.meritorious) { %>
-              +1 to
+            +1 <%=loc.get(17,"to")%>
             <% } else { %>
-              -1 to
+              -1 <%=loc.get(17,"to")%> 
             <% } %>
           <% } %>
 

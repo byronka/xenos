@@ -20,12 +20,16 @@
     <%@include file="includes/header.jsp" %>
     <div class="container">
       <h3><%=loc.get(207, "Here is an invitation code.  It is valid for a week")%></h3>
-      <p><em>Copy the following text and send it to whoever you are inviting to the system.</em></p>
+      <p>
+        <em>
+          <%=loc.get(20,"Copy the following text and send it to whoever you are inviting to the system")%>
+        </em>
+      </p>
 
       <p>
       
-        Hi! Join me and my friends on a system that encourages trading of favors, at
-        https://favir.co/register.jsp?icode=<%=icode%>
+      <p><%=loc.get(23,"Hi! Join me and my friends on a system that encourages trading of favors, at")%></p>
+      <p><code>https://zenia.co/register.jsp?icode=<%=icode%></code></p>
       
       
       </p>

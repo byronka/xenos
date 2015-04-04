@@ -134,12 +134,12 @@
                 }
               };
 
-              expander.textContent = "Forget it - I don't need a location";
+              expander.textContent = '<%=loc.get(15,"Forget it - I don't need a location")%>';
               expander.style.height = "37px";
               do_the_fade(); //kick it off.
             } else {
               lo_wrapper.style.display = 'none';
-              expander.textContent = "Add location";
+              expander.textContent = '<%=loc.get(14,"Add location")%>';
               expander.style.height = "17px";
             }
           };
@@ -148,7 +148,7 @@
         <div class="row">
             <div id="location-expander" 
                 class="button expander" 
-                onclick="expand_contract()" >Add location</div>
+                onclick="expand_contract()" ><%=loc.get(14,"Add location")%></div>
             <button class="button" id="submitter" type="submit"><%=loc.get(2,"Request Favor")%></button>
         </div>
     </form>	

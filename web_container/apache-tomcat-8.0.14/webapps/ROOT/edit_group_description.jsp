@@ -34,7 +34,7 @@
 
   <div class="container">
 
-    <h3>Your description as seen by others in your group</h3>
+    <h3><%=loc.get(71,"Your description as seen by others in your group")%></h3>
         <form method="POST" action="edit_group_description.jsp">
           <input type="hidden" name="group_id" id="group_id" value="<%=the_group_id%>">
           <div class="table">
@@ -48,9 +48,9 @@
           </div>
           <div class="table">
             <div class="row">
-              <button class="button" type="submit" >Save description</button>
+              <button class="button" type="submit" ><%=loc.get(72,"Save description")%></button>
               <a class="button" href="group.jsp?group_id=<%=the_group_id%>" >
-                Cancel
+                <%=loc.get(130,"Cancel")%>
               </a>
             </div>
           </div>

@@ -34,7 +34,7 @@
     %>
 
     <% if (gian_member.length > 0) { %>
-      <h3>You are a member of these groups:</h3>
+    <h3><%=loc.get(26,"You are a member of these groups")%>:</h3>
       <% for (Group_utils.Group_id_and_name g : gian_member) {%>
         <p><a href="group.jsp?group_id=<%=g.id%>"><%=g.name%></a></p>
       <% } %>
@@ -46,7 +46,7 @@
     %>
       
     <% if (gian_owner.length > 0) { %>
-      <h3>You own these groups:</h3>
+      <h3><%=loc.get(40,"You own these groups")%>:</h3>
       <% for (Group_utils.Group_id_and_name g : gian_owner) {%>
         <p><a href="group.jsp?group_id=<%=g.id%>"><%=g.name%></a></p>
       <% } %>
@@ -68,7 +68,7 @@
     <% } %>
 
     <div class="row">
-      <a class="button" href="create_group.jsp">Create a group</a>
+      <a class="button" href="create_group.jsp"><%=loc.get(45,"Create a group")%></a>
     </div>
 
   </div>

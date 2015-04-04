@@ -165,7 +165,7 @@
   </div>
     <div>
        <a class="button" href="change_current_location.jsp" >
-      Current location: 
+         <%=loc.get(7, "Current location")%>: 
       <%
       String user_postcode = 
         Utils.is_null_or_empty(logged_in_user.postcode) ? "none" : logged_in_user.postcode; %>
@@ -178,7 +178,7 @@
   </p>
   <p>
     <a class="button" href="user_groups.jsp">
-      Your groups
+      <%=loc.get(8,"Your groups")%>
     </a>
   </p>
   <%
@@ -206,12 +206,12 @@
 
   <div class="table">
     <div class="row">
-      <label>Rank average:</label>
+      <label><%=loc.get(11,"Rank average")%>:</label>
       <span><%=String.format("%.0f",logged_in_user.rank_av * 100)%>%</span>
     </div>
     <%int l_step = Requestoffer_utils.get_ladder_step(logged_in_user.rank_ladder);%>
     <div class="row">
-      <label>Rank ladder:</label>
+      <label><%=loc.get(12,"Rank score")%>:</label>
       <span><%=Utils.get_stars(l_step)%></span>
     </div>
     <% if (logged_in_user.points < 0) { %>
