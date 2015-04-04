@@ -187,7 +187,12 @@
                 username was not found. 
               </div>
             <% } %>
-            <button class="button" type="submit">Send invite</button>
+            <div class="table">
+              <div class="row">
+                <button class="button" type="submit">Send invite</button>
+              </div>
+            </div>
+          </div>
           </div>
         </form>
       <% } %>

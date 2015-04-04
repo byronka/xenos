@@ -3,6 +3,7 @@
 <%@ page import="com.renomad.xenos.User_location" %>
 <%
 
+    request.setCharacterEncoding("UTF-8");
 
     //address values
     String strt_addr_1_val = "";

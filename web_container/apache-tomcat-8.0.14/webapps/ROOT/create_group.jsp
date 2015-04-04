@@ -4,6 +4,8 @@
 <!DOCTYPE html>
 <%
   
+  request.setCharacterEncoding("UTF-8");
+
   boolean has_name_validation_error = false;
   String group_desc = "";
   String group_name = "";
@@ -54,19 +56,26 @@
 
 
     <div class="container">
+
       <form method="POST" action="create_group.jsp">
-        <div class="row">
-          <label for="group_name">* Group name</label>
-          <input type="text" maxlength="50" id="group_name" name="group_name" >
-          <% if (has_name_validation_error) { %>
-            <div class="error">A name is required for this group</div>
-          <% } %>
+        <div class="table">
+          <div class="row">
+            <label for="group_name">* Group name</label>
+            <input type="text" maxlength="50" id="group_name" name="group_name" >
+            <% if (has_name_validation_error) { %>
+              <div class="error">A name is required for this group</div>
+            <% } %>
+          </div>
+          <div class="row">
+            <label for="group_desc" >Description:</label>
+            <textarea id="group_desc" name="group_desc" ><%=group_desc%></textarea>
+          </div>
         </div>
-        <div class="row">
-          <label for="group_desc" >Description:</label>
-          <textarea id="group_desc" name="group_desc" ><%=group_desc%></textarea>
+        <div class="table">
+          <div class="row">
+            <button type="submit" class="button">Create my new group</button>
+          </div>
         </div>
-        <button type="submit" class="button">Create my new group</button>
       </form>
     </div>
 
