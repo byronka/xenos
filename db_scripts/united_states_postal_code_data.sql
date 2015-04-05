@@ -1,7 +1,3 @@
-truncate postal_codes;
-
----DELIMITER---
-
 INSERT INTO postal_codes(postal_code, latitude, longitude)
 VALUES
 ("35004", 33.606379,  -86.50249 ),

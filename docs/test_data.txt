@@ -1,0 +1,23 @@
+user: byron
+pass: hictstd!
+current location: 20675 Cutwater place sterling va 20165
+favor1: Looking for a babysitter this Wednesday at 7pm.  three boys: 3, 7, and 10.
+location: 20675 Cutwater Place Sterling VA 20165
+
+favor2: Need someone to walk my dog.  She's a Yorkshire terrier, grey, and small - we need to head out immediately, ask the neighbor for the key.
+location: Washington and Old Dominion Railroad Trail, Ashburn, VA 20147
+
+user: erica
+pass: password
+current location: 21901 Dupont St. #8 Chatsworth, CA 91311
+favor1: need someone to walk my dog for 20 minutes on Thursday night at 6pm.
+
+user: cameron
+pass: password
+current location:  20675 Cutwater place sterling va 20165
+favor1: want someone to do my History homework for tomorrow.
+
+favor2: want someone to teach me some tricks for MineCraft
+
+user: 
+

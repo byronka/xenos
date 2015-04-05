@@ -1,0 +1,1 @@
+truncate postal_codes;
