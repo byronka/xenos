@@ -2,3 +2,5 @@ these are the third-party archives of projects this project uses.
 
 A list of projects we use:
 mysql-connector-java-5.1.33 - this provides the ability to talk to mysql.
+hamcrest-core-1.3.jar - used by junit test framework
+junit-4.12.jar - a testing framework.  Not really used right now.
