@@ -80,8 +80,8 @@ footer {
 @media all and (min-width: 660px) {
 
   div.container input[type="text"] {
-    width: 97%;
-    height: 40px;
+    display: table-cell;
+    height: 25px;
   }
 
   .table {

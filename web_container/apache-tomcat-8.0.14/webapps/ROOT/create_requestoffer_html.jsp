@@ -50,36 +50,39 @@
       <% } else { %>
         <div style="display:none" id="location-wrapper">
       <% } %>
-          <div class="table" id="location-section" >
+          <div id="location-section" >
             <% if (locations.length > 0) { %>
 
-              <div class="row">
-                <label for="savedlocation"><%=loc.get(158,"Select one of your saved locations")%>:</label>
-                <select 
-                  id="savedlocation" 
-                  name="savedlocation">
-                  <option><%=loc.get(192,"No address selected")%></option>
-                  <%for (User_location loca : locations) {%>
-                    <%if(Integer.toString(loca.id).equals(savedlocation_val)){%>
-                      <option selected value="<%=loca.id%>">
-                    <%} else { %>
-                      <option value="<%=loca.id%>">
-                    <% } %>
-                    <%=Utils.safe_render(loca.str_addr_1)%>
-                    <%=Utils.safe_render(loca.str_addr_2)%>
-                    <%=Utils.safe_render(loca.city)%>
-                    <%=Utils.safe_render(loca.state)%>
-                    <%=Utils.safe_render(loca.postcode)%>
-                    <%=Utils.safe_render(loca.country)%>
-                    </option>
-                  <%}%>
-                </select>                       
+            <div class="table">
+                <div class="row">
+                  <label for="savedlocation"><%=loc.get(158,"Select one of your saved locations")%>:</label>
+                  <select 
+                    id="savedlocation" 
+                    name="savedlocation">
+                    <option><%=loc.get(192,"No address selected")%></option>
+                    <%for (User_location loca : locations) {%>
+                      <%if(Integer.toString(loca.id).equals(savedlocation_val)){%>
+                        <option selected value="<%=loca.id%>">
+                      <%} else { %>
+                        <option value="<%=loca.id%>">
+                      <% } %>
+                      <%=Utils.safe_render(loca.str_addr_1)%>
+                      <%=Utils.safe_render(loca.str_addr_2)%>
+                      <%=Utils.safe_render(loca.city)%>
+                      <%=Utils.safe_render(loca.state)%>
+                      <%=Utils.safe_render(loca.postcode)%>
+                      <%=Utils.safe_render(loca.country)%>
+                      </option>
+                    <%}%>
+                  </select>                       
+                </div>
               </div>
 
               <div class="enternew"><em><%=loc.get(159,"Or enter a new address")%>:</em></div>
 
             <%}%>
 
+        <div class="table">
           <div class="row">
             <label for="save_loc_to_user"><%=loc.get(160,"Save to my favorites")%></label>
             <input id="save_loc_to_user" name="save_loc_to_user" <%=save_loc_to_user_checked%> type="checkbox"/>
@@ -87,33 +90,39 @@
             
           <div class="row">
             <label for="strt_addr_1"><%=loc.get(152,"Street Address 1")%>:</label>
-            <input maxlength=100 type="text" id="strt_addr_1" name="strt_addr_1" value="<%=strt_addr_1_val%>">
+            <input maxlength=100 type="text" id="strt_addr_1" name="strt_addr_1" value="<%=Utils.safe_render(strt_addr_1_val)%>">
           </div>
             
           <div class="row">
             <label for="strt_addr_2"><%=loc.get(153,"Street Address 2")%>:</label>
-            <input maxlength=100 type="text" id="strt_addr_2" name="strt_addr_2" value="<%=strt_addr_2_val%>">
+            <input maxlength=100 type="text" id="strt_addr_2" name="strt_addr_2" value="<%=Utils.safe_render(strt_addr_2_val)%>">
           </div>
             
           <div class="row">
             <label for="city"><%=loc.get(154,"City")%>:</label>
-            <input maxlength=40 type="text" id="city" name="city" value="<%=city_val%>">
+            <input maxlength=40 type="text" id="city" name="city" value="<%=Utils.safe_render(city_val)%>">
           </div>
             
           <div class="row">
             <label for="state"><%=loc.get(155,"State")%>:</label>
-            <input maxlength=30 type="text" id="state" name="state" value="<%=state_val%>">
+            <input maxlength=30 type="text" id="state" name="state" value="<%=Utils.safe_render(state_val)%>">
           </div>
             
           <div class="row">
             <label for="postal" ><%=loc.get(156,"Postal code")%>:</label>
-            <input maxlength=20 type="text" id="postal" name="postal" value="<%=postal_val%>">
+            <input maxlength=20 type="text" id="postal" name="postal" value="<%=Utils.safe_render(postal_val)%>">
+            <select>
+              <option id="1">United States</option>
+              <option id="2">France</option>
+            </select>
           </div>
             
           <div class="row">
             <label for="country"><%=loc.get(157,"Country")%>:</label>
-            <input maxlength=40 type="text" id="country" name="country" value="<%=country_val%>">
+            <input maxlength=40 type="text" id="country" name="country" value="<%=Utils.safe_render(country_val)%>">
           </div>
+
+        </div>
         </div>
       </div>
 
