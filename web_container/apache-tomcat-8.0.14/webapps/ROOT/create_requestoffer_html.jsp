@@ -111,15 +111,13 @@
           <div class="row">
             <label for="postal" ><%=loc.get(156,"Postal code")%>:</label>
             <input maxlength=20 type="text" id="postal" name="postal" value="<%=Utils.safe_render(postal_val)%>">
-            <select>
-              <option id="1">United States</option>
-              <option id="2">France</option>
-            </select>
           </div>
             
           <div class="row">
             <label for="country"><%=loc.get(157,"Country")%>:</label>
-            <input maxlength=40 type="text" id="country" name="country" value="<%=Utils.safe_render(country_val)%>">
+            <select id="country" name="country">
+              <%@include file="country_options.htm" %>
+            </select>
           </div>
 
         </div>
