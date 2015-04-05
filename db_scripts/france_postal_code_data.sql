@@ -1,4 +1,4 @@
-INSERT INTO postal_codes(postal_code, latitude, longitude),
+INSERT INTO postal_codes(postal_code, latitude, longitude)
 VALUES
 ('24000',45.1833,0.7167),
 ('24001 CEDEX',45.1833,0.7167),

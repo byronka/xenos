@@ -134,7 +134,7 @@
                 }
               };
 
-              expander.textContent = '<%=loc.get(15,"Forget it - I don't need a location")%>';
+              expander.textContent = "<%=loc.get(15,"Forget it - I don't need a location")%>";
               expander.style.height = "37px";
               do_the_fade(); //kick it off.
             } else {
