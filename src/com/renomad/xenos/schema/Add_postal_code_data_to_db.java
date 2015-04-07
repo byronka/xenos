@@ -14,11 +14,26 @@ public final class Add_postal_code_data_to_db {
     Build_db_schema.run_multiple_statements(
         "db_scripts/postal_code_truncate.sql");
 
-    Build_db_schema.run_multiple_statements(
-        "db_scripts/united_states_postal_code_data.sql");
+    // Build the United states
 
     Build_db_schema.run_multiple_statements(
-        "db_scripts/france_postal_code_data.sql");
+        "db_scripts/us_postal_codes.sql");
+    Build_db_schema.run_multiple_statements(
+        "db_scripts/us_latitudes.sql");
+    Build_db_schema.run_multiple_statements(
+        "db_scripts/us_longitudes.sql");
+    Build_db_schema.run_multiple_statements(
+        "db_scripts/us_postal_details.sql");
+
+    // Build France
+    Build_db_schema.run_multiple_statements(
+        "db_scripts/france_postal_codes.sql");
+    Build_db_schema.run_multiple_statements(
+        "db_scripts/france_latitudes.sql");
+    Build_db_schema.run_multiple_statements(
+        "db_scripts/france_longitudes.sql");
+    Build_db_schema.run_multiple_statements(
+        "db_scripts/france_postal_details.sql");
   }
 
 }

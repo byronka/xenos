@@ -591,12 +591,40 @@ invite_code (
 -- include letters.
 -- see http://en.wikipedia.org/wiki/Postal_code for more info!
 
+-- postal codes are HUGE tables - eventually, hundreds of megs.  For that
+-- reason, for inserting it makes sense to do it this way: multiple tables
+-- all keyed off the same id.  
+
 CREATE TABLE  
 postal_codes ( 
-  postal_code_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-  postal_code VARCHAR(30), 
+  postal_code_id INT UNSIGNED NOT NULL,
+  country_id INT UNSIGNED NOT NULL,
+  postal_code VARCHAR(30),
+  PRIMARY KEY (postal_code_id, country_id)
+)
+---DELIMITER---
+CREATE TABLE  
+postal_code_latitude ( 
+  postal_code_id INT UNSIGNED NOT NULL , 
+  country_id INT UNSIGNED NOT NULL,
   latitude DOUBLE,
-  longitude DOUBLE
+  PRIMARY KEY (postal_code_id, country_id)
+)
+---DELIMITER---
+CREATE TABLE  
+postal_code_longitude ( 
+  postal_code_id INT UNSIGNED NOT NULL , 
+  country_id INT UNSIGNED NOT NULL,
+  longitude DOUBLE,
+  PRIMARY KEY (postal_code_id, country_id)
+)
+---DELIMITER---
+CREATE TABLE  
+postal_code_details ( 
+  postal_code_id INT UNSIGNED NOT NULL , 
+  country_id INT UNSIGNED NOT NULL,
+  details NVARCHAR(200),
+  PRIMARY KEY (postal_code_id, country_id)
 )
 
 ---DELIMITER---
@@ -677,4 +705,12 @@ user_group_invite (
   PRIMARY KEY (group_id, user_id) -- there can only be one invite 
                           -- to a user from a given group at any time.
 );
+
+---DELIMITER---
+
+CREATE TABLE
+country (
+  country_id INT UNSIGNED PRIMARY KEY,
+  country_name VARCHAR(100)
+)
 
