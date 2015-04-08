@@ -719,13 +719,10 @@ public final class Requestoffer_utils {
         "r.category, "+
         "rs.status, "+
         "r.requestoffering_user_id, "+
-        "r.handling_user_id, "+
-        "calc_approx_dist(l.postal_code, ?) as distance "+
+        "r.handling_user_id "+
       "FROM requestoffer r "+
       "JOIN requestoffer_state rs "+
         "ON rs.requestoffer_id = r.requestoffer_id " +
-      "LEFT JOIN location_to_requestoffer ltr ON ltr.requestoffer_id = r.requestoffer_id "+
-      "LEFT JOIN location l ON l.location_id = ltr.location_id "+
       "WHERE r.handling_user_id = ? AND rs.status <> 77"; // 77 is closed.
 
     PreparedStatement pstmt = null;
@@ -733,8 +730,7 @@ public final class Requestoffer_utils {
       Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      pstmt.setString( 1, postcode);
-      pstmt.setInt( 2, user_id);
+      pstmt.setInt( 1, user_id);
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Others_Requestoffer[0];
@@ -752,11 +748,7 @@ public final class Requestoffer_utils {
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
         int ca = resultSet.getInt("category");
-        Double di = resultSet.getDouble("distance");
-        if (resultSet.wasNull()) {
-          di = null;
-        }
-        Others_Requestoffer or = new Others_Requestoffer( dt, d, s, 0.0f, 0, p, rid, ru, hu, ca, false, "", "", di);
+        Others_Requestoffer or = new Others_Requestoffer( dt, d, s, 0.0f, 0, p, rid, ru, hu, ca, false, "", "", 0.0);
         requestoffers.add(or);
       }
 
@@ -867,11 +859,18 @@ public final class Requestoffer_utils {
   public static User_location[] get_locations_for_requestoffer(int requestoffer_id) {
     
     String sqlText = 
-    "SELECT l.location_id, l.address_line_1, l.address_line_2, l.city," + 
-    "      l.state, l.postal_code, l.country                          " + 
+    "SELECT l.location_id, pcd.details, pc.postal_code,  " + 
+    "c.country_name " + 
     "FROM location l                                                  " + 
     "JOIN location_to_requestoffer ltr                                " + 
-    "  ON ltr.location_id = l.location_id AND requestoffer_id = ?     ";
+    "  ON ltr.location_id = l.location_id AND requestoffer_id = ?     " +
+    "JOIN postal_codes pc "+
+      "ON pc.country_id = l.country_id "+
+        "AND pc.postal_code_id = l.postal_code_id " +
+    "JOIN postal_code_details pcd " +
+      "ON pcd.country_id = l.country_id "+
+        "AND pcd.postal_code_id = l.postal_code_id " +
+    "JOIN country c ON c.country_id = l.country_id ";
 
     PreparedStatement pstmt = null;
     try {
@@ -887,13 +886,10 @@ public final class Requestoffer_utils {
       ArrayList<User_location> locations = new ArrayList<User_location>();
       while(resultSet.next()) {
         int lid = resultSet.getInt("location_id");
-        String sa1 = resultSet.getNString("address_line_1");
-        String sa2 = resultSet.getNString("address_line_2");
-        String city = resultSet.getNString("city");
-        String state = resultSet.getNString("state");
+        String det = resultSet.getNString("details");
         String post = resultSet.getString("postal_code"); // non-unicode on purpose
-        String country = resultSet.getNString("country");
-        locations.add(new User_location(lid,sa1,sa2,city,state,post,country));
+        String country = resultSet.getNString("country_name");
+        locations.add(new User_location(lid,det,post,country));
       }
 
       User_location[] array_of_user_locations = 
@@ -925,12 +921,17 @@ public final class Requestoffer_utils {
     //double sure that we aren't getting a location that the user doesn't
     //own.
     String sqlText = 
-      "SELECT l.location_id, l.address_line_1, " +
-      "l.address_line_2, l.city," + 
-      "l.state, l.postal_code, l.country " + 
+      "SELECT l.location_id, pcd.details, pc.postal_code, c.country_name " + 
       "FROM location l "+
       "JOIN location_to_user ltu "+
       "  ON ltu.location_id = l.location_id AND user_id = ? "+
+      "JOIN postal_codes pc "+
+        "ON pc.country_id = l.country_id "+
+          "AND pc.postal_code_id = l.postal_code_id " +
+      "JOIN postal_code_details pcd " +
+        "ON pcd.country_id = l.country_id "+
+          "AND pcd.postal_code_id = l.postal_code_id " +
+      "JOIN country c ON c.country_id = l.country_id " +
       "WHERE l.location_id = ?";
 
     PreparedStatement pstmt = null;
@@ -947,13 +948,10 @@ public final class Requestoffer_utils {
 
       resultSet.next();
       int lid = resultSet.getInt("location_id");
-      String sa1 = resultSet.getNString("address_line_1");
-      String sa2 = resultSet.getNString("address_line_2");
-      String city = resultSet.getNString("city");
-      String state = resultSet.getNString("state");
+      String det = resultSet.getNString("details");
       String post = resultSet.getString("postal_code"); // non-unicode on purpose
       String country = resultSet.getNString("country");
-      User_location uloc = new User_location(lid,sa1,sa2,city,state,post,country);
+      User_location uloc = new User_location(lid,det,post,country);
       return uloc;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
@@ -972,11 +970,17 @@ public final class Requestoffer_utils {
   public static User_location[] get_my_saved_locations(int user_id) {
     
     String sqlText = 
-"SELECT l.location_id, l.address_line_1, l.address_line_2, l.city," + 
-"      l.state, l.postal_code, l.country                          " + 
-"FROM location l                                                  " + 
-"JOIN location_to_user ltu                                        " + 
-"  ON ltu.location_id = l.location_id AND user_id = ?             ";
+      "SELECT l.location_id, pcd.details, pc.postal_code, c.country_name " + 
+      "FROM location l "+
+      "JOIN location_to_user ltu "+
+      "  ON ltu.location_id = l.location_id AND user_id = ? "+
+      "JOIN postal_codes pc "+
+        "ON pc.country_id = l.country_id "+
+          "AND pc.postal_code_id = l.postal_code_id " +
+      "JOIN postal_code_details pcd " +
+        "ON pcd.country_id = l.country_id "+
+          "AND pcd.postal_code_id = l.postal_code_id " +
+      "JOIN country c ON c.country_id = l.country_id ";
 
     PreparedStatement pstmt = null;
     try {
@@ -992,13 +996,10 @@ public final class Requestoffer_utils {
       ArrayList<User_location> locations = new ArrayList<User_location>();
       while(resultSet.next()) {
         int lid = resultSet.getInt("location_id");
-        String sa1 = resultSet.getNString("address_line_1");
-        String sa2 = resultSet.getNString("address_line_2");
-        String city = resultSet.getNString("city");
-        String state = resultSet.getNString("state");
+        String det = resultSet.getNString("details");
         String post = resultSet.getString("postal_code"); // non-unicode on purpose
         String country = resultSet.getNString("country");
-        locations.add(new User_location(lid,sa1,sa2,city,state,post,country));
+        locations.add(new User_location(lid,det,post,country));
       }
 
       User_location[] array_of_user_locations = 

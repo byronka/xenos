@@ -258,10 +258,10 @@ BEGIN
       ON r.requestoffer_id = ltr.requestoffer_id
     LEFT JOIN location l
       ON l.location_id = ltr.location_id
-    JOIN postal_codes pc
+    LEFT JOIN postal_codes pc
       ON pc.postal_code_id = l.postal_code_id 
         AND pc.country_id = l.country_id
-    JOIN postal_code_details pcd
+    LEFT JOIN postal_code_details pcd
       ON pcd.postal_code_id = l.postal_code_id 
         AND pcd.country_id = l.country_id
     WHERE rs.status = 109 AND r.requestoffering_user_id = ruid
@@ -341,8 +341,8 @@ BEGIN
     r.requestoffering_user_id, 
     r.handling_user_id, 
     r.category,
-    l.postal_code,
-    l.city,
+    pc.postal_code,
+    pcd.details,
     calc_approx_dist(pc.country_id, pc.postal_code, user_country_id, user_postal_code) AS distance
     FROM requestoffer r 
     JOIN requestoffer_state rs
@@ -355,10 +355,10 @@ BEGIN
       ON r.requestoffer_id = ltr.requestoffer_id
     LEFT JOIN location l
       ON l.location_id = ltr.location_id
-    JOIN postal_codes pc
+    LEFT JOIN postal_codes pc
       ON pc.postal_code_id = l.postal_code_id 
         AND pc.country_id = l.country_id
-    JOIN postal_code_details pcd
+    LEFT JOIN postal_code_details pcd
       ON pcd.postal_code_id = l.postal_code_id 
         AND pcd.country_id = l.country_id
     WHERE rs.status <> 109

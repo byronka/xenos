@@ -346,13 +346,18 @@ public final class User_utils {
     */
   public static User get_user(int user_id) {
     String sqlText = 
-      "SELECT COUNT(urdp.judged_user_id) AS urdp_count,u.username,u.points,  " +
-      "u.timeout_seconds, u.rank_average, u.rank_ladder, loc.postal_code, u.current_location  " +
+      "SELECT COUNT(urdp.judged_user_id) AS urdp_count,"+
+      "u.username,u.points,  " +
+      "u.timeout_seconds, u.rank_average, u.rank_ladder, "+
+      "pc.postal_code, u.current_location  " +
       "FROM user u  " +
       "LEFT JOIN user_rank_data_point urdp  " +
-      "  ON urdp.judged_user_id = u.user_id AND urdp.is_inside_window = 1  " +
+      "  ON urdp.judged_user_id = u.user_id "+
+        "AND urdp.is_inside_window = 1 " +
       "LEFT JOIN location loc  " +
       "  ON loc.location_id = u.current_location " +
+      "LEFT JOIN postal_codes pc ON pc.postal_code_id = loc.postal_code_id "+
+        "AND pc.country_id = loc.country_id " +
       "WHERE u.user_id = ?  " +
       "GROUP BY urdp.judged_user_id ";
 
