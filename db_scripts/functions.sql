@@ -25,7 +25,9 @@ DROP FUNCTION IF EXISTS calc_approx_dist;
 
 CREATE FUNCTION calc_approx_dist
 (
+  the_country_id_1 INT,
   pcode1 VARCHAR(30),
+  the_country_id_2 INT,
   pcode2 VARCHAR(30)
 )
 RETURNS DOUBLE DETERMINISTIC READS SQL DATA
@@ -37,21 +39,37 @@ BEGIN
     DECLARE delta_long DOUBLE;
     DECLARE earth_radius DOUBLE;
     DECLARE distance DOUBLE;
+    DECLARE postal_code_1_id, postal_code_2_id INT;
 
     IF pcode1 IS NULL OR pcode1 = '' OR 
       pcode2 IS NULL OR pcode2 = '' THEN 
       RETURN NULL;
     END IF;
 
-
-    SELECT latitude, longitude INTO lat_first, long_first
+    SELECT postal_code_id INTO postal_code_1_id
     FROM postal_codes
-    WHERE postal_code = pcode1;
+    WHERE postal_code = pcode1 AND country_id = the_country_id_1;
 
-    SELECT latitude, longitude INTO lat_second, long_second
+    SELECT postal_code_id INTO postal_code_2_id
     FROM postal_codes
-    WHERE postal_code = pcode2;
+    WHERE postal_code = pcode2 AND country_id = the_country_id_2;
 
+
+    SELECT pcla.latitude, pclo.longitude INTO lat_first, long_first
+    FROM postal_code_latitude pcla
+    JOIN postal_code_longitude pclo 
+      ON pclo.postal_code_id = pcla.postal_code_id 
+        AND pclo.country_id = pcla.country_id
+    WHERE pclo.postal_code_id = postal_code_1_id 
+      AND pclo.country_id = the_country_id_1;
+
+    SELECT pcla.latitude, pclo.longitude INTO lat_second, long_second
+    FROM postal_code_latitude pcla
+    JOIN postal_code_longitude pclo 
+      ON pclo.postal_code_id = pcla.postal_code_id 
+        AND pclo.country_id = pcla.country_id
+    WHERE pclo.postal_code_id = postal_code_2_id 
+      AND pclo.country_id = the_country_id_2;
 
     SET lat_first_rad = dec_deg_to_rad(lat_first);
     SET lat_second_rad = dec_deg_to_rad(lat_second);

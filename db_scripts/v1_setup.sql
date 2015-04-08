@@ -364,12 +364,8 @@ audit (
 CREATE TABLE
 location (
   location_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  address_line_1 NVARCHAR(255),
-  address_line_2 NVARCHAR(255),
-  city NVARCHAR(255),
-  state NVARCHAR(255),
-  postal_code VARCHAR(30), -- most important value - see http://en.wikipedia.org/wiki/Postal_code for more info!
-  country NVARCHAR(255)
+  postal_code_id INT,
+  country_id INT
 )
 
 ---DELIMITER---

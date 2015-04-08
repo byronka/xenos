@@ -217,13 +217,15 @@ CREATE PROCEDURE get_others_requestoffers
 ) 
 BEGIN 
   DECLARE user_postal_code VARCHAR(30);
+  DECLARE user_country_id INT;
   DECLARE first_row, last_row INT;
 
   -- get current user's postal code if they have one
   -- we'll use this to get distances per requestoffer
-  SELECT loc.postal_code INTO user_postal_code
+  SELECT pc.postal_code, loc.country_id INTO user_postal_code, user_country_id
   FROM location loc
   JOIN user u ON u.current_location = loc.location_id
+  JOIN postal_codes pc ON pc.postal_code_id = loc.postal_code_id
   WHERE u.user_id = ruid;
 
   -- set up paging.  Right now it's always 10 or less rows on the page.
@@ -242,20 +244,26 @@ BEGIN
     r.requestoffering_user_id, 
     r.handling_user_id, 
     r.category,
-    l.postal_code,
-    l.city,
-    calc_approx_dist(l.postal_code, user_postal_code) AS distance
+    pc.postal_code,
+    pcd.details,
+    calc_approx_dist(pc.country_id, pc.postal_code, user_country_id, user_postal_code) AS distance
     FROM requestoffer r 
     JOIN requestoffer_state rs
-    ON rs.requestoffer_id = r.requestoffer_id
+      ON rs.requestoffer_id = r.requestoffer_id
     JOIN user u ON u.user_id = r.requestoffering_user_id 
     LEFT JOIN requestoffer_service_request rsr
-    ON r.requestoffer_id = rsr.requestoffer_id 
+      ON r.requestoffer_id = rsr.requestoffer_id 
     AND rsr.user_id = ruid AND rsr.status = 106 -- 106 is "NEW"
     LEFT JOIN location_to_requestoffer ltr
-    ON r.requestoffer_id = ltr.requestoffer_id
+      ON r.requestoffer_id = ltr.requestoffer_id
     LEFT JOIN location l
-    ON l.location_id = ltr.location_id
+      ON l.location_id = ltr.location_id
+    JOIN postal_codes pc
+      ON pc.postal_code_id = l.postal_code_id 
+        AND pc.country_id = l.country_id
+    JOIN postal_code_details pcd
+      ON pcd.postal_code_id = l.postal_code_id 
+        AND pcd.country_id = l.country_id
     WHERE rs.status = 109 AND r.requestoffering_user_id = ruid
 
     AND
@@ -306,7 +314,7 @@ BEGIN
 
     -- searching by postcode
     CASE WHEN my_postcode <> '' THEN
-    l.postal_code = my_postcode
+    pc.postal_code = my_postcode
     ELSE TRUE
     END
 
@@ -335,18 +343,24 @@ BEGIN
     r.category,
     l.postal_code,
     l.city,
-    calc_approx_dist(l.postal_code, user_postal_code) AS distance
+    calc_approx_dist(pc.country_id, pc.postal_code, user_country_id, user_postal_code) AS distance
     FROM requestoffer r 
     JOIN requestoffer_state rs
-    ON rs.requestoffer_id = r.requestoffer_id
+      ON rs.requestoffer_id = r.requestoffer_id
     JOIN user u ON u.user_id = r.requestoffering_user_id 
     LEFT JOIN requestoffer_service_request rsr
-    ON r.requestoffer_id = rsr.requestoffer_id 
+      ON r.requestoffer_id = rsr.requestoffer_id 
     AND rsr.user_id = ruid AND rsr.status = 106 -- 106 is "NEW"
     LEFT JOIN location_to_requestoffer ltr
-    ON r.requestoffer_id = ltr.requestoffer_id
+      ON r.requestoffer_id = ltr.requestoffer_id
     LEFT JOIN location l
-    ON l.location_id = ltr.location_id
+      ON l.location_id = ltr.location_id
+    JOIN postal_codes pc
+      ON pc.postal_code_id = l.postal_code_id 
+        AND pc.country_id = l.country_id
+    JOIN postal_code_details pcd
+      ON pcd.postal_code_id = l.postal_code_id 
+        AND pcd.country_id = l.country_id
     WHERE rs.status <> 109
 
     AND
@@ -396,7 +410,7 @@ BEGIN
 
     -- searching by postcode
     CASE WHEN my_postcode <> '' THEN
-    l.postal_code = my_postcode
+    pc.postal_code = my_postcode
     ELSE TRUE
     END
 
