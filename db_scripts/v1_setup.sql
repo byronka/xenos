@@ -707,6 +707,6 @@ user_group_invite (
 CREATE TABLE
 country (
   country_id INT UNSIGNED PRIMARY KEY,
-  country_name VARCHAR(100)
+  country_name NVARCHAR(100)
 )
 

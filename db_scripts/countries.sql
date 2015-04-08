@@ -1,7 +1,4 @@
-INSERT INTO TABLE
-country (
-  country_id ,
-  country_name )
+INSERT INTO country ( country_id , country_name )
 VALUES
 (1   ,'Afghanistan'),
 (2   ,'Akrotiri'),
@@ -20,7 +17,7 @@ VALUES
 (15  ,'Australia'),
 (16  ,'Austria'),
 (17  ,'Azerbaijan'),
-(18  ,'Bahamas, The'),
+(18  ,'The Bahamas'),
 (19  ,'Bahrain'),
 (20  ,'Bangladesh'),
 (21  ,'Barbados'),
@@ -54,7 +51,7 @@ VALUES
 (49  ,'China'),
 (50  ,'Christmas Island'),
 (51  ,'Clipperton Island'),
-(52  ,'Cocos (Keeling') Islands'),
+(52  ,'Cocos (Keeling) Islands'),
 (53  ,'Colombia'),
 (54  ,'Comoros'),
 (55  ,'Congo, Democratic Republic of the'),
@@ -62,7 +59,7 @@ VALUES
 (57  ,'Cook Islands'),
 (58  ,'Coral Sea Islands'),
 (59  ,'Costa Rica'),
-(60  ,'Cote d'Ivoire'),
+(60  ,'Cote d''Ivoire'),
 (61  ,'Croatia'),
 (62  ,'Cuba'),
 (63  ,'Cyprus'),
@@ -80,7 +77,7 @@ VALUES
 (75  ,'Estonia'),
 (76  ,'Ethiopia'),
 (77  ,'Europa Island'),
-(78  ,'Falkland Islands (Islas Malvinas')'),
+(78  ,'Falkland Islands (Islas Malvinas)'),
 (79  ,'Faroe Islands'),
 (80  ,'Fiji'),
 (81  ,'Finland'),
@@ -108,7 +105,7 @@ VALUES
 (103 ,'Guyana'),
 (104 ,'Haiti'),
 (105 ,'Heard Island and McDonald Islands'),
-(106 ,'Holy See (Vatican City')'),
+(106 ,'Holy See (Vatican City)'),
 (107 ,'Honduras'),
 (108 ,'Hong Kong'),
 (109 ,'Hungary'),
@@ -259,5 +256,4 @@ VALUES
 (254 ,'Western Sahara'),
 (255 ,'Yemen'),
 (256 ,'Zambia'),
-(257 ,'Zimbabwe'),
-)
+(257 ,'Zimbabwe');

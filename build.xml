@@ -294,6 +294,20 @@
   </target>
 
    <!-- 
+    build-countries-data adds countries to the database
+  -->
+  <target name="build-countries-data" depends="compile-schema-code" 
+    description="adds Countries">
+    <java 
+      classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
+      classname="com.renomad.xenos.schema.Add_countries_to_db"
+      fork="true" >
+			<jvmarg value="-D${conn.str.with.db}" />
+			<jvmarg value="-D${conn.str.without.db}" />
+		</java>
+  </target>
+
+   <!-- 
     build-procs adds procedures to the database
   -->
   <target name="build-procs" depends="compile-schema-code" 

@@ -365,6 +365,52 @@ public final class Requestoffer_utils {
   }
 
 
+  public static class Country {
+
+    public final String country_name;
+    public final int country_id;
+    public Country(String country_name, int country_id) {
+      this.country_name = country_name;
+      this.country_id = country_id;
+    }
+  }
+
+  /**
+    * gets the total list of countries
+    */
+  public static Country[] get_countries() {
+    
+    String sqlText = 
+      "SELECT country_id, country_name FROM country ORDER BY country_id";
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Country[0];
+      }
+
+      ArrayList<Country> countries = new ArrayList<Country>();
+      while(resultSet.next()) {
+        int id = resultSet.getInt("country_id");
+        String name = resultSet.getNString("country_name");
+        countries.add(new Country(name, id));
+      }
+      Country[] array_of_countries = 
+        countries.toArray(new Country[countries.size()]);
+      return array_of_countries;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new Country[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+  }
+
+
   /**
     * Gets the list of users that have offered to service my request
     * that are not selected or rejected.
