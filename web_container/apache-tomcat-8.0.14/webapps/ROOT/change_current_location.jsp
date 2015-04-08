@@ -126,10 +126,7 @@
         %>
         <% if (uloc != null) { %>
           <p><%=loc.get(73, "Your current location is")%>:</p>
-          <p><em><%=Utils.safe_render(uloc.str_addr_1)%></em></p>
-          <p><em><%=Utils.safe_render(uloc.str_addr_2)%></em></p>
-          <p><em><%=Utils.safe_render(uloc.city)%></em></p>
-          <p><em><%=Utils.safe_render(uloc.state)%></em></p>
+          <p><em><%=Utils.safe_render(uloc.details)%></em></p>
           <p><em><%=Utils.safe_render(uloc.postcode)%></em></p>
           <p><em><%=Utils.safe_render(uloc.country)%></em></p>
         <% } %>
@@ -155,10 +152,7 @@
                 <%} else { %>
                   <option value="<%=loca.id%>">
                 <% } %>
-                <%=Utils.safe_render(loca.str_addr_1)%>
-                <%=Utils.safe_render(loca.str_addr_2)%>
-                <%=Utils.safe_render(loca.city)%>
-                <%=Utils.safe_render(loca.state)%>
+                <%=Utils.safe_render(loca.details)%>
                 <%=Utils.safe_render(loca.postcode)%>
                 <%=Utils.safe_render(loca.country)%>
                 </option>
