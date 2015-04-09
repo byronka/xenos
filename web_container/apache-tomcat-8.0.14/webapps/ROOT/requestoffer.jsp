@@ -38,7 +38,6 @@
   }
 
 	request.setCharacterEncoding("UTF-8");
-  User_location[] locations = Requestoffer_utils.get_locations_for_requestoffer(r.requestoffer_id);
 
   boolean is_requestoffering_user = logged_in_user_id == r.requestoffering_user_id;
   boolean is_handling_user = logged_in_user_id == r.handling_user_id;
@@ -119,58 +118,6 @@
           <%=loc.get(r.category,"")%> 
         </span>
       </div>
-      <% for (User_location lo : locations) { %>
-
-        <%
-          if (logged_in_user_id == r.handling_user_id || 
-          logged_in_user_id == r.requestoffering_user_id) { 
-        %>
-
-          <%if (!Utils.is_null_or_empty(lo.str_addr_1)) {%>
-            <div class="row">
-              <label for="strt1_span"><%=loc.get(152,"Street address 1")%>: </label>
-              <span id="strt1_span"><%=Utils.safe_render(lo.str_addr_1)%></span>
-            </div>
-          <%}%>
-
-          <%if (!Utils.is_null_or_empty(lo.str_addr_2)) {%>
-            <div class="row">
-              <label for="strt2_span"><%=loc.get(153,"Street address 2")%>: </label>
-              <span id="strt2_span"><%=Utils.safe_render(lo.str_addr_2)%></span>
-            </div>
-          <%}%>
-
-          <%if (!Utils.is_null_or_empty(lo.state)) {%>
-            <div class="row">
-              <label for="state_span"><%=loc.get(155,"State")%>: </label>
-              <span id="state_span"><%=Utils.safe_render(lo.state)%></span>
-            </div>
-          <%}%>
-
-          <%if (!Utils.is_null_or_empty(lo.country)) {%>
-            <div class="row">
-              <label for="country_span"><%=loc.get(157,"Country")%>:</label>
-              <span id="country_span"><%=Utils.safe_render(lo.country)%></span>
-            </div>
-          <%}%>
-
-        <% } %>
-
-        <%if (!Utils.is_null_or_empty(lo.city)) {%>
-          <div class="row">
-            <label for="city_span"><%=loc.get(154,"City")%>:</label>
-            <span id="city_span"><%=Utils.safe_render(lo.city)%></span>
-          </div>
-        <%}%>
-
-        <%if (!Utils.is_null_or_empty(lo.postcode)) {%>
-          <div class="row">
-            <label for="post_span"><%=loc.get(156,"Postal code")%>: </label>
-            <span id="post_span"><%=Utils.safe_render(lo.postcode)%></span>
-          </div>
-        <%}%>
-
-      <% } %>
     </div>
 
       <% if (r.status == 109) { %>

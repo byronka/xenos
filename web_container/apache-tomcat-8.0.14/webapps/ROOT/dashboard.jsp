@@ -478,18 +478,7 @@
   boolean has_cat_error = false;
   boolean has_desc_error = false;
   boolean has_size_error = false;
-  boolean user_entered_a_location = false;
-  boolean user_selected_a_location = false;
 
-  //address values
-  String strt_addr_1_val = "";
-  String strt_addr_2_val = "";
-  String city_val        = "";
-  String state_val       = "";
-  String postal_val      = "";
-  String country_val     = "";
-  String savedlocation_val = "";
-  String save_loc_to_user_checked = ""; 
   %>
   <div>
       <h3><%=loc.get(2,"Request Favor")%></h3>

@@ -39,59 +39,14 @@
         </div>
       </div>
 
-
-          <% 
-            User_location[] locations = 
-            Requestoffer_utils.get_my_saved_locations(logged_in_user_id);
-          %>
-
-
-      <% if (user_entered_a_location  || user_selected_a_location) {%>
-        <div id="location-wrapper">
-      <% } else { %>
-        <div style="display:none" id="location-wrapper">
-      <% } %>
-          <div id="location-section" >
-            <% if (locations.length > 0) { %>
-
-            <div class="table">
-                <div class="row">
-                  <label for="savedlocation"><%=loc.get(158,"Select one of your saved locations")%>:</label>
-                  <select 
-                    id="savedlocation" 
-                    name="savedlocation">
-                    <option><%=loc.get(192,"No address selected")%></option>
-                    <%for (User_location loca : locations) {%>
-                      <%if(Integer.toString(loca.id).equals(savedlocation_val)){%>
-                        <option selected value="<%=loca.id%>">
-                      <%} else { %>
-                        <option value="<%=loca.id%>">
-                      <% } %>
-                      <%=Utils.safe_render(loca.details)%>
-                      <%=Utils.safe_render(loca.postcode)%>
-                      <%=Utils.safe_render(loca.country)%>
-                      </option>
-                    <%}%>
-                  </select>                       
-                </div>
-              </div>
-
-
-            <%}%>
-
-        </div>
+      <div class="table">
+        <div class="row">
+            <button class="button" id="submitter" type="submit"><%=loc.get(2,"Request Favor")%></button>
         </div>
       </div>
 
-
-        <div class="table">
-          <div class="row">
-              <button class="button" id="submitter" type="submit"><%=loc.get(2,"Request Favor")%></button>
-          </div>
         </div>
-
-          </div>
-        </div>
+      </div>
     </form>	
 
   </div>
