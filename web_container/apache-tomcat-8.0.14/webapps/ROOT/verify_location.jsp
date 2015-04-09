@@ -14,12 +14,14 @@ if (country_id == null || country_id < 0) {
 }
 
 String postal_code = request.getParameter("postcode");
+boolean is_nothing_found = false;
 
 Requestoffer_utils.Postcode_and_detail[] pads = 
   Requestoffer_utils.get_locations_from_postcode(country_id, postal_code);
 
 if (pads.length == 0) {
   // we got nothing from what they entered.  Indicate as much.
+  is_nothing_found = true;
 
 } else if (pads.length == 1) {
   // there is only one place - we need nothing more from the user,
@@ -53,11 +55,15 @@ if (pads.length == 0) {
         <input type="hidden" name="country" value="<%=country_id%>">
         <div class="table">
           <div class="row">
-            <select autofocus="true" name="postal_code_id" id="postal_code_id">
-              <% for (int i = 0; i < pads.length; i++) {  %>
-                <option value="<%=pads[i].postcode_id%>"><%=pads[i].postcode%> <%=pads[i].detail%></option>
-              <% } %>
-            </select>
+            <% if (!is_nothing_found) { %>
+              <select autofocus="true" name="postal_code_id" id="postal_code_id">
+                <% for (int i = 0; i < pads.length; i++) {  %>
+                  <option value="<%=pads[i].postcode_id%>"><%=pads[i].postcode%> <%=pads[i].detail%></option>
+                <% } %>
+              </select>
+            <% } else { %>
+              <span class="error">no locations found</span>
+            <% } %>
           </div>
         </div>
 
