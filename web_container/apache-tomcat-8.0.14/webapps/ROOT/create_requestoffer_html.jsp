@@ -1,8 +1,9 @@
-                       
 <div class="container">
+
     <form method="POST" action="create_requestoffer.jsp">	
       <div class="table" id="basic-section">
         <div class="row">
+
           <label for="description">* <%=loc.get(10,"Description")%>:</label>
           <textarea 
             id="description"
@@ -82,39 +83,15 @@
         </div>
       </div>
 
-        <script>
-          var expand_contract = function() {
-            var lo_wrapper = document.getElementById('location-wrapper');
-            var expander = document.getElementById('location-expander');
-            if (lo_wrapper.style.display == 'none' || lo_wrapper.style.display == '') {
-              lo_wrapper.style.opacity = 0;
-              lo_wrapper.style.display = 'block';
 
-              var do_the_fade = function() {
-                var curr_opac = lo_wrapper.style.opacity;
-                curr_opac = Number(curr_opac) + 0.1;
-                lo_wrapper.style.opacity = curr_opac;
-                if (curr_opac < 1) { 
-                  setTimeout(do_the_fade,40);
-                }
-              };
+        <div class="table">
+          <div class="row">
+              <button class="button" id="submitter" type="submit"><%=loc.get(2,"Request Favor")%></button>
+          </div>
+        </div>
 
-              expander.textContent = "<%=loc.get(15,"Forget it - I don't need a location")%>";
-              expander.style.height = "37px";
-              do_the_fade(); //kick it off.
-            } else {
-              lo_wrapper.style.display = 'none';
-              expander.textContent = '<%=loc.get(14,"Add location")%>';
-              expander.style.height = "17px";
-            }
-          };
-        </script>
-
-        <div class="row">
-            <div id="location-expander" 
-                class="button expander" 
-                onclick="expand_contract()" ><%=loc.get(14,"Add location")%></div>
-            <button class="button" id="submitter" type="submit"><%=loc.get(2,"Request Favor")%></button>
+          </div>
         </div>
     </form>	
+
   </div>

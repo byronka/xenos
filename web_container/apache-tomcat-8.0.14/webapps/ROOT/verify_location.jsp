@@ -25,7 +25,9 @@ if (pads.length == 0) {
 
 } else if (pads.length == 1) {
   // there is only one place - we need nothing more from the user,
-  // move to the next page
+  // move to the next page - creating a requestoffer with this data.
+  response.sendRedirect("create_requestoffer.jsp");
+  return;
 
 } else {
   //there are 2 or more details to show the user.  Let them pick that

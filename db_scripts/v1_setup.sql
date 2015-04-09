@@ -52,7 +52,8 @@ CREATE TABLE
     rank_ladder INT NOT NULL DEFAULT 0, -- represents most recent activity
     is_admin BOOL NOT NULL DEFAULT FALSE,
     inviter INT UNSIGNED, -- the user who invited this user into the system
-    current_location INT UNSIGNED -- useful for when they want to see distances to each requestoffer
+    country_id INT INT UNSIGNED,
+    postal_code_id INT UNSIGNED -- useful for when they want to see distances to each requestoffer
   );
 
 ---DELIMITER---
@@ -357,52 +358,6 @@ audit (
   notes_id INT UNSIGNED -- some notes about the action, see audit_notes
 )
 
-
----DELIMITER---
-
--- creates a table to store locations, which we can use for searching and mapping
-CREATE TABLE
-location (
-  location_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  postal_code_id INT,
-  country_id INT
-)
-
----DELIMITER---
-
--- here we create two correlation tables, 
--- from location to user and location to requestoffer.
--- locations can be tied to a user if the user says,
--- "remember this location", and tied to a
--- requestoffer if that location is used in that requestoffer.
--- there should be an event running that checks for locations
--- that are not tied to either a user or requestoffer and 
--- purges them, and audits the purge.
-
-CREATE TABLE
-location_to_user (
-  location_id INT UNSIGNED, 
-  user_id INT UNSIGNED, 
-  FOREIGN KEY FK_user (user_id)
-  REFERENCES user (user_id),
-  FOREIGN KEY FK_location_ltu (location_id)
-  REFERENCES location (location_id),
-  PRIMARY KEY (location_id, user_id)
-)
-
----DELIMITER---
-
-CREATE TABLE
-location_to_requestoffer (
-  location_id INT UNSIGNED,
-  requestoffer_id INT UNSIGNED,
-  FOREIGN KEY FK_requestoffer_ltr (requestoffer_id)
-  REFERENCES requestoffer (requestoffer_id)
-  ON DELETE CASCADE,
-  FOREIGN KEY FK_location_ltr (location_id)
-  REFERENCES location (location_id),
-  PRIMARY KEY (location_id, requestoffer_id)
-)
 
 ---DELIMITER---
 

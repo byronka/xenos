@@ -1,4 +1,6 @@
 <%@include file="includes/init.jsp" %>
+<%@ page import="com.renomad.xenos.Requestoffer_utils" %>
+<%@ page import="com.renomad.xenos.User_location" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -11,8 +13,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	
-<%@ page import="com.renomad.xenos.Requestoffer_utils" %>
-<%@ page import="com.renomad.xenos.User_location" %>
 
   <% 
 
@@ -22,42 +22,26 @@
     //get the values straight from the client
     String de = "";
     Integer selected_cat = null;
-    boolean has_cat_error = false;
     boolean has_desc_error = false;
     boolean has_size_error = false;
     boolean user_entered_a_location = false;
     boolean user_selected_a_location = false;
 
-    //address values
-    String strt_addr_1_val = "";
-    String strt_addr_2_val = "";
-    String city_val        = "";
-    String state_val       = "";
-    String postal_val      = "";
-    String country_val     = "";
+    //location values
+    Integer postal_code_id      = null;
+    Integer country_id          = null;
     String savedlocation_val = "";
     String save_loc_to_user_checked = "";
 
     if (request.getMethod().equals("POST")) {
 
     //get values so if they are in validation mode they don't lose info.
-      strt_addr_1_val = 
-        Utils.get_string_no_null(request.getParameter("strt_addr_1"));
 
-      strt_addr_2_val = 
-        Utils.get_string_no_null(request.getParameter("strt_addr_2"));
-      
-      city_val = 
-        Utils.get_string_no_null(request.getParameter("city"));
+      postal_code_id = 
+        Utils.parse_int(request.getParameter("postal"));
 
-      state_val =
-        Utils.get_string_no_null(request.getParameter("state"));
-
-      postal_val = 
-        Utils.get_string_no_null(request.getParameter("postal"));
-
-      country_val = 
-        Utils.get_string_no_null(request.getParameter("country"));
+      country_id = 
+        Utils.parse_int(request.getParameter("country"));
 
       savedlocation_val =
         Utils.get_string_no_null(request.getParameter("savedlocation"));
@@ -75,21 +59,10 @@
         validation_error |= true;
       }
 
-      //parse out the categories from a string the client gave us
       selected_cat = Utils.parse_int(request.getParameter("categories"));
       
-      if (selected_cat == null) {
-        validation_error |= true;
-        has_cat_error = true;
-      }
-
       user_entered_a_location = 
-        !Utils.is_null_or_empty(strt_addr_1_val) ||
-        !Utils.is_null_or_empty(strt_addr_2_val) ||
-        !Utils.is_null_or_empty(city_val) ||
-        !Utils.is_null_or_empty(state_val) ||
-        !Utils.is_null_or_empty(postal_val) ||
-        !Utils.is_null_or_empty(country_val);
+        postal_code_id || country_id;
 
       user_selected_a_location = 
         Utils.parse_int(savedlocation_val) != null;
