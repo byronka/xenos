@@ -1,8 +1,17 @@
 <%@include file="includes/init.jsp" %>
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
-<%@ page import="com.renomad.xenos.User_location" %>
 <%
 
+if (request.getMethod().equals("GET")) {
+  response.sendRedirect("select_country.jsp");
+  return;
+}
+
+Integer country_id = Utils.parse_int(request.getParameter("country"));
+if (country_id == null || country_id < 0) {
+  response.sendRedirect("select_country.jsp");
+  return;
+}
 
 %>
 <!DOCTYPE html>
@@ -23,30 +32,19 @@
   <div class="container">
 
     <h3><%=loc.get(157, "Country")%>:</h3>
-      <form method="POST" action="enter_postcode.jsp">
-      <div class="table">
-        <div class="row">
-          <%
-            com.renomad.xenos.Requestoffer_utils.Country[] countries = Requestoffer_utils.get_countries();
-          %>
-          <select name="country" id="country" autofocus="true">
-            <% for (int i = 0; i < countries.length; i ++) { %>
-            <% if (countries[i].country_id == 244) { %>
-              <option selected="selected" value="<%=countries[i].country_id%>">
-            <% } else { %>
-              <option value="<%=countries[i].country_id%>">
-            <% } %>
-                <%=countries[i].country_name%>
-              </option>
-            <% } %>
-          </select>
+      <form method="POST" action="verify_location.jsp">
+        <input type="hidden" name="country" value="<%=country_id%>">
+        <div class="table">
+          <div class="row">
+            <label for="postcode"><%=loc.get(156,"Postal code")%></label>
+            <input name="postcode" id="postcode" autofocus="true">
           </div>
         </div>
 
         <div class="table">
           <div class="row">
             <button class="button">
-              <%=loc.get(74, "Select country")%>
+              <%=loc.get(75, "Done entering postal code")%>
             </button>
           </div>
         </div>

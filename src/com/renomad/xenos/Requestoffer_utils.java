@@ -28,6 +28,67 @@ public final class Requestoffer_utils {
 
 
   /**
+    * holds a postcode and then details like city, state, location, whatev
+    */
+  public static class Postcode_and_detail {
+    public final int postcode_id;
+    public final String postcode;
+    public final String detail;
+    public Postcode_and_detail(int postcode_id, String postcode, String detail) {
+      this.postcode_id = postcode_id;
+      this.postcode = postcode;
+      this.detail = detail;
+    }
+  }
+
+  /**
+    * this gets all the likely locations based on the values we are given.
+    * we do a text search on the postcode within that country.  If we
+    * find nothing we return an empty array.
+    */
+  public static Postcode_and_detail[]
+    get_locations_from_postcode(int country_id, String postcode) {
+    String sqlText = 
+      "SELECT pc.postal_code, pcd.postal_code_id, pcd.details " +
+      "FROM postal_code_details pcd " +
+      "JOIN postal_codes pc ON pc.postal_code_id = pcd.postal_code_id "+
+        "AND pc.country_id = pcd.country_id " +
+      "WHERE pc.postal_code LIKE CONCAT('%',?,'%') AND pcd.country_id = ? ";
+
+    PreparedStatement pstmt = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setString(1, postcode);
+      pstmt.setInt(2, country_id);
+      ResultSet resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new Postcode_and_detail[0];
+      }
+
+      ArrayList<Postcode_and_detail> pad = new ArrayList<Postcode_and_detail>();
+      while(resultSet.next()) {
+        int pcode_id = resultSet.getInt("postal_code_id");
+        String pcode = resultSet.getString("postal_code");
+        String detail = resultSet.getNString("details");
+        pad.add(new Postcode_and_detail(pcode_id, pcode, detail)); 
+      }
+
+      Postcode_and_detail[] array_of_pad = 
+        pad.toArray(new Postcode_and_detail[pad.size()]);
+      return array_of_pad;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new Postcode_and_detail[0];
+    } finally {
+      Database_access.close_statement(pstmt);
+    }
+
+  }
+
+
+  /**
     * put the requestoffer into a 'draft' status,
     * hidden from everyone but the owner
     */
