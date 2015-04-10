@@ -52,7 +52,7 @@ CREATE TABLE
     rank_ladder INT NOT NULL DEFAULT 0, -- represents most recent activity
     is_admin BOOL NOT NULL DEFAULT FALSE,
     inviter INT UNSIGNED, -- the user who invited this user into the system
-    country_id INT INT UNSIGNED,
+    country_id INT UNSIGNED,
     postal_code_id INT UNSIGNED -- useful for when they want to see distances to each requestoffer
   );
 
