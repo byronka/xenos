@@ -111,6 +111,8 @@ requestoffer (
   requestoffering_user_id INT UNSIGNED NOT NULL,
   handling_user_id INT UNSIGNED,
   category INT UNSIGNED,
+  country_id INT,
+  postal_code_id INT,
   FOREIGN KEY FK_requestoffering_user_user_id (requestoffering_user_id) 
     REFERENCES user (user_id) 
 );
@@ -313,11 +315,11 @@ VALUES
 
 -- misc - 400s
 
-(401,'New location was created'),
-(402,'Location was attached to requestoffer'),
-(403,'Location was attached to user'),
-(404,'location was deleted, since there were no related users or requestoffers'),
-(405,'location was set as current for a user'),
+(401,'EMPTY401'),
+(402,'EMPTY402'),
+(403,'EMPTY403'),
+(404,'EMPTY404'),
+(405,'EMPTY405'),
 (406,'user1 leaves user2''s group (extra is group id)'),
 (407,'user1 creates group (extra is group id)'),
 (408,'user1 sends group invite to user2 (extra is group id)'),
@@ -354,7 +356,7 @@ audit (
   user1_id INT UNSIGNED ,  -- typically the acting user
   user2_id INT UNSIGNED ,  -- typically the passive / target user
   requestoffer_id INT UNSIGNED, -- the requestoffer, when applicable
-  extra_id INT UNSIGNED, -- when referring to something not a requestoffer, e.g. location
+  extra_id INT UNSIGNED, -- when referring to something not a requestoffer, e.g. group
   notes_id INT UNSIGNED -- some notes about the action, see audit_notes
 )
 
