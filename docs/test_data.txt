@@ -19,5 +19,19 @@ favor1: want someone to do my History homework for tomorrow.
 
 favor2: want someone to teach me some tricks for MineCraft
 
-user: 
+user: andrea
+pass: password
+favor1: Babysitting 2 boys 1 girl Saturday night 6pm
+
+user: shirley
+pass: password
+favor1: Babysitting 1 boy 2 girls Thursday night 5pm
+
+user: alexa
+pass: password
+favor1: Babysitting a boy Monday night 4pm
+
+user: beatrice
+pass: password
+favor1: Babysitting a girl Saturday night 2pm to 10pm
 
