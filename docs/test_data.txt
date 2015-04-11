@@ -7,6 +7,8 @@ location: 20675 Cutwater Place Sterling VA 20165
 favor2: Need someone to walk my dog.  She's a Yorkshire terrier, grey, and small - we need to head out immediately, ask the neighbor for the key.
 location: Washington and Old Dominion Railroad Trail, Ashburn, VA 20147
 
+favor3: Do you have the time to listen to me whine about nothing and everything all at once?  I am one of those melodramatic fools neurotic to the bone no doubt about it.
+
 user: erica
 pass: password
 current location: 21901 Dupont St. #8 Chatsworth, CA 91311
@@ -26,6 +28,8 @@ favor1: Babysitting 2 boys 1 girl Saturday night 6pm
 user: shirley
 pass: password
 favor1: Babysitting 1 boy 2 girls Thursday night 5pm
+favor2: need someone to pick up my dad from Dulles airport Friday night
+location: dulles airport, at 20166
 
 user: alexa
 pass: password
@@ -34,4 +38,28 @@ favor1: Babysitting a boy Monday night 4pm
 user: beatrice
 pass: password
 favor1: Babysitting a girl Saturday night 2pm to 10pm
+favor2: we'll be out of town, need someone to walk my dog a few times next couple days
 
+user: 杜甫
+pass: password
+favor1 (babysitting): 保姆女孩周六晚上2:00至晚上10点
+
+user: 海子
+pass: 回破山
+favor1 (miscellaneous):  希望有人能教我一些技巧的Minecraft
+
+user: 黄庭堅
+pass: 滑稽的脸
+favor1 (homework): 希望有人做我的功课历史的明天。
+
+user: 贾岛
+pass: password
+favor1 (taxi):  需要有人拿起从杜勒斯机场周五晚上我爸
+favor2 (misc): 有人教我生命的意义
+
+user: Jeanlucpiccard
+pass: password
+favor1 (taxi): Need to put my starship in the repair shop, and need a ride back to base
+
+favor2 (dog walk): can someone take Worf out for a walk on Thursday night, I'll be out.
+location: Paris 75008

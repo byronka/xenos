@@ -217,6 +217,11 @@ CREATE PROCEDURE get_others_requestoffers
 ) 
 BEGIN 
   DECLARE first_row, last_row INT;
+  DECLARE my_country_id, my_postal_code_id INT;
+
+  SELECT country_id, postal_code_id INTO my_country_id, my_postal_code_id
+  FROM user
+  WHERE user_id = ruid;
 
   -- set up paging.  Right now it's always 10 or less rows on the page.
   SET first_row = page * 10;
@@ -236,7 +241,7 @@ BEGIN
     r.category,
     pc.postal_code,
     pcd.details,
-    calc_approx_dist(r.country_id, r.postal_code_id, u.country_id, u.postal_code_id) AS distance
+    calc_approx_dist(r.country_id, r.postal_code_id, my_country_id, my_postal_code_id) AS distance
     FROM requestoffer r 
     JOIN requestoffer_state rs
       ON rs.requestoffer_id = r.requestoffer_id
@@ -329,7 +334,7 @@ BEGIN
     r.category,
     pc.postal_code,
     pcd.details,
-    calc_approx_dist(r.country_id, r.postal_code_id, u.country_id, u.postal_code_id) AS distance
+    calc_approx_dist(r.country_id, r.postal_code_id, my_country_id, my_postal_code_id) AS distance
     FROM requestoffer r 
     JOIN requestoffer_state rs
       ON rs.requestoffer_id = r.requestoffer_id
