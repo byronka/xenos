@@ -52,7 +52,7 @@ if (user_has_entered_postal_data) {
     // move to the next page - creating a requestoffer with this data.
     switch(usecase) {
       case 1: // create requestoffer
-        response.sendRedirect("enter_postcode.jsp");
+        response.sendRedirect(String.format("create_requestoffer.jsp?c=%d&p=%d",country_id, post_code_id));
         return;
       case 2: // set current location on user
       // fallthrough
@@ -76,12 +76,10 @@ if (user_has_entered_postal_data) {
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
-    <script type="text/javascript" src="static/js/utils.js"></script>
 		<title><%=loc.get(209,"Change current location")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
-  <img id='my_background' src="static/img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
   
   <div class="container">

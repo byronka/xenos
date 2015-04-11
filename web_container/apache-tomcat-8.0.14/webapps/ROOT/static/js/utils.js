@@ -11,7 +11,7 @@ xenos_utils.fade_in_background = function() {
 
       var do_the_fade = function() {
         var curr_opac = background.style.opacity;
-        curr_opac = Number(curr_opac) + 0.1;
+        curr_opac = Number(curr_opac) + 0.3;
         background.style.opacity = curr_opac;
         if (curr_opac < 1) { 
           setTimeout(do_the_fade,40);

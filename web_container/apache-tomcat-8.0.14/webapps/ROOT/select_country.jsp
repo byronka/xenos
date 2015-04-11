@@ -15,12 +15,10 @@
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
-    <script type="text/javascript" src="static/js/utils.js"></script>
 		<title><%=loc.get(209,"Change current location")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
-  <img id='my_background' src="static/img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
   
   <div class="container">

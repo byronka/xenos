@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="sorry.css" title="desktop">
 	</head>
 <body>
-  <img id='my_background' src="img/bouncer.jpg" onload="xenos_utils.fade_in_background()"/>
+  <img id='my_background' src="static/img/bouncer.jpg" onload="xenos_utils.fade_in_background()"/>
   <div class="trademark">Xenos</div>
   <nav class="cl-effect-1">
     <p><%=loc.get(68,"Your browser did not send us the proper credentials.")%></p>

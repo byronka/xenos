@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
-    <script type="text/javascript" src="static/js/utils.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
@@ -52,8 +51,12 @@
   <%@include file="includes/header.jsp" %>
   <div class="container">
   <p><%=loc.get(121,"If you would like to take this requestoffer, click the confirm button below")%></p>
-    <a class="button" href="handle.jsp?requestoffer=<%=r.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
-    <a class="button" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(130, "Cancel")%></a>
+  <div class="table">
+    <div class="row">
+        <a class="button" href="handle.jsp?requestoffer=<%=r.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
+        <a class="button" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(130, "Cancel")%></a>
+    </div>
+  </div>
   </div>
   <%@include file="includes/footer.jsp" %>
 </body>

@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
-    <script type="text/javascript" src="static/js/utils.js"></script>
 		<meta http-equiv="content-type" value="text/html; charset=UTF8" />
 	</head>
 
@@ -120,7 +119,6 @@ if (request.getMethod().equals("POST")) {
 %>
 
   <body>
-    <img id='my_background' src="static/img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
     <%@include file="includes/header.jsp" %>
     <%@include file="advanced_search_html.jsp" %>
     <%@include file="includes/footer.jsp" %>

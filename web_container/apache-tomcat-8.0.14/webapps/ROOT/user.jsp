@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
-    <script type="text/javascript" src="static/js/utils.js"></script>
     <title><%=loc.get(97,"My Profile")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
@@ -40,7 +39,6 @@
 
 %>
 	<body>
-  <img id='my_background' src="static/img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
 
   <div class="container">
@@ -55,11 +53,13 @@
             name="user_description" 
             maxlength="500"
             ><%=Utils.safe_render(User_utils.get_user_description(uid))%></textarea>
+          <div class="table">
           <div class="row">
             <button class="button" type="submit" >Save description</button>
             <a class="button" href="user.jsp?user_id=<%=uid%>" >
               Cancel
             </a>
+          </div>
           </div>
         </form>
 
