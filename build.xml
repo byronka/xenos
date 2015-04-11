@@ -77,6 +77,7 @@
     <antcall target="build-events" />
 		<antcall target="build-language-data" />
 		<antcall target="build-postal-code-data" />
+		<antcall target="build-countries-data" />
     <antcall target="tomcat-restart" />
   </target>
 
@@ -90,6 +91,7 @@
     <antcall target="build-events" />
 		<antcall target="build-language-data" />
 		<antcall target="build-postal-code-data" />
+		<antcall target="build-countries-data" />
   </target>
 
   <target name="clean-everything" depends="compile-schema-code"
