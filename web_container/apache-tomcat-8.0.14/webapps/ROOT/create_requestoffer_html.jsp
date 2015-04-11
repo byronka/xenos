@@ -1,6 +1,8 @@
 <div class="container">
 
     <form method="POST" action="create_requestoffer.jsp">	
+      <input type="hidden" name="country_id" id="country_id" value="<%=country_id%>">
+      <input type="hidden" name="postal_code_id" id="postal_code_id" value="<%=postal_code_id%>">
       <div class="table" id="basic-section">
         <div class="row">
 

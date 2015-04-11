@@ -422,6 +422,8 @@ CREATE PROCEDURE put_requestoffer
   ruid INT UNSIGNED, -- requestoffering user id
   pts INT, -- points
   cat INT, -- category - this cannot be empty or we'll SQLException.
+  coid INT, -- the country id - used to get location
+  poid INT, -- the postal code id - used to get location
   OUT new_requestoffer_id INT UNSIGNED
 ) 
 BEGIN 
@@ -436,9 +438,9 @@ BEGIN
   call validate_user_id(ruid);
   
   -- A) The main part - add the requestoffer to that table.
-  INSERT into requestoffer (description, datetime, points, category,
-   requestoffering_user_id)
-   VALUES (my_desc, UTC_TIMESTAMP(), pts, cat, ruid); 
+  INSERT into requestoffer (description, datetime, points, category, 
+    requestoffering_user_id, country_id, postal_code_id)
+   VALUES (my_desc, UTC_TIMESTAMP(), pts, cat, ruid, coid, poid); 
          
   SET new_requestoffer_id = LAST_INSERT_ID();
 

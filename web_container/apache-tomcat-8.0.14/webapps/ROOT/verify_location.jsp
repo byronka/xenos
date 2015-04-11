@@ -7,6 +7,8 @@ if (request.getMethod().equals("GET")) {
   return;
 }
 
+Integer usecase = Utils.parse_int(request.getParameter("usecase"));
+
 Integer country_id = Utils.parse_int(request.getParameter("country"));
 if (country_id == null || country_id < 0) {
   response.sendRedirect("select_country.jsp");
@@ -26,8 +28,18 @@ if (pads.length == 0) {
 } else if (pads.length == 1) {
   // there is only one place - we need nothing more from the user,
   // move to the next page - creating a requestoffer with this data.
-  response.sendRedirect("create_requestoffer.jsp");
-  return;
+  switch(usecase) {
+    case 1: // create requestoffer
+      response.sendRedirect(
+        String.format("create_requestoffer.jsp?c=%d&p=%d",country_id, pads[0].postcode_id));
+      return;
+    case 2: // set current location on user
+    // fallthrough
+    default:
+      response.sendRedirect(
+        String.format("change_current_location.jsp?c=%d&p=%d",country_id, pads[0].postcode_id));
+      return;
+  }
 
 } else {
   //there are 2 or more details to show the user.  Let them pick that

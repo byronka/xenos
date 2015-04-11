@@ -342,7 +342,7 @@ public final class Requestoffer_utils {
         int hu = resultSet.getInt("handling_user_id");
         int ca = resultSet.getInt("category");
         Requestoffer requestoffer = 
-          new Requestoffer(rid,dt,d,p,s,ru,hu,ca);
+          new Requestoffer(rid,dt,d,p,s,ru,hu,ca,"","");
         offers.add(requestoffer);
       }
 
@@ -539,10 +539,12 @@ public final class Requestoffer_utils {
     
     String sqlText = 
       "SELECT r.requestoffer_id, r.datetime, r.description, r.points,"+
-      "rs.status, r.requestoffering_user_id, r.handling_user_id, r.category "+
+      "rs.status, r.requestoffering_user_id, r.handling_user_id, r.category, pc.postal_code, pcd.details "+
       "FROM requestoffer r "+
       "JOIN requestoffer_state rs "+
         "ON rs.requestoffer_id = r.requestoffer_id " +
+      "LEFT JOIN postal_codes pc ON pc.postal_code_id = r.postal_code_id AND pc.country_id = r.country_id " +
+      "LEFT JOIN postal_code_details pcd ON pcd.postal_code_id = r.postal_code_id AND pcd.country_id = r.country_id " +
       "WHERE r.requestoffer_id = ? "+
       "GROUP BY requestoffer_id";
 
@@ -566,7 +568,9 @@ public final class Requestoffer_utils {
       int ru = resultSet.getInt("requestoffering_user_id");
       int hu = resultSet.getInt("handling_user_id");
       int ca = resultSet.getInt("category");
-      Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,ca);
+      String pc = resultSet.getString("postal_code");
+      String det = resultSet.getNString("details");
+      Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,ca,pc,det);
 
       return requestoffer;
     } catch (SQLException ex) {
@@ -758,19 +762,22 @@ public final class Requestoffer_utils {
         int rl = resultSet.getInt("rank_ladder");
         int offered_user_id = resultSet.getInt("been_offered");
         boolean has_been_offered = false;
+        if (offered_user_id > 0) {
+          has_been_offered = true;
+        }
         String po = resultSet.getString("postal_code");
         Double di = resultSet.getDouble("distance");
         if (resultSet.wasNull()) {
           di = null;
         }
-        String ci = resultSet.getNString("city");
-        if (offered_user_id > 0) {
-          has_been_offered = true;
+        String dtls = resultSet.getNString("details");
+        if (resultSet.wasNull()) {
+          dtls = null;
         }
 
         Others_Requestoffer requestoffer = 
           new Others_Requestoffer(
-              dt,d,s,ra,rl,p,rid,ru,hu,ca, has_been_offered,po,ci,di);
+              dt,d,s,ra,rl,p,rid,ru,hu,ca, has_been_offered,po,dtls,di);
         requestoffers.add(requestoffer);
       }
 
@@ -913,7 +920,7 @@ public final class Requestoffer_utils {
         int ru = resultSet.getInt("requestoffering_user_id");
         int hu = resultSet.getInt("handling_user_id");
         int ca = resultSet.getInt("category");
-        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,ca);
+        Requestoffer requestoffer = new Requestoffer(rid,dt,d,p,s,ru,hu,ca,"","");
         requestoffers.add(requestoffer);
       }
 
@@ -1220,11 +1227,13 @@ public final class Requestoffer_utils {
     * @param user_id the user's id
     * @param desc a description string, the core of the requestoffer
     * @param category the category for this requestoffer, 
+    * @param coid country id - may be null, used with postal code id to get location
+    * @param poid postal code id - may be null, used with country id to get location
     * @return an id result with an enum, OK if ok, DATA_TOO_LARGE if the 
     *  description is too big.  If not OK, id is -1.
     */
   public static Put_requestoffer_result put_requestoffer(
-      int user_id, String desc, int category) {
+      int user_id, String desc, int category, Integer coid, Integer poid) {
 
     int new_requestoffer_id = -1; //need it here to be outside the "try".
     CallableStatement cs = null;
@@ -1233,14 +1242,24 @@ public final class Requestoffer_utils {
       // see db_scripts/v1_procedures.sql put_requestoffer for
       // details on this stored procedure.
       
-      cs = conn.prepareCall("{call put_requestoffer(?,?,?,?,?)}");
+      cs = conn.prepareCall("{call put_requestoffer(?,?,?,?,?,?,?)}");
       cs.setNString(1, desc);
       cs.setInt(2, user_id);
       cs.setInt(3, 1); //we make all requestoffers 1 point for now
       cs.setInt(4, category); 
-      cs.registerOutParameter(5, java.sql.Types.INTEGER);
+      if (coid != null) {
+        cs.setInt(5, coid);
+      } else {
+        cs.setNull(5, java.sql.Types.INTEGER);
+      }
+      if (poid != null) {
+        cs.setInt(6, poid);
+      } else {
+        cs.setNull(6, java.sql.Types.INTEGER);
+      }
+      cs.registerOutParameter(7, java.sql.Types.INTEGER);
       cs.executeQuery();
-      new_requestoffer_id = cs.getInt(5);
+      new_requestoffer_id = cs.getInt(7);
     } catch (SQLException ex) {
       String msg = ex.getMessage();
 			if (msg.contains("Data too long")) {

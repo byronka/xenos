@@ -7,6 +7,8 @@ if (request.getMethod().equals("GET")) {
   return;
 }
 
+Integer usecase = Utils.parse_int(request.getParameter("usecase"));
+
 Integer country_id = Utils.parse_int(request.getParameter("country"));
 if (country_id == null || country_id < 0) {
   response.sendRedirect("select_country.jsp");
@@ -34,6 +36,7 @@ if (country_id == null || country_id < 0) {
     <h3><%=loc.get(157, "Country")%>:</h3>
       <form method="POST" action="verify_location.jsp">
         <input type="hidden" name="country" value="<%=country_id%>">
+        <input type="hidden" name="usecase" value="<%=usecase%>">
         <div class="table">
           <div class="row">
             <label for="postcode"><%=loc.get(156,"Postal code")%></label>

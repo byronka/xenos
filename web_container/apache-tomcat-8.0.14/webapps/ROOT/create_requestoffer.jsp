@@ -16,7 +16,12 @@
 
   <% 
 
+  Integer country_id = null;
+  Integer postal_code_id = null;
+
   String qs = request.getQueryString();
+  country_id = Utils.parse_int(Utils.parse_qs(qs).get("c"));
+  postal_code_id = Utils.parse_int(Utils.parse_qs(qs).get("p"));
 
   request.setCharacterEncoding("UTF-8");
     //get the values straight from the client
@@ -26,19 +31,15 @@
     boolean has_size_error = false;
     boolean has_cat_error = false;
 
-    //location values
-    Integer postal_code_id      = null;
-    Integer country_id          = null;
-
     if (request.getMethod().equals("POST")) {
 
     //get values so if they are in validation mode they don't lose info.
 
       postal_code_id = 
-        Utils.parse_int(request.getParameter("postal"));
+        Utils.parse_int(request.getParameter("postal_code_id"));
 
       country_id = 
-        Utils.parse_int(request.getParameter("country"));
+        Utils.parse_int(request.getParameter("country_id"));
 
 
       boolean validation_error = false;
@@ -57,8 +58,8 @@
         int new_ro_id = 0;
 
         //try adding the new requestoffer - if failed, go to error page
-        if ((prr = Requestoffer_utils.put_requestoffer(
-          logged_in_user_id, de, selected_cat)).pe == Requestoffer_utils.Pro_enum.GENERAL_ERROR) {
+        prr = Requestoffer_utils.put_requestoffer(logged_in_user_id, de, selected_cat, country_id, postal_code_id);
+        if (prr.pe == Requestoffer_utils.Pro_enum.GENERAL_ERROR) {
           response.sendRedirect("general_error.jsp");
           return;
         }

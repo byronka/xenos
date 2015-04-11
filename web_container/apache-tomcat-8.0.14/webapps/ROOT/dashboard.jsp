@@ -180,6 +180,12 @@
       <%=loc.get(8,"Your groups")%>
     </a>
   </p>
+  <p>
+    <a class="button" href="create_requestoffer.jsp"><%=loc.get(2,"Request Favor")%></a>
+  </p>
+  <p>
+    <a class="button" href="select_country.jsp?usecase=1"><%=loc.get(14,"Request favor with location")%></a>
+  </p>
   <%
    Group_utils.Invite_info[] iis = Group_utils.get_invites_for_user(logged_in_user_id);
   %>
@@ -466,28 +472,8 @@
     </div>
 <% // MY PROFILE ENDS %>
 
-<% // CREATE REQUESTOFFER STARTS %>
-
-<div id="create-requestoffer-container">
-
-  <%
-  // have to initialize these for use in create_requestoffer_html 
-  String de = "";
-  Integer selected_cat = null;
-  boolean has_cat_error = false;
-  boolean has_desc_error = false;
-  boolean has_size_error = false;
-
-  %>
-  <div>
-      <h3><%=loc.get(2,"Request Favor")%></h3>
-  </div>
-
-  <%@include file="create_requestoffer_html.jsp" %>	
 </div>
 
-<% // CREATE REQUESTOFFER ENDS %>
-</div>
 <% // ADVANCED SEARCH STARTS %>
 
 <div id="search-section">

@@ -96,6 +96,12 @@
           </a>
         </span>
       </div>
+      <%if((is_requestoffering_user || is_handling_user) && (!Utils.is_null_or_empty(r.postcode) || !Utils.is_null_or_empty(r.details)) ) {%>
+        <div class="row">
+          <label for="location"><%=loc.get(15,"Location details")%>: </label>
+          <span id="location"><%=r.details%> <%=r.postcode%></span>
+        </div>
+      <%}%>
       <div class="row">
         <label for=handling_span"><%=loc.get(101,"Handling User")%>: </label>
         <span id="handling_span">

@@ -3,6 +3,9 @@
 <%@ page import="com.renomad.xenos.User_location" %>
 <%
 
+  String thequerystring = request.getQueryString();
+  java.util.Map<String,String> params = Utils.parse_qs(thequerystring);
+  Integer usecase = Utils.parse_int(params.get("usecase"));
 
 %>
 <!DOCTYPE html>
@@ -24,6 +27,7 @@
 
     <h3><%=loc.get(157, "Country")%>:</h3>
       <form method="POST" action="enter_postcode.jsp">
+      <input type="hidden" name="usecase" id="usecase" value="<%=usecase%>">
       <div class="table">
         <div class="row">
           <%

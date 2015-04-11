@@ -17,6 +17,8 @@ public class Requestoffer {
   public final int status;
   public final int requestoffering_user_id;
   public final int handling_user_id;
+  public final String details;
+  public final String postcode;
   public final int category;
 
   /**
@@ -25,17 +27,16 @@ public class Requestoffer {
     * have the requestoffer id yet.
     */
   public Requestoffer ( String datetime, String description, 
-      int points, int status, 
-      int requestoffering_user_id, 
-      int handling_user_id, int category) {
+      int points, int status, int requestoffering_user_id, 
+      int handling_user_id, int category, String postcode, String details) {
     this(-1, datetime, description, points,
-        status, requestoffering_user_id, handling_user_id, category);
+        status, requestoffering_user_id, handling_user_id, category, postcode, details);
   }
 
   public Requestoffer ( int requestoffer_id, String datetime, 
       String description, int points, int status, 
       int requestoffering_user_id, int handling_user_id,
-      int category) {
+      int category, String postcode, String details) {
     this.requestoffer_id       =  requestoffer_id;
     this.datetime         =  datetime;
     this.description      =  description;
@@ -44,6 +45,8 @@ public class Requestoffer {
     this.requestoffering_user_id  =  requestoffering_user_id;
     this.handling_user_id  =  handling_user_id;
     this.category       =  category;
+    this.postcode       =  postcode;
+    this.details       =  details;
   }
 
 }
