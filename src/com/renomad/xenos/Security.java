@@ -218,7 +218,7 @@ public final class Security {
       return -1;
     }
     String cookie_value = c.getValue();
-    String ip_address = r.getRemoteAddr();
+    String ip_address = Utils.get_remote_address(r);
 
     CallableStatement cs = null;
     try {
