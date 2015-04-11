@@ -36,8 +36,8 @@ if (pads.length == 0) {
     case 2: // set current location on user
     // fallthrough
     default:
-      response.sendRedirect(
-        String.format("change_current_location.jsp?c=%d&p=%d",country_id, pads[0].postcode_id));
+      User_utils.edit_user_current_location(logged_in_user_id, country_id, pads[0].postcode_id);
+      response.sendRedirect("dashboard.jsp");
       return;
   }
 

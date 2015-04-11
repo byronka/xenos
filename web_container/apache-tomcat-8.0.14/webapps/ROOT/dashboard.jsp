@@ -163,8 +163,8 @@
     </h3>
   </div>
     <div>
-       <a class="button" href="change_current_location.jsp" >
-         <%=loc.get(7, "Current location")%>: 
+      <a class="button" href="select_country.jsp?usecase=2">
+        <%=loc.get(7,"Current location")%>
       <%
       String user_postcode = 
         Utils.is_null_or_empty(logged_in_user.postal_code) ? "none" : logged_in_user.postal_code; %>

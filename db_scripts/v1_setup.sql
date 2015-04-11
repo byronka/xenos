@@ -315,7 +315,7 @@ VALUES
 
 -- misc - 400s
 
-(401,'EMPTY401'),
+(401,'User1 changed location. requestoffer is new country_id, extra is new postal code id'),
 (402,'EMPTY402'),
 (403,'EMPTY403'),
 (404,'EMPTY404'),

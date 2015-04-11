@@ -26,6 +26,41 @@ public final class User_utils {
   /**
     * sets a description that will be publicly viewable
     * for the user.
+    * @param coid the country id
+    * @param poid the postal code id - the code in our database, *not* the actual postal code
+    * @return true if successful, false otherwise
+    */
+  public static boolean edit_user_current_location(
+      int user_id, Integer coid, Integer poid) {
+    CallableStatement cs = null;
+    try {
+      Connection conn = Database_access.get_a_connection();
+      cs = conn.prepareCall("{call edit_user_current_location(?,?,?)}");
+      cs.setInt(1,user_id);
+      if (coid != null) {
+        cs.setInt(2, coid);
+      } else {
+        cs.setNull(2, java.sql.Types.INTEGER);
+      }
+      if (poid != null) {
+        cs.setInt(3, poid);
+      } else {
+        cs.setNull(3, java.sql.Types.INTEGER);
+      }
+      cs.execute();
+      return true;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_statement(cs);
+    }
+  }
+
+
+  /**
+    * sets a description that will be publicly viewable
+    * for the user.
     * @return true if successful, false otherwise
     */
   public static boolean edit_description(
