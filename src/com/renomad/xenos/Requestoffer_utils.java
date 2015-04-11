@@ -815,7 +815,7 @@ public final class Requestoffer_utils {
     * @return an array of Requestoffers handled by that user., or empty array otherwise
     */
   public static Others_Requestoffer[] 
-      get_requestoffers_I_am_handling(int user_id, String postcode) {
+      get_requestoffers_I_am_handling(int user_id) {
     String sqlText = 
       
       "SELECT "+

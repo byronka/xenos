@@ -349,15 +349,13 @@ public final class User_utils {
       "SELECT COUNT(urdp.judged_user_id) AS urdp_count,"+
       "u.username,u.points,  " +
       "u.timeout_seconds, u.rank_average, u.rank_ladder, "+
-      "pc.postal_code, u.current_location  " +
+      "pc.postal_code, u.postal_code_id, u.country_id  " +
       "FROM user u  " +
       "LEFT JOIN user_rank_data_point urdp  " +
       "  ON urdp.judged_user_id = u.user_id "+
         "AND urdp.is_inside_window = 1 " +
-      "LEFT JOIN location loc  " +
-      "  ON loc.location_id = u.current_location " +
-      "LEFT JOIN postal_codes pc ON pc.postal_code_id = loc.postal_code_id "+
-        "AND pc.country_id = loc.country_id " +
+      "LEFT JOIN postal_codes pc ON pc.postal_code_id = u.postal_code_id "+
+        "AND pc.country_id = u.country_id " +
       "WHERE u.user_id = ?  " +
       "GROUP BY urdp.judged_user_id ";
 
@@ -379,15 +377,21 @@ public final class User_utils {
       float rank_av = resultSet.getFloat("rank_average");
       int rank_ladder = resultSet.getInt("rank_ladder");
       int urdp_count = resultSet.getInt("urdp_count");
-      Integer current_location = resultSet.getInt("current_location");
+      Integer postal_code_id = resultSet.getInt("postal_code_id");
       if (resultSet.wasNull()) {
-        current_location = null;
+        postal_code_id = null;
+      }
+      Integer country_id = resultSet.getInt("country_id");
+      if (resultSet.wasNull()) {
+        country_id = null;
       }
       String postal_code = resultSet.getString("postal_code");
       if (resultSet.wasNull()) {
         postal_code = "";
       }
-      return new User(username, "", points, timeout_seconds, rank_av, rank_ladder, urdp_count, current_location, postal_code);
+      return new User(username, "", points, 
+          timeout_seconds, rank_av, rank_ladder, 
+          urdp_count, postal_code_id, country_id, postal_code);
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return null;

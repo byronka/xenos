@@ -188,7 +188,7 @@ BEGIN
         my_user1_id,          -- the user causing the action
         my_user2_id,          -- the user causing the action
         my_requestoffer_id,        -- the thing being acted upon
-        my_extra_id,              -- extra id's, for example, locations
+        my_extra_id,              -- extra id's, for example, groups
         the_audit_notes_id); -- notes about the action ,like during requestoffer delete
   END IF;
 
@@ -216,17 +216,7 @@ CREATE PROCEDURE get_others_requestoffers
 	OUT total_pages INT UNSIGNED
 ) 
 BEGIN 
-  DECLARE user_postal_code VARCHAR(30);
-  DECLARE user_country_id INT;
   DECLARE first_row, last_row INT;
-
-  -- get current user's postal code if they have one
-  -- we'll use this to get distances per requestoffer
-  SELECT pc.postal_code, loc.country_id INTO user_postal_code, user_country_id
-  FROM location loc
-  JOIN user u ON u.current_location = loc.location_id
-  JOIN postal_codes pc ON pc.postal_code_id = loc.postal_code_id
-  WHERE u.user_id = ruid;
 
   -- set up paging.  Right now it's always 10 or less rows on the page.
   SET first_row = page * 10;
@@ -246,24 +236,20 @@ BEGIN
     r.category,
     pc.postal_code,
     pcd.details,
-    calc_approx_dist(pc.country_id, pc.postal_code, user_country_id, user_postal_code) AS distance
+    calc_approx_dist(r.country_id, r.postal_code_id, u.country_id, u.postal_code_id) AS distance
     FROM requestoffer r 
     JOIN requestoffer_state rs
       ON rs.requestoffer_id = r.requestoffer_id
     JOIN user u ON u.user_id = r.requestoffering_user_id 
     LEFT JOIN requestoffer_service_request rsr
       ON r.requestoffer_id = rsr.requestoffer_id 
-    AND rsr.user_id = ruid AND rsr.status = 106 -- 106 is "NEW"
-    LEFT JOIN location_to_requestoffer ltr
-      ON r.requestoffer_id = ltr.requestoffer_id
-    LEFT JOIN location l
-      ON l.location_id = ltr.location_id
+        AND rsr.user_id = ruid AND rsr.status = 106 -- 106 is "NEW"
     LEFT JOIN postal_codes pc
-      ON pc.postal_code_id = l.postal_code_id 
-        AND pc.country_id = l.country_id
+      ON pc.postal_code_id = r.postal_code_id 
+        AND pc.country_id = r.country_id
     LEFT JOIN postal_code_details pcd
-      ON pcd.postal_code_id = l.postal_code_id 
-        AND pcd.country_id = l.country_id
+      ON pcd.postal_code_id = r.postal_code_id 
+        AND pcd.country_id = r.country_id
     WHERE rs.status = 109 AND r.requestoffering_user_id = ruid
 
     AND
@@ -343,7 +329,7 @@ BEGIN
     r.category,
     pc.postal_code,
     pcd.details,
-    calc_approx_dist(pc.country_id, pc.postal_code, user_country_id, user_postal_code) AS distance
+    calc_approx_dist(r.country_id, r.postal_code_id, u.country_id, u.postal_code_id) AS distance
     FROM requestoffer r 
     JOIN requestoffer_state rs
       ON rs.requestoffer_id = r.requestoffer_id
@@ -351,16 +337,12 @@ BEGIN
     LEFT JOIN requestoffer_service_request rsr
       ON r.requestoffer_id = rsr.requestoffer_id 
     AND rsr.user_id = ruid AND rsr.status = 106 -- 106 is "NEW"
-    LEFT JOIN location_to_requestoffer ltr
-      ON r.requestoffer_id = ltr.requestoffer_id
-    LEFT JOIN location l
-      ON l.location_id = ltr.location_id
     LEFT JOIN postal_codes pc
-      ON pc.postal_code_id = l.postal_code_id 
-        AND pc.country_id = l.country_id
+      ON pc.postal_code_id = r.postal_code_id 
+        AND pc.country_id = r.country_id
     LEFT JOIN postal_code_details pcd
-      ON pcd.postal_code_id = l.postal_code_id 
-        AND pcd.country_id = l.country_id
+      ON pcd.postal_code_id = r.postal_code_id 
+        AND pcd.country_id = r.country_id
     WHERE rs.status <> 109
 
     AND
@@ -1078,7 +1060,7 @@ BEGIN
         ,SUBSTR(IFNULL(p_phrase,''), 1, 4)
         , '...'
         ,'Ip: '
-        ,ip_address
+        ,IFNULL(ip_address,'warning: no ip address given')
       );
       CALL add_audit(107,NULL,NULL,NULL,NULL,msg);
       SIGNAL SQLSTATE '45000' SET message_text = msg;
@@ -1402,128 +1384,6 @@ BEGIN
 
 END
 
----DELIMITER---
-
-DROP PROCEDURE IF EXISTS put_user_location;   
-
----DELIMITER---
-
-CREATE PROCEDURE put_user_location
-(
-  uid INT UNSIGNED, -- if this is > 0, user wants it saved for themselves
-  rid INT UNSIGNED, -- if this > 0, it accompanies a requestoffer
-  addr1 NVARCHAR(255),
-  addr2 NVARCHAR(255),
-  my_city NVARCHAR(255),
-  my_state NVARCHAR(255),
-  my_postcode VARCHAR(30), -- most important value - see http://en.wikipedia.org/wiki/Postal_code for more info!
-  my_country NVARCHAR(255),
-  OUT new_location_id INT UNSIGNED
-) 
-BEGIN 
-
-  INSERT INTO location 
-    (address_line_1, address_line_2, city, state, postal_code, country)
-  VALUES
-    (addr1, addr2, my_city, my_state, my_postcode, my_country);
-
-  SET new_location_id = LAST_INSERT_ID();
-
-  -- audit: we just created a new location
-  CALL add_audit(401, uid, NULL,NULL,new_location_id, NULL);
-
-  -- link it to a user, if they asked to save it
-  IF uid > 0 THEN
-    CALL validate_user_id(uid); -- it's a valid user, right?
-    INSERT INTO location_to_user (location_id, user_id)
-    VALUES (new_location_id, uid);
-
-    -- audit that we connected a location to a user
-    CALL add_audit(403, uid, NULL, NULL, new_location_id, NULL);
-  END IF;
-
-  -- link it to a requestoffer, if that's the situation
-  IF rid > 0 THEN
-    CALL validate_requestoffer_id(rid); -- valid requestoffer, right?
-    INSERT INTO location_to_requestoffer (location_id, requestoffer_id)
-    VALUES (new_location_id, rid);
-
-    -- audit that we connected a location to a requestoffer
-    CALL add_audit(402, NULL, NULL, rid, new_location_id, NULL);
-  END IF;
-
-END
-
----DELIMITER---
-
-DROP PROCEDURE IF EXISTS assign_location_to_current;   
-
----DELIMITER---
-
--- assign a particular location as a user's current location
-
-CREATE PROCEDURE assign_location_to_current
-(
-  lid INT UNSIGNED, -- the location id
-  uid INT UNSIGNED -- the user id that will have this location as their current location
-) 
-BEGIN 
-  DECLARE lid_count INT;
-  DECLARE msg VARCHAR(120);
-
-  SELECT COUNT(*) INTO lid_count
-  FROM location
-  WHERE location_id = lid;
-
-  IF (lid_count <> 1) THEN
-      SET msg = CONCAT(
-        'location_id ',lid,' does not exist in the location table');
-      SIGNAL SQLSTATE '45000' 
-      SET message_text = msg;
-  END IF;
-
-  UPDATE user
-  SET current_location = lid
-  WHERE user_id = uid;
-
-  -- audit: we just set a location as the user's current location
-  CALL add_audit(405, uid,uid, NULL,lid, NULL);
-
-END
----DELIMITER---
-
-DROP PROCEDURE IF EXISTS assign_location_to_requestoffer;   
-
----DELIMITER---
-
-CREATE PROCEDURE assign_location_to_requestoffer
-(
-  lid INT UNSIGNED, -- the location id
-  rid INT UNSIGNED -- the requestoffer id
-) 
-BEGIN 
-  DECLARE lid_count INT;
-  DECLARE msg VARCHAR(120);
-
-  SELECT COUNT(*) INTO lid_count
-  FROM location
-  WHERE location_id = lid;
-
-  IF (lid_count <> 1) THEN
-      SET msg = CONCAT(
-        'location_id ',lid,' does not exist in the location table');
-      SIGNAL SQLSTATE '45000' 
-      SET message_text = msg;
-  END IF;
-
-  CALL validate_requestoffer_id(rid); -- valid requestoffer, right?
-  INSERT INTO location_to_requestoffer (location_id, requestoffer_id)
-  VALUES (lid, rid);
-
-  -- audit: we just attached a location to a requestoffer. 
-  CALL add_audit(402, NULL,NULL, rid,NULL, NULL);
-
-END
 
 ---DELIMITER---
 

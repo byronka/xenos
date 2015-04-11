@@ -22,8 +22,7 @@
 <body>
   <img alt="background" 
     id='my_background' 
-    src="img/galaxy_universe-normal.jpg" 
-    onload="xenos_utils.fade_in_background()"/>
+    src="img/galaxy_universe-normal.jpg" />
   <%@include file="includes/header.jsp" %>
 
   <div id="overall-container">
@@ -59,7 +58,7 @@
       String srch_desc = params.get("desc"); // description
       String srch_us = params.get("us"); //users
       String srch_sta = params.get("sta"); //status
-      String srch_postcode = params.get("postcode"); //postcode
+      String srch_postcode = params.get("postcode"); //postal code id
       String srch_distance = params.get("distance"); 
 
       Integer which_page = Utils.parse_int(params.get("page"));
@@ -168,7 +167,7 @@
          <%=loc.get(7, "Current location")%>: 
       <%
       String user_postcode = 
-        Utils.is_null_or_empty(logged_in_user.postcode) ? "none" : logged_in_user.postcode; %>
+        Utils.is_null_or_empty(logged_in_user.postal_code) ? "none" : logged_in_user.postal_code; %>
       <%=Utils.safe_render(user_postcode)%></a>
     </div>
   <p>
@@ -307,7 +306,7 @@
 
 		<%
 			Others_Requestoffer[] handling_requestoffers = 
-				Requestoffer_utils.get_requestoffers_I_am_handling(logged_in_user_id,logged_in_user.postcode);
+				Requestoffer_utils.get_requestoffers_I_am_handling(logged_in_user_id);
     %>
 
     <%if (handling_requestoffers.length != 0) {%>
