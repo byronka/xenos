@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script type="text/javascript" src="includes/utils.js"></script>
+    <script type="text/javascript" src="static/js/utils.js"></script>
 		<title><%=loc.get(69,"Thanks for registering!")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="thanks.css" title="desktop">

@@ -16,13 +16,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script type="text/javascript" src="includes/utils.js"></script>
+  <script type="text/javascript" src="static/js/utils.js"></script>
   <title><%=loc.get(44,"Welcome to Zenia!")%></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="index.css" title="desktop">
+  <link rel="stylesheet" href="static/css/index.css" title="desktop">
 </head>
 <body>
-  <img id='my_background' src="img/cool.jpg" onload="xenos_utils.fade_in_background()"/>
+  <img id='my_background' src="static/img/cool.jpg" onload="xenos_utils.fade_in_background()"/>
 	<div class="trademark cl-effect-1"><a href="index.jsp">Zenia</a></div>
   <div class="actions">
     <section>

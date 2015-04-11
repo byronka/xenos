@@ -10,11 +10,11 @@
 
 <html>                                 
   <head>
-    <link rel="stylesheet" href="includes/reset.css">
-    <link rel="stylesheet" href="dashboard.css" >
-    <link rel="stylesheet" href="includes/header.css" >
-    <link rel="stylesheet" href="includes/footer.css">
-    <script type="text/javascript" src="includes/utils.js"></script>
+    <link rel="stylesheet" href="static/css/reset.css">
+    <link rel="stylesheet" href="static/css/dashboard.css" >
+    <link rel="stylesheet" href="static/css/header.css" >
+    <link rel="stylesheet" href="static/css/footer.css">
+    <script type="text/javascript" src="static/js/utils.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=loc.get(16,"The dashboard")%></title>
   </head>
@@ -22,7 +22,7 @@
 <body>
   <img alt="background" 
     id='my_background' 
-    src="img/galaxy_universe-normal.jpg" />
+    src="static/img/galaxy_universe-normal.jpg" />
   <%@include file="includes/header.jsp" %>
 
   <div id="overall-container">

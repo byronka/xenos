@@ -50,7 +50,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <script type="text/javascript" src="includes/utils.js"></script>
+  <script type="text/javascript" src="static/js/utils.js"></script>
   <title><%=loc.get(202,"Check invite code")%></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="register.css" title="desktop">

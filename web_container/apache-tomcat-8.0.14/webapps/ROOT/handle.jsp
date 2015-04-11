@@ -3,10 +3,10 @@
 <html>
 	<head>
 		<title><%=loc.get(94,"Handle requestoffer")%></title>
-    <link rel="stylesheet" href="includes/header.css" >
-    <link rel="stylesheet" href="includes/footer.css" >
-    <link rel="stylesheet" href="small_dialog.css" >
-    <script type="text/javascript" src="includes/utils.js"></script>
+    <link rel="stylesheet" href="static/css/header.css" >
+    <link rel="stylesheet" href="static/css/footer.css" >
+    <link rel="stylesheet" href="static/css/small_dialog.css" >
+    <script type="text/javascript" src="static/js/utils.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
@@ -48,7 +48,7 @@
 
 %>
 <body>
-  <img id='my_background' src="img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
+  <img id='my_background' src="static/img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
   <div class="container">
   <p><%=loc.get(121,"If you would like to take this requestoffer, click the confirm button below")%></p>
