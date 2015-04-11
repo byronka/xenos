@@ -25,14 +25,23 @@
     <h3><%=loc.get(183, "Favor created")%></h3>
     <p>
       <%=loc.get(184,"You have created a favor.  Right now, it is in draft mode, unviewable by other users. You may")%>
-      <a class="button" href="publish_requestoffer.jsp?requestoffer=<%=requestoffer_id%>">
-        <%=loc.get(6,"Publish")%>
-      </a>
+
+      <div class="table">
+        <div class="row">
+          <a class="button" href="publish_requestoffer.jsp?requestoffer=<%=requestoffer_id%>">
+            <%=loc.get(6,"Publish")%>
+          </a>
+        </div>
+      </div>
       <%=loc.get(185,"it now if you wish.  Until you publish, it will remain hidden.")%>
 
     </p>
-    <p><a class="button" href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a>
-    <a class="button" href="requestoffer.jsp?requestoffer=<%=requestoffer_id%>">View the new favor</a></p>
+    <div class="table">
+      <div class="row">
+        <a class="button" href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a>
+        <a class="button" href="requestoffer.jsp?requestoffer=<%=requestoffer_id%>">View the new favor</a>
+      </div>
+    </div>
   </div>
   <%@include file="includes/footer.jsp" %>
 </body>

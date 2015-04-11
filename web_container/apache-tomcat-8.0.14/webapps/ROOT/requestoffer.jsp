@@ -126,6 +126,8 @@
       </div>
     </div>
 
+    <div class="table">
+      <div class="row">
       <% if (r.status == 109) { %>
         <a class="button" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
           <%=loc.get(21,"Delete")%>
@@ -164,6 +166,8 @@
           </a>
 
         <%}%>
+      </div>
+      </div>
 
 
          <% String[] messages = 
