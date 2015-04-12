@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
-    <script type="text/javascript" src="static/js/utils.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
@@ -60,7 +59,6 @@
 
 %>
 <body>
-  <img id='my_background' src="static/img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
   <div class="container">
     <div class="table">
@@ -68,12 +66,14 @@
         <%=loc.get(140,"Confirm that you would like the following user to handle this request.")%>
       </h3>
       <div class="table">
-        <div class="form-row">
-          <label>Name:</label>
-          <span><%=Utils.safe_render(potential_handler.username)%></span>
+        <div class="row">
+          <label><%=loc.get(51,"Username")%>:</label>
+          <a href="user.jsp?user_id=<%=huid%>">
+            <%=Utils.safe_render(potential_handler.username)%>
+          </a>
         </div>
         <%if (potential_handler.urdp_count >= 30) {%>
-          <div class="form-row">
+          <div class="row">
             <label><%=loc.get(18,"Rank average")%>:</label>
             <span><%=potential_handler.rank_av%></span>
           </div>
@@ -81,13 +81,17 @@
 
         <%int l_step = Requestoffer_utils.get_ladder_step(potential_handler.rank_ladder);%>
 
-        <div class="form-row">
+        <div class="row">
           <label><%=loc.get(19,"Rank ladder")%>:</label>
           <span><%=Utils.get_stars(l_step)%></span>
         </div>
-        <a class="button" href="choose_handler.jsp?requestoffer=<%=r.requestoffer_id%>&user=<%=huid%>&confirm=true">
-            <%=loc.get(95, "Confirm")%> 
-          </a>
+        <div class="table">
+          <div class="row">
+          <a class="button" href="choose_handler.jsp?requestoffer=<%=r.requestoffer_id%>&user=<%=huid%>&confirm=true">
+              <%=loc.get(95, "Confirm")%> 
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
