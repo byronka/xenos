@@ -13,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 <%
+  request.setCharacterEncoding("UTF-8");
   if (request.getMethod().equals("POST")) {
     String the_user_desc = Utils.get_string_no_null(request.getParameter("user_description"));
     if (!User_utils.edit_description(logged_in_user_id, the_user_desc)) {

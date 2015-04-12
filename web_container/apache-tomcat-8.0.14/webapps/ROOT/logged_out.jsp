@@ -10,10 +10,10 @@
   <script type="text/javascript" src="static/js/utils.js"></script>
   <title><%=loc.get(65,"Logged out")%></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="logged_out.css" title="desktop">
+  <link rel="stylesheet" href="static/css/logged_out.css" title="desktop">
 </head>
 <body>
-  <img id='my_background' src="img/sad.jpg" onload="xenos_utils.fade_in_background()"/>
+  <img id='my_background' src="static/img/sad.jpg" onload="xenos_utils.fade_in_background()"/>
   <div class="trademark">Xenos</div>
   <nav class="cl-effect-1">
     <p><%=loc.get(66,"You have successfully logged out")%></p>

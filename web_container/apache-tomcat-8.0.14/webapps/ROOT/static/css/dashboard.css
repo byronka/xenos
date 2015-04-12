@@ -266,20 +266,18 @@ span.error {
   }
 
   .table {
-    display: table;
     border-spacing: 8px 8px;
-    width: 100%;
   }
 
-  .table div.row {
+  div.row {
     display: table-row;
   }
 
-  .table div.row label{
+  div.row label{
     display: table-cell;
   }
 
-  .table span {
+  div.row span {
     display: table-cell;
   }
 

@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 <%
+  request.setCharacterEncoding("UTF-8");
 
 
   boolean username_validation_error = false;
