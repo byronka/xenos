@@ -56,9 +56,9 @@
             ><%=Utils.safe_render(User_utils.get_user_description(uid))%></textarea>
           <div class="table">
           <div class="row">
-            <button class="button" type="submit" >Save description</button>
+            <button class="button" type="submit" ><%=loc.get(72,"Save description")%></button>
             <a class="button" href="user.jsp?user_id=<%=uid%>" >
-              Cancel
+              <%=loc.get(130,"Cancel")%>
             </a>
           </div>
           </div>
@@ -77,7 +77,7 @@
             <a 
               class="button" 
               href="user.jsp?user_id=<%=uid%>&amp;edit_desc=true">
-                Edit description
+                <%=loc.get(84,"Edit description")%>
             </a>
           </div>
 
