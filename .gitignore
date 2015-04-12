@@ -27,3 +27,9 @@ tags
 #you to run ant compile, then in manager just reload the app and you'll
 #immediately get the new code running.
 web_container/apache-tomcat-8.0.14/conf/tomcat-users.xml
+
+#server xml is the file that holds configuration for the server.  It
+#should not be in source control since the production server will have
+#this tailored to its needs.  Look to server.xml.README in the same 
+#directory for a sample to use for your own server.xml
+web_container/apache-tomcat-8.0.14/conf/server.xml
