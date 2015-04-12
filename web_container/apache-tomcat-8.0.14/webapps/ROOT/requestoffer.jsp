@@ -218,6 +218,7 @@
               <% } %>
             <% } %>
 
+            <div class="table">
             <div class="row">
               <label for="message">
                 <%=String.format(loc.get(38,"Message (up to %d characters)"), 200)%>
@@ -225,15 +226,19 @@
 
               <textarea id="message" name="message" maxlength="200" ></textarea>
 
-            </div>
 
-            <button class="button" type="submit"><%=loc.get(36,"Send message")%></button>
+            <button class="button" type="submit">
+              <%=loc.get(36,"Send message")%>
+            </button>
+            </div>
+            </div>
 
           </form>
 
         <% } %>
         <div>
-          <% if ( r.status == 78 && (is_requestoffering_user || is_handling_user)) { %> 
+          <% if ( r.status == 78 && 
+            (is_requestoffering_user || is_handling_user)) { %> 
             <a class="button" href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>" >
               <%=loc.get(130,"Cancel")%>
             </a>
