@@ -71,6 +71,7 @@
       <% } %>
       <p>
 
+      <div class="table">
       <% if (uid == logged_in_user_id && !edit_desc ) { %>
 
           <div class="row">
@@ -128,6 +129,7 @@
           </label>
         </div>
       <% } %>
+    </div>
 
     <%
       Requestoffer_utils.Rank_detail[] rank_details = 

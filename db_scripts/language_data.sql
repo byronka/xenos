@@ -32,7 +32,7 @@ VALUES
   (24,  1,  'Status'),
   (25,  1,  'Date'),
   (26,  1,  'You are a member of these groups'),
-  (27,  1,  'owe people %d favors'),
+  (27,  1,  'owes people %d favors'),
   (28,  1,  'Categories'),
   (29,  1,  'Yes, delete!'),
   (30,  1,  'Nevermind, do not delete it'),

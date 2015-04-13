@@ -59,8 +59,8 @@
   boolean show_message_input = 
     !is_deleting &&
     (
-      (is_requestoffering_user && (service_request.length > 0 && r.status == 76) || r.status == 78) ||
-      (is_handling_user) ||
+      (is_requestoffering_user || is_handling_user) && 
+        ((service_request.length > 0 && r.status == 76) || r.status == 78) ||
       (is_offering_to_service)
     );
 
