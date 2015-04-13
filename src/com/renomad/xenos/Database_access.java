@@ -44,7 +44,8 @@ public final class Database_access {
     Connection conn = null;
 
     if (regular_usage) {
-      //this is the normal place for getting connections if coming from a web server.
+      //this is the normal place for getting connections if 
+      //coming from a web server.
       ds = get_a_datasource();
       conn = get_a_connection(ds);
     } else {
@@ -109,7 +110,9 @@ public final class Database_access {
   /**
     * a helper method to avoid some of the boilerplate.
     */
-  public static PreparedStatement prepare_statement(Connection conn, String sqlText) throws SQLException {
+  public static PreparedStatement 
+    prepare_statement(Connection conn, String sqlText) 
+    throws SQLException {
       return conn.prepareStatement(
           sqlText, Statement.RETURN_GENERATED_KEYS);
   }
@@ -122,7 +125,8 @@ public final class Database_access {
     * @param rs the result set we are checking
     * @return true if the result set is null or has no data.
     */
-  public static boolean resultset_is_null_or_empty(ResultSet rs) throws SQLException {
+  public static boolean 
+    resultset_is_null_or_empty(ResultSet rs) throws SQLException {
     return rs == null || !rs.isBeforeFirst();
   }
 
