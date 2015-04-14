@@ -77,12 +77,20 @@ mysql> GRANT ALL PRIVILEGES ON *.* TO 'xenosuser'@'%' WITH GRANT OPTION;
 
 
 
+========================
+2) Configure Tomcat
+========================
+Run this command:
+  cp $CATALINA_HOME/conf/server.xml.README $CATALINA_HOME/conf/server.xml
 
+This is a mandatory Tomcat configuration file.  It's needed to do it this
+way so we can leave the server.xml file unaffected by source control
+on the production server.
 
 
 
 ========================
-2) Environment variables
+3) Environment variables
 ========================
 
 There is a script, utils/set_env.sh which will try to get the
@@ -138,7 +146,7 @@ See more about this at: ./utils/ant/apache-ant-1.9.4/manual/listeners.html
 
 
 ========================
-3) Git setup
+4) Git setup
 ========================
 
 Read the information in the dev manual about setting up git client 
@@ -149,7 +157,7 @@ when you push to the central repository.  See Git commit standards.
 
 
 ====================================
-4) Directories and files at the top:
+5) Directories and files at the top:
 ====================================
 
 build.xml - the Ant script that provides all sorts of benefits, for
@@ -167,11 +175,12 @@ src/ - source files of the project Compiled code will be placed in the build
   directory
 
 utils/ - some utilities helpful for development.
+  |
+  \--- test_scripts/ - contains lynx scripts for integration testing.  For
+    more info, see the dev manual in docs
 
 web_container/ - contains documents and binaries for the web container,
   Tomcat.  Also contains the xenos web application and its client files.
   note that when the java files get compiled, they are placed in the 
   classes directory under webapps/Root/WEB-INF/
 
-test_scripts/ - contains lynx scripts for integration testing.  For
-  more info, see the dev manual in docs
