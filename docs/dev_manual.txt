@@ -664,12 +664,15 @@ Servers
 ssh.renomad.com - backup for youtrack, code repo, 
   at Byron's house under the TV
 youtrack.renomad.com - the youtrack server, located with ChicagoVPS
-dev.renomad.com aka favir.co - server exposed to the world, 
-  running Tomcat and master database, with chicagoVPS
 prime.renomad.com - central Git code repo. automatically sends 
   backup to ssh.renomad.com. Email server. chicagoVPS
-db2.renomad.com - chicagoVPS, openvz, runs replication of database 
+www.zenia.co - server exposed to the world, 
+  running Tomcat and master database, with chicagoVPS
+db1.zenia.co - chicagoVPS, openvz, runs replication of database 
   and is backed up by chicagoVPS and onto ssh.renomad.com
+db2.zenia.co - slave / alternate database server.
+note that db1 and db2 have firewalls configured so they can only
+  be accessed by www.zenia.co
 
 namesecure is the SOA for renomad.com
 godaddy is the SOA for favir.co
