@@ -14,6 +14,7 @@ Localization
 Safe Rendering of Client-provided values
 Viewing the database values
 Running Tomcat in SSL
+Tomcat CentOS init script
 SQL standards
 Git branches
 Git events
@@ -348,7 +349,12 @@ There is a copy of that file in this directory, at ssl-howto-tomcat.txt
 
 
 
-
+Tomcat CentOS init script
+==========================
+Under tomcat_config in the docs directory, there is a sample script
+that can be installed in the /etc/init.d directory on CentOS to
+automate the process of startup / shutdown / restart.  This will tie 
+Tomcat to the reboot of the system, similar to MySQL and other applications.
 
 
 
