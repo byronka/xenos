@@ -27,6 +27,7 @@ Definitions
 Deploy checklist
 Servers
 Web Designers
+Tomcat production configuration
 Troubleshooting
 
 
@@ -646,6 +647,7 @@ Requestoffer - this thing can be a favor, a purchase, a request, an offer, etc.
 
 Deploy checklist
 ===============
+
 Test these features:
   create requestoffer
   delete requestoffer
@@ -693,6 +695,14 @@ Web Designers
 http://codepen.io/chrisdothtml
 
 
+Tomcat production configuration
+===============================
+Some things that are configured or done special on the production server:
+* make META-INF/context.xml a root-owned file, chmod 600 (root readonly).
+    It has the password to the database stored in it.  Don't want that
+    readily available.
+* when running the ant script on prod, you have to run it like this:
+      ant run -Ddatabase.server=db1 -Ddatabase.password=PASSWORD_HERE
 
 
 Troubleshooting
