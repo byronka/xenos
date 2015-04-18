@@ -33,3 +33,10 @@ web_container/apache-tomcat-8.0.14/conf/tomcat-users.xml
 #this tailored to its needs.  Look to server.xml.README in the same 
 #directory for a sample to use for your own server.xml
 web_container/apache-tomcat-8.0.14/conf/server.xml
+
+#context.xml is the file that sets the entire application's access to
+#the database.  Since we don't want just anyone reading this file and
+#seeing the database password, users will need to copy context.xml.README
+#to context.xml and use it.  On the prod machine, it will be owned and
+#readonly by root, with the real password to the database.
+web_container/apache-tomcat-8.0.14/webapps/ROOT/META-INF/context.xml
