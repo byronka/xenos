@@ -50,6 +50,10 @@
       }
 
       selected_cat = Utils.parse_int(request.getParameter("categories"));
+      if (selected_cat == null) {
+        has_cat_error = true;
+        validation_error |= true;
+      }
       
       if (!validation_error) {
 
