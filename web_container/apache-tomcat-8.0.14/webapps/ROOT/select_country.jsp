@@ -35,7 +35,7 @@
             <% for (int i = 0; i < countries.length; i ++) { %>
             <% if (countries[i].country_id == 244) { %>
               <option selected="selected" value="<%=countries[i].country_id%>">
-            <% } else { %>
+            <% } else if (countries[i].country_id == 82) { %>
               <option value="<%=countries[i].country_id%>">
             <% } %>
                 <%=countries[i].country_name%>
