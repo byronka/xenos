@@ -1,3 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
 Xenos devs - feel free to use this as a sample file to set a username 
 and password to access tomcat manager.  Save it as tomcat-users.xml in 
 this same directory, but note that it is ignored in .gitignore, so it 
@@ -5,10 +7,6 @@ won't show up in git status, and the intent is to prevent tomcat-users.xml
 from getting added to the repo.  Each dev can thus set their own user and
 pass, and it won't get mistakenly added to the prod machine.
 
-
-
-<?xml version='1.0' encoding='utf-8'?>
-<!--
   Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
   this work for additional information regarding copyright ownership.
