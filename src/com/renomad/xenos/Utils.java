@@ -4,6 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.SimpleTimeZone;
 
 import java.sql.SQLException;
 import java.sql.ResultSet;
@@ -414,7 +419,96 @@ public static String get_remote_address(HttpServletRequest r) {
     }
   }
 
+  /**
+    * This takes two dates, and shows the difference between them
+    * in easily comprehensible terms.  For example:
+    * between 1 and 60 minutes, show 1 minute ago / 59 minutes ago.
+    * Between 1 hour and 24 hours, show 1 hour ago / 24 hours ago.
+    * Between 1 day ago and 30 days ago, 1 days ago / 30 days ago.
+    * Between 1 month ago and 12 months ago, 1 month ago / 12 months
+    * ago.  Finally, after a year, indicate number of years.
+    * @return a string indicating time between the dates, or empty
+    * string if failure.
+    */
+  public static String show_date_delta(
+      Calendar cal_1, 
+      Calendar cal_2,
+      Localization loc) {
+    long seconds_diff = Math.abs(cal_2.getTime().getTime() -
+        cal_1.getTime().getTime()) / 1000;
+    System.out.println("seconds diff " + seconds_diff);
+    System.out.println(cal_1);
+    System.out.println(cal_2);
 
+    if (seconds_diff > 0 && seconds_diff < 60) {
+      return String.format(loc.get(225, "%d seconds ago"),
+          seconds_diff);
+    }
+
+    if (seconds_diff >= 60 && seconds_diff < 60 * 60) {
+      return String.format(loc.get(226, "%d minutes ago"),
+          seconds_diff/60);
+    } 
+
+    if (seconds_diff >= 60*60 && seconds_diff < 60*60*24) {
+      return String.format(loc.get(227, "%d hours ago"),
+          seconds_diff/60/60);
+    }
+
+    if (seconds_diff >= 60*60*24 && seconds_diff < 60*60*24*365) {
+      return String.format(loc.get(228, "%d days ago"),
+          seconds_diff/60/60/24);
+    }
+
+    if (seconds_diff >= 60*60*24*365) {
+      return String.format(loc.get(229, "%d years ago"),
+          seconds_diff/60/60/24/365);
+    }
+
+    return "";
+  }
+
+
+  /**
+    * a helper method to get the difference between a particular date
+    * and now
+    */
+  public static String show_delta_to_now(Calendar cal, Localization loc) {
+    return show_date_delta(cal,
+        Calendar.getInstance(TimeZone.getTimeZone("UTC")), loc);
+  }
+
+
+  /**
+    * This method expects to get a UTC date from MySQL in its date
+    * format, which looks like this: 2015-04-19 13:37:00.0
+    * we convert it to a calendar object by extracting out each piece,
+    * year, month, day, hour, minute, second
+    * @return a calendar object with a date, or null if failed
+    */
+  public static Calendar parse_date(String sqldate) {
+    String year = sqldate.substring(0,4);
+    String month = sqldate.substring(5,7); 
+    String day = sqldate.substring(8,10);
+    String hour = sqldate.substring(11,13);
+    String minute = sqldate.substring(14,16);
+    String second = sqldate.substring(17,19);
+
+    Integer y = parse_int(year);
+    Integer mo = parse_int(month) - 1; // month value is 0 based
+    Integer d = parse_int(day);
+    Integer h = parse_int(hour);
+    Integer mi = parse_int(minute);
+    Integer s = parse_int(second);
+
+    if (y == null || mo == null || d == null || 
+        h == null || mi == null || s == null) {
+      return null;
+    }
+
+    return new GregorianCalendar(y,mo,d,h,mi,s); 
+
+  }
 
 
 }

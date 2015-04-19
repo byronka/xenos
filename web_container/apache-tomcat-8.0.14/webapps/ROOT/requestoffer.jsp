@@ -83,7 +83,9 @@
       </div>
       <div class="row">
         <label for="datetime_span"><%=loc.get(25,"Date")%>: </label>
-        <span id="datetime_span"><%=r.datetime%></span>
+        <span id="datetime_span">
+          <%=Utils.show_delta_to_now(Utils.parse_date(r.datetime),loc)%>
+        </span>
       </div>
       <div class="row">
         <label for="owning_span"><%=loc.get(100,"Owning User")%>: </label>
