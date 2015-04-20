@@ -28,6 +28,7 @@
       <%=loc.get(34, "Requestoffer has been deleted")%>
     </p>
     <p><a class="button" href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
+  </div>
   <%@include file="includes/footer.jsp" %>
 </body>
 </html>
