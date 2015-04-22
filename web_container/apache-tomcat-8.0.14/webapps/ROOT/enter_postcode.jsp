@@ -75,6 +75,7 @@ if (user_has_entered_postal_data) {
     <link rel="stylesheet" href="static/css/reset.css">
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
+    <link rel="stylesheet" href="static/css/button.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
 		<title><%=loc.get(209,"Change current location")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">

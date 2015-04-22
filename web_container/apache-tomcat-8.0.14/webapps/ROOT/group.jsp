@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="static/css/reset.css">
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
+    <link rel="stylesheet" href="static/css/button.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
     <title>Group</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -119,7 +120,8 @@
                 </span>
               </div>
               <% if (logged_in_user_id == the_group.owner_id) { %>
-              <a href="edit_group_description.jsp?group_id=<%=gid%>"><%=loc.get(62,"Edit my group description")%></a>
+                <a href="edit_group_description.jsp?group_id=<%=gid%>">
+                  <%=loc.get(62,"Edit my group description")%></a>
               <% } %>
             </span>
       </div>
