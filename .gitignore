@@ -40,3 +40,11 @@ web_container/apache-tomcat-8.0.14/conf/server.xml
 #to context.xml and use it.  On the prod machine, it will be owned and
 #readonly by root, with the real password to the database.
 web_container/apache-tomcat-8.0.14/webapps/ROOT/META-INF/context.xml
+
+
+#By ignoring manager and host manager, it becomes possible for the developer
+#to have these applications in the webapps directory for dev use, without
+#the system asking whether they want to commit them there.  We don't want
+#these applications on the prod server in this directory
+/home/byron/dev/xenos/web_container/apache-tomcat-8.0.14/webapps/manager
+/home/byron/dev/xenos/web_container/apache-tomcat-8.0.14/webapps/host-manager
