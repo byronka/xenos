@@ -46,5 +46,5 @@ web_container/apache-tomcat-8.0.14/webapps/ROOT/META-INF/context.xml
 #to have these applications in the webapps directory for dev use, without
 #the system asking whether they want to commit them there.  We don't want
 #these applications on the prod server in this directory
-/home/byron/dev/xenos/web_container/apache-tomcat-8.0.14/webapps/manager
-/home/byron/dev/xenos/web_container/apache-tomcat-8.0.14/webapps/host-manager
+web_container/apache-tomcat-8.0.14/webapps/manager
+web_container/apache-tomcat-8.0.14/webapps/host-manager
