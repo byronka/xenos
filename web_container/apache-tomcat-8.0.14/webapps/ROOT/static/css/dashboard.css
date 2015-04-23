@@ -10,17 +10,10 @@
 
 
 /* stuff related to the entire dashboard */
-#overall-container {
-   min-height: 1000px;
-   padding-bottom: 50px;
-}
-
 #see-and-create-requestoffer {
   margin-left: auto;
   margin-right: auto;
   max-width: 800px;
-  min-height: 800px;
-  padding: 0px;
 }
 
 /* stuff related to requestoffer display */
@@ -32,80 +25,8 @@
 }
 
 
-/* stuff related to My_Profile */
-
-#profile-container {
-   margin: 4px;
-   padding: 5px;
-   border: 1px solid #8888bb;
-   background: #ccccff;
-}
-
-/* stuff related to advanced search */
-
-#search-section {
-  margin: 4px;
-  padding: 5px;
-  border: 1px solid #8888bb;
-  background: #ccccff;
-}
-
-
-span.error {
-  color: white;
-  background-color: red;
-}
-
-#search-section input:-webkit-input-placeholder {
-  color: #999999;
-}
-  
-#search-section input:-moz-placeholder {
-    color: #999999;
-}
-
-#search-section input:focus{
-  box-shadow: 0 1px 0 #2392F3 inset, 0 -1px 0 #2392F3 inset, 1px 0 0 #2392F3 inset, -1px 0 0 #2392F3 inset, 0 0 4px rgba(35,146,243,0.5);
-  outline: none;
-}
-
-
-
-span.error {
-  color: white;
-  background-color: red;
-}
-
-
-#create-requestoffer-container select {
-  overflow: hidden;
-}
-
-#create-requestoffer-container textarea {
-  vertical-align: top;
-}
-
-
 @media all and (min-width: 660px) {
 
-  #overall-container input[type="text"]{
-    background: 12px 11px no-repeat, linear-gradient(to bottom, #f7f7f8 0%,#ffffff 100%);
-    border-radius: 3px;
-    border: 1px solid grey;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset, 0 -1px 0 rgba(0,0,0,0.05) inset;
-    transition: all 0.2s linear;
-    font-family: "Helvetica Neue", sans-serif;
-    font-size: 13px;
-    color: #222222;
-    height: 25px;
-    display: table-cell;
-    padding-left: 10px;
-  }
-
-  input[type="text"]:focus{
-    box-shadow: 0 1px 0 #2392F3 inset, 0 -1px 0 #2392F3 inset, 1px 0 0 #2392F3 inset, -1px 0 0 #2392F3 inset, 0 0 4px rgba(35,146,243,0.5);
-    outline: none;
-  }
 
   .table {
     border-spacing: 8px 8px;
@@ -123,63 +44,6 @@ span.error {
     display: table-cell;
   }
 
-
-  #create-requestoffer-container select {
-    max-width: 400px;
-  }
-
-  #create-requestoffer-container textarea {
-    width: 98%;
-  }
-
-  
-  #create-requestoffer-container #basic-section {
-    display: table;
-    table-layout: auto;
-    width: 100%;
-    border-spacing: 5px 5px;
-  }
-
-  #create-requestoffer-container #location-section {
-    display: table;
-    table-layout: auto;
-    width: 100%;
-    border-spacing: 5px 5px;
-  }
-
-  #create-requestoffer-container div.row {
-    vertical-align: top;
-    display: table-row;
-  }
-
-  #create-requestoffer-container label {
-    vertical-align: top;
-    display: table-cell;
-    width: 120px;
-  }
-}
-
-#create-requestoffer-container #basic-section {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-#create-requestoffer-container #location-wrapper {
-  display: none;
-}
-
-#create-requestoffer-container #location-section {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-
-input[type="text"]:-webkit-input-placeholder {
-  color: #999999;
-}
-  
-input[type="text"]:-moz-placeholder {
-  color: #999999;
 }
 
 
