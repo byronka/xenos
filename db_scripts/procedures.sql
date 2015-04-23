@@ -1727,12 +1727,6 @@ BEGIN
   INSERT INTO user_group_invite(group_id, user_id, date_created)
   VALUES (the_group_id, the_user_id, UTC_TIMESTAMP());
 
-  -- notify the intended user they are getting an invite to a group
-  CALL put_system_to_user_message(218, the_user_id , NULL);
-
-  -- notify the offering user they have done so
-  CALL put_system_to_user_message(217, the_owner_id, NULL);
-
   -- audit that we sent that user an invite
   CALL add_audit(408, the_owner_id, the_user_id, NULL, the_group_id, NULL);
 
@@ -1767,7 +1761,6 @@ BEGIN
 
     INSERT INTO user_to_group (user_id, group_id)
     VALUES (the_user_id, the_group_id);
-    CALL put_system_to_user_message(221, the_owner_id, NULL);
     CALL put_system_to_user_message(222, the_user_id, NULL);
     CALL add_audit(409, the_user_id, 
       the_owner_id, NULL, the_group_id, NULL);
@@ -1776,7 +1769,6 @@ BEGIN
   -- group, but we send a system message to the inviter
   -- and we add an audit message
   ELSE
-    CALL put_system_to_user_message(214, the_owner_id, NULL);
     CALL add_audit(410, the_user_id, 
       the_owner_id, NULL, the_group_id, NULL);
 
@@ -1810,12 +1802,6 @@ BEGIN
   DELETE FROM user_to_group
   WHERE user_id = the_user_id AND group_id = the_group_id;
 
-
-  -- send a message to the user that they have left the group
-  CALL put_system_to_user_message(216, the_user_id, NULL);
-
-  -- send a message to the owner of the group that a member left
-  CALL put_system_to_user_message(215, the_owner_id, NULL);
 
   -- audit that the user left the group
   CALL add_audit(406, the_user_id, 
@@ -1857,9 +1843,6 @@ BEGIN
   -- send a message to the user that they have been removed
   CALL put_system_to_user_message(223, the_user_id, NULL);
 
-  -- send a message to the owner of the group that they removed the user
-  CALL put_system_to_user_message(224, the_owner_id, NULL);
-
   -- audit that the user was removed from the group
   CALL add_audit(414, the_user_id, 
     the_owner_id, NULL, the_group_id, NULL);
@@ -1895,12 +1878,6 @@ BEGIN
 
   DELETE FROM user_group_invite
   WHERE user_id = the_user_id AND group_id = the_group_id;
-
-  -- send a message to the user that their invitation was retracted
-  CALL put_system_to_user_message(219, the_user_id, NULL);
-
-  -- send a message to the owner they retracted the invite
-  CALL put_system_to_user_message(220, the_owner_id, NULL);
 
   -- audit that the owner has retracted their invite to the user
   CALL add_audit(413, the_owner_id, the_user_id, NULL, the_group_id, NULL);

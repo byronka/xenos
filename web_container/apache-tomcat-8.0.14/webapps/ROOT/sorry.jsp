@@ -14,7 +14,7 @@
     <script type="text/javascript" src="static/js/utils.js"></script>
 		<title><%=loc.get(67,"Security problem")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="sorry.css" title="desktop">
+    <link rel="stylesheet" href="static/css/sorry.css" title="desktop">
 	</head>
 <body>
   <img id='my_background' src="static/img/bouncer.jpg" onload="xenos_utils.fade_in_background()"/>

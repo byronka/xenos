@@ -23,4 +23,16 @@ header a {
   display: inline-block;
 }
 
-
+#count-of-invites {
+  background: url("../img/group_invite_alert.png") 
+    no-repeat scroll 0 0 / contain ;
+  padding-top: 5px;
+  font-size: 20px;
+  height: 25px;
+  left: -10px;
+  position: absolute;
+  text-align: center;
+  top: -15px;
+  width: 25px;
+  z-index:2;
+}

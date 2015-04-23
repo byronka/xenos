@@ -447,17 +447,8 @@ VALUES
 (136,'You have canceled an active transaction.'),
 (147,'You have made an offer to handle a Favor'),
 (148,'You have recieved an offer to handle a Favor'),
-(214,'The following user did not accept your group invitation'),
-(215,'The following user has left your group'),
-(216,'You have left the following group'),
-(217,'You have extended an invitation to a user for your group'),
-(218,'You have been offered an invitation to join a group'),
-(219,'Your invitation to the following group has been retracted'),
-(220,'You have retracted your invitation to the following user'),
-(221,'The following user accepted your group invitation'),
 (222,'You have joined a new group.  It is now listed in your groups page'),
-(223,'You have been removed from a group'),
-(224,'You have removed a user from your group');
+(223,'You have been removed from a group');
 
 ---DELIMITER---
 -- this table holds messages sent by the system to users.
