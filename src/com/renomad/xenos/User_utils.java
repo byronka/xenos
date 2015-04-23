@@ -53,6 +53,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -78,6 +79,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -112,6 +114,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return "";
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -178,6 +181,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return "";
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -212,6 +216,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return -1;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -248,6 +253,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -281,6 +287,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return "";
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -312,6 +319,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return -1;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -346,6 +354,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -378,6 +387,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -441,6 +451,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -473,6 +484,7 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -528,6 +540,7 @@ public final class User_utils {
         Database_access.handle_sql_exception(ex);
         return Put_user_result.GENERAL_ERR;
       } finally {
+      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }

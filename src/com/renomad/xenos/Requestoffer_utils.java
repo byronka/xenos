@@ -57,12 +57,13 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setString(1, postcode);
       pstmt.setInt(2, country_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Postcode_and_detail[0];
       }
@@ -82,6 +83,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new Postcode_and_detail[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -106,6 +108,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -130,6 +133,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -179,6 +183,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new String[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -221,6 +226,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -246,6 +252,7 @@ public final class Requestoffer_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
+      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -269,6 +276,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -301,6 +309,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -363,6 +372,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new Requestoffer[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -430,6 +440,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -477,6 +488,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new Country[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -535,6 +547,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new Service_request[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -589,6 +602,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -802,6 +816,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
 			return new OR_Package(new Others_Requestoffer[0],1);
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -888,6 +903,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new Others_Requestoffer[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -947,6 +963,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -975,6 +992,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1030,6 +1048,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new User_location[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -1089,6 +1108,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -1142,6 +1162,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new User_location[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -1164,6 +1185,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1187,6 +1209,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1228,6 +1251,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return 0;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1292,6 +1316,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new Put_requestoffer_result(Pro_enum.GENERAL_ERROR, -1);
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1340,6 +1365,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -1398,6 +1424,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1426,6 +1453,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1507,6 +1535,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new MyMessages[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -1567,6 +1596,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new MyMessages[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -1617,6 +1647,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new String[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -1739,6 +1770,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new Rank_detail[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -1801,6 +1833,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -1827,6 +1860,7 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }

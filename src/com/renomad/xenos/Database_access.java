@@ -133,6 +133,22 @@ public final class Database_access {
 
 
   /**
+    * Wrapper around ResultSet.close() to avoid having to
+    * litter my code with try-catch
+    */
+  public static void close_resultset(ResultSet rs) {
+    try {
+      if (rs != null && !rs.isClosed()) {
+        rs.close();
+        rs = null;
+      }
+    } catch (SQLException ex) {
+      handle_sql_exception(ex);
+    }
+  }
+
+
+  /**
     * Wrapper around Statement.close() to avoid having to
     * litter my code with try-catch
     */

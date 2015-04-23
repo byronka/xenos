@@ -102,6 +102,7 @@ public static String get_remote_address(HttpServletRequest r) {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }

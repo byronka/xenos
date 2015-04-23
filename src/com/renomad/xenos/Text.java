@@ -55,6 +55,7 @@ public class Text implements javax.servlet.ServletContextListener {
       Database_access.handle_sql_exception(ex);
       return 0;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt_get_count);
       Database_access.close_connection(conn);
     }
@@ -94,6 +95,7 @@ public class Text implements javax.servlet.ServletContextListener {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -126,6 +128,7 @@ public class Text implements javax.servlet.ServletContextListener {
       Database_access.handle_sql_exception(ex);
       return 0;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt_get_count);
       Database_access.close_connection(conn);
     }
@@ -219,6 +222,7 @@ public class Text implements javax.servlet.ServletContextListener {
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt_get_words);
       Database_access.close_connection(conn);
     }

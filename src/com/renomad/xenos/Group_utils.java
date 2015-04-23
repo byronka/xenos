@@ -99,6 +99,7 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return Create_group_result.GENERAL_ERR;
       } finally {
+      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -151,6 +152,7 @@ public final class Group_utils {
       Database_access.handle_sql_exception(ex);
       return new Group_id_and_name[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -187,6 +189,7 @@ public final class Group_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -223,6 +226,7 @@ public final class Group_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -288,6 +292,7 @@ public final class Group_utils {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -326,6 +331,7 @@ public final class Group_utils {
           return Send_invite_result.GENERAL_ERR;
         }
       } finally {
+      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -352,6 +358,7 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
+      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -376,6 +383,7 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
+      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -402,6 +410,7 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
+      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -439,6 +448,7 @@ public final class Group_utils {
       Database_access.handle_sql_exception(ex);
       return "";
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -465,6 +475,7 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
+      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -496,6 +507,7 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
+      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -568,6 +580,7 @@ public final class Group_utils {
       Database_access.handle_sql_exception(ex);
       return new Invite_info[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -615,6 +628,7 @@ public final class Group_utils {
       Database_access.handle_sql_exception(ex);
       return new Invite_info[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -665,6 +679,7 @@ public final class Group_utils {
       Database_access.handle_sql_exception(ex);
       return new Group_id_and_name[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
