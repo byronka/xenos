@@ -87,8 +87,8 @@ public final class Group_utils {
       }
 
       CallableStatement cs = null;
+      Connection conn = Database_access.get_a_connection();
       try {
-        Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall("{call create_user_group(?,?,?)}");
         cs.setNString(1,group_name);
         cs.setNString(2,group_desc);
@@ -100,6 +100,7 @@ public final class Group_utils {
         return Create_group_result.GENERAL_ERR;
       } finally {
         Database_access.close_statement(cs);
+        Database_access.close_connection(conn);
       }
 
   }
@@ -151,6 +152,7 @@ public final class Group_utils {
       return new Group_id_and_name[0];
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -186,6 +188,7 @@ public final class Group_utils {
       return false;
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -221,6 +224,7 @@ public final class Group_utils {
       return false;
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -285,6 +289,7 @@ public final class Group_utils {
       return null;
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -322,6 +327,7 @@ public final class Group_utils {
         }
       } finally {
         Database_access.close_statement(cs);
+        Database_access.close_connection(conn);
       }
   }
 
@@ -347,6 +353,7 @@ public final class Group_utils {
         return false;
       } finally {
         Database_access.close_statement(cs);
+        Database_access.close_connection(conn);
       }
   }
 
@@ -370,6 +377,7 @@ public final class Group_utils {
         return false;
       } finally {
         Database_access.close_statement(cs);
+        Database_access.close_connection(conn);
       }
   }
 
@@ -395,6 +403,7 @@ public final class Group_utils {
         return false;
       } finally {
         Database_access.close_statement(cs);
+        Database_access.close_connection(conn);
       }
   }
 
@@ -431,6 +440,7 @@ public final class Group_utils {
       return "";
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -456,6 +466,7 @@ public final class Group_utils {
         return false;
       } finally {
         Database_access.close_statement(cs);
+        Database_access.close_connection(conn);
       }
   }
 
@@ -486,6 +497,7 @@ public final class Group_utils {
         return false;
       } finally {
         Database_access.close_statement(cs);
+        Database_access.close_connection(conn);
       }
   }
 
@@ -557,6 +569,7 @@ public final class Group_utils {
       return new Invite_info[0];
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -603,6 +616,7 @@ public final class Group_utils {
       return new Invite_info[0];
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -652,6 +666,7 @@ public final class Group_utils {
       return new Group_id_and_name[0];
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
