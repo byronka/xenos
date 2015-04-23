@@ -37,12 +37,33 @@
 		<!-- type: The fully qualified Java class name expected by the web
 		application when it performs a lookup for this resource. -->
 
-	<Resource name="jdbc/xenos_db" auth="Container"
-		type="javax.sql.DataSource" maxActive="100" maxIdle="30"
-		maxWait="10000" username="xenosuser" password="password1"
+  <Resource 
+    name="jdbc/xenos_db" 
+    auth="Container"
+    useTimezone="true"
+    useLegacyDatetimeCode="false"
+    serverTimezone="UTC"
+    type="javax.sql.DataSource" 
+    factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+    jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState; 
+      org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;
+      org.apache.tomcat.jdbc.pool.interceptor.ResetAbandonedTimer"
+    maxActive="100" 
+    initialSize="10"
+    minIdle="10"
+    maxIdle="30"
+    maxWait="10000" 
+    username="xenosuser" 
+    password="password1"
 		driverClassName="com.mysql.jdbc.Driver"
-		url="jdbc:mysql://localhost/xenos_database?useUnicode=yes&amp;characterEncoding=UTF-8" />
-  	
+    url="jdbc:mysql://localhost/xenos_database?useUnicode=yes&amp;characterEncoding=UTF-8" 
+    testWhileIdle="true"
+    testOnBorrow="true"
+    testOnReturn="false"
+    validationQuery="SELECT 1"
+    minEvictableIdleTimeMillis="30000"
+
+    />
 
   <!-- 
     This disables Tomcat from tracking sessions - we aren't 
