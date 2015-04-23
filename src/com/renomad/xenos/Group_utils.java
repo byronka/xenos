@@ -126,8 +126,8 @@ public final class Group_utils {
     }
 
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
@@ -170,8 +170,8 @@ public final class Group_utils {
             user_id, group_id);
 
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
@@ -206,8 +206,8 @@ public final class Group_utils {
             user_id, group_id);
 
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
@@ -249,8 +249,8 @@ public final class Group_utils {
             group_id);
 
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
@@ -307,8 +307,8 @@ public final class Group_utils {
   public static Send_invite_result 
     send_group_invite_to_user(int owner_id, int group_id, int user_id) {
       CallableStatement cs = null;
+      Connection conn = Database_access.get_a_connection();
       try {
-        Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall(
             String.format(
               "{call send_group_invite_to_user(%d,%d,%d)}",
@@ -340,8 +340,8 @@ public final class Group_utils {
     respond_to_group_invite(boolean is_accepted, int group_id, 
         int user_id) {
       CallableStatement cs = null;
+      Connection conn = Database_access.get_a_connection();
       try {
-        Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall(
             String.format(
               "{call respond_to_group_invite(%b,%d,%d)}",
@@ -365,8 +365,8 @@ public final class Group_utils {
     */
   public static boolean leave_group(int group_id, int user_id) {
       CallableStatement cs = null;
+      Connection conn = Database_access.get_a_connection();
       try {
-        Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall(
             String.format(
               "{call leave_group(%d,%d)}", group_id, user_id));
@@ -390,8 +390,8 @@ public final class Group_utils {
   public static boolean 
     remove_from_group(int owner_id, int group_id, int user_id) {
       CallableStatement cs = null;
+      Connection conn = Database_access.get_a_connection();
       try {
-        Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall(
             String.format(
               "{call remove_from_group(%d,%d,%d)}",
@@ -423,8 +423,8 @@ public final class Group_utils {
           group_id, user_id);
 
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
@@ -452,8 +452,8 @@ public final class Group_utils {
   public static boolean 
     edit_user_group_description(int group_id, int user_id, String text) {
       CallableStatement cs = null;
+      Connection conn = Database_access.get_a_connection();
       try {
-        Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall(
             String.format(
               "{call edit_user_group_description(%d,%d,?)}",
@@ -484,8 +484,8 @@ public final class Group_utils {
   public static boolean 
     retract_invitation(int owner_id, int group_id, int user_id) {
       CallableStatement cs = null;
+      Connection conn = Database_access.get_a_connection();
       try {
-        Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall(
             String.format(
               "{call retract_invitation(%d,%d,%d)}",
@@ -542,8 +542,8 @@ public final class Group_utils {
           group_id);
 
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
@@ -589,8 +589,8 @@ public final class Group_utils {
           user_id);
 
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
@@ -640,8 +640,8 @@ public final class Group_utils {
     
 
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
