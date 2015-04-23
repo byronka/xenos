@@ -38,8 +38,8 @@ public class Text implements javax.servlet.ServletContextListener {
       "SELECT MAX(language_id) AS maximum "+
       "FROM languages";
     PreparedStatement pstmt_get_count = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt_get_count = 
         Database_access.prepare_statement(conn, get_count_sql);
       ResultSet resultSet_count = pstmt_get_count.executeQuery();
@@ -56,6 +56,7 @@ public class Text implements javax.servlet.ServletContextListener {
       return 0;
     } finally {
       Database_access.close_statement(pstmt_get_count);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -71,8 +72,8 @@ public class Text implements javax.servlet.ServletContextListener {
       "SELECT language_id, locale_id "+
       "FROM languages ORDER BY language_id ASC; ";
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -94,6 +95,7 @@ public class Text implements javax.servlet.ServletContextListener {
       return null;
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -107,8 +109,8 @@ public class Text implements javax.servlet.ServletContextListener {
       "SELECT MAX(local_id) AS maximum "+
       "FROM localization_lookup";
     PreparedStatement pstmt_get_count = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt_get_count = 
         Database_access.prepare_statement(conn, get_count_sql);
       ResultSet resultSet_count = pstmt_get_count.executeQuery();
@@ -125,6 +127,7 @@ public class Text implements javax.servlet.ServletContextListener {
       return 0;
     } finally {
       Database_access.close_statement(pstmt_get_count);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -179,8 +182,8 @@ public class Text implements javax.servlet.ServletContextListener {
       "WHERE language = ?";
 
     PreparedStatement pstmt_get_words = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt_get_words = 
         Database_access.prepare_statement(conn, get_words_sql);
       
@@ -217,6 +220,7 @@ public class Text implements javax.servlet.ServletContextListener {
       Database_access.handle_sql_exception(ex);
     } finally {
       Database_access.close_statement(pstmt_get_words);
+      Database_access.close_connection(conn);
     }
   }
 

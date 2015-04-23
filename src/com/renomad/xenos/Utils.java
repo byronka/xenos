@@ -91,8 +91,8 @@ public static String get_remote_address(HttpServletRequest r) {
   public static boolean 
     create_audit(int action_id, int user_id, int target_id, String notes) {
     CallableStatement cs = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       cs = conn.prepareCall(String.format(
             "{call add_audit(%d,%d,%d,?)}",action_id,user_id,target_id));
       cs.setNString(1, notes);
@@ -103,6 +103,7 @@ public static String get_remote_address(HttpServletRequest r) {
       return false;
     } finally {
       Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
     }
   }
 
