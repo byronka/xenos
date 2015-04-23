@@ -33,8 +33,8 @@ public final class User_utils {
   public static boolean edit_user_current_location(
       int user_id, Integer coid, Integer poid) {
     CallableStatement cs = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       cs = conn.prepareCall("{call edit_user_current_location(?,?,?)}");
       cs.setInt(1,user_id);
       if (coid != null) {
@@ -54,6 +54,7 @@ public final class User_utils {
       return false;
     } finally {
       Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -66,8 +67,8 @@ public final class User_utils {
   public static boolean edit_description(
       int user_id, String description) {
     CallableStatement cs = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       cs = conn.prepareCall("{call set_user_description(?,?)}");
       cs.setInt(1,user_id);
       cs.setNString(2,description);
@@ -78,6 +79,7 @@ public final class User_utils {
       return false;
     } finally {
       Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -93,8 +95,8 @@ public final class User_utils {
       "FROM user_description "+
       "WHERE user_id = ?";
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
@@ -111,6 +113,7 @@ public final class User_utils {
       return "";
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
 
     }
@@ -151,8 +154,8 @@ public final class User_utils {
         String.format("SELECT user_id FROM user WHERE username IN (%s)", 
             delimited_string_usernames);
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       ResultSet resultSet = pstmt.executeQuery();
@@ -176,6 +179,7 @@ public final class User_utils {
       return "";
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -191,8 +195,8 @@ public final class User_utils {
       "FROM user WHERE username = ?";
 
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setNString(1, username);
@@ -209,6 +213,7 @@ public final class User_utils {
       return -1;
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -224,8 +229,8 @@ public final class User_utils {
       "FROM requestoffer_service_request "+
       "WHERE user_id = ? AND requestoffer_id = ?";
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
@@ -244,6 +249,7 @@ public final class User_utils {
       return false;
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
 
   }
@@ -258,8 +264,8 @@ public final class User_utils {
   public static String get_user_salt(String username) {
     String sqlText = "SELECT salt FROM user WHERE username = ?;";
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setNString( 1, username);
@@ -276,6 +282,7 @@ public final class User_utils {
       return "";
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -288,8 +295,8 @@ public final class User_utils {
   public static int get_user_points(int user_id) {
     String sqlText = "SELECT points FROM user WHERE user_id = ?;";
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
@@ -306,6 +313,7 @@ public final class User_utils {
       return -1;
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
 
   }
@@ -318,8 +326,8 @@ public final class User_utils {
   public static Integer get_user_language(int user_id) {
     String sqlText = "SELECT language FROM user WHERE user_id = ?;";
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
@@ -339,6 +347,7 @@ public final class User_utils {
       return null;
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -352,8 +361,8 @@ public final class User_utils {
     String sqlText = 
       "SELECT salt FROM user WHERE user_id = ?;";
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
@@ -370,6 +379,7 @@ public final class User_utils {
       return null;
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -395,8 +405,8 @@ public final class User_utils {
       "GROUP BY urdp.judged_user_id ";
 
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
@@ -432,6 +442,7 @@ public final class User_utils {
       return null;
     } finally {
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -451,8 +462,8 @@ public final class User_utils {
     String salt = get_user_salt(user_id);
     String hashed_pwd = hash_password(new_password, salt);
     CallableStatement cs = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       cs = conn.prepareCall("{call change_password(?,?,?)}");
       cs.setInt(1,executing_user_id);
       cs.setInt(2,user_id);
@@ -463,6 +474,7 @@ public final class User_utils {
       return false;
     } finally {
       Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
     }
     return true;
   }
@@ -491,8 +503,8 @@ public final class User_utils {
       }
 
       CallableStatement cs = null;
+      Connection conn = Database_access.get_a_connection();
       try {
-        Connection conn = Database_access.get_a_connection();
         cs = conn.prepareCall("{call create_new_user(?,?,?,?,?)}");
         cs.setNString(1,username);
         //make a salt we'll use for hashing.
@@ -517,6 +529,7 @@ public final class User_utils {
         return Put_user_result.GENERAL_ERR;
       } finally {
         Database_access.close_statement(cs);
+        Database_access.close_connection(conn);
       }
       return Put_user_result.OK;
   }
