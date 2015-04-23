@@ -99,7 +99,6 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return Create_group_result.GENERAL_ERR;
       } finally {
-      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -128,10 +127,11 @@ public final class Group_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Group_id_and_name[0];
       }
@@ -173,10 +173,11 @@ public final class Group_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return false;
       }
@@ -210,10 +211,11 @@ public final class Group_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return false;
       }
@@ -254,10 +256,11 @@ public final class Group_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
       }
@@ -331,7 +334,6 @@ public final class Group_utils {
           return Send_invite_result.GENERAL_ERR;
         }
       } finally {
-      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -358,7 +360,6 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
-      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -383,7 +384,6 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
-      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -410,7 +410,6 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
-      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -433,10 +432,11 @@ public final class Group_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return "";
       }
@@ -475,7 +475,6 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
-      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -507,7 +506,6 @@ public final class Group_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
-      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -555,10 +553,11 @@ public final class Group_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Invite_info[0];
       }
@@ -603,10 +602,11 @@ public final class Group_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Invite_info[0];
       }
@@ -655,10 +655,11 @@ public final class Group_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Group_id_and_name[0];
       }

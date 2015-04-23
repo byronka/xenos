@@ -34,6 +34,7 @@ public final class User_utils {
       int user_id, Integer coid, Integer poid) {
     CallableStatement cs = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       cs = conn.prepareCall("{call edit_user_current_location(?,?,?)}");
       cs.setInt(1,user_id);
@@ -79,7 +80,6 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -98,11 +98,12 @@ public final class User_utils {
       "WHERE user_id = ?";
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return "";
       }
@@ -158,10 +159,11 @@ public final class User_utils {
             delimited_string_usernames);
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return "";
       }
@@ -200,11 +202,12 @@ public final class User_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setNString(1, username);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return -1;
       }
@@ -235,12 +238,13 @@ public final class User_utils {
       "WHERE user_id = ? AND requestoffer_id = ?";
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
       pstmt.setInt( 2, requestoffer_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return false;
       }
@@ -271,11 +275,12 @@ public final class User_utils {
     String sqlText = "SELECT salt FROM user WHERE username = ?;";
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setNString( 1, username);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return "";
       }
@@ -303,11 +308,12 @@ public final class User_utils {
     String sqlText = "SELECT points FROM user WHERE user_id = ?;";
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return -1;
       }
@@ -335,11 +341,12 @@ public final class User_utils {
     String sqlText = "SELECT language FROM user WHERE user_id = ?;";
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
       }
@@ -371,11 +378,12 @@ public final class User_utils {
       "SELECT salt FROM user WHERE user_id = ?;";
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
       }
@@ -416,11 +424,12 @@ public final class User_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
       }
@@ -484,7 +493,6 @@ public final class User_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -540,7 +548,6 @@ public final class User_utils {
         Database_access.handle_sql_exception(ex);
         return Put_user_result.GENERAL_ERR;
       } finally {
-      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }

@@ -83,7 +83,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new Postcode_and_detail[0];
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
@@ -108,7 +107,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -133,7 +131,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -150,10 +147,11 @@ public final class Requestoffer_utils {
     get_my_temporary_msgs(int user_id, Localization loc) {
     CallableStatement cs = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       cs = conn.prepareCall(String.format(
         "{call get_my_temporary_msgs(%d)}" , user_id ));
-      ResultSet resultSet = cs.executeQuery();
+      resultSet = cs.executeQuery();
 
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new String[0];
@@ -202,12 +200,13 @@ public final class Requestoffer_utils {
     // 2. set up values we'll need outside the try
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       // 3. get the connection and set up a statement
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       // 4. execute a statement
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       // 5. check that we got results
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
@@ -252,7 +251,6 @@ public final class Requestoffer_utils {
         Database_access.handle_sql_exception(ex);
         return false;
       } finally {
-      Database_access.close_resultset(resultSet);
         Database_access.close_statement(cs);
         Database_access.close_connection(conn);
       }
@@ -276,7 +274,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -309,7 +306,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -338,11 +334,12 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Requestoffer[0];
       }
@@ -420,12 +417,13 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
       pstmt.setInt( 2, requestoffer_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return false;
       }
@@ -467,10 +465,11 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Country[0];
       }
@@ -517,11 +516,12 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Service_request[0];
       }
@@ -575,11 +575,12 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, requestoffer_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
       }
@@ -747,6 +748,7 @@ public final class Requestoffer_utils {
 
     CallableStatement cs = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       // see db_scripts/v1_procedures.sql get_others_requestoffers for
       // details on this stored procedure.
@@ -766,7 +768,7 @@ public final class Requestoffer_utils {
         cs.setNull(10, java.sql.Types.DOUBLE);
       }
       cs.registerOutParameter(11, java.sql.Types.INTEGER);
-      ResultSet resultSet = cs.executeQuery();
+      resultSet = cs.executeQuery();
       int pages = cs.getInt(11);
 
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -870,11 +872,12 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Others_Requestoffer[0];
       }
@@ -930,12 +933,13 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
       pstmt.setInt( 2, status);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Requestoffer[0];
       }
@@ -992,7 +996,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1023,11 +1026,12 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, requestoffer_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new User_location[0];
       }
@@ -1087,12 +1091,13 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
       pstmt.setInt( 2, location_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
       }
@@ -1137,11 +1142,12 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new User_location[0];
       }
@@ -1185,7 +1191,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1209,7 +1214,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1251,7 +1255,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return 0;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1316,7 +1319,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new Put_requestoffer_result(Pro_enum.GENERAL_ERROR, -1);
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1337,13 +1339,14 @@ public final class Requestoffer_utils {
     // 2. set up values we'll need outside the try
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       // 3. get the connection and set up a statement
       pstmt = Database_access.prepare_statement(
           conn, sqlText);
 
       // 4. execute a statement
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
 
       // 5. check that we got results
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -1424,7 +1427,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1453,7 +1455,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
@@ -1504,10 +1505,11 @@ public final class Requestoffer_utils {
       "ORDER BY timestamp DESC", user_id);
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new MyMessages[0];
       }
@@ -1565,10 +1567,11 @@ public final class Requestoffer_utils {
       "ORDER BY timestamp DESC LIMIT 10", user_id, user_id);
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new MyMessages[0];
       }
@@ -1624,10 +1627,11 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new String[0];
       }
@@ -1729,10 +1733,11 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
 
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Rank_detail[0];
@@ -1804,10 +1809,11 @@ public final class Requestoffer_utils {
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
 
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
@@ -1860,7 +1866,6 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
-      Database_access.close_resultset(resultSet);
       Database_access.close_statement(cs);
       Database_access.close_connection(conn);
     }
