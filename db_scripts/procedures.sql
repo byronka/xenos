@@ -704,19 +704,6 @@ BEGIN
   FROM requestoffer_service_request 
   WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
 
-  -- send a message to other users they were rejected
-  INSERT into system_to_user_message (
-    text_id, requestoffer_id, to_user_id, timestamp)
-  SELECT 133, rid, user_id, UTC_TIMESTAMP()
-  FROM requestoffer_service_request 
-  WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
-
-  INSERT INTO temporary_message
-  (timestamp, user_id, message_localization_id)
-  SELECT UTC_TIMESTAMP(), user_id, 133
-  FROM requestoffer_service_request 
-  WHERE requestoffer_id = rid AND user_id <> uid AND status = 106;
-
   -- change the service request to rejected for the losing users
   UPDATE requestoffer_service_request 
   SET 

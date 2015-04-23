@@ -441,7 +441,6 @@ INSERT INTO system_to_user_message_text(stu_message_text_id, text)
 VALUES
 (131,'Your transaction on a favor has been canceled by the other party.  Check out your profile page to enter feedback on that transaction.'),
 (132,'Congratulations! You have been awarded the right to service a Favor.  Check your profile for more information.'),
-(133,'Unfortunately, you were not accepted to handle a Favor.'),
 (134,'A Favor which you were handling has been completed.'),
 (135,'A Favor which you were owner of has been completed.'),
 (136,'You have canceled an active transaction.'),

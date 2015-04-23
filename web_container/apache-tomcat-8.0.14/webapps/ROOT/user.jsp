@@ -221,6 +221,7 @@
       <% } %> 
     <% } %> 
 
+    <% if (logged_in_user_id == uid ) { %>
       <%
         Requestoffer[] offers = 
           Requestoffer_utils
@@ -435,6 +436,9 @@
             </tbody>
           </table>
         <% } %>
+
+        <% } %>
+
       </div>
   </div>
   <%@include file="includes/footer.jsp" %>

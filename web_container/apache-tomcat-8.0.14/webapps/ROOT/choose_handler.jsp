@@ -5,6 +5,7 @@
 		<title><%=loc.get(139,"Choose a handler")%></title>
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
+    <link rel="stylesheet" href="static/css/button.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>

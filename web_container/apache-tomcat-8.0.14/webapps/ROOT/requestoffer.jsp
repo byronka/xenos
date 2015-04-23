@@ -25,11 +25,19 @@
     return;
   }
 
+  boolean has_user_selection_error = false;
+  boolean has_validation_error = false;
+
   if (request.getMethod().equals("POST")) {
     String msg = request.getParameter("message");
     Integer to_user = Utils.parse_int(request.getParameter("to_user"));
 
-    if (!Utils.is_null_or_empty(msg)) {
+    if (to_user == null) {
+      has_user_selection_error = true;
+      has_validation_error |= true;
+    }
+
+    if (!has_validation_error && !Utils.is_null_or_empty(msg)) {
       Requestoffer_utils.set_message(msg, r.requestoffer_id, logged_in_user_id, to_user);
       response.sendRedirect(
         "requestoffer.jsp?requestoffer="+r.requestoffer_id+"&service=true");
@@ -196,6 +204,10 @@
 
                 <% // if there are multiple offerers, show a dropdown %>
                 <% } else { %>
+
+                  <% if (has_user_selection_error) { %>
+                    <span class="error">You must select a target user</span>
+                  <% } %>
 
                   <select id="to_user" name="to_user" >
                     <option disabled selected> -- Select a user -- </option>			            

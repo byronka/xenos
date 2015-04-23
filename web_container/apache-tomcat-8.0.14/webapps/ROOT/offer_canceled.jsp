@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="static/css/reset.css">
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
+    <link rel="stylesheet" href="static/css/button.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
     <script type="text/javascript" src="static/js/utils.js"></script>
 		<title><%=loc.get(127, "Offer canceled")%></title>
