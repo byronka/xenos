@@ -174,11 +174,11 @@
 
 
       <% if (is_the_group_owner) { %>
+        <form method="POST" id="invite_member" action="group.jsp">
         <div class="table">
           <div class="row">
-            <form method="POST" action="group.jsp">
-                <input type="hidden" id="group_id" name="group_id" value="<%=gid%>">
-                <input type="text" id="username" name="username" value="<%=Utils.safe_render(the_username)%>">
+            <input type="hidden" id="group_id" name="group_id" value="<%=gid%>">
+            <input type="text" id="username" name="username" value="<%=Utils.safe_render(the_username)%>">
                 <% if (duplicate_invite_error) { %>
                   <div class="error">
                     An invitation has already been sent to this user.
@@ -194,7 +194,6 @@
                     username was not found. 
                   </div>
                 <% } %>
-              </form>
           </div>
         </div>
         <div class="table">
@@ -202,6 +201,7 @@
             <button class="button" type="submit"><%=loc.get(61,"Send invite")%></button>
           </div>
         </div>
+        </form>
       <% } %>
 
 
