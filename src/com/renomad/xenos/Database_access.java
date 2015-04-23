@@ -171,7 +171,6 @@ public final class Database_access {
     try {
       if (c != null && !c.isClosed()) {
         c.close();
-        c = null;
       }
     } catch (SQLException ex) {
       handle_sql_exception(ex);
