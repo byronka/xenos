@@ -76,7 +76,8 @@ public final class Database_access {
   private static Connection get_a_connection(javax.sql.DataSource ds) {
     try { 
       if (ds != null) {
-        return ds.getConnection();
+        Connection con = ds.getConnection();
+        return con;
       }
     } catch (SQLException ex) {
       handle_sql_exception(ex);
@@ -132,19 +133,31 @@ public final class Database_access {
 
 
   /**
+    * Wrapper around ResultSet.close() to avoid having to
+    * litter my code with try-catch
+    */
+  public static void close_resultset(ResultSet rs) {
+    try {
+      if (rs != null && !rs.isClosed()) {
+        rs.close();
+        rs = null;
+      }
+    } catch (SQLException ex) {
+      handle_sql_exception(ex);
+    }
+  }
+
+
+  /**
     * Wrapper around Statement.close() to avoid having to
-    * litter my code with try-catch and to close things in the proper order.
+    * litter my code with try-catch
     */
   public static void close_statement(Statement s) {
     try {
-      Connection c = null;
       if (s != null && !s.isClosed()) {
-        c = s.getConnection();
         s.close();
+        s = null;
       }
-
-      close_connection(c);
-
     } catch (SQLException ex) {
       handle_sql_exception(ex);
     }

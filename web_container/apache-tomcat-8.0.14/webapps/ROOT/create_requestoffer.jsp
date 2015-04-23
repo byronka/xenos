@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="static/css/reset.css">
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
+    <link rel="stylesheet" href="static/css/button.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>

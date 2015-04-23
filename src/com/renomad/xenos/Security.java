@@ -33,12 +33,13 @@ public final class Security {
     String check_icode_sql = 
       "SELECT COUNT(*) AS icodes_found FROM invite_code WHERE value = ?";
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(
           conn, check_icode_sql);     
       pstmt.setString(1,invite_code);
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return false;
       }
@@ -53,7 +54,9 @@ public final class Security {
       Database_access.handle_sql_exception(ex);
       return false;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -65,8 +68,8 @@ public final class Security {
     */
   public static String generate_invite_code(int user_id) {
     CallableStatement cs = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       cs = conn.prepareCall("{call generate_invite_code(?,?)}");
       cs.setInt(1, user_id);
       cs.registerOutParameter(2, java.sql.Types.VARCHAR);
@@ -78,6 +81,7 @@ public final class Security {
       return "";
     } finally {
       Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
     }
   }
   
@@ -94,8 +98,8 @@ public final class Security {
       return false;
     }
     CallableStatement cs = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       cs = conn.prepareCall(
           String.format("{call user_logout(%d)}" , user_id));
       cs.execute();
@@ -104,6 +108,7 @@ public final class Security {
       return false;
     } finally {
       Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
     }
     return true;
   }
@@ -119,8 +124,8 @@ public final class Security {
     String salt = User_utils.get_user_salt(username);
     String hashed_pwd = User_utils.hash_password(password, salt);
     CallableStatement cs = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       cs = conn.prepareCall("{call check_login(?,?,?,?)}");
       cs.setNString( 1, username);
       cs.setString( 2, hashed_pwd);
@@ -137,6 +142,7 @@ public final class Security {
       return 0;
     } finally {
       Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -175,8 +181,8 @@ public final class Security {
       }
 
     CallableStatement cs = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       // see db_scripts/v1_setup.sql for
       // details on this stored procedure.
       
@@ -193,6 +199,7 @@ public final class Security {
       return "ERROR_IN_ENCRYPTING_COOKIE";
     } finally {
       Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -221,8 +228,8 @@ public final class Security {
     String ip_address = Utils.get_remote_address(r);
 
     CallableStatement cs = null;
+    Connection conn = Database_access.get_a_connection();
     try {
-      Connection conn = Database_access.get_a_connection();
       // see db_scripts/v1_setup.sql for
       // details on this stored procedure.
       
@@ -243,6 +250,7 @@ public final class Security {
       return -1;
     } finally {
       Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
     }
   }
 

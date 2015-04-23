@@ -38,24 +38,27 @@ public class Text implements javax.servlet.ServletContextListener {
       "SELECT MAX(language_id) AS maximum "+
       "FROM languages";
     PreparedStatement pstmt_get_count = null;
+    Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt_get_count = 
         Database_access.prepare_statement(conn, get_count_sql);
-      ResultSet resultSet_count = pstmt_get_count.executeQuery();
-      if (Database_access.resultset_is_null_or_empty(resultSet_count)) {
+      resultSet = pstmt_get_count.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
         System.err.println(
             "Error : null resultset when getting count of "+
             "languages");
       }
-      resultSet_count.next(); // move to the first set of results.
-      int max = resultSet_count.getInt("maximum");
+      resultSet.next(); // move to the first set of results.
+      int max = resultSet.getInt("maximum");
       return max;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return 0;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt_get_count);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -71,10 +74,11 @@ public class Text implements javax.servlet.ServletContextListener {
       "SELECT language_id, locale_id "+
       "FROM languages ORDER BY language_id ASC; ";
     PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt = Database_access.prepare_statement(conn, sqlText);     
-      ResultSet resultSet = pstmt.executeQuery();
+      resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return null;
       }
@@ -93,7 +97,9 @@ public class Text implements javax.servlet.ServletContextListener {
       Database_access.handle_sql_exception(ex);
       return null;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -107,24 +113,27 @@ public class Text implements javax.servlet.ServletContextListener {
       "SELECT MAX(local_id) AS maximum "+
       "FROM localization_lookup";
     PreparedStatement pstmt_get_count = null;
+    Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt_get_count = 
         Database_access.prepare_statement(conn, get_count_sql);
-      ResultSet resultSet_count = pstmt_get_count.executeQuery();
-      if (Database_access.resultset_is_null_or_empty(resultSet_count)) {
+      resultSet = pstmt_get_count.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
         System.err.println(
             "Error (7): null resultset when getting count of "+
             "localized values");
       }
-      resultSet_count.next(); // move to the first set of results.
-      int max = resultSet_count.getInt("maximum");
+      resultSet.next(); // move to the first set of results.
+      int max = resultSet.getInt("maximum");
       return max;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return 0;
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt_get_count);
+      Database_access.close_connection(conn);
     }
   }
 
@@ -179,8 +188,9 @@ public class Text implements javax.servlet.ServletContextListener {
       "WHERE language = ?";
 
     PreparedStatement pstmt_get_words = null;
+    Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
     try {
-      Connection conn = Database_access.get_a_connection();
       pstmt_get_words = 
         Database_access.prepare_statement(conn, get_words_sql);
       
@@ -199,24 +209,25 @@ public class Text implements javax.servlet.ServletContextListener {
 
         pstmt_get_words.setInt(1,language);
 
-        ResultSet resultSet_words = pstmt_get_words.executeQuery();
-        if (Database_access.resultset_is_null_or_empty(resultSet_words)) {
+        resultSet = pstmt_get_words.executeQuery();
+        if (Database_access.resultset_is_null_or_empty(resultSet)) {
           System.err.println(
               "Error (8): null resultset when pulling localized values");
         }
 
-        while (resultSet_words.next()) {
-          int id = resultSet_words.getInt("local_id");
-          String localized_text = resultSet_words.getNString("text");
+        while (resultSet.next()) {
+          int id = resultSet.getInt("local_id");
+          String localized_text = resultSet.getNString("text");
           words_array[id][language] = localized_text;
         }
-        resultSet_words.close();
       }
       
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt_get_words);
+      Database_access.close_connection(conn);
     }
   }
 
