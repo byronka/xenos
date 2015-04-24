@@ -704,6 +704,33 @@ Some things that are configured or done special on the production server:
 * when running the ant script on prod, you have to run it like this:
       ant run -Ddatabase.server=db1 -Ddatabase.password=PASSWORD_HERE
 
+* to get replication going, I did this:
+   - configured master and slave my my-huge.cnf
+   - modifed those defaults configs with some settings from manual to set
+      one as the master, one as slave.
+   - have whitelist firewall running on them.  Allows the other to speak,
+      and the web server
+   - on master database, ran this command to create a user for replication:
+   GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'db2.zenia.co' IDENTIFIED BY 'bigs3cret'; FLUSH PRIVILEGES;
+   - locked tables: FLUSH TABLES WITH READ LOCK
+   - get current position: SHOW MASTER STATUS
+   - backup.  run this:
+                    mysqldump -u root -p --all-databases --flush-privileges --single-transaction --master-data=2 --flush-logs --triggers --routines --events --hex-blob >/tmp/full_backup.sql
+   - copy that file to slave server, then run this:
+      cat full_backup | mysql -u root -p
+   - back on master, you can now run UNLOCK TABLES
+   - on slave, log in: mysql -u root -p
+   - run a command like this, modify for log position:
+      CHANGE MASTER TO
+        MASTER_HOST='db1.zenia.co',
+        MASTER_USER='replication_user',
+        MASTER_PASSWORD='7tP)gFXia*dV',
+        MASTER_PORT=3306,
+        MASTER_LOG_FILE='master-bin.000006',
+        MASTER_LOG_POS=367,
+        MASTER_CONNECT_RETRY=10;
+   - start replication: START SLAVE
+   - observe replication: SHOW SLAVE STATUS;
 
 Troubleshooting
 ===============
