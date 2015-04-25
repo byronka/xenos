@@ -11,6 +11,13 @@
   <!-- assign values to be used elsewhere in this script -->
   <!--====================================================-->
 
+  <!-- production build properties
+    This file, "build.properties", should only exist on the prod server,
+    for pointing at the database and having the username / password.  It
+    won't exist on the dev instances.  In fact, it's in .gitignore to be ignored.
+  -->
+  <property file="build.properties" />
+
 	<!-- Tomcat -->
   <property name="tomcat.home.bin" 
 		value="./web_container/apache-tomcat-8.0.14/bin/" />

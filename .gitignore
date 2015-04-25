@@ -48,3 +48,7 @@ web_container/apache-tomcat-8.0.14/webapps/ROOT/META-INF/context.xml
 #these applications on the prod server in this directory
 web_container/apache-tomcat-8.0.14/webapps/manager
 web_container/apache-tomcat-8.0.14/webapps/host-manager
+
+#this contains the server name for the database, and its username / password,
+#only used for the production server.
+build.properties
