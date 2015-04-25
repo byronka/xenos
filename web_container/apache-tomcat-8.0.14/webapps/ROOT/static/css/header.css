@@ -3,22 +3,11 @@ header {
   background-color: grey;
 }
 
-header form {
-  margin-top:5px;
-  margin-bottom:5px;
-  padding-left:7px;
-  padding-right:7px;
+header a {
   color: white;
-  display: inline-block;
 }
 
-header a {
-  margin-top:5px;
-  margin-bottom:5px;
-  padding-left:7px;
-  padding-right:7px;
-  margin-left: 10px;
-  margin-right: 10px;
+header form {
   color: white;
   display: inline-block;
 }
@@ -35,4 +24,51 @@ header a {
   top: -15px;
   width: 25px;
   z-index:2;
+}
+
+@media all and (min-width: 660px) {
+
+  header form {
+    margin-top:5px;
+    margin-bottom:5px;
+    padding-left:7px;
+    padding-right:7px;
+    color: white;
+    display: inline-block;
+  }
+
+  header a {
+    margin-top:5px;
+    margin-bottom:5px;
+    padding-left:4px;
+    padding-right:4px;
+    margin-left: 3px;
+    margin-right: 3px;
+  }
+
+}
+
+@media all and (max-width: 659px) {
+
+  header form input[type="text"]{
+    width: 100px;
+  }
+
+  header form {
+    margin-top:5px;
+    margin-bottom:5px;
+    padding-left:7px;
+    padding-right:7px;
+  }
+
+  header a {
+    margin-top:5px;
+    margin-bottom:5px;
+    padding-left:4px;
+    padding-right:4px;
+    margin-left: 3px;
+    margin-right: 3px;
+    display: inline-block;
+  }
+
 }

@@ -1,5 +1,10 @@
 @media all and (min-width: 660px) {
 
+  .button img {
+    width: 12px;
+    height: 12px;
+  }
+
   .button {
       display: inline-block;
       outline: none;
@@ -41,19 +46,20 @@
 /* handling situation where things get too narrow */
 @media all and (max-width: 659px) {
 
+  .button img {
+    width: 15px;
+    height: 15px;
+  }
+
   .button {
-    width: 85%;
-    display: block;
-    heigth: auto;
-    margin: 10px;
-    padding: 15px;
-    border: solid 2px #da7c0c;
-    background: #478dad;
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    font: 16px/100% Arial, Helvetica, sans-serif;
+    box-sizing: content-box;
     -moz-box-sizing: content-box;
     -ms-box-sizing: content-box;
   }
+
+  .button span {
+    display: none;
+  }
+
+}
 
