@@ -50,15 +50,8 @@ header form {
 
 @media all and (max-width: 659px) {
 
-  header form input[type="text"]{
-    width: 100px;
-  }
-
   header form {
-    margin-top:5px;
-    margin-bottom:5px;
-    padding-left:7px;
-    padding-right:7px;
+    display: none;
   }
 
   header a {

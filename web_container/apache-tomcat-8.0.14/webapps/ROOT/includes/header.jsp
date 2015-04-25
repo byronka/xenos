@@ -48,7 +48,7 @@
   </a>
   <a class="button" href="generate_icode.jsp">
     <span><%=loc.get(206,"Generate invitation code")%></span>
-    <img src="static/img/world_icon.png"   />
+    <img src="static/img/invitation.png"   />
   </a>
   <a class="button" href="user.jsp?user_id=<%=logged_in_user_id%>">
     <span>
