@@ -1,10 +1,3 @@
-@media all and (min-width: 660px) {
-
-  .button img {
-    width: 12px;
-    height: 12px;
-  }
-
   .button {
       display: inline-block;
       outline: none;
@@ -13,7 +6,6 @@
       border: solid 1px #da7c0c;
       background: #478dad;
       color: white;
-      height: 17px;
       text-decoration: none;
       font: 14px/100% Arial, Helvetica, sans-serif;
       box-sizing: content-box;
@@ -40,6 +32,13 @@
       position: relative;
       top: 1px;
   }
+@media all and (min-width: 660px) {
+
+  .button img {
+    width: 12px;
+    height: 12px;
+  }
+
 
 }
 
