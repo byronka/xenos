@@ -690,10 +690,6 @@ passwords for everything is in Secret Server, at ss.renomad.com
 
 
 
-Web Designers
-===============
-http://codepen.io/chrisdothtml
-
 
 Tomcat production configuration
 ===============================
