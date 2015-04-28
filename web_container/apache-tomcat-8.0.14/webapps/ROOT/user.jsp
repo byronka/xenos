@@ -45,7 +45,16 @@
   <%@include file="includes/header.jsp" %>
 
   <div class="container">
-      <h3><%=Utils.safe_render(the_user.username)%></h3>
+      <h3><%=Utils.safe_render(the_user.username)%>
+        <% if (uid == logged_in_user_id && !edit_desc ) { %>
+          <a href="user.jsp?user_id=<%=uid%>&amp;edit_desc=true" >
+              <img 
+                title="<%=loc.get(84,"Edit description")%>" 
+                src="static/img/edit.png" 
+                width="12px" height="12px" />
+          </a>
+        <% } %>
+      </h3>
 
       <p class="user-description">
       <%if (edit_desc) { %>
@@ -74,17 +83,6 @@
       <p>
 
       <div class="table">
-      <% if (uid == logged_in_user_id && !edit_desc ) { %>
-
-          <div class="row">
-            <a 
-              class="button" 
-              href="user.jsp?user_id=<%=uid%>&amp;edit_desc=true">
-                <%=loc.get(84,"Edit description")%>
-            </a>
-          </div>
-
-      <% } %>
 
 
 
@@ -102,18 +100,22 @@
         <span><%=Utils.get_stars(l_step)%></span>
       </div>
 
-      <%
-        Group_utils.Group_id_and_name[] shared_groups = 
-          Group_utils.get_shared_groups(logged_in_user_id,uid);
-      %>
+      <% if (uid != logged_in_user_id) { %>
 
-      <% if (shared_groups.length > 0) { %>
-        <div class="row">
-          <label>Shared groups:</label>
-          <% for (Group_utils.Group_id_and_name gian : shared_groups) { %>
-            <a href="group.jsp?group_id=<%=gian.id%>"><%=gian.name%></a>
-          <% } %>
-        </div>
+        <%
+          Group_utils.Group_id_and_name[] shared_groups = 
+            Group_utils.get_shared_groups(logged_in_user_id,uid);
+        %>
+
+        <% if (shared_groups.length > 0) { %>
+          <div class="row">
+            <label>Shared groups:</label>
+            <% for (Group_utils.Group_id_and_name gian : shared_groups) { %>
+              <a href="group.jsp?group_id=<%=gian.id%>"><%=gian.name%></a>
+            <% } %>
+          </div>
+        <% } %>
+
       <% } %>
 
       <% if (the_user.points < 0) { %>
