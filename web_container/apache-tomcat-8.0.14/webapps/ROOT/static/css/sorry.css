@@ -10,6 +10,17 @@ body {
 }
 
 
+#my_background {
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+	
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+  opacity: 0;
+}
+
 div.trademark {
   text-shadow:6px 7px 4px rgba(34,87,73,0.5);
   font-weight:normal;

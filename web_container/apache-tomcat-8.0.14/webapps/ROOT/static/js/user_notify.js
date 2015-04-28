@@ -25,14 +25,15 @@ xenos_user_notify.message_displayer = function() {
     var dialog = document.getElementById('notification_dialog');
     if (dialog != null) {
       dialog.style.opacity = 1; 
-      var fade = function() {
-        if ((dialog.style.opacity-=.1) < 0) { 
+      var fade = function(iteration) {
+        dialog.style.opacity-=.1; 
+        if (iteration == 0) {
           document.body.removeChild(dialog);
         } else {
-          setTimeout(fade,40);
+          setTimeout(fade,40, iteration - 1);
         }
       };
-      fade(); //kick it off.
+      fade(10); //kick it off.
     }
   }
 

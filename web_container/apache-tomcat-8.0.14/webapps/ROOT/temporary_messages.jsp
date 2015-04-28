@@ -20,12 +20,9 @@
         get_my_temporary_msgs(user_id, loc);
 %>
 
-<!DOCTYPE html>
-<%
-  for (String msg : msgs) { 
-%>
-
+<html>
+<% for (String msg : msgs) { %>
 <div><%=com.renomad.xenos.Utils.safe_render(msg)%></div>
-
 <% } %>
+</html>
 
