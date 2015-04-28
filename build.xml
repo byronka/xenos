@@ -101,7 +101,6 @@
   <target name="run" depends="compile-schema-code"
     description="full-cleans (bye-byte data!), builds a new database, compiles, starts server">
     <antcall target="compile" />
-    <antcall target="clean-schema" />
     <antcall target="build-schema" />
     <antcall target="build-functions" />
     <antcall target="build-procs" />
