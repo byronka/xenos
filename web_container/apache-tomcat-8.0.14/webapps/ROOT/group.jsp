@@ -177,32 +177,32 @@
 
       <% if (is_the_group_owner) { %>
         <form method="POST" id="invite_member" action="group.jsp">
-        <div class="table">
-          <div class="row">
-            <input type="hidden" id="group_id" name="group_id" value="<%=gid%>">
-            <input type="text" id="username" name="username" value="<%=Utils.safe_render(the_username)%>">
-                <% if (duplicate_invite_error) { %>
-                  <div class="error">
-                    An invitation has already been sent to this user.
-                  </div>
-                <% } %>
-                <% if (in_group_already_error) { %>
-                  <div class="error">
-                    This user is already in the group
-                  </div>
-                <% } %>
-                <% if (username_validation_error) { %>
-                  <div class="error">
-                    username was not found. 
-                  </div>
-                <% } %>
+          <div class="table">
+            <div class="row">
+              <input type="hidden" id="group_id" name="group_id" value="<%=gid%>">
+              <input type="text" id="username" name="username" value="<%=Utils.safe_render(the_username)%>">
+                  <% if (duplicate_invite_error) { %>
+                    <div class="error">
+                      An invitation has already been sent to this user.
+                    </div>
+                  <% } %>
+                  <% if (in_group_already_error) { %>
+                    <div class="error">
+                      This user is already in the group
+                    </div>
+                  <% } %>
+                  <% if (username_validation_error) { %>
+                    <div class="error">
+                      username was not found. 
+                    </div>
+                  <% } %>
+            </div>
           </div>
-        </div>
-        <div class="table">
-          <div class="row">
-            <button class="button" type="submit"><%=loc.get(61,"Send invite")%></button>
+          <div class="table">
+            <div class="row">
+              <button class="button" type="submit"><%=loc.get(61,"Send invite")%></button>
+            </div>
           </div>
-        </div>
         </form>
       <% } %>
 
