@@ -1,3 +1,7 @@
+truncate country;
+
+---DELIMITER---
+
 INSERT INTO country ( country_id , country_name )
 VALUES
 (1   ,'Afghanistan'),
