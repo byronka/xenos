@@ -1,17 +1,26 @@
 Seeking a motivated, passionate, intelligent individual willing to accept
 payment in the form of ownership portion of newly formed startup.
 
+Let's do this right out of the gate:
+The bad - drawbacks of this position:
+* We're not even off the ground - failure is an option
+* No funding
+* No salaries
+
+You're still reading? OMG.  
 The good - What's in it for you:
-* Ownership stake in a brand-spanking-new, not-even-off-the-ground startup
-* Run by an engineer
+* A vesting ownership stake in a brand-spanking-new,
+  not-even-off-the-ground startup
 * Minimalistic technology stack - we use tried-and-true technologies,
-in as simple a manner as possible.  Good documentation.
-* Extremely flexible hours.  Work best from 2am to 4am?  No problem.
-* Pick the number of hours you want to work weekly.  2 hours a 
-  week?  40?  Anything goes.
+  in as simple a manner as possible, with good documentation
+* Shallow learning curve - The fewest possible number of frameworks
+  and libraries were used.
+* Extremely flexible hours.  Work best from 2am to 4am?  No problem
+* Pick the number of hours you want to work weekly - 2 hours a 
+  week or 40, anything goes
 * Opportunity to learn the deep levels of a few key technologies
-* Quality, not quantity - move slow but do it right.  No distractions.
-* Culture of light, elegant, simple code.  
+* Quality, not quantity - move slow but do it right, and no distractions
+* Culture of light, elegant, simple code
 * Work remote from anywhere - no travel required
 
 Our technology stack:
@@ -26,20 +35,23 @@ Lighttpd
 
 What we are looking for:
 
-  Good character traits:
-  * intelligence or persistence or passion.  Any one will do.
-  * trustworthiness.  
-
-  - ability to program or learn to program
+  - Good character traits -  intelligence or persistence 
+    or passion.  Pick one or more.  
+  - ability to program or willingness to learn
   - willingness to use a simplistic style of coding - no big
-    machines here. Terms you'll want to learn: KISS, YAGNI.
-check out these links to get a sense of it:
-http://discuss.joelonsoftware.com/default.asp?joel.3.219431.12&
-http://josdejong.com/blog/2015/01/06/code-reuse/
-http://www.csd.uwo.ca/~magi/personal/humour/Computer_Audience/The%20Parable%20of%20the%20Two%20Programmers.html
+    machines here. Terms we have tattooed on our shoulders
+    (figuratively speaking, ha ha): KISS, YAGNI.
+  - check out these links to get a sense of it:
+  http://discuss.joelonsoftware.com/default.asp?joel.3.219431.12&
+  http://josdejong.com/blog/2015/01/06/code-reuse/
+  http://www.csd.uwo.ca/~magi/personal/humour/Computer_Audience/The%20Parable%20of%20the%20Two%20Programmers.html
 
 
-The bad - drawbacks of this position:
-* We're not even off the ground - failure is an option
-* No funding
-* No salaries
+
+Still interested? Make it through these filters:
+Send an email to check_us_out at renomad.com
+make the subject this: bananagram
+
+Submit a solution to this business requirement in any programming
+language you wish.  Pretend this is a real story, and let pragmatism
+and simplicity guide your work.
