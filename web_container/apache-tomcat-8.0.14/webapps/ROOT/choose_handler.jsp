@@ -86,6 +86,21 @@
           <label><%=loc.get(19,"Rank ladder")%>:</label>
           <span><%=Utils.get_stars(l_step)%></span>
         </div>
+
+        <%
+          Group_utils.Group_id_and_name[] shared_groups = 
+            Group_utils.get_shared_groups(logged_in_user_id,huid);
+        %>
+
+        <% if (shared_groups.length > 0) { %>
+          <div class="row">
+            <label>Shared groups:</label>
+            <% for (Group_utils.Group_id_and_name gian : shared_groups) { %>
+              <a href="group.jsp?group_id=<%=gian.id%>"><%=gian.name%></a>
+            <% } %>
+          </div>
+        <% } %>
+
         <div class="table">
           <div class="row">
           <a class="button" href="choose_handler.jsp?requestoffer=<%=r.requestoffer_id%>&user=<%=huid%>&confirm=true">
@@ -93,6 +108,8 @@
             </a>
           </div>
         </div>
+
+
       </div>
     </div>
   </div>

@@ -264,7 +264,18 @@
             <a href="user.jsp?user_id=<%=sr.user_id%>">
               <%=Utils.safe_render(servicer.username)%> 
             </a>
-            <%=loc.get(138,"wants to service")%>
+            <%
+              Group_utils.Group_id_and_name[] servicers_shared_groups = 
+                Group_utils.get_shared_groups(logged_in_user_id,sr.user_id);
+            %>
+
+            <% if (servicers_shared_groups.length > 0) { %>
+                <% for (Group_utils.Group_id_and_name gian : servicers_shared_groups) { %>
+                  <a class="group-name" href="group.jsp?group_id=<%=gian.id%>"><%=gian.name%></a>
+                <% } %>
+            <% } %>
+
+            <%=loc.get(138,"wants to handle")%>
             <a href="requestoffer.jsp?requestoffer=<%=sr.requestoffer_id%>">
               <%=Utils.get_trunc(Utils.safe_render(sr.desc),15)%>
             </a>
