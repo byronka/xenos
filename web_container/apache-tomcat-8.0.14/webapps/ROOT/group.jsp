@@ -141,18 +141,26 @@
                       <a href="user.jsp?user_id=<%=member.getKey()%>">
                         <%=Utils.safe_render(member.getValue())%>
                       </a>
+                      <% if (member.getKey() == logged_in_user_id) { %>
+                        <a href="edit_group_description.jsp?group_id=<%=gid%>">
+                          <img 
+                            title="<%=loc.get(62,"Edit my group description")%>" 
+                            src="static/img/edit.png" 
+                            width="12px" height="12px" />
+                        </a>
+                      <% } %>
+                      <% if (logged_in_user_id == the_group.owner_id) { %>
+                        <a href="remove_from_group.jsp?group_id=<%=gid%>&user_id=<%=member.getKey()%>">
+                          <img 
+                            title="<%=loc.get(88,"Remove this user")%>" 
+                            src="static/img/delete.png" 
+                            width="12px" height="12px" />
+                        </a>
+                      <% } %>
                       </label>
                       <div>
                         <%=Utils.safe_render(Group_utils.get_user_group_description(gid, member.getKey()))%>
                       </div>
-                    </div>
-                    <div class="row">
-                      <% if (logged_in_user_id == the_group.owner_id) { %>
-                        <a href="remove_from_group.jsp?group_id=<%=gid%>&user_id=<%=member.getKey()%>">Remove</a>
-                      <% } %>
-                      <% if (member.getKey() == logged_in_user_id) { %>
-                        <a class="button" href="edit_group_description.jsp?group_id=<%=gid%>">Edit my group description</a>
-                      <% } %>
                     </div>
                   <% } %>
               <% } %>
