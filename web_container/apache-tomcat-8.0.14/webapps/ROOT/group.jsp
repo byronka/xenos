@@ -114,15 +114,17 @@
               <a href="user.jsp?user_id=<%=the_group.owner_id%>">
                 <%=the_group.owner_username%>
               </a>
+              <% if (logged_in_user_id == the_group.owner_id) { %>
+                <a href="edit_group_description.jsp?group_id=<%=gid%>">
+                  <img title="<%=loc.get(62,"Edit my group description")%>" src="static/img/edit.png" 
+                    width="12px" height="12px" />
+                </a>
+              <% } %>
               <div>
                 <span>
                   <%=Group_utils.get_user_group_description(gid, the_group.owner_id)%>
                 </span>
               </div>
-              <% if (logged_in_user_id == the_group.owner_id) { %>
-                <a href="edit_group_description.jsp?group_id=<%=gid%>">
-                  <%=loc.get(62,"Edit my group description")%></a>
-              <% } %>
             </span>
       </div>
     </div>
