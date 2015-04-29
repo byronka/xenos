@@ -4,8 +4,8 @@
       <input type="hidden" name="country_id" id="country_id" value="<%=country_id%>">
       <input type="hidden" name="postal_code_id" id="postal_code_id" value="<%=postal_code_id%>">
       <div class="table" id="basic-section">
-        <div class="row">
 
+        <div class="row">
           <label for="description">* <%=loc.get(10,"Description")%>:</label>
           <textarea 
             id="description"
@@ -19,6 +19,7 @@
           <span class="error"><%=loc.get(5, "Please enter a description")%></span>
           <%}%> 
         </div>
+
         <div class="row">
           <label for="categories">* <%=loc.get(13,"Categories")%>:</label>
           <select 
