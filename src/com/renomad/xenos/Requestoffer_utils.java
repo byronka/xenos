@@ -83,12 +83,58 @@ public final class Requestoffer_utils {
       Database_access.handle_sql_exception(ex);
       return new Postcode_and_detail[0];
     } finally {
+      Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
 
   }
 
+  /**
+    * get details for a location, as a string.
+    * @return a string detail of location, like, "20165 sterling, Virginia"
+    *   or null if nothing found.
+    */
+  public static String
+    get_location_detail(int country_id, int postal_code_id) {
+
+    String sqlText = 
+      String.format(
+        "SELECT pc.postal_code, pcd.details " +
+        "FROM postal_code_details pcd " +
+        "JOIN postal_codes pc " +
+        "  ON pc.postal_code_id = pcd.postal_code_id " +
+        "    AND pc.country_id = pcd.country_id " +
+        "WHERE pc.postal_code_id = %d AND pc.country_id = %d", 
+        postal_code_id, country_id);
+
+    PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
+    try {
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return null;
+      }
+
+      resultSet.next();
+      String pcode = resultSet.getString("postal_code");
+      String detail = resultSet.getNString("details");
+
+      return pcode + ", " + detail;
+
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return null;
+    } finally {
+      Database_access.close_resultset(resultSet);
+      Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
+    }
+
+  }
 
   /**
     * put the requestoffer into a 'draft' status,

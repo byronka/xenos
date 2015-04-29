@@ -60,18 +60,22 @@
       <%if (edit_desc) { %>
 
         <form method="POST" action="user.jsp">
-          <textarea 
-            id="user_description" 
-            name="user_description" 
-            maxlength="500"
-            ><%=Utils.safe_render(User_utils.get_user_description(uid))%></textarea>
           <div class="table">
-          <div class="row">
-            <button class="button" type="submit" ><%=loc.get(72,"Save description")%></button>
-            <a class="button" href="user.jsp?user_id=<%=uid%>" >
-              <%=loc.get(130,"Cancel")%>
-            </a>
+            <div class="row">
+              <textarea 
+                id="user_description" 
+                name="user_description" 
+                maxlength="500"
+                ><%=Utils.safe_render(User_utils.get_user_description(uid))%></textarea>
+            </div>
           </div>
+          <div class="table">
+            <div class="row">
+              <button class="button" type="submit" ><%=loc.get(72,"Save description")%></button>
+              <a class="button" href="user.jsp?user_id=<%=uid%>" >
+                <%=loc.get(130,"Cancel")%>
+              </a>
+            </div>
           </div>
         </form>
 

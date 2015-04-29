@@ -75,6 +75,11 @@ footer {
     height: 25px;
   }
 
+  .row textarea {
+    height: 75px;
+    width: 350px;
+  }
+
   .table {
     padding: 10px;
     display: table;
@@ -135,7 +140,6 @@ footer {
     background: grey;
     color: white;
     border: 1px solid white;
-    margin-left: 15px;
     width: 100%;
   }
 

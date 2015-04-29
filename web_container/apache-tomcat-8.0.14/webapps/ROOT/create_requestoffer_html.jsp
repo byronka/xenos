@@ -5,6 +5,14 @@
       <input type="hidden" name="postal_code_id" id="postal_code_id" value="<%=postal_code_id%>">
       <div class="table" id="basic-section">
 
+        <% if (country_id != null && postal_code_id != null) { %>
+        <% String loc_det = Requestoffer_utils.get_location_detail(country_id, postal_code_id);%>
+          <div class="row">
+            <label for="location">* <%=loc.get(15,"Location details")%>:</label>
+            <span id="location"><%=loc_det%></span>
+          </div>
+        <% } %>
+
         <div class="row">
           <label for="description">* <%=loc.get(10,"Description")%>:</label>
           <textarea 
