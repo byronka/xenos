@@ -114,28 +114,30 @@ footer {
   }
 
   .row {
+    padding-top: 10px;
+    padding-bottom: 10px;
     display: block;
     width: 100%;
   }
 
-  .row label{
+  .row>label{
     display: block;
     width: 100%;
   }
 
-  .row select {
-    display: block;
-    height: 25px;
-    width: 100%;
-  }
-
-  .row textarea {
+  .row>select {
     display: block;
     height: 25px;
     width: 100%;
   }
 
-  .row span {
+  .row>textarea {
+    display: block;
+    height: 75px;
+    width: 100%;
+  }
+
+  .row>span {
     display: block;
     background: grey;
     color: white;
@@ -143,7 +145,7 @@ footer {
     width: 100%;
   }
 
-  .row input[type="password"], .row input[type="text"] {
+  .row>input[type="password"], .row input[type="text"] {
     width: 97%;
     height: 40px;
   }
