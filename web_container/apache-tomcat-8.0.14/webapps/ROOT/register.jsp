@@ -92,25 +92,45 @@
   <div class="trademark cl-effect-1"><a href="index.jsp">Zenia</a></div>
   <div class="register">
     <form id="enter_name_form" action="register.jsp" method="post">
-      <input type="hidden" name="icode" value="<%=invite_code%>" >
+      <div id="inputfields">
+        <input type="hidden" name="icode" value="<%=invite_code%>" >
 
-      <div class="error"><%=user_creation_error_msg%></div>
-      <div class="error"><%=icode_error_msg%></div>
+        <div class="error"><%=user_creation_error_msg%></div>
+        <div class="error"><%=icode_error_msg%></div>
 
-      <div class="username">
-        <div class="label"><%=loc.get(51 ,"username")%>:</div> 
-        <input value="<%=username%>" name="username" type="text" />
-        <span class="error"><%=username_error_msg %></span>
-      </div>
+        <div class="username">
+          <label for="usernameinput" class="label"><%=loc.get(51 ,"username")%>:</label> 
+          <input id="usernameinput" value="<%=username%>" name="username" type="text" />
+          <span class="error"><%=username_error_msg %></span>
+        </div>
 
-      <div id="password-container" class="password">
-        <div for="passwordinput" class="label"><%=loc.get(63,"Password")%>:</div> 
-        <input id="passwordinput" value="<%=password%>" name="password" type="password" />
-        <span class="error"><%=password_error_msg %></span>
+
+        <div id="password-container" class="password">
+          <label for="passwordinput" class="label"><%=loc.get(63,"Password")%>:</label> 
+          <input id="passwordinput"  name="password" type="password" />
+          <span class="error"><%=password_error_msg %></span>
+        </div>
+
+        <div class="complexity-requirements">
+
+          <div id="length">
+            <span id="length-requirement">Password Length: 8 characters:</span>
+            <img id="validlength" style="display: none" src="static/img/valid.png" width="25px" height="25px" title="valid" />
+            <img id="invalidlength" style="display: auto" src="static/img/warning.png" width="25px" height="25px" title="invalid" />
+          </div>
+
+          <div id="confirmed">
+            <span id="double_check">Confirmed:</span>
+            <img id="validconfirmed" style="display: none" src="static/img/valid.png" width="25px" height="25px" title="valid" />
+            <img id="invalidconfirmed" style="display: auto" src="static/img/warning.png" width="25px" height="25px" title="invalid" />
+          </div>
+
+        </div>
+
       </div>
 
 			<div id="button-wrapper">
-				<button type="submit">
+				<button id="submitbutton" disabled type="submit">
 					<%=loc.get(64,"Create my new user!")%>
 				</button>
 			</div>
@@ -121,19 +141,83 @@
 
   <script>
 
-    var pass_container = document.getElementById('password-container');
-    var validate_password_entry = 
-      '<input id="password-verify" style="margin-top: 10px" type="password"></input>'
+    // this listener checks that both passwords are the 
+    // same - from second input point of view
+    var both_passwords_the_same = function() { 
+      var password = document.getElementById('passwordinput');
+      var confirm_password = document.getElementById('password-verify');
+      if (password && confirm_password) { // if both fields exist
+        return password.value == confirm_password.value; // return whether they are the same
+      }
+    };
+
+    var password_meets_complexity = function() {
+      var password = document.getElementById('passwordinput');
+      return password.value.length >= 8;
+    }
+
+    var enable_submit_button = function() {
+      var submitbutton = document.getElementById('submitbutton');
+      submitbutton.disabled = false;
+    };
+
+    var disable_submit_button = function() {
+      var submitbutton = document.getElementById('submitbutton');
+      submitbutton.disabled = true;
+    };
+
+    var check_password = function() {
+      var validlength = document.getElementById('validlength');
+      var invalidlength = document.getElementById('invalidlength');
+
+      if (!password_meets_complexity()) {
+        validlength.style.display = 'none';
+        invalidlength.style.display = 'inline';
+      } else {
+        validlength.style.display = 'inline';
+        invalidlength.style.display = 'none';
+      }
+
+      if (!both_passwords_the_same()) {
+        validconfirmed.style.display = 'none';
+        invalidconfirmed.style.display = 'inline';
+      } else {
+        validconfirmed.style.display = 'inline';
+        invalidconfirmed.style.display = 'none';
+      }
+
+      if (both_passwords_the_same() && password_meets_complexity()) {
+        enable_submit_button();
+      } else {
+        disable_submit_button();
+      }
+
+    };
 
     var password_text_field = document.getElementById('passwordinput');
-    password_text_field.addEventListener(
-      'input',
+
+    // this adds an event listener to the primary password input field, such that
+    // when a user enters text there, it adds a new password field below it.
+    // The new password field has an event listener added so that when the two
+    // password fields have the same value, it allows "create new user" button
+    // to be clicked.
+    password_text_field.addEventListener( 'input',
       function(){
-        var second_field_exists = document.getElementById('password-verify');
-        if (this.value.length > 0 && !second_field_exists) {
-          pass_container.insertAdjacentHTML('beforeend',validate_password_entry);
-        } else if (this.value.length == 0 && second_field_exists)  {
-          pass_container.removeChild(second_field_exists); 
+        var second_field_exists = document.getElementById('password-verify-container');
+        var inputfields = document.getElementById('inputfields');
+        if (this.value.length > 0 && !second_field_exists) { // if we need to add the second password field
+          var validate_password_entry = 
+            '<div id="password-verify-container" class="password">' +
+            '<label for="password-verify" class="label"><%=loc.get(89,"Confirm password")%>:</label>' + 
+            '<input id="password-verify" type="password" />' +
+            '</div>'
+          inputfields.insertAdjacentHTML('beforeend',validate_password_entry);
+          var confirmation_input = document.getElementById('password-verify');
+          confirmation_input.addEventListener('input', check_password);
+        } else if (this.value.length == 0 && second_field_exists)  { // if we need to delete the second password field
+          inputfields.removeChild(second_field_exists); 
+        } else { // both input fields exist and we are comparing between them - first input point of view
+          check_password();
         }
       }
     );
