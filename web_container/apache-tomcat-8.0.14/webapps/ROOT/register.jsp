@@ -103,9 +103,9 @@
         <span class="error"><%=username_error_msg %></span>
       </div>
 
-      <div class="password">
-        <div class="label"><%=loc.get(63,"Password")%>:</div> 
-        <input value="<%=password%>" name="password" type="password" />
+      <div id="password-container" class="password">
+        <div for="passwordinput" class="label"><%=loc.get(63,"Password")%>:</div> 
+        <input id="passwordinput" value="<%=password%>" name="password" type="password" />
         <span class="error"><%=password_error_msg %></span>
       </div>
 
@@ -118,5 +118,28 @@
     </form>
 
   </div>
+
+  <script>
+
+    var pass_container = document.getElementById('password-container');
+    var validate_password_entry = 
+      '<input id="password-verify" style="margin-top: 10px" type="password"></input>'
+
+    var password_text_field = document.getElementById('passwordinput');
+    password_text_field.addEventListener(
+      'input',
+      function(){
+        var second_field_exists = document.getElementById('password-verify');
+        if (this.value.length > 0 && !second_field_exists) {
+          pass_container.insertAdjacentHTML('beforeend',validate_password_entry);
+        } else if (this.value.length == 0 && second_field_exists)  {
+          pass_container.removeChild(second_field_exists); 
+        }
+      }
+    );
+
+  </script>
+
 </body>
 </html>
+
