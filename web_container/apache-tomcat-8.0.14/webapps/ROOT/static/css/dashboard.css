@@ -20,8 +20,12 @@
 
 #ro-container {
   min-height: 200px;
-  margin: 4px;
+  margin-top: 4px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-bottom: 100px;
   padding: 5px;
+  
 }
 
 
