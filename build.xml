@@ -18,6 +18,9 @@
   -->
   <property file="build.properties" />
 
+  <!-- This should be set false in the build.properties on prod -->
+  <property name="dev.mode" value="true" />
+
 	<!-- Tomcat -->
   <property name="tomcat.home.bin" 
 		value="./web_container/apache-tomcat-8.0.14/bin/" />
@@ -83,7 +86,7 @@
       data to it, then cleans and builds the classes, puts everything
       in its place, and kicks off the server.
   -->
-  <target name="run-dev" depends="compile-schema-code"
+  <target if="${dev.mode}" name="run-dev" depends="compile-schema-code"
     description="full-cleans (bye-byte data!), makes a new database with sample data, compiles, starts server">
     <antcall target="compile" />
     <antcall target="clean-schema" />
@@ -99,7 +102,7 @@
   </target>
 
   <target name="run" depends="compile-schema-code"
-    description="full-cleans (bye-byte data!), builds a new database, compiles, starts server">
+    description="builds the schema, adds language/postal/country data, compiles">
     <antcall target="compile" />
     <antcall target="build-schema" />
     <antcall target="build-functions" />
@@ -110,7 +113,7 @@
 		<antcall target="build-countries-data" />
   </target>
 
-  <target name="clean-everything" depends="compile-schema-code"
+  <target if="${dev.mode}" name="clean-everything" depends="compile-schema-code"
     description="cleans everything possible">
     <antcall target="clean-schema" />
     <antcall target="clean-build" />
@@ -180,7 +183,7 @@
 
 
   <!-- deletes the database schema, and all its data -->
-  <target name="clean-schema" depends="compile-schema-code"  
+  <target if="${dev.mode}" name="clean-schema" depends="compile-schema-code"  
     description="deletes the db schema, and ALL DATA!">
     <java 
       classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
@@ -266,7 +269,7 @@
     build-sample-data adds some sample data to the database to make
     testing easier.
   -->
-  <target name="build-sample-data" depends="compile-schema-code" 
+  <target if="${dev.mode}" name="build-sample-data" depends="compile-schema-code" 
     description="adds sample data to the database for testing">
     <java 
 			classpath="build_schema/classes:lib/mysql-connector-java-5.1.33-bin.jar"
@@ -376,7 +379,7 @@
   <!--====================================================-->
 
 	<!-- Creates Javadoc -->
-	<target name="docs" 
+	<target if="${dev.mode}" name="docs" 
     description="builds the javadocs">
 		<javadoc packagenames="com.renomad.xenos" sourcepath="${src.dir}" destdir="${docs.dir}">
 			<!-- Define which files / directory should get included, we include all -->
@@ -403,7 +406,7 @@
   <!--====================================================-->
 
     <!-- Run the JUnit Tests -->
-	<target name="test" description="runs the tests">
+	<target if="${dev.mode}" name="test" description="runs the tests">
 		<junit printsummary="on" fork="true" haltonfailure="yes">
 			<jvmarg value="-DTESTING_DATABASE_CODE_WITHOUT_TOMCAT=true"	/>
 			<jvmarg value="-D${conn.str.with.db}"	/>
@@ -433,7 +436,7 @@
   <!-- Scripts for running static code analysis on the codebase -->
   <!--===========================================================-->
 
-  <target name="lint-all" description="runs all the lint programs" >
+  <target if="${dev.mode}" name="lint-all" description="runs all the lint programs" >
 		<antcall target="findbugs" />
 		<antcall target="pmd" />
 		<antcall target="lint4j" />
@@ -533,6 +536,9 @@
     <echo message="  Then, to build everything, just run:"/> 
     <echo message="     ant run-dev"/> 
     <echo message=""/> 
+    <echo message=" If you are on the production server...you need to know what"/> 
+    <echo message=" you are doing. Read the docs/dev_manual."/> 
+    <echo message=""/> 
     <echo message="  Execute 'ant -p' for build file help."/> 
   </target> 
 
@@ -550,7 +556,7 @@
   <!-- This target acts as a dependency to tell if Tomcat is running 
       "pidfile" is set in $CATALINA_HOME/bin/setenv.sh, and contains
       the process id of Catalina.-->
-  <target name="check-if-tomcat-running" 
+  <target name="check-if-tomcat-running" if="${dev.mode}"
 	depends="check-unix-tomcat-running, check-windows-tomcat-running">
   </target>
 
@@ -566,12 +572,12 @@
 		  value="true" />
 	</target>
 
-  <target name="tomcat-restart" description="restart the tomcat server">
+  <target if="${dev.mode}" name="tomcat-restart" description="restart the tomcat server">
       <antcall target="tomcat-stop" />
       <antcall target="tomcat-start" />
   </target>
 
-  <target name="tomcat-start" description="start tomcat">
+  <target if="${dev.mode}" name="tomcat-start" description="start tomcat">
     <exec executable="${tomcat.home.bin}startup.sh" osfamily="unix" />
     <exec executable="${tomcat.home.bin}startup.bat" osfamily="windows" />
     <echo message=""/>
