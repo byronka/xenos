@@ -830,12 +830,12 @@ CREATE PROCEDURE create_new_user
 ) 
 BEGIN 
   DECLARE count_email_username INT;
-  DECLARE count_invite_code INT;
   DECLARE my_ipaddr VARCHAR(50);
   DECLARE msg NVARCHAR(150);
   DECLARE message NVARCHAR(150);
   DECLARE the_user_name NVARCHAR(15);
   DECLARE new_user_id INT UNSIGNED;
+  DECLARE inviter_id INT UNSIGNED;
 
   -- make sure the username and password and salt are non-empty
   call is_non_empty_string('create_new_user','uname',uname);
@@ -856,13 +856,13 @@ BEGIN
   END IF;
 
   -- check that the invite code is valid
-  SELECT COUNT(*) INTO count_invite_code
+  SELECT user_id INTO inviter_id
   FROM invite_code
   WHERE value = my_invite_code;
 
   -- guard against the count of valid invite codes being zero
   -- we will use this error message back on the client side.
-  IF count_invite_code = 0 THEN
+  IF inviter_id IS NULL THEN
       -- if the ip address is too long, truncate
       IF LENGTH(ipaddr) > 20 THEN
         SET my_ipaddr = CONCAT(SUBSTR(ipaddr,1,20),'...');
@@ -902,7 +902,7 @@ BEGIN
   WHERE value = my_invite_code;
 
   -- Add an audit about registering a new user
-  CALL add_audit(101,new_user_id,NULL,NULL,NULL,ipaddr);
+  CALL add_audit(101,new_user_id,inviter_id,NULL,NULL,ipaddr);
 
 END
 
