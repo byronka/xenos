@@ -111,6 +111,7 @@
 		<antcall target="build-language-data" />
 		<antcall target="build-postal-code-data" />
 		<antcall target="build-countries-data" />
+    <echo message="If this succeeded, start up tomcat"/>
   </target>
 
   <target if="${dev.mode}" name="clean-everything" depends="compile-schema-code"
