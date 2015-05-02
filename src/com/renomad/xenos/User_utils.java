@@ -510,7 +510,7 @@ public final class User_utils {
     * adds a user.  Will check that values were entered for required
     * fields, and if so, will create the user.  Note that at that
     * point, the database has constraints which might cause failure
-    * still.  See put_user's overload.
+    * still.  
     * @param invite_code users generate a code to invite their buddies to the system.  With
     *  this code, the user is allowed to register.
     * @return true if successful
@@ -518,7 +518,8 @@ public final class User_utils {
   public static Put_user_result put_user(String username, String password, String ip_address, String invite_code) {
 
       if ( Utils.is_null_or_empty(username) ||
-           Utils.is_null_or_empty(password)) {
+           Utils.is_null_or_empty(password) ||
+           password.length() < 8) {
         return Put_user_result.INVALID_ENTRY;
       }
 
