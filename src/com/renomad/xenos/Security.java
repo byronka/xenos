@@ -73,7 +73,7 @@ public final class Security {
       cs = conn.prepareCall("{call generate_invite_code(?,?)}");
       cs.setInt(1, user_id);
       cs.registerOutParameter(2, java.sql.Types.VARCHAR);
-      cs.executeQuery();
+      cs.execute();
       String invite_code = cs.getString(2);
       return invite_code;
     } catch (SQLException ex) {
@@ -131,7 +131,7 @@ public final class Security {
       cs.setString( 2, hashed_pwd);
       cs.setString( 3, ip_address);
       cs.registerOutParameter(4, java.sql.Types.INTEGER);
-      cs.executeQuery();
+      cs.execute();
       Integer user_id_found = cs.getInt(4);
 			if (cs.wasNull()) {
 				return 0;
@@ -191,7 +191,7 @@ public final class Security {
         , user_id));
       cs.setString(1,ip);
       cs.registerOutParameter(2, java.sql.Types.VARCHAR);
-      cs.executeQuery();
+      cs.execute();
       String cookie = cs.getString(2);
       return cookie;
     } catch (SQLException ex) {

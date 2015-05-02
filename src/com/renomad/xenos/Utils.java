@@ -19,6 +19,8 @@ import java.sql.PreparedStatement;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import java.nio.charset.Charset;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -384,7 +386,7 @@ public static String get_remote_address(HttpServletRequest r) {
     } catch (NoSuchAlgorithmException ex) {
       System.err.println("Error: no such algorithm: SHA-256");
     }
-    byte[] passBytes = value_to_hash.getBytes();
+    byte[] passBytes = value_to_hash.getBytes(Charset.forName("UTF-8"));
     byte[] passHash = sha256.digest(passBytes);
     return passHash;
   }

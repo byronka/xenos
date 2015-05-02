@@ -1037,7 +1037,7 @@ public final class Requestoffer_utils {
       cs = conn.prepareCall(String.format(
         "{call delete_requestoffer(%d,%d)}"
         ,deleting_user_id, requestoffer_id));
-      cs.executeQuery();
+      cs.execute();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return false;
@@ -1232,7 +1232,7 @@ public final class Requestoffer_utils {
       cs = conn.prepareCall("{call assign_location_to_current(?,?)}");
       cs.setInt(1, location_id);
       cs.setInt(2, user_id);
-      cs.executeQuery();
+      cs.execute();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return false;
@@ -1255,7 +1255,7 @@ public final class Requestoffer_utils {
       cs = conn.prepareCall("{call assign_location_to_requestoffer(?,?)}");
       cs.setInt(1, location_id);
       cs.setInt(2, requestoffer_id);
-      cs.executeQuery();
+      cs.execute();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return false;
@@ -1294,7 +1294,7 @@ public final class Requestoffer_utils {
       cs.setString(7, postcode); // postal code uses latin characters.
       cs.setNString(8, country);
       cs.registerOutParameter(9, java.sql.Types.INTEGER);
-      cs.executeQuery();
+      cs.execute();
       int new_location_id = cs.getInt(9);
       return new_location_id;
     } catch (SQLException ex) {
@@ -1354,7 +1354,7 @@ public final class Requestoffer_utils {
         cs.setNull(6, java.sql.Types.INTEGER);
       }
       cs.registerOutParameter(7, java.sql.Types.INTEGER);
-      cs.executeQuery();
+      cs.execute();
       new_requestoffer_id = cs.getInt(7);
     } catch (SQLException ex) {
       String msg = ex.getMessage();

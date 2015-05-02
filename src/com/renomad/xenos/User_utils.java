@@ -488,7 +488,7 @@ public final class User_utils {
       cs.setInt(1,executing_user_id);
       cs.setInt(2,user_id);
       cs.setString(3,hashed_pwd);
-      cs.executeQuery();
+      cs.execute();
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
       return false;
@@ -535,7 +535,7 @@ public final class User_utils {
         cs.setString(3,salt);
         cs.setString(4,ip_address);
         cs.setString(5,invite_code);
-        cs.executeQuery();
+        cs.execute();
       } catch (SQLException ex) {
 				String msg = ex.getMessage();
 				if (msg.contains("Duplicate entry") ||
