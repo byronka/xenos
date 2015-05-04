@@ -12,6 +12,11 @@ header form {
   display: inline-block;
 }
 
+a.header-button {
+  position: relative;
+}
+
+
 #count-of-invites {
   background: url("../img/group_invite_alert.png") 
     no-repeat scroll 0 0 / contain ;
@@ -54,6 +59,12 @@ header form {
     display: none;
   }
 
+  a.header-button span {
+    font-size: smaller;
+    position: absolute;
+    top: 44px;
+  }
+
   header a {
     margin-top:5px;
     margin-bottom:5px;
@@ -63,5 +74,6 @@ header form {
     margin-right: 3px;
     display: inline-block;
   }
+
 
 }
