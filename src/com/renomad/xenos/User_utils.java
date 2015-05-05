@@ -556,6 +556,91 @@ public final class User_utils {
   }
 
 
+  public static boolean is_valid_invite_code (String icode) {
+
+    if ( Utils.is_null_or_empty(icode)) {
+      return false;
+    }
+
+    String sqlText = 
+      "SELECT user_id " +
+      "FROM invite_code " +
+      "WHERE value = ?";
+
+    PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
+    try {
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setString( 1, icode);
+      resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return false;
+      }
+
+      resultSet.next(); //move to the first set of results.
+      int inviter_id = resultSet.getInt("user_id");
+      return inviter_id > 0;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return false;
+    } finally {
+      Database_access.close_resultset(resultSet);
+      Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
+    }
+  }
+
+
+  public static Put_user_result is_valid_username (String username, String icode) {
+
+    if ( Utils.is_null_or_empty(username)) {
+      return Put_user_result.INVALID_ENTRY;
+    }
+
+    if (!is_valid_invite_code(icode)) {
+      return Put_user_result.INVALID_INVITE_CODE;
+    }
+
+    String sqlText = 
+      "SELECT COUNT(*) AS existing_username_count "+
+      "FROM user u  " +
+      "WHERE (u.username = ? OR u.email = ?) ";
+
+    PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
+    try {
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setNString( 1, username);
+      pstmt.setNString( 2, username);
+      resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return Put_user_result.GENERAL_ERR;
+      }
+
+      resultSet.next(); //move to the first set of results.
+      int count = resultSet.getInt("existing_username_count");
+      if (count > 0) {
+        return Put_user_result.EXISTING_USERNAME;
+      }
+      if (count < 0) {
+        return Put_user_result.GENERAL_ERR;
+      }
+      return Put_user_result.OK;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return  Put_user_result.GENERAL_ERR;
+    } finally {
+      Database_access.close_resultset(resultSet);
+      Database_access.close_statement(pstmt);
+      Database_access.close_connection(conn);
+    }
+  }
+
+
   /**
     * Just like it says: concatenates the salt and password, and then
     * generates a hash from it.  We'll go with Sha256.
