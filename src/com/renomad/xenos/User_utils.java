@@ -523,6 +523,11 @@ public final class User_utils {
         return Put_user_result.INVALID_ENTRY;
       }
 
+    if (username.trim().indexOf(" ") > -1) {
+      //no spaces allowed in username
+      return Put_user_result.INVALID_ENTRY;
+    }
+
       CallableStatement cs = null;
       Connection conn = Database_access.get_a_connection();
       try {
@@ -596,6 +601,11 @@ public final class User_utils {
   public static Put_user_result is_valid_username (String username, String icode) {
 
     if ( Utils.is_null_or_empty(username)) {
+      return Put_user_result.INVALID_ENTRY;
+    }
+
+    if (username.trim().indexOf(" ") > -1) {
+      //no spaces allowed in username
       return Put_user_result.INVALID_ENTRY;
     }
 

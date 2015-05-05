@@ -72,6 +72,8 @@
           break;
         case GENERAL_ERR:
          // fall through.
+        case INVALID_ENTRY:
+         // fall through.
         default:
           response.sendRedirect("general_error.jsp"); // developer error if this happens, usually
           return;

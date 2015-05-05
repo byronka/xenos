@@ -24,6 +24,7 @@
   //get the values straight from the client
   String username = "";
   boolean validation_error = false;
+  boolean has_username_error = false;
 
   //we'll put error messages here if validation errors occur
   String username_error_msg = "";  //empty username
@@ -63,6 +64,9 @@
         case INVALID_INVITE_CODE:
           icode_error_msg = loc.get(201,"Invalid invite code");
           break;
+        case INVALID_ENTRY:
+          has_username_error = true;
+          break;
         case GENERAL_ERR:
          // fall through.
         default:
@@ -95,6 +99,9 @@
           <label for="usernameinput" class="label"><%=loc.get(51 ,"username")%>:</label> 
           <input id="usernameinput" value="<%=username%>" name="username" type="text" />
           <span class="error"><%=username_error_msg %></span>
+          <% if (has_username_error) {%>
+            <span class="error">Username cannot contain spaces</span>
+          <% } %>
         </div>
 
         <div id="button-wrapper">
