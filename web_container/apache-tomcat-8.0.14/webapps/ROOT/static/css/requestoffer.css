@@ -1,17 +1,5 @@
 /* stuff related to create requestoffer */
 
-#create-requestoffer-container {
-   margin: 4px;
-   padding: 5px;
-   border: 1px solid #8888bb;
-   background: #ccccff;
-}
-
-#ro-container ul {
-  list-style: none;
-  padding: 0px;
-}
-
 a.rank_6 {
   border: 5px solid #accb2f;
 }
@@ -55,20 +43,12 @@ a.requestoffer {
   font-size: 7px;
 }
 
-#ro-container li.requestoffering-user-id{
-  display: none;
-}
-
-#ro-container li.categories {
-  display: none;
-}
-
-div.desc.container.taken {
+span.desc.container.taken {
   text-decoration: line-through;
   color: grey;
 }
 
-div.desc.container {
+span.desc.container {
   overflow: hidden;
   background: black;
   padding: 5px;
@@ -90,7 +70,7 @@ a.page-link {
 }
 
 
-div.category {
+span.category {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: right center;

@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="static/css/requestoffer.css" >
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css">
-    <script type="text/javascript" src="static/js/utils.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%=loc.get(16,"The dashboard")%></title>
   </head>
@@ -25,12 +24,6 @@
     id='my_background' 
     src="static/img/galaxy_universe-normal.jpg" />
   <%@include file="includes/header.jsp" %>
-
-  <div id="overall-container">
-
-
-<div id="see-and-create-requestoffer">
-
 
   <div id="ro-container">
     <h3 style="color: white">Favors you can handle:</h3>
@@ -89,45 +82,29 @@
       Requestoffer_utils.OR_Package or_package = 
         Requestoffer_utils.get_others_requestoffers(logged_in_user_id, 
                                           so , 
-                                          which_page);
-      for (Others_Requestoffer r : or_package.get_requestoffers()) { %>
-      <%int l_step = Requestoffer_utils.get_ladder_step(r.rank_ladder);%>
-      <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-        <ul>
-
-          <li>
-          <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
-                <%=Utils.safe_render(r.description)%>
-                <div class="datetime">
-                  <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
-                </div>
-             </div> 
-             <div class="category c-<%=r.category%>" >&nbsp;</div>
-          </li>
-
-          <li class="requestoffering-user-id">
-            <div><%=loc.get(80, "User")%>:</div>
-            <%
-              User ru = User_utils.get_user(r.requestoffering_user_id);
-            %>
-            <span> <%=Utils.safe_render(ru.username)%></span>
-          </li>
-
-          <li class="categories">
-            <div><%=loc.get(13, "Categories")%>:</div>
-            <span >
-              <%=loc.get(r.category,"")%> 
+                                          which_page); 
+      %>
+      <% if (or_package.get_requestoffers().length == 0) { %>
+        <%=loc.get(103, "None")%>
+      <% } else { %>                                          
+        <% for (Others_Requestoffer r : or_package.get_requestoffers()) { %>
+        <%int l_step = Requestoffer_utils.get_ladder_step(r.rank_ladder);%>
+        <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+          <span class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+            <%=Utils.safe_render(r.description)%>
+            <span class="datetime">
+              <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
             </span>
-          </li>
+           </span> 
+           <span class="category c-<%=r.category%>" >&nbsp;</span>
 
           <%if (r.distance != null ) {%>
-            <li class="distance">
+            <span class="distance">
               about <%=String.format("%.1f",r.distance)%> miles
-            </li>
+            </span>
           <% } %>
-
-        </ul>
-      </a>
+        </a>
+      <% } %>
     <% } %>
 
     <%if(or_package.page_count > 1) {%>
@@ -148,8 +125,6 @@
       }%>
     <%}%>
   </div>
-</div>
-</div>
   <%@include file="includes/footer.jsp" %>
 </body>
 </html>
