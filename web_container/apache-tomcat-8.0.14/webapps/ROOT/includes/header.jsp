@@ -50,7 +50,7 @@
         <img src="static/img/call_bell.png"   />
       </a>
       <a class="button header-button" href="select_country.jsp?usecase=1">
-        <span><%=loc.get(14,"Request favor with location")%></span>
+        <span><%=loc.get(14,"Request Favor with location")%></span>
         <img src="static/img/request_with_location.png"   />
       </a>
       <a class="button header-button" href="generate_icode.jsp">
