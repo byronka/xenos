@@ -470,6 +470,45 @@ public static String get_remote_address(HttpServletRequest r) {
 
 
   /**
+    * Just like show_date_delta, but shows "later" rather than "ago"
+    */
+  public static String show_date_delta_later(
+      Calendar cal_1, 
+      Calendar cal_2,
+      Localization loc) {
+    long seconds_diff = Math.abs(cal_2.getTime().getTime() -
+        cal_1.getTime().getTime()) / 1000;
+
+    if (seconds_diff > 0 && seconds_diff < 60) {
+      return String.format(loc.get(214, "%d seconds later"),
+          seconds_diff);
+    }
+
+    if (seconds_diff >= 60 && seconds_diff < 60 * 60) {
+      return String.format(loc.get(215, "%d minutes later"),
+          seconds_diff/60);
+    } 
+
+    if (seconds_diff >= 60*60 && seconds_diff < 60*60*24) {
+      return String.format(loc.get(216, "%d hours later"),
+          seconds_diff/60/60);
+    }
+
+    if (seconds_diff >= 60*60*24 && seconds_diff < 60*60*24*365) {
+      return String.format(loc.get(217, "%d days later"),
+          seconds_diff/60/60/24);
+    }
+
+    if (seconds_diff >= 60*60*24*365) {
+      return String.format(loc.get(218, "%d years later"),
+          seconds_diff/60/60/24/365);
+    }
+
+    return "";
+  }
+
+
+  /**
     * a helper method to get the difference between a particular date
     * and now
     */

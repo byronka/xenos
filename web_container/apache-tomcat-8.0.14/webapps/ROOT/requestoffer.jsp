@@ -179,13 +179,23 @@
       </div>
 
 
-         <% String[] messages = 
-            Requestoffer_utils.get_messages(r.requestoffer_id, logged_in_user_id);
-           for (String m : messages) { %>
+        <% Requestoffer_utils.MessageWithDate[] messages = 
+          Requestoffer_utils.get_messages(r.requestoffer_id, logged_in_user_id);
+        %>
 
-          <p><%=Utils.safe_render(m)%></p>
+        <% for (int i = 0; i < messages.length; i++) { %>
+          <% if (i == 0) { %>
+            <%=Utils.show_delta_to_now(Utils.parse_date(messages[i].date),loc)%>:
+          <% } else { %>
+            <%=Utils.show_date_delta_later(
+              Utils.parse_date(messages[i].date),
+              Utils.parse_date(messages[i-1].date),
+              loc)%>
+          <% } %>
+          <p><%=Utils.safe_render(messages[i].message)%></p>
+        <% } %>
 
-        <%} if (show_message_input) { %>
+        <% if (show_message_input) { %>
 
           <form method="POST" 
             action="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&service=true">

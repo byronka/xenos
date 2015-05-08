@@ -1652,6 +1652,16 @@ public final class Requestoffer_utils {
   }
 
 
+  public static class MessageWithDate {
+    public final String message;
+    public final String date;
+    public MessageWithDate(String message, String date) {
+      this.message = message;
+      this.date = date;
+    }
+  }
+
+
   /**
     * gets all the messages (correspondence between users) for a 
 		*  requestoffer.  
@@ -1660,12 +1670,12 @@ public final class Requestoffer_utils {
     * @return an array of messages for this requestoffer, 
     * or empty array if failure.
     */
-  public static String[] get_messages(int requestoffer_id, int user_id) {
+  public static MessageWithDate[] get_messages(int requestoffer_id, int user_id) {
     //sql here is: get messages for this requestoffer where I (user_id)
     // am one of the participants in the conversation
     String sqlText = 
       String.format(
-      "SELECT message FROM requestoffer_message "+
+      "SELECT message, timestamp FROM requestoffer_message "+
       "WHERE requestoffer_id = %d "+
       "AND (from_user_id = %d OR to_user_id = %d) " +
       "ORDER BY timestamp ASC ", 
@@ -1679,23 +1689,24 @@ public final class Requestoffer_utils {
           conn, sqlText);     
       resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
-        return new String[0];
+        return new MessageWithDate[0];
       }
 
       //keep adding rows of data while there is more data
-      ArrayList<String> messages = new ArrayList<String>();
+      ArrayList<MessageWithDate> messages = new ArrayList<MessageWithDate>();
       while(resultSet.next()) {
         String msg = resultSet.getNString("message");
-        messages.add(msg);
+        String date = resultSet.getString("timestamp");
+        messages.add(new MessageWithDate(msg, date));
       }
 
       //convert arraylist to array
-      String[] array_of_messages = 
-        messages.toArray(new String[messages.size()]);
+      MessageWithDate[] array_of_messages = 
+        messages.toArray(new MessageWithDate[messages.size()]);
       return array_of_messages;
     } catch (SQLException ex) {
       Database_access.handle_sql_exception(ex);
-      return new String[0];
+      return new MessageWithDate[0];
     } finally {
       Database_access.close_resultset(resultSet);
       Database_access.close_statement(pstmt);
