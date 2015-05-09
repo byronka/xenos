@@ -1,9 +1,11 @@
 <%@ page import="com.renomad.xenos.Group_utils" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <header>
-  <a style="float: left;" class="trademark" href="dashboard.jsp">Zenia</a>
   <div class="header-table">
     <div class="header-row">
+      <div class="header-button">
+        <a class="trademark" href="dashboard.jsp">Zenia</a>
+      </div>
       <div class="header-button">
         <a class="button" href="advanced_search.jsp">
           <span><%=loc.get(81,"Advanced search")%></span>

@@ -1,5 +1,9 @@
 /* stuff related to create requestoffer */
 
+span.category, span.datetime, span.distance {
+  display: block;
+}
+
 a.rank_6 {
   border: 5px solid #accb2f;
 }

@@ -342,13 +342,13 @@
             <div class="requestoffer mine">
               <% // requestoffer view starts HERE %>
               <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                  <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                  <span class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
                         <%=Utils.safe_render(r.description)%>
-                        <div class="datetime">
+                        <span class="datetime">
                           <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
-                        </div>
-                     </div> 
-                     <div class="category c-<%=r.category%>" >&nbsp;</div>
+                        </span>
+                     </span> 
+                     <span class="category c-<%=r.category%>" >&nbsp;</span>
               </a>
               <% // requestoffer view ENDS HERE %>
             </div>
@@ -397,13 +397,13 @@
             <div class="requestoffer mine">
               <% // requestoffer view starts HERE %>
               <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                  <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                  <span class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
                         <%=Utils.safe_render(r.description)%>
-                        <div class="datetime">
+                        <span class="datetime">
                           <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
-                        </div>
-                     </div> 
-                     <div class="category c-<%=r.category%>" >&nbsp;</div>
+                        </span>
+                     </span> 
+                     <span class="category c-<%=r.category%>" >&nbsp;</span>
               </a>
               <% // requestoffer view ENDS HERE %>
             </div>
@@ -423,13 +423,13 @@
         <div class="requestoffer mine">
             <% // requestoffer view starts HERE %>
             <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                <div class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                <span class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
                       <%=Utils.safe_render(r.description)%>
-                      <div class="datetime">
+                      <span class="datetime">
                         <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
-                      </div>
-                   </div> 
-                   <div class="category c-<%=r.category%>" >&nbsp;</div>
+                      </span>
+                   </span> 
+                   <span class="category c-<%=r.category%>" >&nbsp;</span>
             </a>
             <% // requestoffer view ENDS HERE %>
         </div>
