@@ -7,12 +7,26 @@ header a {
   color: white;
 }
 
+.header-button {
+  flex: 0 1 auto;
+}
+
+.header-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.header-table {
+  padding-bottom: 30px;
+}
+
 header form {
   color: white;
   display: inline-block;
 }
 
-a.header-button {
+.header-button a {
   position: relative;
 }
 
@@ -33,14 +47,6 @@ a.header-button {
 
 @media all and (min-width: 660px) {
 
-  header form {
-    margin-top:5px;
-    margin-bottom:5px;
-    padding-left:7px;
-    padding-right:7px;
-    color: white;
-    display: inline-block;
-  }
 
   header a {
     margin-top:5px;
@@ -55,15 +61,20 @@ a.header-button {
 
 @media all and (max-width: 659px) {
 
+  .header-row {
+    padding-bottom: 30px;
+  }
+
   header form {
     display: none;
   }
 
-  a.header-button span {
+  .header-button span {
     font-size: smaller;
     position: absolute;
     top: 44px;
   }
+
 
   header a {
     margin-top:5px;
