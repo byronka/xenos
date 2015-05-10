@@ -26,13 +26,7 @@ header a {
 }
 
 .header-table {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  display: flex;
-  flex-direction: column;
+  display: block;
   padding-bottom: 30px;
 }
 
