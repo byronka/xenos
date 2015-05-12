@@ -26,39 +26,39 @@
       </div>
 
     <%
-      Requestoffer[] header_offers = 
+      Requestoffer[] offers = 
         Requestoffer_utils
         .get_requestoffers_I_offered_to_service(logged_in_user_id);
 
-      Requestoffer_utils.Service_request[] header_service_requests = 
+      Requestoffer_utils.Service_request[] service_requests = 
         Requestoffer_utils.get_service_requests(logged_in_user_id);
 
-      Others_Requestoffer[] header_handling_requestoffers = 
+      Others_Requestoffer[] handling_requestoffers = 
         Requestoffer_utils.get_requestoffers_I_am_handling(logged_in_user_id);
 
-      Requestoffer[] header_my_closed_requestoffers = 
+      Requestoffer[] my_closed_requestoffers = 
         Requestoffer_utils
         .get_requestoffers_for_user_by_status(logged_in_user_id,77);
 
-      Requestoffer[] header_my_taken_requestoffers = 
+      Requestoffer[] my_taken_requestoffers = 
         Requestoffer_utils
         .get_requestoffers_for_user_by_status(logged_in_user_id,78);
 
-      Requestoffer[] header_my_draft_requestoffers = 
+      Requestoffer[] my_draft_requestoffers = 
         Requestoffer_utils
         .get_requestoffers_for_user_by_status(logged_in_user_id,109);
 
-      Requestoffer[] header_my_open_requestoffers = 
+      Requestoffer[] my_open_requestoffers = 
         Requestoffer_utils
         .get_requestoffers_for_user_by_status(logged_in_user_id,76);
 
-      int ho_count = header_offers.length;
-      int hsr_count = header_service_requests.length;
-      int hhr_count = header_handling_requestoffers.length;
-      int hmcr_count = header_my_closed_requestoffers.length;
-      int hmtr_count = header_my_taken_requestoffers.length;
-      int hmdr_count = header_my_draft_requestoffers.length;
-      int hmor_count = header_my_open_requestoffers.length;
+      int o_count = offers.length;
+      int sr_count = service_requests.length;
+      int hr_count = handling_requestoffers.length;
+      int mcr_count = my_closed_requestoffers.length;
+      int mtr_count = my_taken_requestoffers.length;
+      int mdr_count = my_draft_requestoffers.length;
+      int mor_count = my_open_requestoffers.length;
     %>
 
       <div class="header-button">
@@ -67,26 +67,26 @@
           <img src="static/img/call_bell.png"   />
           <span style="position: relative">
             <span id="status-container">
-              <% if (ho_count > 0) { %>
-                  <span class="favor-status"><%=ho_count%></span>
+              <% if (o_count > 0) { %>
+                  <span class="favor-status"><%=o_count%></span>
               <% } %>
-              <% if (hsr_count > 0) { %>
-                  <span class="favor-status"><%=hsr_count%></span>
+              <% if (sr_count > 0) { %>
+                  <span class="favor-status"><%=sr_count%></span>
               <% } %>
-              <% if (hhr_count > 0) { %>
-                  <span class="favor-status"><%=hhr_count%></span>
+              <% if (hr_count > 0) { %>
+                  <span class="favor-status"><%=hr_count%></span>
               <% } %>
-              <% if (hmcr_count > 0) { %>
-                  <span class="favor-status"><%=hmcr_count%></span>
+              <% if (mcr_count > 0) { %>
+                  <span class="favor-status"><%=mcr_count%></span>
               <% } %>
-              <% if (hmtr_count > 0) { %>
-                  <span class="favor-status"><%=hmtr_count%></span>
+              <% if (mtr_count > 0) { %>
+                  <span class="favor-status"><%=mtr_count%></span>
               <% } %>
-              <% if (hmdr_count > 0) { %>
-                  <span class="favor-status"><%=hmdr_count%></span>
+              <% if (mdr_count > 0) { %>
+                  <span class="favor-status"><%=mdr_count%></span>
               <% } %>
-              <% if (hmor_count > 0) { %>
-                  <span class="favor-status"><%=hmor_count%></span>
+              <% if (mor_count > 0) { %>
+                  <span class="favor-status"><%=mor_count%></span>
               <% } %>
             </span>
           </span>

@@ -16,11 +16,6 @@
 
   <div class="container">
 
-    <%
-      Requestoffer[] offers = 
-        Requestoffer_utils
-        .get_requestoffers_I_offered_to_service(logged_in_user_id);
-    %>
 
     <%if (offers.length != 0) {%>
       <div class="row">
@@ -44,10 +39,6 @@
     <% } %> 
 
 
-    <%
-      Requestoffer_utils.Service_request[] service_requests = 
-        Requestoffer_utils.get_service_requests(logged_in_user_id);
-    %>
 
     <%if (service_requests.length != 0) {%>
 
@@ -84,10 +75,6 @@
     <% } %> 
 
 
-    <%
-      Others_Requestoffer[] handling_requestoffers = 
-        Requestoffer_utils.get_requestoffers_I_am_handling(logged_in_user_id);
-    %>
       <%if (handling_requestoffers.length != 0) {%>
       <div class="row">
         <div><em><%=loc.get(102, "Favors I am handling")%>:</em></div>
@@ -118,11 +105,6 @@
     <% } %> 
 
 
-  <%
-    Requestoffer[] my_closed_requestoffers = 
-      Requestoffer_utils
-      .get_requestoffers_for_user_by_status(logged_in_user_id,77);
-      %>
 
    <% if (my_closed_requestoffers.length != 0) {%>
 
@@ -147,11 +129,6 @@
     <% } %>
 
 
-    <%
-      Requestoffer[] my_taken_requestoffers = 
-        Requestoffer_utils
-        .get_requestoffers_for_user_by_status(logged_in_user_id,78);
-    %>
 
     <% if (my_taken_requestoffers.length != 0) {%>
       <div class="row">
@@ -174,12 +151,6 @@
       </div>
     <% } %>
 
-    <%
-      Requestoffer[] my_open_requestoffers = 
-        Requestoffer_utils
-        .get_requestoffers_for_user_by_status(logged_in_user_id,76);
-    %>
-
       <% if (my_open_requestoffers.length != 0) {%>
         <div class="row">
           <div><em><%=loc.get(122, "My open Favors")%>:</em></div>
@@ -201,11 +172,7 @@
         </div>
       <% } %>
 
-    <%
-      Requestoffer[] my_draft_requestoffers = 
-        Requestoffer_utils
-        .get_requestoffers_for_user_by_status(logged_in_user_id,109);
-    %>
+
     <% if (my_draft_requestoffers.length != 0) {%>
       <div class="row">
       <div><em><%=loc.get(125, "My draft Favors")%>:</em></div>
