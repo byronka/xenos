@@ -7,14 +7,6 @@ header a {
   color: white;
 }
 
-.header-button {
-  -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-  -moz-box-flex: 1;         /* OLD - Firefox 19- */
-  -webkit-flex: 1;          /* Chrome */
-  -ms-flex: 1;              /* IE 10 */
-  flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-}
-
 .header-row {
   display: -webkit-box;
   display: -moz-box;
@@ -39,20 +31,20 @@ header form {
   position: relative;
 }
 
-
-#count-of-invites {
-  background: url("../img/group_invite_alert.png") 
-    no-repeat scroll 0 0 / contain ;
+.favor-status {
   padding-top: 5px;
   font-size: 20px;
   height: 25px;
-  left: -10px;
-  position: absolute;
   text-align: center;
-  top: -15px;
   width: 25px;
+}
+
+#status-container {
+  top: 15px;
+  position: absolute;
   z-index:2;
 }
+
 
 @media all and (min-width: 660px) {
 
