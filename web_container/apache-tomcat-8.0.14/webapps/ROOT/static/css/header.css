@@ -31,20 +31,77 @@ header form {
   position: relative;
 }
 
+#favor-statuses {
+  display: none;
+  position: absolute;
+  top: 20px;
+  left: 0px;
+  width: 200px;
+  height: 200px;
+  border: solid 1px red;
+  background-color: grey;
+  font-size: 18px;
+  z-index: 2;
+}
+
+#favor-status-details {
+  display: none;
+  position: absolute;
+  top: 20px;
+  left: 200px;
+  width: 200px;
+  height: 200px;
+  border: solid 1px red;
+  background-color: grey;
+  font-size: 18px;
+  z-index: 2;
+}
+
 .favor-status {
   padding-top: 5px;
-  font-size: 20px;
-  height: 25px;
+  font-size: 12px;
+  height: 22px;
   text-align: center;
-  width: 25px;
-}
-
-#status-container {
+  width: 22px;
+  z-index:2;
   top: 15px;
   position: absolute;
-  z-index:2;
 }
 
+.favor-status.offering {
+  left: 0px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+}
+
+.favor-status.offers {
+  left: 4px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+}
+
+.favor-status.handling {
+  left: 8px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+}
+
+.favor-status.closed {
+  left: 12px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+}
+
+.favor-status.taken {
+  left: 16px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+}
+
+.favor-status.draft {
+  left: 20px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+}
+
+.favor-status.open {
+  left: 24px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+}
 
 @media all and (min-width: 660px) {
 

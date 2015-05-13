@@ -62,10 +62,12 @@
     %>
 
       <div class="header-button">
-        <a class="button" href="my_requestoffers.jsp">
+        <a id="my-favors-button" 
+            class="button" 
+            href="my_requestoffers.jsp">
           <span>My Favors</span>
           <img src="static/img/call_bell.png"   />
-          <span style="position: relative">
+          <div style="position: relative">
               <% if (o_count > 0) { %>
                 <span class="favor-status offering"><%=o_count%></span>
               <% } %>
@@ -87,7 +89,19 @@
               <% if (mor_count > 0) { %>
                 <span class="favor-status open"><%=mor_count%></span>
               <% } %>
-          </span>
+            <div id="favor-statuses"></div>
+            <div id="favor-status-details"></div>
+            <script>
+              var display_details = function() {
+                var fs = document.getElementById('favor-statuses');
+                var fsd = document.getElementById('favor-status-details');
+                fs.style.display = 'inline';
+                fsd.style.display = 'inline';
+              };
+              var my_favors_button = document.getElementById('my-favors-button');
+              my_favors_button.addEventListener('hover', display_details);
+            </script>
+          </div>
         </a>
       </div>
 
