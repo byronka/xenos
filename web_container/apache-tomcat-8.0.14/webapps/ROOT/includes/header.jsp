@@ -67,25 +67,25 @@
           <img src="static/img/call_bell.png"   />
           <span style="position: relative">
               <% if (o_count > 0) { %>
-                <span class="favor-status"><%=o_count%></span>
+                <span class="favor-status offering"><%=o_count%></span>
               <% } %>
               <% if (sr_count > 0) { %>
-                <span class="favor-status"><%=sr_count%></span>
+                <span class="favor-status offers"><%=sr_count%></span>
               <% } %>
               <% if (hr_count > 0) { %>
-                <span class="favor-status"><%=hr_count%></span>
+                <span class="favor-status handling"><%=hr_count%></span>
               <% } %>
               <% if (mcr_count > 0) { %>
-                <span class="favor-status"><%=mcr_count%></span>
+                <span class="favor-status closed"><%=mcr_count%></span>
               <% } %>
               <% if (mtr_count > 0) { %>
-                <span class="favor-status"><%=mtr_count%></span>
+                <span class="favor-status taken"><%=mtr_count%></span>
               <% } %>
               <% if (mdr_count > 0) { %>
-                <span class="favor-status"><%=mdr_count%></span>
+                <span class="favor-status draft"><%=mdr_count%></span>
               <% } %>
               <% if (mor_count > 0) { %>
-                <span class="favor-status"><%=mor_count%></span>
+                <span class="favor-status open"><%=mor_count%></span>
               <% } %>
           </span>
         </a>
