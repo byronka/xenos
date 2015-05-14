@@ -34,8 +34,7 @@ header form {
 #favor-statuses {
   display: none;
   position: absolute;
-  top: 20px;
-  left: 0px;
+  top: 38px;
   width: 200px;
   height: 200px;
   border: solid 1px red;
@@ -44,10 +43,22 @@ header form {
   z-index: 2;
 }
 
-#favor-status-details {
+#favor-statuses:hover {
+  display: block;
+}
+
+#favor-statuses>div{
+  line-height: 25px;
+}
+
+#my-favors-button:hover+#favor-statuses {
+  display: block;
+}
+
+.hdr-detail-section {
   display: none;
   position: absolute;
-  top: 20px;
+  top: 0px;
   left: 200px;
   width: 200px;
   height: 200px;
@@ -55,6 +66,28 @@ header form {
   background-color: grey;
   font-size: 18px;
   z-index: 2;
+}
+
+#hdr_offering_dtls:hover + .hdr-detail-section{
+  display: block;
+}
+#hdr_offers_dtls:hover + .hdr-detail-section{
+  display: block;
+}
+#hdr_handling_dtls:hover + .hdr-detail-section{
+  display: block;
+}
+#hdr_closed_dtls:hover + .hdr-detail-section{
+  display: block;
+}
+#hdr_taken_dtls:hover + .hdr-detail-section{
+  display: block;
+}
+#hdr_draft_dtls:hover + .hdr-detail-section{
+  display: block;
+}
+#hdr_open_dtls:hover + .hdr-detail-section{
+  display: block;
 }
 
 .favor-status {

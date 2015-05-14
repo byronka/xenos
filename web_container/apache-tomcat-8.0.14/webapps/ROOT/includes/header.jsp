@@ -67,7 +67,7 @@
             href="my_requestoffers.jsp">
           <span>My Favors</span>
           <img src="static/img/call_bell.png"   />
-          <div style="position: relative">
+          <span style="position: relative">
               <% if (o_count > 0) { %>
                 <span class="favor-status offering"><%=o_count%></span>
               <% } %>
@@ -89,20 +89,38 @@
               <% if (mor_count > 0) { %>
                 <span class="favor-status open"><%=mor_count%></span>
               <% } %>
-            <div id="favor-statuses"></div>
-            <div id="favor-status-details"></div>
-            <script>
-              var display_details = function() {
-                var fs = document.getElementById('favor-statuses');
-                var fsd = document.getElementById('favor-status-details');
-                fs.style.display = 'inline';
-                fsd.style.display = 'inline';
-              };
-              var my_favors_button = document.getElementById('my-favors-button');
-              my_favors_button.addEventListener('hover', display_details);
-            </script>
-          </div>
+          </span>
         </a>
+            <div id="favor-statuses">
+              <div id="hdr_offering_dtls">Offering: <%=o_count%></div>
+              <div class="hdr-detail-section">
+                this is what you are offering:
+              </div>
+              <div id="hdr_offers_dtls">Offers: <%=sr_count%></div>
+              <div class="hdr-detail-section">
+                These are offers to handle your Favors
+              </div>
+              <div id="hdr_handling_dtls">Handling: <%=hr_count%></div>
+              <div class="hdr-detail-section">
+                You are handling these Favors for others:
+              </div>
+              <div id="hdr_closed_dtls">Closed: <%=mcr_count%></div>
+              <div class="hdr-detail-section">
+                These are your closed Favors:
+              </div>
+              <div id="hdr_taken_dtls">Taken: <%=mtr_count%></div>
+              <div class="hdr-detail-section">
+                These are taken (BK: TAKEN??)
+              </div>
+              <div id="hdr_draft_dtls">Draft: <%=mdr_count%></div>
+              <div class="hdr-detail-section">
+                These are your draft Favors:
+              </div>
+              <div id="hdr_open_dtls">Open: <%=mor_count%></div>
+              <div class="hdr-detail-section">
+                These are your open Favors:
+              </div>
+            </div>
       </div>
 
       <div class="header-button">
