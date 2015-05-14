@@ -95,30 +95,79 @@
               <div id="hdr_offering_dtls">Offering: <%=o_count%></div>
               <div class="hdr-detail-section">
                 this is what you are offering:
+                <% for (Requestoffer r : offers) { %>
+                  <div>
+                    <em>
+                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
+                    </em>
+                  </div>
+                <% } %>
               </div>
               <div id="hdr_offers_dtls">Offers: <%=sr_count%></div>
               <div class="hdr-detail-section">
                 These are offers to handle your Favors
+                <% for (Requestoffer_utils.Service_request r : service_requests) { %>
+                  <div>
+                    <em>
+                      <%=Utils.safe_render(Utils.get_trunc(r.desc,20))%>
+                    </em>
+                  </div>
+                <% } %>
               </div>
               <div id="hdr_handling_dtls">Handling: <%=hr_count%></div>
               <div class="hdr-detail-section">
                 You are handling these Favors for others:
+                <% for (Requestoffer r : handling_requestoffers) { %>
+                  <div>
+                    <em>
+                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
+                    </em>
+                  </div>
+                <% } %>
               </div>
               <div id="hdr_closed_dtls">Closed: <%=mcr_count%></div>
               <div class="hdr-detail-section">
                 These are your closed Favors:
+                <% for (Requestoffer r : my_closed_requestoffers) { %>
+                  <div>
+                    <em>
+                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
+                    </em>
+                  </div>
+                <% } %>
               </div>
               <div id="hdr_taken_dtls">Taken: <%=mtr_count%></div>
               <div class="hdr-detail-section">
                 These are taken (BK: TAKEN??)
+                <% for (Requestoffer r : my_taken_requestoffers) { %>
+                  <div>
+                    <em>
+                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
+                    </em>
+                  </div>
+                <% } %>
               </div>
               <div id="hdr_draft_dtls">Draft: <%=mdr_count%></div>
               <div class="hdr-detail-section">
                 These are your draft Favors:
+                <% for (Requestoffer r : my_draft_requestoffers) { %>
+                  <div>
+                    <em>
+                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
+                    </em>
+                  </div>
+                <% } %>
               </div>
               <div id="hdr_open_dtls">Open: <%=mor_count%></div>
               <div class="hdr-detail-section">
                 These are your open Favors:
+                <% for (Requestoffer r : my_open_requestoffers) { %>
+                  <div>
+                    <em>
+                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
+                    </em>
+                  </div>
+                <% } %>
               </div>
             </div>
       </div>
