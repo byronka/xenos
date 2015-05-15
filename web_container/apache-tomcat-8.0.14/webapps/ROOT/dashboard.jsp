@@ -66,7 +66,7 @@
       // if the user has not specifically asked to see closed and taken,
       // we will default to showing just "OPEN"
       if (Utils.is_null_or_empty(srch_sta)) {
-        srch_sta = new String(Const.Rs.OPEN);
+        srch_sta = (new Integer(Const.Rs.OPEN)).toString();
       }
       Requestoffer_utils.Search_Object so = 
         new Requestoffer_utils.Search_Object(  
