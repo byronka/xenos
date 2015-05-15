@@ -202,7 +202,7 @@
 
             <% 
               // if we are in OPEN status 
-              if (r.status == 76) { 
+              if (r.status == Const.Rs.OPEN) { 
             %>
 
               <% // if this user is the owner %>
@@ -233,7 +233,7 @@
                 <input type="hidden" id="to_user" name="to_user" value="<%=r.requestoffering_user_id%>" />
               <% } %>
 
-            <% } else if (r.status == 78) { // TAKEN status %>
+            <% } else if (r.status == Const.Rs.TAKEN) { // TAKEN status %>
               <% // if this user is the owner %>
               <% if (logged_in_user_id == r.requestoffering_user_id) { %>
                 <input type="hidden" id="to_user" name="to_user" value="<%=r.handling_user_id%>" />
@@ -262,14 +262,14 @@
 
         <% } %>
         <div>
-          <% if ( r.status == 78 && 
+          <% if ( r.status == Const.Rs.TAKEN && 
             (is_requestoffering_user || is_handling_user)) { %> 
             <a class="button" href="cancel_active_favor.jsp?requestoffer=<%=r.requestoffer_id%>" >
               <%=loc.get(130,"Cancel")%>
             </a>
           <% } %>
 
-          <%if (is_requestoffering_user && r.status == 78) {%>
+          <%if (is_requestoffering_user && r.status == Const.Rs.TAKEN) {%>
             <a class="button" href="check_transaction.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(98,"Transaction is complete")%>
             </a>
           <%}%>

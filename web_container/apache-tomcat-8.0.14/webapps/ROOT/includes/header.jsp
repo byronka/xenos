@@ -50,7 +50,7 @@
 
       Requestoffer[] my_open_requestoffers = 
         Requestoffer_utils
-        .get_requestoffers_for_user_by_status(logged_in_user_id,76);
+        .get_requestoffers_for_user_by_status(logged_in_user_id,Const.Rs.OPEN);
 
       int o_count = offers.length;
       int sr_count = service_requests.length;

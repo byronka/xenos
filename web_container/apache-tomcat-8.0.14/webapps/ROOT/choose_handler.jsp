@@ -34,7 +34,7 @@
   }
 
     //make sure the requestoffer is there, and is open
-  if (r == null || r.status != 76) { // "open"
+  if (r == null || r.status != Const.Rs.OPEN) {
     response.sendRedirect("general_error.jsp");
     return;
   }

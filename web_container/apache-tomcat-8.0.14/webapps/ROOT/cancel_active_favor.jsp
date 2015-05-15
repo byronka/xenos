@@ -19,7 +19,7 @@
   String qs = request.getQueryString();
   Requestoffer r = 
     Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
-  if (r == null || r.status != 78) {
+  if (r == null || r.status != Const.Rs.TAKEN) {
     response.sendRedirect("general_error.jsp");
     return;
   }
