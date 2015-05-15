@@ -94,7 +94,7 @@
             <div id="favor-statuses">
               <div id="hdr_offering_dtls">Offering: <%=o_count%></div>
               <div class="hdr-detail-section">
-                this is what you are offering:
+                you are offering for:
                 <% for (Requestoffer r : offers) { %>
                   <div>
                     <em>
@@ -105,7 +105,7 @@
               </div>
               <div id="hdr_offers_dtls">Offers: <%=sr_count%></div>
               <div class="hdr-detail-section">
-                Someone has offered to handle these Favors:
+                Offers exist for:
                 <% for (Requestoffer_utils.Service_request r : service_requests) { %>
                   <div>
                     <em>
