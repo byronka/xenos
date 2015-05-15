@@ -24,7 +24,7 @@
           <div class="requestoffer serviceoffered">
               <% // requestoffer view starts HERE %>
               <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                  <span class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                  <span class="desc container <%if(r.status == Const.Rs.CLOSED ){%><%="taken"%><%}%>">
                         <%=Utils.safe_render(r.description)%>
                         <span class="datetime">
                           <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
@@ -84,7 +84,7 @@
 
             <% // requestoffer view starts HERE %>
             <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                <span class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                <span class="desc container <%if(r.status == Const.Rs.TAKEN ){%><%="taken"%><%}%>">
                       <%=Utils.safe_render(r.description)%>
                       <span class="datetime">
                         <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
@@ -114,7 +114,7 @@
           <div class="requestoffer mine">
             <% // requestoffer view starts HERE %>
             <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                <span class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                <span class="desc container <%if(r.status == Const.Rs.CLOSED ){%><%="closed"%><%}%>">
                       <%=Utils.safe_render(r.description)%>
                       <span class="datetime">
                         <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
@@ -137,7 +137,7 @@
         <div class="requestoffer mine">
             <% // requestoffer view starts HERE %>
             <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                <span class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                <span class="desc container <%if(r.status == Const.Rs.TAKEN ){%><%="taken"%><%}%>">
                       <%=Utils.safe_render(r.description)%>
                       <span class="datetime">
                         <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
@@ -158,7 +158,7 @@
           <div class="requestoffer mine">
             <% // requestoffer view starts HERE %>
             <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                <span class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+                <span class="desc container <%if(r.status == Const.Rs.TAKEN ){%><%="taken"%><%}%>">
                       <%=Utils.safe_render(r.description)%>
                       <span class="datetime">
                         <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
@@ -180,7 +180,7 @@
       <div class="requestoffer mine">
           <% // requestoffer view starts HERE %>
           <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-              <span class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+              <span class="desc container <%if(r.status == Const.Rs.DRAFT ){%><%="draft"%><%}%>">
                     <%=Utils.safe_render(r.description)%>
                     <span class="datetime">
                       <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>

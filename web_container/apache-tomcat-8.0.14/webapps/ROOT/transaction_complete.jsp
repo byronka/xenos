@@ -10,7 +10,7 @@
     response.sendRedirect("general_error.jsp");
     return;
   }
-  if (r.status == 77) {// closed
+  if (r.status == Const.Rs.CLOSED) {
   	response.sendRedirect("general_error.jsp");
   }
 

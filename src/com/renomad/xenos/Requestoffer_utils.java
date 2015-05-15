@@ -8,6 +8,7 @@ import java.util.List;
 import com.renomad.xenos.Database_access;
 import com.renomad.xenos.Requestoffer;
 import com.renomad.xenos.Others_Requestoffer;
+import com.renomad.xenos.Const;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Connection;
@@ -914,7 +915,7 @@ public final class Requestoffer_utils {
       "FROM requestoffer r "+
       "JOIN requestoffer_state rs "+
         "ON rs.requestoffer_id = r.requestoffer_id " +
-      "WHERE r.handling_user_id = ? AND rs.status <> 77"; // 77 is closed.
+      "WHERE r.handling_user_id = ? AND rs.status <> " + Const.Rs.CLOSED;
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();

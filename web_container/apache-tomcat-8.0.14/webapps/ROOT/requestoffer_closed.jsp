@@ -25,7 +25,7 @@
   <%@include file="includes/header.jsp" %>
 
   <div class="container">
-    <h2><%=loc.get(32, "Requestoffer")%> <%=requestoffer_id%> <%=loc.get(77, "closed")%></h2>
+    <h2><%=loc.get(32, "Requestoffer")%> <%=requestoffer_id%> <%=loc.get(Const.Rs.CLOSED, "closed")%></h2>
     <p>
       <%=loc.get(99, "Requestoffer has been closed")%>
     </p>

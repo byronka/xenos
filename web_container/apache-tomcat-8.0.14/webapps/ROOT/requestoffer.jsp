@@ -55,7 +55,7 @@
 
 
   boolean show_handle_button = 
-    (r.status == 76) && //'open'
+    (r.status == Const.Rs.OPEN) &&
     !is_requestoffering_user && 
     !User_utils.has_offered_to_service(r.requestoffer_id, logged_in_user_id) &&
     !is_deleting;
@@ -69,7 +69,7 @@
     !is_deleting &&
     (
       (is_requestoffering_user || is_handling_user) && 
-        ((service_request.length > 0 && r.status == 76) || r.status == 78) ||
+        ((service_request.length > 0 && r.status == Const.Rs.OPEN) || r.status == Const.Rs.TAKEN) ||
       (is_offering_to_service)
     );
 
@@ -137,19 +137,19 @@
 
     <div class="table">
       <div class="row">
-      <% if (r.status == 109) { %>
+      <% if (r.status == Const.Rs.DRAFT) { %>
         <a class="button" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>&delete=true">
-          <%=loc.get(21,"Delete")%>
+          <%=loc.get(21,"Delete")%> 
         </a>
       <% } %>
 
-      <% if (is_requestoffering_user && r.status == 76) { %>
+      <% if (is_requestoffering_user && r.status == Const.Rs.OPEN) { %>
         <a class="button" href="retract_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
           <%=loc.get(194,"Retract")%>
         </a>
       <% } %>
 
-      <% if (r.status == 109) { %>
+      <% if (r.status == Const.Rs.DRAFT) { %>
         <a class="button" href="publish_requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(6,"Publish")%></a>
       <% } %>
 

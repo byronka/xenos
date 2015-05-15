@@ -66,7 +66,7 @@
       // if the user has not specifically asked to see closed and taken,
       // we will default to showing just "OPEN"
       if (Utils.is_null_or_empty(srch_sta)) {
-        srch_sta = "76"; // "OPEN"
+        srch_sta = new String(Const.Rs.OPEN);
       }
       Requestoffer_utils.Search_Object so = 
         new Requestoffer_utils.Search_Object(  
@@ -90,7 +90,7 @@
         <% for (Others_Requestoffer r : or_package.get_requestoffers()) { %>
         <%int l_step = Requestoffer_utils.get_ladder_step(r.rank_ladder);%>
         <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-          <span class="desc container <%if(r.status == 77 ){%><%="taken"%><%}%>">
+          <span class="desc container <%if(r.status == Const.Rs.TAKEN ){%><%="taken"%><%}%>">
             <%=Utils.safe_render(r.description)%>
             <span class="datetime">
               <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>

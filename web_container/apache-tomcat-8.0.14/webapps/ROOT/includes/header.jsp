@@ -38,15 +38,15 @@
 
       Requestoffer[] my_closed_requestoffers = 
         Requestoffer_utils
-        .get_requestoffers_for_user_by_status(logged_in_user_id,77);
+        .get_requestoffers_for_user_by_status(logged_in_user_id,Const.Rs.CLOSED);
 
       Requestoffer[] my_taken_requestoffers = 
         Requestoffer_utils
-        .get_requestoffers_for_user_by_status(logged_in_user_id,78);
+        .get_requestoffers_for_user_by_status(logged_in_user_id,Const.Rs.TAKEN);
 
       Requestoffer[] my_draft_requestoffers = 
         Requestoffer_utils
-        .get_requestoffers_for_user_by_status(logged_in_user_id,109);
+        .get_requestoffers_for_user_by_status(logged_in_user_id,Const.Rs.DRAFT);
 
       Requestoffer[] my_open_requestoffers = 
         Requestoffer_utils
@@ -105,7 +105,7 @@
               </div>
               <div id="hdr_offers_dtls">Offers: <%=sr_count%></div>
               <div class="hdr-detail-section">
-                These are offers to handle your Favors
+                Someone has offered to handle these Favors:
                 <% for (Requestoffer_utils.Service_request r : service_requests) { %>
                   <div>
                     <em>
@@ -116,7 +116,7 @@
               </div>
               <div id="hdr_handling_dtls">Handling: <%=hr_count%></div>
               <div class="hdr-detail-section">
-                You are handling these Favors for others:
+                You are working on these Favors:
                 <% for (Requestoffer r : handling_requestoffers) { %>
                   <div>
                     <em>
@@ -127,7 +127,7 @@
               </div>
               <div id="hdr_closed_dtls">Closed: <%=mcr_count%></div>
               <div class="hdr-detail-section">
-                These are your closed Favors:
+                Your most recent closed Favors:
                 <% for (Requestoffer r : my_closed_requestoffers) { %>
                   <div>
                     <em>
