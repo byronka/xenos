@@ -24,7 +24,7 @@
   <%@include file="includes/header.jsp" %>
 
   <div class="container">
-    <h2><%=loc.get(32, "Requestoffer")%> <%=requestoffer_id%> <%=loc.get(33, "deleted")%></h2>
+    <h2><%=loc.get(32, "Requestoffer")%> <%=loc.get(33, "deleted")%></h2>
     <p>
       <%=loc.get(34, "Requestoffer has been deleted")%>
     </p>
