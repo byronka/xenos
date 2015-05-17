@@ -377,7 +377,7 @@ public final class Requestoffer_utils {
         "ON rs.requestoffer_id = r.requestoffer_id " +
       "JOIN requestoffer_service_request rsr "+
         "ON r.requestoffer_id = rsr.requestoffer_id " +
-      "WHERE rsr.user_id = ? AND rsr.status = 106";
+      "WHERE rsr.user_id = ? AND rsr.status = " + Const.Rsrs.NEW;
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
@@ -460,7 +460,8 @@ public final class Requestoffer_utils {
     String sqlText = 
       "SELECT COUNT(*) as the_count " +
       "FROM requestoffer_service_request " +
-      "WHERE user_id = ? AND requestoffer_id = ? AND status = 106 ";
+      "WHERE user_id = ? AND requestoffer_id = ? "+
+      "AND status = " + Const.Rsrs.NEW;
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
@@ -559,7 +560,8 @@ public final class Requestoffer_utils {
         "ON ro.requestoffer_id = rsr.requestoffer_id " +
       "JOIN user u " +
         "ON u.user_id = rsr.user_id " +
-      "WHERE ro.requestoffering_user_id = ? AND rsr.status = 106";
+      "WHERE ro.requestoffering_user_id = ? "+
+      "AND rsr.status = " + Const.Rsrs.NEW;
 
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();

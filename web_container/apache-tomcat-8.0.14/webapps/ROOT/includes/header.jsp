@@ -61,115 +61,116 @@
       int mor_count = my_open_requestoffers.length;
     %>
 
-      <div class="header-button">
+      <div id="my-favors-div" class="header-button">
         <a id="my-favors-button" 
             class="button" 
             href="my_requestoffers.jsp">
           <span>My Favors</span>
           <img src="static/img/call_bell.png"   />
-          <span style="position: relative">
-              <% if (o_count > 0) { %>
-                <span class="favor-status offering"><%=o_count%></span>
-              <% } %>
-              <% if (sr_count > 0) { %>
-                <span class="favor-status offers"><%=sr_count%></span>
-              <% } %>
-              <% if (hr_count > 0) { %>
-                <span class="favor-status handling"><%=hr_count%></span>
-              <% } %>
-              <% if (mcr_count > 0) { %>
-                <span class="favor-status closed"><%=mcr_count%></span>
-              <% } %>
-              <% if (mtr_count > 0) { %>
-                <span class="favor-status taken"><%=mtr_count%></span>
-              <% } %>
-              <% if (mdr_count > 0) { %>
-                <span class="favor-status draft"><%=mdr_count%></span>
-              <% } %>
-              <% if (mor_count > 0) { %>
-                <span class="favor-status open"><%=mor_count%></span>
-              <% } %>
-          </span>
         </a>
-            <div id="favor-statuses">
-              <div id="hdr_offering_dtls">Offering: <%=o_count%></div>
-              <div class="hdr-detail-section">
-                you are offering for:
-                <% for (Requestoffer r : offers) { %>
-                  <div>
-                    <em>
-                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
-                    </em>
-                  </div>
-                <% } %>
+        
+        <div id="favor-statuses">
+          <div id="hdr_offering_dtls" class="digest-line">Offering: <%=o_count%></div>
+          <div class="hdr-detail-section">
+            you are offering for:
+            <% for (Requestoffer r : offers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
               </div>
-              <div id="hdr_offers_dtls">Offers: <%=sr_count%></div>
-              <div class="hdr-detail-section">
-                Offers exist for:
-                <% for (Requestoffer_utils.Service_request r : service_requests) { %>
-                  <div>
-                    <em>
-                      <%=Utils.safe_render(Utils.get_trunc(r.desc,20))%>
-                    </em>
-                  </div>
-                <% } %>
+            <% } %>
+          </div>
+          <div id="hdr_offers_dtls" class="digest-line">Offers: <%=sr_count%></div>
+          <div class="hdr-detail-section">
+            Offers exist for:
+            <% for (Requestoffer_utils.Service_request r : service_requests) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.desc)%>
+                   </span> 
+                </a>
               </div>
-              <div id="hdr_handling_dtls">Handling: <%=hr_count%></div>
-              <div class="hdr-detail-section">
-                You are working on these Favors:
-                <% for (Requestoffer r : handling_requestoffers) { %>
-                  <div>
-                    <em>
-                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
-                    </em>
-                  </div>
-                <% } %>
+            <% } %>
+          </div>
+          <div id="hdr_handling_dtls" class="digest-line">Handling: <%=hr_count%></div>
+          <div class="hdr-detail-section">
+            You are working on these Favors:
+            <% for (Requestoffer r : handling_requestoffers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
               </div>
-              <div id="hdr_closed_dtls">Closed: <%=mcr_count%></div>
-              <div class="hdr-detail-section">
-                Your most recent closed Favors:
-                <% for (Requestoffer r : my_closed_requestoffers) { %>
-                  <div>
-                    <em>
-                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
-                    </em>
-                  </div>
-                <% } %>
+            <% } %>
+          </div>
+          <div id="hdr_closed_dtls" class="digest-line">Closed: <%=mcr_count%></div>
+          <div class="hdr-detail-section">
+            Your most recent closed Favors:
+            <% for (Requestoffer r : my_closed_requestoffers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
               </div>
-              <div id="hdr_taken_dtls">Taken: <%=mtr_count%></div>
-              <div class="hdr-detail-section">
-                These are taken (BK: TAKEN??)
-                <% for (Requestoffer r : my_taken_requestoffers) { %>
-                  <div>
-                    <em>
-                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
-                    </em>
-                  </div>
-                <% } %>
+            <% } %>
+          </div>
+          <div id="hdr_taken_dtls" class="digest-line">Taken: <%=mtr_count%></div>
+          <div class="hdr-detail-section">
+            Your Favors being handled:
+            <% for (Requestoffer r : my_taken_requestoffers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
               </div>
-              <div id="hdr_draft_dtls">Draft: <%=mdr_count%></div>
-              <div class="hdr-detail-section">
-                These are your draft Favors:
-                <% for (Requestoffer r : my_draft_requestoffers) { %>
-                  <div>
-                    <em>
-                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
-                    </em>
-                  </div>
-                <% } %>
+            <% } %>
+          </div>
+          <div id="hdr_draft_dtls" class="digest-line">Draft: <%=mdr_count%></div>
+          <div class="hdr-detail-section">
+            These are your draft Favors:
+            <% for (Requestoffer r : my_draft_requestoffers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
               </div>
-              <div id="hdr_open_dtls">Open: <%=mor_count%></div>
-              <div class="hdr-detail-section">
-                These are your open Favors:
-                <% for (Requestoffer r : my_open_requestoffers) { %>
-                  <div>
-                    <em>
-                      <%=Utils.safe_render(Utils.get_trunc(r.description,20))%>
-                    </em>
-                  </div>
-                <% } %>
+            <% } %>
+          </div>
+          <div id="hdr_open_dtls" class="digest-line">Open: <%=mor_count%></div>
+          <div class="hdr-detail-section">
+            These are your open Favors:
+            <% for (Requestoffer r : my_open_requestoffers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
               </div>
-            </div>
+            <% } %>
+          </div>
+        </div>
+        <div id="status-digest" >
+          <span class="favor-status offering"><%=o_count%></span>
+          <span class="favor-status offers"><%=sr_count%></span>
+          <span class="favor-status handling"><%=hr_count%></span>
+          <span class="favor-status closed"><%=mcr_count%></span>
+          <span class="favor-status taken"><%=mtr_count%></span>
+          <span class="favor-status draft"><%=mdr_count%></span>
+          <span class="favor-status open"><%=mor_count%></span>
+        </div>
       </div>
 
       <div class="header-button">

@@ -36,24 +36,27 @@ header form {
   position: absolute;
   top: 38px;
   width: 200px;
-  height: 200px;
+  height: 330px;
   border: solid 1px red;
   background-color: grey;
   font-size: 18px;
   z-index: 2;
 }
 
-#favor-statuses:hover {
-  display: block;
+
+#favor-statuses>div.digest-line{
+  line-height: 45px;
+  border: 1px solid black;
 }
 
-#favor-statuses>div{
-  line-height: 25px;
+#my-favors-div {
+  position: relative;
 }
 
-#my-favors-button:hover+#favor-statuses {
-  display: block;
+#status-digest {
+  position: relative;
 }
+
 
 .hdr-detail-section {
   display: none;
@@ -68,76 +71,97 @@ header form {
   z-index: 2;
 }
 
-#hdr_offering_dtls:hover + .hdr-detail-section{
-  display: block;
-}
-#hdr_offers_dtls:hover + .hdr-detail-section{
-  display: block;
-}
-#hdr_handling_dtls:hover + .hdr-detail-section{
-  display: block;
-}
-#hdr_closed_dtls:hover + .hdr-detail-section{
-  display: block;
-}
-#hdr_taken_dtls:hover + .hdr-detail-section{
-  display: block;
-}
-#hdr_draft_dtls:hover + .hdr-detail-section{
-  display: block;
-}
-#hdr_open_dtls:hover + .hdr-detail-section{
-  display: block;
-}
-
 .favor-status {
   padding-top: 5px;
   font-size: 12px;
-  height: 22px;
+  height: 24px;
   text-align: center;
-  width: 22px;
-  z-index:2;
+  width: 24px;
+  z-index:1;
   top: 15px;
   position: absolute;
 }
 
 .favor-status.offering {
   left: 0px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
+  z-index: 1;
 }
 
 .favor-status.offers {
-  left: 4px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+  left: 25px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.handling {
-  left: 8px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+  left: 50px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.closed {
-  left: 12px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+  left: 75px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.taken {
-  left: 16px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+  left: 100px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.draft {
-  left: 20px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+  left: 125px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.open {
-  left: 24px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 0 0 / contain;
+  left: 150px;
+  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
 }
 
 @media all and (min-width: 660px) {
 
+  #my-favors-button:hover+#favor-statuses {
+    display: block;
+  }
+
+  #favor-statuses:hover {
+    display: block;
+  }
+
+  #hdr_offering_dtls:hover + .hdr-detail-section, #hdr_offering_dtls + .hdr-detail-section:hover{
+    display: block;
+  }
+
+  #hdr_offers_dtls:hover + .hdr-detail-section, #hdr_offers_dtls + .hdr-detail-section:hover{
+    display: block;
+    top: 47px;
+  }
+
+  #hdr_handling_dtls:hover + .hdr-detail-section, #hdr_handling_dtls + .hdr-detail-section:hover{
+    display: block;
+    top: 94px;
+  }
+  #hdr_closed_dtls:hover + .hdr-detail-section, #hdr_closed_dtls + .hdr-detail-section:hover{
+    display: block;
+    top: 141px;
+  }
+  #hdr_taken_dtls:hover + .hdr-detail-section, #hdr_taken_dtls + .hdr-detail-section:hover{
+    display: block;
+    top: 188px;
+  }
+  #hdr_draft_dtls:hover + .hdr-detail-section, #hdr_draft_dtls + .hdr-detail-section:hover {
+    display: block;
+    top: 235px;
+  }
+  #hdr_open_dtls:hover + .hdr-detail-section, #hdr_open_dtls + .hdr-detail-section:hover{
+    display: block;
+    top: 282px;
+  }
+
+  #status-digest {
+    left: -20px;
+    top: -20px;
+  }
 
   header a {
     margin-top:5px;
@@ -151,6 +175,11 @@ header form {
 }
 
 @media all and (max-width: 659px) {
+
+  #status-digest {
+    left: -40px;
+    top: -20px;
+  }
 
   .header-row {
     padding-bottom: 30px;
