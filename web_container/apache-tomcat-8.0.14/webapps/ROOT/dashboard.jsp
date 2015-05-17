@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="static/css/reset.css">
     <link rel="stylesheet" href="static/css/dashboard.css" >
     <link rel="stylesheet" href="static/css/button.css" >
-    <link rel="stylesheet" href="static/css/requestoffer.css" >
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">

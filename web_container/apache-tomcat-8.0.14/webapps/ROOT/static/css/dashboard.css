@@ -62,3 +62,106 @@ body {
   }
 
 }
+
+/* stuff related to create requestoffer */
+
+span.category, span.datetime, span.distance {
+  display: block;
+}
+
+a.rank_6 {
+  border: 5px solid #accb2f;
+}
+
+a.rank_5 {
+  border: 5px solid #3c9aae;
+}
+
+a.rank_4 {
+  border: 5px solid #bf9a76;
+}
+
+a.rank_3 {
+  border: 5px solid #5fd9c9;
+}
+
+a.rank_2 {
+  border: 5px solid #bef9f1;
+}
+
+a.rank_1 {
+  border: 5px solid #417c74;
+}
+
+a.rank_0 {
+  border: 5px solid #192f2c;
+}
+
+a.requestoffer {
+  background-color: grey;
+  margin-left: auto;
+  margin-right: auto;
+  position:relative;
+  overflow: hidden;
+  margin-bottom: 4px;
+  display: block;
+  color: white;
+}
+
+.datetime{
+  font-size: 7px;
+}
+
+span.desc.container.taken {
+  text-decoration: line-through;
+  color: grey;
+}
+
+span.desc.container {
+  overflow: hidden;
+  background: black;
+  padding: 5px;
+  margin: auto;
+  padding: 2px;
+  width: 87%;
+  display: inline-block;
+}
+
+a.page-link {
+  background-color: #1a472d;
+  border: 2px solid #566328;
+  color: white;
+  display: inline-block;
+  font-size: 25px;
+  margin: 4px;
+  padding: 7px;
+  text-decoration: none;
+}
+
+
+span.category {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: right center;
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  right:5px;
+  position: absolute;
+}
+
+.c-143 {
+  background-image: url('../img/baby-silhouette-md.png');
+}
+.c-144 {
+  background-image: url('../img/dog_walking.png');
+}
+.c-145 {
+  background-image: url('../img/taxi.png');
+}
+.c-199 {
+  background-image: url('../img/miscellaneous.png');
+}
+.c-200 {
+  background-image: url('../img/homework.png');
+}

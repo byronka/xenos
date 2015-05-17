@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
     <link rel="stylesheet" href="static/css/button.css" >
-    <link rel="stylesheet" href="static/css/requestoffer.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
     <title>My Favors</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
