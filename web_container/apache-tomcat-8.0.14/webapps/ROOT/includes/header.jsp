@@ -70,95 +70,109 @@
         </a>
         
         <div id="favor-statuses">
-          <div id="hdr_offering_dtls" class="digest-line">Offering: <%=o_count%></div>
+          <div id="hdr_offering_dtls" class="digest-line"><img src="static/img/offering_icon.png">Offering: <%=o_count%></div>
           <div class="hdr-detail-section">
             you are offering for:
-            <% for (Requestoffer r : offers) { %>
-              <div>
-                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                  <span class="desc container" > 
-                    <%=Utils.safe_render(r.description)%>
-                   </span> 
-                </a>
-              </div>
+            <% if (o_count == 0) { %>None<% } else {%>
+              <% for (Requestoffer r : offers) { %>
+                <div>
+                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                    <span class="desc container" > 
+                      <%=Utils.safe_render(r.description)%>
+                     </span> 
+                  </a>
+                </div>
+              <% } %>
             <% } %>
           </div>
-          <div id="hdr_offers_dtls" class="digest-line">Offers: <%=sr_count%></div>
+          <div id="hdr_offers_dtls" class="digest-line"><img src="static/img/offers_icon.png">Offers: <%=sr_count%></div>
           <div class="hdr-detail-section">
             Offers exist for:
-            <% for (Requestoffer_utils.Service_request r : service_requests) { %>
-              <div>
-                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                  <span class="desc container" > 
-                    <%=Utils.safe_render(r.desc)%>
-                   </span> 
-                </a>
-              </div>
+            <% if (sr_count == 0) { %>None<% } else {%>
+              <% for (Requestoffer_utils.Service_request r : service_requests) { %>
+                <div>
+                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                    <span class="desc container" > 
+                      <%=Utils.safe_render(r.desc)%>
+                     </span> 
+                  </a>
+                </div>
+              <% } %>
             <% } %>
           </div>
-          <div id="hdr_handling_dtls" class="digest-line">Handling: <%=hr_count%></div>
+          <div id="hdr_handling_dtls" class="digest-line"><img src="static/img/handling_icon.png">Handling: <%=hr_count%></div>
           <div class="hdr-detail-section">
             You are working on these Favors:
-            <% for (Requestoffer r : handling_requestoffers) { %>
-              <div>
-                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                  <span class="desc container" > 
-                    <%=Utils.safe_render(r.description)%>
-                   </span> 
-                </a>
-              </div>
+            <% if (hr_count == 0) { %>None<% } else {%>
+              <% for (Requestoffer r : handling_requestoffers) { %>
+                <div>
+                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                    <span class="desc container" > 
+                      <%=Utils.safe_render(r.description)%>
+                     </span> 
+                  </a>
+                </div>
+              <% } %>
             <% } %>
           </div>
-          <div id="hdr_closed_dtls" class="digest-line">Closed: <%=mcr_count%></div>
+          <div id="hdr_closed_dtls" class="digest-line"><img src="static/img/closed_icon.png">Closed: <%=mcr_count%></div>
           <div class="hdr-detail-section">
             Your most recent closed Favors:
-            <% for (Requestoffer r : my_closed_requestoffers) { %>
-              <div>
-                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                  <span class="desc container" > 
-                    <%=Utils.safe_render(r.description)%>
-                   </span> 
-                </a>
-              </div>
+            <% if (mcr_count == 0) { %>None<% } else {%>
+              <% for (Requestoffer r : my_closed_requestoffers) { %>
+                <div>
+                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                    <span class="desc container" > 
+                      <%=Utils.safe_render(r.description)%>
+                     </span> 
+                  </a>
+                </div>
+              <% } %>
             <% } %>
           </div>
-          <div id="hdr_taken_dtls" class="digest-line">Taken: <%=mtr_count%></div>
+          <div id="hdr_taken_dtls" class="digest-line"><img src="static/img/taken_icon.png">Taken: <%=mtr_count%></div>
           <div class="hdr-detail-section">
             Your Favors being handled:
-            <% for (Requestoffer r : my_taken_requestoffers) { %>
-              <div>
-                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                  <span class="desc container" > 
-                    <%=Utils.safe_render(r.description)%>
-                   </span> 
-                </a>
-              </div>
+            <% if (mtr_count == 0) { %>None<% } else {%>
+              <% for (Requestoffer r : my_taken_requestoffers) { %>
+                <div>
+                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                    <span class="desc container" > 
+                      <%=Utils.safe_render(r.description)%>
+                     </span> 
+                  </a>
+                </div>
+              <% } %>
             <% } %>
           </div>
-          <div id="hdr_draft_dtls" class="digest-line">Draft: <%=mdr_count%></div>
+          <div id="hdr_draft_dtls" class="digest-line"><img src="static/img/draft_icon.png">Draft: <%=mdr_count%></div>
           <div class="hdr-detail-section">
             These are your draft Favors:
-            <% for (Requestoffer r : my_draft_requestoffers) { %>
-              <div>
-                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                  <span class="desc container" > 
-                    <%=Utils.safe_render(r.description)%>
-                   </span> 
-                </a>
-              </div>
+            <% if (mdr_count == 0) { %>None<% } else {%>
+              <% for (Requestoffer r : my_draft_requestoffers) { %>
+                <div>
+                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                    <span class="desc container" > 
+                      <%=Utils.safe_render(r.description)%>
+                     </span> 
+                  </a>
+                </div>
+              <% } %>
             <% } %>
           </div>
-          <div id="hdr_open_dtls" class="digest-line">Open: <%=mor_count%></div>
+          <div id="hdr_open_dtls" class="digest-line"><img src="static/img/open_icon.png">Open: <%=mor_count%></div>
           <div class="hdr-detail-section">
             These are your open Favors:
-            <% for (Requestoffer r : my_open_requestoffers) { %>
-              <div>
-                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                  <span class="desc container" > 
-                    <%=Utils.safe_render(r.description)%>
-                   </span> 
-                </a>
-              </div>
+            <% if (mor_count == 0) { %>None<% } else {%>
+              <% for (Requestoffer r : my_open_requestoffers) { %>
+                <div>
+                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                    <span class="desc container" > 
+                      <%=Utils.safe_render(r.description)%>
+                     </span> 
+                  </a>
+                </div>
+              <% } %>
             <% } %>
           </div>
         </div>

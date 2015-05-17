@@ -49,6 +49,11 @@ header form {
   border: 1px solid black;
 }
 
+#favor-statuses>div.digest-line img{
+  width: 20px;
+  height: 20px;
+}
+
 #my-favors-div {
   position: relative;
 }
@@ -84,38 +89,38 @@ header form {
 
 .favor-status.offering {
   left: 0px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/offering_icon.png") no-repeat scroll 50% 40% / contain;
   z-index: 1;
 }
 
 .favor-status.offers {
   left: 25px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/offers_icon.png") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.handling {
   left: 50px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/handling_icon.png") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.closed {
   left: 75px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/closed_icon.png") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.taken {
   left: 100px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/taken_icon.png") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.draft {
   left: 125px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/draft_icon.png") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.open {
   left: 150px;
-  background: url("../img/group_invite_alert.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/open_icon.png") no-repeat scroll 50% 40% / contain;
 }
 
 @media all and (min-width: 660px) {
