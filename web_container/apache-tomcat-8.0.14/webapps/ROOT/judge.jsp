@@ -46,12 +46,12 @@
       <input type="hidden" name="urdp_id" value="<%=urdp_id%>" />
 
       <div class="row">
-        <label for="happy">Happy</label>
+        <label for="happy" title="happy"><img  style="width: 45px; height: 45px;" src="static/img/happy.png"></label>
         <input type="radio" name="is_satis" id="happy" value="true" />
       </div>
 
       <div class="row">
-        <label for="sad">Sad</label>
+        <label for="sad" title="sad"><img style="width: 45px; height: 45px;" src="static/img/sad.png"></label>
         <input type="radio" name="is_satis" id="sad" value="false" />
       </div>
 

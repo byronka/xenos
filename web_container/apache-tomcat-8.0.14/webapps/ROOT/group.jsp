@@ -177,7 +177,7 @@
                   <a href="user.jsp?user_id=<%=ii.user_id%>">
                     <%=Utils.safe_render(ii.username)%>
                   </a>
-                  <a href="retract_invitation.jsp?group_id=<%=gid%>&user_id=<%=ii.user_id%>">Retract invitation</a>
+                  <a class="button" href="retract_invitation.jsp?group_id=<%=gid%>&user_id=<%=ii.user_id%>">Retract invitation</a>
                 </p>
               <% } %>
             <% } %>

@@ -15,7 +15,7 @@
 
     <style>
       #count-of-invites {
-        background: url("../img/group_invite_alert.png") 
+        background: url("static/img/group_invite_alert.png") 
           no-repeat scroll 0 0 / contain ;
         padding-top: 5px;
         font-size: 20px;

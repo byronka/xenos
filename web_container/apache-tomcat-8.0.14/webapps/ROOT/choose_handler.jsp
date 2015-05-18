@@ -17,7 +17,7 @@
 <%
 
   String qs = request.getQueryString();
-  Requestoffer r = 
+  Requestoffer the_requestoffer = 
     Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
   Integer huid = Utils.parse_int(Utils.parse_qs(qs).get("user"));
   if (huid == null) {
@@ -34,13 +34,13 @@
   }
 
     //make sure the requestoffer is there, and is open
-  if (r == null || r.status != Const.Rs.OPEN) {
+  if (the_requestoffer == null || the_requestoffer.status != Const.Rs.OPEN) {
     response.sendRedirect("general_error.jsp");
     return;
   }
 
   //make sure this user is the owner.
-  if (logged_in_user_id != r.requestoffering_user_id) {
+  if (logged_in_user_id != the_requestoffer.requestoffering_user_id) {
     response.sendRedirect("general_error.jsp");
     return;
   }
@@ -48,7 +48,7 @@
   //check if this is the last stage and we are confirmed to set a user
   Boolean confirm = Boolean.parseBoolean(Utils.parse_qs(qs).get("confirm"));
   if (confirm != null && confirm == true) {
-    if (Requestoffer_utils.choose_handler(huid, r.requestoffer_id)) {
+    if (Requestoffer_utils.choose_handler(huid, the_requestoffer.requestoffer_id)) {
       response.sendRedirect("handler_chosen.jsp");
       return;
     } else {
@@ -103,7 +103,7 @@
 
         <div class="table">
           <div class="row">
-          <a class="button" href="choose_handler.jsp?requestoffer=<%=r.requestoffer_id%>&user=<%=huid%>&confirm=true">
+          <a class="button" href="choose_handler.jsp?requestoffer=<%=the_requestoffer.requestoffer_id%>&user=<%=huid%>&confirm=true">
               <%=loc.get(95, "Confirm")%> 
             </a>
           </div>

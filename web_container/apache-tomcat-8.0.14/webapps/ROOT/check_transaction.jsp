@@ -15,13 +15,13 @@
 <%
 
   String qs = request.getQueryString();
-  Requestoffer r = 
+  Requestoffer the_requestoffer = 
     Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
-  if (r == null) {
+  if (the_requestoffer == null) {
     response.sendRedirect("general_error.jsp");
     return;
   }
-  if (r.status == Const.Rs.CLOSED) {
+  if (the_requestoffer.status == Const.Rs.CLOSED) {
   	response.sendRedirect("general_error.jsp");
   }
 %>
@@ -30,7 +30,7 @@
 
   <div class="container">
     <p>
-      Click on <a class="button" href="transaction_complete.jsp?requestoffer=<%=r.requestoffer_id%>">confirm</a> if you are sure you want to complete
+      Click on <a class="button" href="transaction_complete.jsp?requestoffer=<%=the_requestoffer.requestoffer_id%>">confirm</a> if you are sure you want to complete
       this Favor.  You will be given an opportunity to provide feedback
       for the other user afterwards.
     </p>

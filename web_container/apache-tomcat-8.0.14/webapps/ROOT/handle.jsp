@@ -15,16 +15,16 @@
 <%
 
   String qs = request.getQueryString();
-  Requestoffer r = 
+  Requestoffer the_requestoffer = 
     Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
-  if (r == null || r.status != Const.Rs.OPEN) {
+  if (the_requestoffer == null || the_requestoffer.status != Const.Rs.OPEN) {
     response.sendRedirect("general_error.jsp");
     return;
   }
 
   //handle bad scenario - if the offering user *is* the owning user.
 
-  if (logged_in_user_id == r.requestoffering_user_id) {
+  if (logged_in_user_id == the_requestoffer.requestoffering_user_id) {
     response.sendRedirect("general_error.jsp");
     return;
   }
@@ -33,14 +33,14 @@
   String is_confirmed = params.get("confirm");
   if (is_confirmed != null && is_confirmed.equals("true")) {
   if (Requestoffer_utils.offer_to_take_requestoffer(
-    logged_in_user_id, r.requestoffer_id)) {
+    logged_in_user_id, the_requestoffer.requestoffer_id)) {
     response.sendRedirect("offer_received.jsp");
     return;
     } else {
       response.sendRedirect("general_error.jsp");
     }
   }
-  if (r == null) {
+  if (the_requestoffer == null) {
     response.sendRedirect("general_error.jsp");
     return;
   }
@@ -54,8 +54,8 @@
   <p><%=loc.get(121,"If you would like to take this requestoffer, click the confirm button below")%></p>
   <div class="table">
     <div class="row">
-        <a class="button" href="handle.jsp?requestoffer=<%=r.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
-        <a class="button" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>"><%=loc.get(130, "Cancel")%></a>
+        <a class="button" href="handle.jsp?requestoffer=<%=the_requestoffer.requestoffer_id%>&confirm=true"><%=loc.get(95, "Confirm")%></a>
+        <a class="button" href="requestoffer.jsp?requestoffer=<%=the_requestoffer.requestoffer_id%>"><%=loc.get(130, "Cancel")%></a>
     </div>
   </div>
   </div>
