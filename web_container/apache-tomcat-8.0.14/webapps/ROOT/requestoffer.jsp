@@ -177,7 +177,7 @@
       </div>
       <div class="row">
         <label for="cat_span"><%=loc.get(28,"Categories")%>: </label>
-        <span id="cat_span" class="category">
+        <span id="cat_span" >
           <%=loc.get(the_requestoffer.category,"")%> 
         </span>
       </div>
