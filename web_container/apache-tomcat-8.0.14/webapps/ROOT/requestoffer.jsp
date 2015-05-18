@@ -127,9 +127,6 @@
         <% } %>
 
         <%=loc.get(138,"wants to handle")%>
-        <a href="requestoffer.jsp?requestoffer=<%=sr.requestoffer_id%>">
-          <%=Utils.get_trunc(Utils.safe_render(sr.desc),15)%>
-        </a>
         <a class="button" href="choose_handler.jsp?requestoffer=<%=sr.requestoffer_id%>&user=<%=sr.user_id%>">
           <%=loc.get(137,"Choose")%>
         </a>
@@ -270,11 +267,11 @@
               <% } %>
             <% } %>
 
-            <div class="table">
-            <div class="row">
               <label for="message">
                 <%=String.format(loc.get(38,"Message (up to %d characters)"), 200)%>
               </label>
+            <div class="table">
+            <div class="row">
 
               <textarea id="message" name="message" maxlength="200" ></textarea>
 
