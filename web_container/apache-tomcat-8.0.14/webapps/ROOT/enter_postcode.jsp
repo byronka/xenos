@@ -42,8 +42,8 @@ if (user_has_entered_postal_data) {
     is_nothing_found = true;
   } else if (postal_code_from_dropdown != null || pads.length == 1) {
               
-    // either use the one valid entry, or if that's not available, the selected
-    //postal code from the dropdown
+    // either use the one valid entry, or if that's not 
+    // available, the selected postal code from the dropdown
     Integer post_code_id = pads.length == 1 ? 
       pads[0].postcode_id 
       : postal_code_from_dropdown;
