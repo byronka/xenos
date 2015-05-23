@@ -84,13 +84,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <script type="text/javascript" src="static/js/utils.js"></script>
   <title><%=loc.get(58,"Account Creation")%></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="static/css/register.css" title="desktop">
   </head>
 <body>
-    <img id='my_background' src="static/img/cool2.jpg" onload="xenos_utils.fade_in_background()"/>
   <div class="trademark cl-effect-1"><a href="index.jsp">Zenia</a></div>
   <div class="register">
     <form id="enter_name_form" action="register_password.jsp" method="post">

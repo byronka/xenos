@@ -59,13 +59,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
-    <script type="text/javascript" src="static/js/utils.js"></script>
 		<title><%=loc.get(50,"Login page")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="static/css/login.css" title="desktop">
 	</head>
   <body>
-    <img id='my_background' src="static/img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
     <div class="trademark cl-effect-1"><a href="index.jsp">Zenia</a></div>
     <div class="signin">
       <form method="POST" action="login.jsp">

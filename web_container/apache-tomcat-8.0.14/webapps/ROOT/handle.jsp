@@ -48,7 +48,6 @@
 
 %>
 <body>
-  <img id='my_background' src="static/img/front_screen.png" onload="xenos_utils.fade_in_background()"/>
   <%@include file="includes/header.jsp" %>
   <div class="container">
   <p><%=loc.get(121,"If you would like to take this requestoffer, click the confirm button below")%></p>
