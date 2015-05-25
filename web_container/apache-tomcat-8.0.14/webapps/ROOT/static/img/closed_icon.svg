@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="29.776043"
+   height="28.382326"
+   id="svg3006">
+  <defs
+     id="defs3008" />
+  <metadata
+     id="metadata3011">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+        <cc:license
+           rdf:resource="" />
+        <dc:description>Offers you have gotten on your requestoffer</dc:description>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(2.120164,-1025.5828)"
+     id="layer1">
+    <path
+       d="M 8.5714287,30.774312 -5.6665926,20.429785 -0.22815296,3.6919869 l 17.59916196,-5e-7 5.43844,16.7377976 z"
+       transform="matrix(1,0,0,-1,4.1964286,1057.0071)"
+       id="path5085"
+       style="fill:#ffdc8e;fill-opacity:1;stroke:#004eb4;stroke-width:1.29999995;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+  </g>
+</svg>
