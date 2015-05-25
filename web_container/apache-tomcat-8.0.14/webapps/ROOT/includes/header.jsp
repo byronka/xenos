@@ -12,13 +12,13 @@
       </div>
 
       <div class="header-button">
-        <a class="button" href="advanced_search.jsp">
+        <a class="button" id="search" href="advanced_search.jsp">
           <span><%=loc.get(1,"Search")%></span>
         </a>
       </div>
 
       <div class="header-button">
-        <a class="button" href="check_location_needed.jsp">
+        <a class="button" id="request_favor" href="check_location_needed.jsp">
           <span><%=loc.get(2,"Request Favor")%></span>
         </a>
       </div>
@@ -66,6 +66,7 @@
           <span>My Favors</span>
         </a>
         
+      <script id="favor_status_script" type="text/html">
         <div id="favor-statuses">
           <div id="hdr_offering_dtls" class="digest-line">
             Offering: <%=o_count%></div>
@@ -189,6 +190,14 @@
           <span class="favor-status draft"><%=mdr_count%></span>
           <span class="favor-status open"><%=mor_count%></span>
         </div>
+      </script>
+      <script>
+        var my_favors_button = document.getElementById('my-favors-button');
+        var favor_status_script = document.getElementById('favor_status_script')
+        my_favors_button.insertAdjacentHTML(
+            'afterend', favor_status_script.innerHTML);
+      </script>
+
       </div>
 
       <div class="header-button">

@@ -7,6 +7,7 @@ header a {
   color: white;
 }
 
+
 .header-row {
   display: -webkit-box;
   display: -moz-box;
@@ -20,11 +21,6 @@ header a {
 .header-table {
   display: block;
   padding-bottom: 30px;
-}
-
-header form {
-  color: white;
-  display: inline-block;
 }
 
 .header-button a {
@@ -90,41 +86,59 @@ header form {
 
 .favor-status.offering {
   left: 0px;
-  background: url("../img/offering_icon.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/offering_icon.svg") no-repeat scroll 50% 40% / contain;
   z-index: 1;
 }
 
 .favor-status.offers {
   left: 25px;
-  background: url("../img/offers_icon.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/offers_icon.svg") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.handling {
   left: 50px;
-  background: url("../img/handling_icon.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/handling_icon.svg") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.closed {
   left: 75px;
-  background: url("../img/closed_icon.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/closed_icon.svg") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.taken {
   left: 100px;
-  background: url("../img/taken_icon.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/taken_icon.svg") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.draft {
   left: 125px;
-  background: url("../img/draft_icon.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/draft_icon.svg") no-repeat scroll 50% 40% / contain;
 }
 
 .favor-status.open {
   left: 150px;
-  background: url("../img/open_icon.png") no-repeat scroll 50% 40% / contain;
+  background: url("../img/open_icon.svg") no-repeat scroll 50% 40% / contain;
 }
 
 @media all and (min-width: 501px) {
+
+  header #search>span {
+    background: rgba(0, 0, 0, 0) url("../img/search_icon.svg") no-repeat scroll 50px center / contain ;
+    width: 65px;
+    display: block;
+  }
+
+  header #request_favor>span {
+    background: rgba(0, 0, 0, 0) url("../img/callbell_icon.svg") no-repeat scroll 100px center / contain ;
+    width: 123px;
+    display: block;
+  }
+
+  header #my-favors-button>span {
+    background: rgba(0, 0, 0, 0) url("../img/requestoffer_icon.svg") no-repeat scroll 75px center / contain ;
+    width: 105px;
+    display: block;
+  }
 
   #my-favors-button:hover+#favor-statuses {
     display: block;
