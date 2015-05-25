@@ -11,14 +11,14 @@
         <a class="trademark" href="dashboard.jsp">Zenia</a>
       </div>
 
-      <div class="header-button">
-        <a class="button" id="search" href="advanced_search.jsp">
+      <div id="search" class="header-button button">
+        <a href="advanced_search.jsp">
           <span><%=loc.get(1,"Search")%></span>
         </a>
       </div>
 
-      <div class="header-button">
-        <a class="button" id="request_favor" href="check_location_needed.jsp">
+      <div id="request_favor" class="header-button button">
+        <a href="check_location_needed.jsp">
           <span><%=loc.get(2,"Request Favor")%></span>
         </a>
       </div>
@@ -59,9 +59,8 @@
       int mor_count = my_open_requestoffers.length;
     %>
 
-      <div id="my-favors-div" class="header-button">
-        <a id="my-favors-button" 
-            class="button" 
+      <div id="my-favors-div" class="header-button button">
+        <a id="my-favors-anchor" 
             href="my_requestoffers.jsp">
           <span>My Favors</span>
         </a>
@@ -192,16 +191,16 @@
         </div>
       </script>
       <script>
-        var my_favors_button = document.getElementById('my-favors-button');
+        var my_favors_anchor = document.getElementById('my-favors-anchor');
         var favor_status_script = document.getElementById('favor_status_script')
-        my_favors_button.insertAdjacentHTML(
+        my_favors_anchor.insertAdjacentHTML(
             'afterend', favor_status_script.innerHTML);
       </script>
 
       </div>
 
-      <div class="header-button">
-        <a class="button" href="user.jsp?user_id=<%=logged_in_user_id%>">
+      <div id="my_profile" class="header-button button">
+        <a href="user.jsp?user_id=<%=logged_in_user_id%>">
           <span>
             <%=loc.get(97,"My profile")%>: 
             <%=Utils.safe_render(logged_in_user.username)%>
@@ -209,8 +208,8 @@
         </a>
       </div>
 
-      <div class="header-button">
-        <a class="button" href="logout.jsp" >
+      <div id="logout" class="header-button button" >
+        <a href="logout.jsp" >
           <span><%=loc.get(3, "Logout")%></span>
         </a>
       </div>

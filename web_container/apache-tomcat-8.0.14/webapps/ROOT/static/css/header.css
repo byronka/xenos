@@ -23,14 +23,11 @@ header a {
   padding-bottom: 30px;
 }
 
-.header-button a {
-  position: relative;
-}
-
 #favor-statuses {
   display: none;
   position: absolute;
-  top: 38px;
+  top: 28px;
+  left: -20px;
   width: 200px;
   height: 330px;
   border: solid 1px red;
@@ -50,12 +47,13 @@ header a {
   height: 20px;
 }
 
-#my-favors-div {
+#my-favors-anchor {
   position: relative;
 }
 
 #status-digest {
-  position: relative;
+  top: 30px;
+  position: absolute;
 }
 
 
@@ -122,25 +120,40 @@ header a {
 
 @media all and (min-width: 501px) {
 
-  header #search>span {
-    background: rgba(0, 0, 0, 0) url("../img/search_icon.svg") no-repeat scroll 50px center / contain ;
+  header #search>a {
+    background: rgba(0, 0, 0, 0) url("../img/search_icon.svg") no-repeat scroll 55px center / contain ;
     width: 65px;
     display: block;
+    margin: 0px;
   }
 
-  header #request_favor>span {
-    background: rgba(0, 0, 0, 0) url("../img/callbell_icon.svg") no-repeat scroll 100px center / contain ;
-    width: 123px;
+  header #request_favor>a {
+    background: rgba(0, 0, 0, 0) url("../img/callbell_icon.svg") no-repeat scroll 105px center / contain ;
+    width: 115px;
     display: block;
+    margin: 0px;
   }
 
-  header #my-favors-button>span {
+  header #my-favors-div {
+    position: relative;
+  }
+
+  header #my-favors-div>a {
     background: rgba(0, 0, 0, 0) url("../img/requestoffer_icon.svg") no-repeat scroll 75px center / contain ;
-    width: 105px;
     display: block;
+    width: 100px;
+    margin: 0px;
   }
 
-  #my-favors-button:hover+#favor-statuses {
+
+  header #logout>a {
+    background: rgba(0, 0, 0, 0) url("../img/logout_icon.svg") no-repeat scroll 55px center / contain ;
+    display: block;
+    width: 75px;
+    margin: 0px;
+  }
+
+  #my-favors-div:hover #favor-statuses {
     display: block;
   }
 
@@ -180,7 +193,7 @@ header a {
 
   #status-digest {
     left: -20px;
-    top: -20px;
+    top: 20px;
   }
 
   header a {
@@ -196,6 +209,41 @@ header a {
 
 @media all and (max-width: 500px) {
 
+  header #search>a {
+    background: rgba(0, 0, 0, 0) url("../img/search_icon.svg") no-repeat scroll center / contain ;
+    width: 18px;
+    height: 18px;
+    margin: 0px;
+  }
+
+  header #request_favor>a {
+    background: rgba(0, 0, 0, 0) url("../img/callbell_icon.svg") no-repeat scroll center / contain ;
+    width: 18px;
+    height: 18px;
+    margin: 0px;
+  }
+
+  header #my-favors-div>a {
+    background: rgba(0, 0, 0, 0) url("../img/requestoffer_icon.svg") no-repeat scroll center / contain ;
+    width: 18px;
+    height: 18px;
+    margin: 0px;
+  }
+
+  header #my_profile>a {
+    background: rgba(0, 0, 0, 0) url("../img/one_person_icon.svg") no-repeat scroll center / contain ;
+    width: 18px;
+    height: 18px;
+    margin: 0px;
+  }
+
+  header #logout>a {
+    background: rgba(0, 0, 0, 0) url("../img/logout_icon.svg") no-repeat scroll center / contain ;
+    width: 18px;
+    height: 18px;
+    margin: 0px;
+  }
+
   #status-digest {
     left: -40px;
     top: -20px;
@@ -203,10 +251,6 @@ header a {
 
   .header-row {
     padding-bottom: 30px;
-  }
-
-  header form {
-    display: none;
   }
 
   .header-button span {
