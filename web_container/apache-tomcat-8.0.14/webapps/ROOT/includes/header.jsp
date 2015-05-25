@@ -13,15 +13,13 @@
 
       <div class="header-button">
         <a class="button" href="advanced_search.jsp">
-          <span><%=loc.get(81,"Advanced search")%></span>
-          <img src="static/img/search_advanced.png"  />
+          <span><%=loc.get(1,"Search")%></span>
         </a>
       </div>
 
       <div class="header-button">
         <a class="button" href="check_location_needed.jsp">
           <span><%=loc.get(2,"Request Favor")%></span>
-          <img src="static/img/call_bell.png"   />
         </a>
       </div>
 
@@ -66,11 +64,11 @@
             class="button" 
             href="my_requestoffers.jsp">
           <span>My Favors</span>
-          <img src="static/img/call_bell.png"   />
         </a>
         
         <div id="favor-statuses">
-          <div id="hdr_offering_dtls" class="digest-line"><img src="static/img/offering_icon.png">Offering: <%=o_count%></div>
+          <div id="hdr_offering_dtls" class="digest-line">
+            Offering: <%=o_count%></div>
           <div class="hdr-detail-section">
             you are offering for:
             <% if (o_count == 0) { %>None<% } else {%>
@@ -85,7 +83,8 @@
               <% } %>
             <% } %>
           </div>
-          <div id="hdr_offers_dtls" class="digest-line"><img src="static/img/offers_icon.png">Offers: <%=sr_count%></div>
+          <div id="hdr_offers_dtls" class="digest-line">
+            Offers: <%=sr_count%></div>
           <div class="hdr-detail-section">
             Offers exist for:
             <% if (sr_count == 0) { %>None<% } else {%>
@@ -100,7 +99,8 @@
               <% } %>
             <% } %>
           </div>
-          <div id="hdr_handling_dtls" class="digest-line"><img src="static/img/handling_icon.png">Handling: <%=hr_count%></div>
+          <div id="hdr_handling_dtls" class="digest-line">
+            Handling: <%=hr_count%></div>
           <div class="hdr-detail-section">
             You are working on these Favors:
             <% if (hr_count == 0) { %>None<% } else {%>
@@ -115,7 +115,8 @@
               <% } %>
             <% } %>
           </div>
-          <div id="hdr_closed_dtls" class="digest-line"><img src="static/img/closed_icon.png">Closed: <%=mcr_count%></div>
+          <div id="hdr_closed_dtls" class="digest-line">
+            Closed: <%=mcr_count%></div>
           <div class="hdr-detail-section">
             Your most recent closed Favors:
             <% if (mcr_count == 0) { %>None<% } else {%>
@@ -130,7 +131,8 @@
               <% } %>
             <% } %>
           </div>
-          <div id="hdr_taken_dtls" class="digest-line"><img src="static/img/taken_icon.png">Taken: <%=mtr_count%></div>
+          <div id="hdr_taken_dtls" class="digest-line">
+            Taken: <%=mtr_count%></div>
           <div class="hdr-detail-section">
             Your Favors being handled:
             <% if (mtr_count == 0) { %>None<% } else {%>
@@ -145,7 +147,8 @@
               <% } %>
             <% } %>
           </div>
-          <div id="hdr_draft_dtls" class="digest-line"><img src="static/img/draft_icon.png">Draft: <%=mdr_count%></div>
+          <div id="hdr_draft_dtls" class="digest-line">
+            Draft: <%=mdr_count%></div>
           <div class="hdr-detail-section">
             These are your draft Favors:
             <% if (mdr_count == 0) { %>None<% } else {%>
@@ -160,7 +163,8 @@
               <% } %>
             <% } %>
           </div>
-          <div id="hdr_open_dtls" class="digest-line"><img src="static/img/open_icon.png">Open: <%=mor_count%></div>
+          <div id="hdr_open_dtls" class="digest-line">
+            Open: <%=mor_count%></div>
           <div class="hdr-detail-section">
             These are your open Favors:
             <% if (mor_count == 0) { %>None<% } else {%>
@@ -193,14 +197,12 @@
             <%=loc.get(97,"My profile")%>: 
             <%=Utils.safe_render(logged_in_user.username)%>
           </span>
-          <img src="static/img/one_person.png"   />
         </a>
       </div>
 
       <div class="header-button">
         <a class="button" href="logout.jsp" >
           <span><%=loc.get(3, "Logout")%></span>
-          <img src="static/img/exit.png"   />
         </a>
       </div>
 
