@@ -5,6 +5,10 @@ header {
 
 header a {
   color: white;
+  height: 15px;
+  margin-top: auto;
+  margin-bottom: auto;
+  position: relative;
 }
 
 
@@ -47,10 +51,6 @@ header a {
   height: 20px;
 }
 
-#my-favors-anchor {
-  position: relative;
-}
-
 #status-digest {
   top: 30px;
   position: absolute;
@@ -76,6 +76,8 @@ header a {
   font-size: 12px;
   height: 24px;
   text-align: center;
+  line-height: 2em;
+  color: black;
   width: 24px;
   z-index:1;
   top: 15px;
@@ -84,7 +86,7 @@ header a {
 
 .favor-status.offering {
   left: 0px;
-  background: url("../img/offering_icon.svg") no-repeat scroll 50% 40% / contain;
+  background: url("../img/offering_icon.svg") no-repeat scroll 50% 50% / contain;
   z-index: 1;
 }
 
@@ -118,31 +120,29 @@ header a {
   background: url("../img/open_icon.svg") no-repeat scroll 50% 40% / contain;
 }
 
+header #my-favors-div {
+  position: relative;
+}
+
 @media all and (min-width: 501px) {
 
   header #search>a {
     background: rgba(0, 0, 0, 0) url("../img/search_icon.svg") no-repeat scroll 55px center / contain ;
-    width: 65px;
+    width: 80px;
     display: block;
-    margin: 0px;
   }
 
   header #request_favor>a {
     background: rgba(0, 0, 0, 0) url("../img/callbell_icon.svg") no-repeat scroll 105px center / contain ;
-    width: 115px;
+    width: 125px;
     display: block;
-    margin: 0px;
   }
 
-  header #my-favors-div {
-    position: relative;
-  }
 
   header #my-favors-div>a {
     background: rgba(0, 0, 0, 0) url("../img/requestoffer_icon.svg") no-repeat scroll 75px center / contain ;
     display: block;
-    width: 100px;
-    margin: 0px;
+    width: 110px;
   }
 
 
@@ -150,7 +150,6 @@ header a {
     background: rgba(0, 0, 0, 0) url("../img/logout_icon.svg") no-repeat scroll 55px center / contain ;
     display: block;
     width: 75px;
-    margin: 0px;
   }
 
   #my-favors-div:hover #favor-statuses {
@@ -196,15 +195,6 @@ header a {
     top: 20px;
   }
 
-  header a {
-    margin-top:5px;
-    margin-bottom:5px;
-    padding-left:4px;
-    padding-right:4px;
-    margin-left: 3px;
-    margin-right: 3px;
-  }
-
 }
 
 @media all and (max-width: 500px) {
@@ -245,18 +235,23 @@ header a {
   }
 
   #status-digest {
-    left: -40px;
-    top: -20px;
+    display: none;
   }
 
   .header-row {
     padding-bottom: 30px;
   }
 
+  .header-button {
+    height: 25px;
+    display: block;
+  }
+
   .header-button span {
     font-size: smaller;
     position: absolute;
     top: 44px;
+    left: -8px;
   }
 
 
