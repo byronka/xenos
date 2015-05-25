@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="static/css/thanks.css" title="desktop">
 	</head>
 <body>
-  <img id='my_background' src="static/img/thanks.jpeg" />
   <div class="trademark">Xenos</div>
   <nav class="cl-effect-1">
     <p><%=loc.get(70,"You are awesome! Thanks so much for entering your name!")%></p>
