@@ -9,8 +9,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="8.8897781"
-   height="26.418259"
+   width="7.6897783"
+   height="25.218258"
    id="svg3006"
    version="1.1"
    inkscape:version="0.48.4 r9939"
@@ -25,8 +25,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="15.839192"
-     inkscape:cx="-26.064825"
-     inkscape:cy="8.2744989"
+     inkscape:cx="-26.538556"
+     inkscape:cy="7.6744839"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -47,7 +47,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -55,10 +55,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-8.4899766,-1027.5569)">
+     transform="translate(-9.0899766,-1028.1569)">
     <path
        sodipodi:type="arc"
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;stroke:none"
        id="path5053-5-9"
        sodipodi:cx="8.0357141"
        sodipodi:cy="7.5"
@@ -67,7 +67,7 @@
        d="m 10.357143,7.5 c 0,1.2820896 -1.0393393,2.3214285 -2.3214289,2.3214285 -1.2820895,0 -2.3214285,-1.0393389 -2.3214285,-2.3214285 0,-1.2820896 1.039339,-2.3214285 2.3214285,-2.3214285 1.2820896,0 2.3214289,1.0393389 2.3214289,2.3214285 z"
        transform="matrix(1.2,0,0,1.2,3.2084543,1021.9426)" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.20000005000000010px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;stroke:none"
        d="m 11.21129,1034.0362 3.788073,0.076 0.984898,0.6062 0.757614,0.8712 0.03788,7.6898 -0.454568,1.1364 -0.757614,0.6818 0.07577,8.2202 c 0,0 -5.265421,0.1515 -5.341182,-0.038 -0.07576,-0.1894 0.03788,-8.2202 0.03788,-8.2202 l -0.9470194,-0.7954 -0.265165,-0.7955 -0.03788,-7.311 0.568211,-1.3637 z"
        id="path5747"
        inkscape:connector-curvature="0" />
