@@ -103,10 +103,17 @@
     <% } %>
 
     <% if (show_handle_button) { %>
-        <a class="button" href="handle.jsp?requestoffer=<%=the_requestoffer.requestoffer_id%>">
+        <a class="button" 
+          href="handle.jsp?requestoffer=<%=the_requestoffer.requestoffer_id%>">
           <%=loc.get(37,"Handle")%>
         </a>
     <% } %>
+
+    <%
+      Requestoffer_utils.Service_request[] service_requests = 
+        Requestoffer_utils
+        .get_service_requests_for_requestoffer(the_requestoffer.requestoffer_id);
+    %>
 
     <%for (Requestoffer_utils.Service_request sr : service_requests) { %>
       <div class="servicerequest">

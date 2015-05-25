@@ -28,10 +28,10 @@
         Requestoffer_utils
         .get_requestoffers_I_offered_to_service(logged_in_user_id);
 
-      Requestoffer_utils.Service_request[] service_requests = 
+      Requestoffer_utils.Service_request[] hdr_service_requests = 
         Requestoffer_utils.get_service_requests(logged_in_user_id);
 
-      Others_Requestoffer[] handling_requestoffers = 
+      Others_Requestoffer[] hdr_handling_requestoffers = 
         Requestoffer_utils.get_requestoffers_I_am_handling(logged_in_user_id);
 
       Requestoffer[] my_closed_requestoffers = 
@@ -51,8 +51,8 @@
         .get_requestoffers_for_user_by_status(logged_in_user_id,Const.Rs.OPEN);
 
       int o_count = offers.length;
-      int sr_count = service_requests.length;
-      int hr_count = handling_requestoffers.length;
+      int sr_count = hdr_service_requests.length;
+      int hr_count = hdr_handling_requestoffers.length;
       int mcr_count = my_closed_requestoffers.length;
       int mtr_count = my_taken_requestoffers.length;
       int mdr_count = my_draft_requestoffers.length;
@@ -89,7 +89,7 @@
           <div class="hdr-detail-section">
             Offers exist for:
             <% if (sr_count == 0) { %>None<% } else {%>
-              <% for (Requestoffer_utils.Service_request r : service_requests) { %>
+              <% for (Requestoffer_utils.Service_request r : hdr_service_requests) { %>
                 <div>
                   <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
                     <span class="desc container" > 
@@ -105,7 +105,7 @@
           <div class="hdr-detail-section">
             You are working on these Favors:
             <% if (hr_count == 0) { %>None<% } else {%>
-              <% for (Requestoffer r : handling_requestoffers) { %>
+              <% for (Requestoffer r : hdr_handling_requestoffers) { %>
                 <div>
                   <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
                     <span class="desc container" > 
