@@ -19,7 +19,7 @@ body {
 }
 
 
-@media all and (min-width: 660px) {
+@media all and (min-width: 501px) {
 
   .table {
     border-spacing: 8px 8px;
@@ -39,7 +39,7 @@ body {
 
 }
 
-@media all and (max-width: 659px) {
+@media all and (max-width: 500px) {
 
   .table {
     display: block;

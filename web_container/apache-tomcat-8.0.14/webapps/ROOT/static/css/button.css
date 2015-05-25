@@ -28,7 +28,7 @@
       position: relative;
       top: 1px;
   }
-@media all and (min-width: 660px) {
+@media all and (min-width: 501px) {
 
   .button img {
     width: 12px;
@@ -39,7 +39,7 @@
 }
 
 /* handling situation where things get too narrow */
-@media all and (max-width: 659px) {
+@media all and (max-width: 500px) {
 
   .button img {
     width: 25px;

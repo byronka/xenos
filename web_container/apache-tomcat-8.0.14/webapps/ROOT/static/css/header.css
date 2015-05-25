@@ -124,7 +124,7 @@ header form {
   background: url("../img/open_icon.png") no-repeat scroll 50% 40% / contain;
 }
 
-@media all and (min-width: 660px) {
+@media all and (min-width: 501px) {
 
   #my-favors-button:hover+#favor-statuses {
     display: block;
@@ -180,7 +180,7 @@ header form {
 
 }
 
-@media all and (max-width: 659px) {
+@media all and (max-width: 500px) {
 
   #status-digest {
     left: -40px;

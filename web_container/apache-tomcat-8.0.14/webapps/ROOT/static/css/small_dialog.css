@@ -68,7 +68,7 @@ footer {
 }
 
 
-@media all and (min-width: 660px) {
+@media all and (min-width: 501px) {
 
   div.container input[type="text"] {
     display: table-cell;
@@ -106,7 +106,7 @@ footer {
 }
 
 /* handling situation where things get too narrow */
-@media all and (max-width: 659px) {
+@media all and (max-width: 500px) {
 
   .table {
     display: block;
