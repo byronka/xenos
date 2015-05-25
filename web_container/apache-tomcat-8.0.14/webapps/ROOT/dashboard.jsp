@@ -19,9 +19,6 @@
   </head>
 
 <body>
-  <img alt="background" 
-    id='my_background' 
-    src="static/img/galaxy_universe-normal.jpg" />
   <%@include file="includes/header.jsp" %>
 
   <div id="ro-container">
