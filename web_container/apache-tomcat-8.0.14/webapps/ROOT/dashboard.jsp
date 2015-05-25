@@ -88,21 +88,23 @@
       <% } else { %>                                          
         <% for (Others_Requestoffer r : or_package.get_requestoffers()) { %>
         <%int l_step = Requestoffer_utils.get_ladder_step(r.rank_ladder);%>
-        <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-          <span class="desc container <%if(r.status == Const.Rs.TAKEN ){%><%="taken"%><%}%>">
-            <%=Utils.safe_render(r.description)%>
-            <span class="datetime">
-              <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
-            </span>
-           </span> 
-           <span class="category c-<%=r.category%>" >&nbsp;</span>
+        <div>
+          <a class="requestoffer rank_<%=l_step%>" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+            <span class="desc container <%if(r.status == Const.Rs.TAKEN ){%><%="taken"%><%}%>">
+              <%=Utils.safe_render(r.description)%>
+              <span class="datetime">
+                <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
+              </span>
+             </span> 
+             <span class="category c-<%=r.category%>" >&nbsp;</span>
 
-          <%if (r.distance != null ) {%>
-            <span class="distance">
-              about <%=String.format("%.1f",r.distance)%> miles
-            </span>
-          <% } %>
-        </a>
+            <%if (r.distance != null ) {%>
+              <span class="distance">
+                about <%=String.format("%.1f",r.distance)%> miles
+              </span>
+            <% } %>
+          </a>
+        </div>
       <% } %>
     <% } %>
 

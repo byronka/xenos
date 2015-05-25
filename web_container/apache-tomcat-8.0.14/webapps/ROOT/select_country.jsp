@@ -34,13 +34,12 @@
           %>
           <select name="country" id="country" autofocus="true">
             <% for (int i = 0; i < countries.length; i ++) { %>
-            <% if (countries[i].country_id == 244) { %>
-              <option selected="selected" value="<%=countries[i].country_id%>">
-            <% } else if (countries[i].country_id == 82) { %>
-              <option value="<%=countries[i].country_id%>">
-            <% } %>
-                <%=countries[i].country_name%>
-              </option>
+              <% if (countries[i].country_id == 82 ||
+                     countries[i].country_id == 244  ) { %>
+                <option value="<%=countries[i].country_id%>">
+                  <%=countries[i].country_name%>
+                </option>
+              <% } %>
             <% } %>
           </select>
           </div>

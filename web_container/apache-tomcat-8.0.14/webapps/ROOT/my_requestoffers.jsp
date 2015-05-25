@@ -39,11 +39,11 @@
 
 
 
-    <%if (service_requests.length != 0) {%>
+    <%if (hdr_service_requests.length != 0) {%>
 
     <div class="row">
       <div><em><%=loc.get(120, "Offers to service my favors")%></em></div>
-        <%for (Requestoffer_utils.Service_request sr : service_requests) { %>
+        <%for (Requestoffer_utils.Service_request sr : hdr_service_requests) { %>
           <div class="servicerequest">
             <%User servicer = User_utils.get_user(sr.user_id);%>
             
@@ -74,12 +74,12 @@
     <% } %> 
 
 
-      <%if (handling_requestoffers.length != 0) {%>
+      <%if (hdr_handling_requestoffers.length != 0) {%>
       <div class="row">
         <div><em><%=loc.get(102, "Favors I am handling")%>:</em></div>
 
 
-        <%	for (Others_Requestoffer r : handling_requestoffers) { %>
+        <%	for (Others_Requestoffer r : hdr_handling_requestoffers) { %>
 
             <% // requestoffer view starts HERE %>
             <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
