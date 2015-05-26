@@ -9,25 +9,10 @@
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
     <link rel="stylesheet" href="static/css/button.css" >
+    <link rel="stylesheet" href="static/css/user.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
     <title><%=loc.get(97,"My Profile")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <style>
-      #count-of-invites {
-        background: url("static/img/group_invite_alert.png") 
-          no-repeat scroll 0 0 / contain ;
-        padding-top: 5px;
-        font-size: 20px;
-        height: 25px;
-        left: -10px;
-        position: absolute;
-        text-align: center;
-        top: -15px;
-        width: 25px;
-        z-index:2;
-      }
-    </style>
 
 	</head>
 <%
@@ -63,11 +48,10 @@
   <div class="container">
       <h3><%=Utils.safe_render(the_user.username)%>
         <% if (uid == logged_in_user_id && !edit_desc ) { %>
-          <a href="user.jsp?user_id=<%=uid%>&amp;edit_desc=true" >
-              <img 
-                title="<%=loc.get(84,"Edit description")%>" 
-                src="static/img/edit.png" 
-                width="12px" height="12px" />
+          <a title="<%=loc.get(84,"Edit description")%>" 
+            id="edit_desc_anchor" 
+            href="user.jsp?user_id=<%=uid%>&amp;edit_desc=true" >
+            <span><%=loc.get(84,"Edit description")%></span>
           </a>
         <% } %>
       </h3>
@@ -105,17 +89,17 @@
 
       <% if (uid == logged_in_user_id) { %>
 
-        <a class="button" href="change_password.jsp">
+      <div id="change_password_div" class="button">
+        <a href="change_password.jsp">
           <span><%=loc.get(113,"Change password")%></span>
-          <img src="static/img/password.png"   />
         </a>
+      </div>
 
         <%
          Group_utils.Invite_info[] iis = Group_utils.get_invites_for_user(logged_in_user_id);
         %>
-        <a class="button" href="user_groups.jsp">
+        <a id="your_groups" class="button" href="user_groups.jsp">
           <span><%=loc.get(8,"Your groups")%></span>
-          <img src="static/img/group.png"   />
           <% if (iis.length > 0) { %>
             <span style="position: relative">
               <span id="count-of-invites"><%=iis.length%></span>
@@ -123,19 +107,17 @@
           <% } %>
         </a>
 
-        <a class="button" href="select_country.jsp?usecase=2">
+        <a id="current_location" class="button" href="select_country.jsp?usecase=2">
           <span><%=loc.get(7,"Current location")%>
           <%
           String user_postcode = 
             Utils.is_null_or_empty(logged_in_user.postal_code) ? "none" : logged_in_user.postal_code; %>
           <%=Utils.safe_render(user_postcode)%>
           </span>
-          <img src="static/img/world_icon.png"   />
         </a>
 
-        <a class="button" href="generate_icode.jsp">
+        <a id="generate_icode" class="button" href="generate_icode.jsp">
           <span><%=loc.get(206,"Generate invitation code")%></span>
-          <img src="static/img/invitation.png"   />
         </a>
 
       <% } %>
