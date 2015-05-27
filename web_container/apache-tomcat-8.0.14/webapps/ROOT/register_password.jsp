@@ -113,6 +113,7 @@
           <span class="error"><%=password_error_msg %></span>
         </div>
 
+      <script id="complexity_requirements_script" type="text/html">
         <div class="complexity-requirements">
 
           <div id="length">
@@ -128,14 +129,26 @@
           </div>
 
         </div>
+      </script>
+      <script>
+        var password_container = document.getElementById('password-container');
+        var complexity_req_script = 
+          document.getElementById('complexity_requirements_script')
+        password_container.insertAdjacentHTML(
+            'afterend', complexity_req_script.innerHTML);
+      </script>
 
       </div>
 
       <div id="button-wrapper">
-        <button id="submitbutton" disabled type="submit">
+        <button id="submitbutton" type="submit">
           <%=loc.get(64,"Create my new user!")%>
         </button>
       </div>
+      <script>
+        var submit_button = document.getElementById('submitbutton');
+        submit_button.disabled = true;
+      </script>
 
     </form>
 

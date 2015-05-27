@@ -98,14 +98,16 @@
         <%
          Group_utils.Invite_info[] iis = Group_utils.get_invites_for_user(logged_in_user_id);
         %>
-        <a id="your_groups" class="button" href="user_groups.jsp">
-          <span><%=loc.get(8,"Your groups")%></span>
-          <% if (iis.length > 0) { %>
-            <span style="position: relative">
-              <span id="count-of-invites"><%=iis.length%></span>
-            </span>
-          <% } %>
-        </a>
+        <div id="your_groups_div" class="button">
+          <a href="user_groups.jsp">
+            <span><%=loc.get(8,"Your groups")%></span>
+            <% if (iis.length > 0) { %>
+              <span style="position: relative">
+                <span id="count-of-invites"><%=iis.length%></span>
+              </span>
+            <% } %>
+          </a>
+        </div>
 
         <a id="current_location" class="button" href="select_country.jsp?usecase=2">
           <span><%=loc.get(7,"Current location")%>
@@ -116,9 +118,11 @@
           </span>
         </a>
 
-        <a id="generate_icode" class="button" href="generate_icode.jsp">
-          <span><%=loc.get(206,"Generate invitation code")%></span>
-        </a>
+        <div id="generate_icode_div" class="button">
+          <a href="generate_icode.jsp">
+            <span><%=loc.get(206,"Generate invitation code")%></span>
+          </a>
+        </div>
 
       <% } %>
 
@@ -133,7 +137,8 @@
         </div>
       <%}%>
 
-      <%int l_step = Requestoffer_utils.get_ladder_step(the_user.rank_ladder);%>
+      <%int l_step = Requestoffer_utils
+        .get_ladder_step(the_user.rank_ladder);%>
 
       <div class="row">
         <label><%=loc.get(19,"Rank ladder")%>:</label>
