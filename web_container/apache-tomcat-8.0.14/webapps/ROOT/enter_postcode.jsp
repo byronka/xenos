@@ -49,18 +49,8 @@ if (user_has_entered_postal_data) {
       : postal_code_from_dropdown;
 
     // there is only one location - we need nothing more from the user,
-    // move to the next page - creating a requestoffer with this data.
-    switch(usecase) {
-      case 1: // create requestoffer
-        response.sendRedirect(String.format("create_requestoffer.jsp?c=%d&p=%d",country_id, post_code_id));
-        return;
-      case 2: // set current location on user
-      // fallthrough
-      default:
-        User_utils.edit_user_current_location(logged_in_user_id, country_id, post_code_id);
-        response.sendRedirect("dashboard.jsp");
-        return;
-    }
+    // move to the next page - confirmation
+    response.sendRedirect(String.format("confirm_location.jsp?c=%d&p=%d&u=%d",country_id, post_code_id, usecase));
 
   } else {
     //there are 2 or more details to show the user.  Let them pick that
