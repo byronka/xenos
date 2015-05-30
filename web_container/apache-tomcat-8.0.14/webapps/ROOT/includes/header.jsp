@@ -3,26 +3,6 @@
 <%@ page import="com.renomad.xenos.Requestoffer" %>
 <%@ page import="com.renomad.xenos.Others_Requestoffer" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<header>
-  <div class="header-table">
-    <div class="header-row">
-
-      <div class="header-button">
-        <a class="trademark" href="dashboard.jsp">Zenia</a>
-      </div>
-
-      <div id="search" class="header-button button">
-        <a href="advanced_search.jsp">
-          <span><%=loc.get(1,"Search")%></span>
-        </a>
-      </div>
-
-      <div id="request_favor" class="header-button button">
-        <a href="check_location_needed.jsp">
-          <span><%=loc.get(2,"Request Favor")%></span>
-        </a>
-      </div>
-
     <%
       Requestoffer[] offers = 
         Requestoffer_utils
@@ -58,163 +38,190 @@
       int mdr_count = my_draft_requestoffers.length;
       int mor_count = my_open_requestoffers.length;
     %>
+<header>
+  <div class="header-table">
+    <div class="header-row">
 
-      <div id="my-favors-div" class="header-button button">
-        <a id="my-favors-anchor" 
-            href="my_requestoffers.jsp">
-          <span>My Favors</span>
-        </a>
-        
-      <script id="favor_status_script" type="text/html">
-        <div id="favor-statuses">
-          <div id="hdr_offering_dtls" class="digest-line">
-            Offering: <%=o_count%></div>
-          <div class="hdr-detail-section">
-            you are offering for:
-            <% if (o_count == 0) { %>None<% } else {%>
-              <% for (Requestoffer r : offers) { %>
-                <div>
-                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                    <span class="desc container" > 
-                      <%=Utils.safe_render(r.description)%>
-                     </span> 
-                  </a>
-                </div>
-              <% } %>
-            <% } %>
-          </div>
-          <div id="hdr_offers_dtls" class="digest-line">
-            Offers: <%=sr_count%></div>
-          <div class="hdr-detail-section">
-            Offers exist for:
-            <% if (sr_count == 0) { %>None<% } else {%>
-              <% for (Requestoffer_utils.Service_request r : hdr_service_requests) { %>
-                <div>
-                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                    <span class="desc container" > 
-                      <%=Utils.safe_render(r.desc)%>
-                     </span> 
-                  </a>
-                </div>
-              <% } %>
-            <% } %>
-          </div>
-          <div id="hdr_handling_dtls" class="digest-line">
-            Handling: <%=hr_count%></div>
-          <div class="hdr-detail-section">
-            You are working on these Favors:
-            <% if (hr_count == 0) { %>None<% } else {%>
-              <% for (Requestoffer r : hdr_handling_requestoffers) { %>
-                <div>
-                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                    <span class="desc container" > 
-                      <%=Utils.safe_render(r.description)%>
-                     </span> 
-                  </a>
-                </div>
-              <% } %>
-            <% } %>
-          </div>
-          <div id="hdr_closed_dtls" class="digest-line">
-            Closed: <%=mcr_count%></div>
-          <div class="hdr-detail-section">
-            Your most recent closed Favors:
-            <% if (mcr_count == 0) { %>None<% } else {%>
-              <% for (Requestoffer r : my_closed_requestoffers) { %>
-                <div>
-                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                    <span class="desc container" > 
-                      <%=Utils.safe_render(r.description)%>
-                     </span> 
-                  </a>
-                </div>
-              <% } %>
-            <% } %>
-          </div>
-          <div id="hdr_taken_dtls" class="digest-line">
-            Taken: <%=mtr_count%></div>
-          <div class="hdr-detail-section">
-            Your Favors being handled:
-            <% if (mtr_count == 0) { %>None<% } else {%>
-              <% for (Requestoffer r : my_taken_requestoffers) { %>
-                <div>
-                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                    <span class="desc container" > 
-                      <%=Utils.safe_render(r.description)%>
-                     </span> 
-                  </a>
-                </div>
-              <% } %>
-            <% } %>
-          </div>
-          <div id="hdr_draft_dtls" class="digest-line">
-            Draft: <%=mdr_count%></div>
-          <div class="hdr-detail-section">
-            These are your draft Favors:
-            <% if (mdr_count == 0) { %>None<% } else {%>
-              <% for (Requestoffer r : my_draft_requestoffers) { %>
-                <div>
-                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                    <span class="desc container" > 
-                      <%=Utils.safe_render(r.description)%>
-                     </span> 
-                  </a>
-                </div>
-              <% } %>
-            <% } %>
-          </div>
-          <div id="hdr_open_dtls" class="digest-line">
-            Open: <%=mor_count%></div>
-          <div class="hdr-detail-section">
-            These are your open Favors:
-            <% if (mor_count == 0) { %>None<% } else {%>
-              <% for (Requestoffer r : my_open_requestoffers) { %>
-                <div>
-                  <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
-                    <span class="desc container" > 
-                      <%=Utils.safe_render(r.description)%>
-                     </span> 
-                  </a>
-                </div>
-              <% } %>
-            <% } %>
-          </div>
-        </div>
-        <div id="status-digest" >
-          <span class="favor-status offering"><%=o_count%></span>
-          <span class="favor-status offers"><%=sr_count%></span>
-          <span class="favor-status handling"><%=hr_count%></span>
-          <span class="favor-status closed"><%=mcr_count%></span>
-          <span class="favor-status taken"><%=mtr_count%></span>
-          <span class="favor-status draft"><%=mdr_count%></span>
-          <span class="favor-status open"><%=mor_count%></span>
-        </div>
-      </script>
-      <script>
-        var my_favors_anchor = document.getElementById('my-favors-anchor');
-        var favor_status_script = document.getElementById('favor_status_script')
-        my_favors_anchor.insertAdjacentHTML(
-            'afterend', favor_status_script.innerHTML);
-      </script>
-
+      <div class="header-button">
+        <a class="trademark" href="dashboard.jsp">Zenia</a>
       </div>
 
-      <div id="my_profile" class="header-button button">
-        <a href="user.jsp?user_id=<%=logged_in_user_id%>">
-          <span>
+        <a 
+          id="search" 
+          class="header-button button" href="advanced_search.jsp">
+          <span class="text"><%=loc.get(1,"Search")%></span>
+          <span class="image" />
+        </a>
+
+        <a 
+          id="request_favor" 
+          class="header-button button" href="check_location_needed.jsp">
+          <span class="text"><%=loc.get(2,"Request Favor")%></span>
+          <span class="image" />
+        </a>
+
+
+        <span id="my-favors-container">
+          <a 
+            class="header-button button" 
+            id="my-favors-anchor" 
+              href="my_requestoffers.jsp">
+            <span class="text">My Favors</span>
+            <span class="image" />
+          </a>
+        </span>
+        
+        <a 
+          id="my_profile" 
+          class="header-button button" 
+          href="user.jsp?user_id=<%=logged_in_user_id%>">
+          <span class="text">
             <%=loc.get(97,"My profile")%>: 
             <%=Utils.safe_render(logged_in_user.username)%>
           </span>
+          <span class="image" />
         </a>
-      </div>
 
-      <div id="logout" class="header-button button" >
-        <a href="logout.jsp" >
-          <span><%=loc.get(3, "Logout")%></span>
+        <a 
+          id="logout" 
+          class="header-button button" 
+          href="logout.jsp" >
+          <span class="text"><%=loc.get(3, "Logout")%></span>
+          <span class="image" />
         </a>
-      </div>
 
     </div>
   </div>
 
 </header>
+<script id="favor_status_script" type="text/html">
+      <div id="favor-statuses">
+        <div id="hdr_offering_dtls" class="digest-line">
+          Offering: <%=o_count%></div>
+        <div class="hdr-detail-section">
+          you are offering for:
+          <% if (o_count == 0) { %>None<% } else {%>
+            <% for (Requestoffer r : offers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
+              </div>
+            <% } %>
+          <% } %>
+        </div>
+        <div id="hdr_offers_dtls" class="digest-line">
+          Offers: <%=sr_count%></div>
+        <div class="hdr-detail-section">
+          Offers exist for:
+          <% if (sr_count == 0) { %>None<% } else {%>
+            <% for (Requestoffer_utils.Service_request r : hdr_service_requests) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.desc)%>
+                   </span> 
+                </a>
+              </div>
+            <% } %>
+          <% } %>
+        </div>
+        <div id="hdr_handling_dtls" class="digest-line">
+          Handling: <%=hr_count%></div>
+        <div class="hdr-detail-section">
+          You are working on these Favors:
+          <% if (hr_count == 0) { %>None<% } else {%>
+            <% for (Requestoffer r : hdr_handling_requestoffers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
+              </div>
+            <% } %>
+          <% } %>
+        </div>
+        <div id="hdr_closed_dtls" class="digest-line">
+          Closed: <%=mcr_count%></div>
+        <div class="hdr-detail-section">
+          Your most recent closed Favors:
+          <% if (mcr_count == 0) { %>None<% } else {%>
+            <% for (Requestoffer r : my_closed_requestoffers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
+              </div>
+            <% } %>
+          <% } %>
+        </div>
+        <div id="hdr_taken_dtls" class="digest-line">
+          Taken: <%=mtr_count%></div>
+        <div class="hdr-detail-section">
+          Your Favors being handled:
+          <% if (mtr_count == 0) { %>None<% } else {%>
+            <% for (Requestoffer r : my_taken_requestoffers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
+              </div>
+            <% } %>
+          <% } %>
+        </div>
+        <div id="hdr_draft_dtls" class="digest-line">
+          Draft: <%=mdr_count%></div>
+        <div class="hdr-detail-section">
+          These are your draft Favors:
+          <% if (mdr_count == 0) { %>None<% } else {%>
+            <% for (Requestoffer r : my_draft_requestoffers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
+              </div>
+            <% } %>
+          <% } %>
+        </div>
+        <div id="hdr_open_dtls" class="digest-line">
+          Open: <%=mor_count%></div>
+        <div class="hdr-detail-section">
+          These are your open Favors:
+          <% if (mor_count == 0) { %>None<% } else {%>
+            <% for (Requestoffer r : my_open_requestoffers) { %>
+              <div>
+                <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container" > 
+                    <%=Utils.safe_render(r.description)%>
+                   </span> 
+                </a>
+              </div>
+            <% } %>
+          <% } %>
+        </div>
+      </div>
+      <div id="status-digest" >
+        <span class="favor-status offering"><%=o_count%></span>
+        <span class="favor-status offers"><%=sr_count%></span>
+        <span class="favor-status handling"><%=hr_count%></span>
+        <span class="favor-status closed"><%=mcr_count%></span>
+        <span class="favor-status taken"><%=mtr_count%></span>
+        <span class="favor-status draft"><%=mdr_count%></span>
+        <span class="favor-status open"><%=mor_count%></span>
+      </div>
+    </script>
+    <script>
+      var my_favors_anchor = document.getElementById('my-favors-anchor');
+      var favor_status_script = document.getElementById('favor_status_script')
+      my_favors_anchor.insertAdjacentHTML(
+          'afterend', favor_status_script.innerHTML);
+    </script>

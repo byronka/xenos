@@ -5,7 +5,6 @@ header {
 
 header a {
   color: white;
-  height: 15px;
   margin-top: auto;
   margin-bottom: auto;
   position: relative;
@@ -30,7 +29,7 @@ header a {
 #favor-statuses {
   display: none;
   position: absolute;
-  top: 28px;
+  top: 38px;
   left: -20px;
   width: 200px;
   height: 330px;
@@ -120,39 +119,64 @@ header a {
   background: url("../img/open_icon.svg") no-repeat scroll 50% 40% / contain;
 }
 
-header #my-favors-div {
+header #my-favors-container {
   position: relative;
+  display:block;
+  height: 30px;
 }
 
 @media all and (min-width: 501px) {
 
-  header #search>a {
-    background: rgba(0, 0, 0, 0) url("../img/search_icon.svg") no-repeat scroll 55px center / contain ;
+  header a span.text {
+    display: block;
+  }
+
+  header a#search span.text {
+    background: 
+      rgba(0, 0, 0, 0) 
+      url("../img/search_icon.svg") 
+      no-repeat scroll 
+      55px center / contain ;
     width: 80px;
-    display: block;
   }
 
-  header #request_favor>a {
-    background: rgba(0, 0, 0, 0) url("../img/callbell_icon.svg") no-repeat scroll 105px center / contain ;
+  header a#request_favor span.text{
+    background: 
+      rgba(0, 0, 0, 0) 
+      url("../img/callbell_icon.svg") 
+      no-repeat scroll 
+      105px center / contain ;
     width: 125px;
-    display: block;
   }
 
-
-  header #my-favors-div>a {
-    background: rgba(0, 0, 0, 0) url("../img/requestoffer_icon.svg") no-repeat scroll 75px center / contain ;
-    display: block;
+  header a#my-favors-anchor span.text {
+    background: 
+      rgba(0, 0, 0, 0) 
+      url("../img/requestoffer_icon.svg") 
+      no-repeat scroll 
+      75px center / contain ;
     width: 110px;
   }
 
+  header a#my-profile span.text {
+    background: 
+      rgba(0, 0, 0, 0) 
+      url("../img/one_person_icon.svg") 
+      no-repeat scroll 
+      75px center / contain ;
+    width: 110px;
+  }
 
-  header #logout>a {
-    background: rgba(0, 0, 0, 0) url("../img/logout_icon.svg") no-repeat scroll 55px center / contain ;
-    display: block;
+  header a#logout span.text {
+    background: 
+      rgba(0, 0, 0, 0) 
+      url("../img/logout_icon.svg") 
+      no-repeat scroll 
+      55px center / contain ;
     width: 75px;
   }
 
-  #my-favors-div:hover #favor-statuses {
+  #my-favors-container:hover #favor-statuses {
     display: block;
   }
 
@@ -199,39 +223,31 @@ header #my-favors-div {
 
 @media all and (max-width: 500px) {
 
-  header #search>a {
+  header a span.image {
+    width: 18px;
+    height: 18px;
+    margin: 0px;
+    display: block;
+  }
+
+  header a#search span.image {
     background: rgba(0, 0, 0, 0) url("../img/search_icon.svg") no-repeat scroll center / contain ;
-    width: 18px;
-    height: 18px;
-    margin: 0px;
   }
 
-  header #request_favor>a {
+  header a#request_favor span.image {
     background: rgba(0, 0, 0, 0) url("../img/callbell_icon.svg") no-repeat scroll center / contain ;
-    width: 18px;
-    height: 18px;
-    margin: 0px;
   }
 
-  header #my-favors-div>a {
+  header a#my-favors-anchor span.image {
     background: rgba(0, 0, 0, 0) url("../img/requestoffer_icon.svg") no-repeat scroll center / contain ;
-    width: 18px;
-    height: 18px;
-    margin: 0px;
   }
 
-  header #my_profile>a {
+  header a#my_profile span.image {
     background: rgba(0, 0, 0, 0) url("../img/one_person_icon.svg") no-repeat scroll center / contain ;
-    width: 18px;
-    height: 18px;
-    margin: 0px;
   }
 
-  header #logout>a {
+  header a#logout span.image {
     background: rgba(0, 0, 0, 0) url("../img/logout_icon.svg") no-repeat scroll center / contain ;
-    width: 18px;
-    height: 18px;
-    margin: 0px;
   }
 
   #status-digest {
@@ -247,7 +263,7 @@ header #my-favors-div {
     display: block;
   }
 
-  .header-button span {
+  .header-button span.text {
     font-size: smaller;
     position: absolute;
     top: 44px;
