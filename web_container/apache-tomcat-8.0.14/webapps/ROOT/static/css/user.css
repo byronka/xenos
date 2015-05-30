@@ -1,11 +1,11 @@
 
 #count-of-invites {
-  background: url("static/img/group_invite_alert.png") 
+  background: url("../img/group_invite_alert.png") 
     no-repeat scroll 0 0 / contain ;
   padding-top: 5px;
   font-size: 20px;
   height: 25px;
-  left: -10px;
+  left: 80px;
   position: absolute;
   text-align: center;
   top: -15px;
@@ -24,19 +24,19 @@
   display: inline-block;
 }
 
-#your_groups_div>a {
+a#your_groups>span.text {
   background: rgba(0, 0, 0, 0) url("../img/group_icon.svg") no-repeat scroll 80px center / contain ;
   width: 90px;
   display: block;
 }
 
-#generate_icode_div>a {
+a#generate_icode>span.text {
   background: rgba(0, 0, 0, 0) url("../img/new_user_icon.svg") no-repeat scroll 160px center / contain ;
   width: 170px;
   display: block;
 }
 
-#change_password_div>a {
+a#change_password>span.text {
   background: rgba(0, 0, 0, 0) url("../img/password_icon.svg") no-repeat scroll 120px center / contain ;
   width: 138px;
   display: block;

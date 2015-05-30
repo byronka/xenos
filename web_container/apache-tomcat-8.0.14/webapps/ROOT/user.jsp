@@ -89,25 +89,23 @@
 
       <% if (uid == logged_in_user_id) { %>
 
-      <div id="change_password_div" class="button">
-        <a href="change_password.jsp">
-          <span><%=loc.get(113,"Change password")%></span>
+        <a id="change_password" class="button" href="change_password.jsp">
+          <span class="text"><%=loc.get(113,"Change password")%></span>
+          <span class="image" />
         </a>
-      </div>
 
         <%
          Group_utils.Invite_info[] iis = Group_utils.get_invites_for_user(logged_in_user_id);
         %>
-        <div id="your_groups_div" class="button">
-          <a href="user_groups.jsp">
-            <span><%=loc.get(8,"Your groups")%></span>
+          <a id="your_groups" class="button" href="user_groups.jsp">
+            <span class="text"><%=loc.get(8,"Your groups")%></span>
+            <span class="image" ></span>
             <% if (iis.length > 0) { %>
               <span style="position: relative">
                 <span id="count-of-invites"><%=iis.length%></span>
               </span>
             <% } %>
           </a>
-        </div>
 
         <a id="current_location" class="button" href="select_country.jsp?usecase=2">
           <span><%=loc.get(7,"Current location")%>
@@ -118,11 +116,10 @@
           </span>
         </a>
 
-        <div id="generate_icode_div" class="button">
-          <a href="generate_icode.jsp">
-            <span><%=loc.get(206,"Generate invitation code")%></span>
+          <a id="generate_icode" class="button" href="generate_icode.jsp">
+            <span class="text"><%=loc.get(206,"Generate invitation code")%></span>
+            <span class="image" />
           </a>
-        </div>
 
       <% } %>
 
