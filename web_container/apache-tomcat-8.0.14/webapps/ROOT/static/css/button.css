@@ -1,6 +1,5 @@
   .button {
       display: inline-block;
-      margin: 10px;
       cursor: pointer;
       border: solid 1px #da7c0c;
       background: #478dad;
@@ -29,7 +28,12 @@
       position: relative;
       top: 1px;
   }
+
 @media all and (min-width: 501px) {
+
+  .button {
+    margin: 10px;
+  }
 
   .button img {
     width: 12px;

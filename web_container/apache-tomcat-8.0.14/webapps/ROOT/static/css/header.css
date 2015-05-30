@@ -218,8 +218,8 @@ header #my-favors-container {
 @media all and (max-width: 500px) {
 
   header a span.image {
-    width: 22px;
-    height: 22px;
+    width: 30px;
+    height: 30px;
     margin: 0px;
     display: block;
   }
