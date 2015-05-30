@@ -74,7 +74,7 @@
     );
 
   //handle bad scenarios
-  if (!is_requestoffering_user && is_deleting) {
+  if (!is_requestoffering_user && (is_deleting || the_requestoffer.status == Const.Rs.DRAFT)) {
     response.sendRedirect("general_error.jsp");
     return;
   }
@@ -109,35 +109,37 @@
         </a>
     <% } %>
 
-    <%
-      Requestoffer_utils.Service_request[] service_requests = 
-        Requestoffer_utils
-        .get_service_requests_for_requestoffer(the_requestoffer.requestoffer_id);
-    %>
+    <% if (is_requestoffering_user) { %>
+      <%
+        Requestoffer_utils.Service_request[] service_requests = 
+          Requestoffer_utils
+          .get_service_requests_for_requestoffer(the_requestoffer.requestoffer_id);
+      %>
 
-    <%for (Requestoffer_utils.Service_request sr : service_requests) { %>
-      <div class="servicerequest">
-        <%User servicer = User_utils.get_user(sr.user_id);%>
-        
-        <a href="user.jsp?user_id=<%=sr.user_id%>">
-          <%=Utils.safe_render(servicer.username)%> 
-        </a>
-        <%
-          Group_utils.Group_id_and_name[] servicers_shared_groups = 
-            Group_utils.get_shared_groups(logged_in_user_id,sr.user_id);
-        %>
+      <%for (Requestoffer_utils.Service_request sr : service_requests) { %>
+        <div class="servicerequest">
+          <%User servicer = User_utils.get_user(sr.user_id);%>
+          
+          <a href="user.jsp?user_id=<%=sr.user_id%>">
+            <%=Utils.safe_render(servicer.username)%> 
+          </a>
+          <%
+            Group_utils.Group_id_and_name[] servicers_shared_groups = 
+              Group_utils.get_shared_groups(logged_in_user_id,sr.user_id);
+          %>
 
-        <% if (servicers_shared_groups.length > 0) { %>
-            <% for (Group_utils.Group_id_and_name gian : servicers_shared_groups) { %>
-              <a class="group-name" href="group.jsp?group_id=<%=gian.id%>"><%=gian.name%></a>
-            <% } %>
-        <% } %>
+          <% if (servicers_shared_groups.length > 0) { %>
+              <% for (Group_utils.Group_id_and_name gian : servicers_shared_groups) { %>
+                <a class="group-name" href="group.jsp?group_id=<%=gian.id%>"><%=gian.name%></a>
+              <% } %>
+          <% } %>
 
-        <%=loc.get(138,"wants to handle")%>
-        <a class="button" href="choose_handler.jsp?requestoffer=<%=sr.requestoffer_id%>&user=<%=sr.user_id%>">
-          <%=loc.get(137,"Choose")%>
-        </a>
-      </div>
+          <%=loc.get(138,"wants to handle")%>
+          <a class="button" href="choose_handler.jsp?requestoffer=<%=sr.requestoffer_id%>&user=<%=sr.user_id%>">
+            <%=loc.get(137,"Choose")%>
+          </a>
+        </div>
+      <% } %>
     <% } %>
 
     <div class="table">

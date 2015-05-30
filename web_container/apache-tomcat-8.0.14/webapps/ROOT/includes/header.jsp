@@ -100,7 +100,8 @@
 <script id="favor_status_script" type="text/html">
       <div id="favor-statuses">
         <div id="hdr_offering_dtls" class="digest-line">
-          Offering: <%=o_count%></div>
+          <span class="label">Offering:</span><span class="value"><%=o_count%></span>
+        </div>
         <div class="hdr-detail-section">
           you are offering for:
           <% if (o_count == 0) { %>None<% } else {%>
@@ -116,7 +117,8 @@
           <% } %>
         </div>
         <div id="hdr_offers_dtls" class="digest-line">
-          Offers: <%=sr_count%></div>
+          <span class="label">Offers:</span><span class="value"><%=sr_count%></span>
+        </div>
         <div class="hdr-detail-section">
           Offers exist for:
           <% if (sr_count == 0) { %>None<% } else {%>
@@ -132,7 +134,8 @@
           <% } %>
         </div>
         <div id="hdr_handling_dtls" class="digest-line">
-          Handling: <%=hr_count%></div>
+          <span class="label">Handling:</span><span class="value"><%=hr_count%></span>
+        </div>
         <div class="hdr-detail-section">
           You are working on these Favors:
           <% if (hr_count == 0) { %>None<% } else {%>
@@ -148,7 +151,8 @@
           <% } %>
         </div>
         <div id="hdr_closed_dtls" class="digest-line">
-          Closed: <%=mcr_count%></div>
+          <span class="label">Closed:</span><span class="value"><%=mcr_count%></span>
+        </div>
         <div class="hdr-detail-section">
           Your most recent closed Favors:
           <% if (mcr_count == 0) { %>None<% } else {%>
@@ -164,7 +168,8 @@
           <% } %>
         </div>
         <div id="hdr_taken_dtls" class="digest-line">
-          Taken: <%=mtr_count%></div>
+          <span class="label">Taken:</span><span class="value"><%=mtr_count%></span>
+        </div>
         <div class="hdr-detail-section">
           Your Favors being handled:
           <% if (mtr_count == 0) { %>None<% } else {%>
@@ -180,7 +185,8 @@
           <% } %>
         </div>
         <div id="hdr_draft_dtls" class="digest-line">
-          Draft: <%=mdr_count%></div>
+          <span class="label">Draft:</span><span class="value"><%=mdr_count%></span>
+        </div>
         <div class="hdr-detail-section">
           These are your draft Favors:
           <% if (mdr_count == 0) { %>None<% } else {%>
@@ -196,7 +202,8 @@
           <% } %>
         </div>
         <div id="hdr_open_dtls" class="digest-line">
-          Open: <%=mor_count%></div>
+          <span class="label">Open:</span><span class="value"><%=mor_count%></span>
+        </div>
         <div class="hdr-detail-section">
           These are your open Favors:
           <% if (mor_count == 0) { %>None<% } else {%>

@@ -23,9 +23,9 @@ header {
 #favor-statuses {
   display: none;
   position: absolute;
-  top: 38px;
-  left: -20px;
-  width: 200px;
+  top: 40px;
+  left: 8px;
+  width: 128px;
   height: 330px;
   border: solid 1px red;
   background-color: grey;
@@ -44,6 +44,45 @@ header {
   height: 20px;
 }
 
+#favor-statuses span.label {
+  display: inline-block;
+  width: 100px;
+}
+
+#favor-statuses span.value {
+  display: inline-block;
+  width: 20px;
+  text-align: center;
+}
+
+#favor-statuses #hdr_offering_dtls span.value {
+  background: url("../img/offering_icon.svg") no-repeat scroll 50% 50% / contain;
+}
+
+#favor-statuses #hdr_offers_dtls span.value {
+  background: url("../img/offers_icon.svg") no-repeat scroll 50% 50% / contain;
+}
+
+#favor-statuses #hdr_handling_dtls span.value {
+  background: url("../img/handling_icon.svg") no-repeat scroll 50% 50% / contain;
+}
+
+#favor-statuses #hdr_closed_dtls span.value {
+  background: url("../img/closed_icon.svg") no-repeat scroll 50% 50% / contain;
+}
+
+#favor-statuses #hdr_taken_dtls span.value {
+  background: url("../img/taken_icon.svg") no-repeat scroll 50% 50% / contain;
+}
+
+#favor-statuses #hdr_draft_dtls span.value {
+  background: url("../img/draft_icon.svg") no-repeat scroll 50% 50% / contain;
+}
+
+#favor-statuses #hdr_open_dtls span.value {
+  background: url("../img/open_icon.svg") no-repeat scroll 50% 50% / contain;
+}
+
 #status-digest {
   top: 30px;
   position: absolute;
@@ -54,7 +93,7 @@ header {
   display: none;
   position: absolute;
   top: 0px;
-  left: 200px;
+  left: 128px;
   width: 200px;
   height: 200px;
   border: solid 1px red;
