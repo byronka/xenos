@@ -125,6 +125,21 @@ header #my-favors-container {
     display: block;
   }
 
+  header a#trademark span.text {
+    display: none;
+  }
+
+  header a#trademark span.image {
+    background: 
+      rgba(0, 0, 0, 0) 
+      url("../img/logo_icon.svg") 
+      no-repeat scroll 
+      center / contain ;
+    height: 50px;
+    width: 50px;
+    display: block;
+  }
+
   header a#search span.text {
     background: 
       rgba(0, 0, 0, 0) 
@@ -223,6 +238,16 @@ header #my-favors-container {
     margin: 0px;
     display: block;
   }
+
+  header a#trademark span.image {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0) url("../img/logo_icon.svg") no-repeat scroll center / contain ;
+  }
+  header a#trademark span.text {
+    display: none;
+  }
+
 
   header a#search span.image {
     background: rgba(0, 0, 0, 0) url("../img/search_icon.svg") no-repeat scroll center / contain ;

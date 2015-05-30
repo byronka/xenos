@@ -42,9 +42,12 @@
   <div class="header-table">
     <div class="header-row">
 
-      <div class="header-button">
-        <a class="trademark" href="dashboard.jsp">Zenia</a>
-      </div>
+        <a 
+          id="trademark" 
+          class="header-button" href="dashboard.jsp">
+          <span class="text">sayaye</span>
+          <span class="image" />
+        </a>
 
         <a 
           id="search" 
