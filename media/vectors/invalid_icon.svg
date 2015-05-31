@@ -9,8 +9,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="38.612392"
-   height="28.785069"
+   width="26.799999"
+   height="26.442856"
    id="svg3006"
    version="1.1"
    inkscape:version="0.48.4 r9939"
@@ -25,8 +25,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.919596"
-     inkscape:cx="15.202487"
-     inkscape:cy="28.044451"
+     inkscape:cx="-6.0738508"
+     inkscape:cy="28.044425"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -47,7 +47,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
         <cc:license
            rdf:resource="" />
         <dc:description>Offers you have gotten on your requestoffer</dc:description>
@@ -58,20 +58,14 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0.98928569,-1024.2093)">
+     transform="translate(0.98928569,-1026.5515)">
     <rect
-       style="fill:none;stroke:#b3b2b6;stroke-width:1.79999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:none;stroke:#000000;stroke-width:1.79999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect5309"
        width="25"
        height="24.642857"
        x="-0.089285716"
        y="0.089285716"
-       transform="translate(0,1027.3622)" />
-    <path
-       style="fill:none;stroke:#e6e6e6;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 4.5456864,12.120555 9.0913729,7.8274067 14.268405,15.277282 32.324881,-2.6529259 37.123106,3.4079894 14.142136,19.696699 z"
-       id="path5311"
-       inkscape:connector-curvature="0"
        transform="translate(0,1027.3622)" />
   </g>
 </svg>

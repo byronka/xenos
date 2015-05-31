@@ -56,7 +56,7 @@ header {
 }
 
 #favor-statuses #hdr_offering_dtls span.value {
-  background: url("../img/offering_icon.svg") no-repeat scroll 50% 50% / contain;
+  background: url("../img/square_icon.svg") no-repeat scroll 50% 50% / contain;
 }
 
 #favor-statuses #hdr_offers_dtls span.value {
@@ -118,7 +118,8 @@ header {
 
 .favor-status.offering {
   left: 0px;
-  background: url("../img/offering_icon.svg") no-repeat scroll 50% 50% / contain;
+  background: url("../img/square_icon.svg") no-repeat scroll 50% 50% / contain;
+  color: blue;
   z-index: 1;
 }
 

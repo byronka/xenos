@@ -8,8 +8,8 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    version="1.1"
-   width="26.799999"
-   height="26.442856"
+   width="28.476042"
+   height="27.082325"
    id="svg3006">
   <defs
      id="defs3008" />
@@ -29,15 +29,12 @@
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(0.98928569,-1026.5515)"
+     transform="translate(1.470164,-1026.2328)"
      id="layer1">
-    <rect
-       width="25"
-       height="24.642857"
-       x="-0.089285716"
-       y="0.089285716"
-       transform="translate(0,1027.3622)"
-       id="rect5309"
-       style="fill:none;stroke:#000000;stroke-width:1.79999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       d="M 8.5714287,30.774312 -5.6665926,20.429785 -0.22815296,3.6919869 l 17.59916196,-5e-7 5.43844,16.7377976 z"
+       transform="matrix(1,0,0,-1,4.1964286,1057.0071)"
+       id="path5085"
+       style="fill:#000000;fill-opacity:1;stroke:none" />
   </g>
 </svg>
