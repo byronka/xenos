@@ -45,7 +45,7 @@
         <a 
           id="trademark" 
           class="header-button" href="dashboard.jsp">
-          <span class="text">sayaye</span>
+          <span class="text">Favir</span>
           <span class="image" />
         </a>
 
