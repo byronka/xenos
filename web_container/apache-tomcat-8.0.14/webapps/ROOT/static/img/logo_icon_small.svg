@@ -9,7 +9,7 @@
    xmlns="http://www.w3.org/2000/svg"
    version="1.1"
    width="126.1242"
-   height="41"
+   height="100.64283"
    id="svg2">
   <defs
      id="defs4">
@@ -113,31 +113,31 @@
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(-79.058216,-387.87106)"
+     transform="translate(-79.058216,-328.22821)"
      id="layer1">
     <rect
        width="110"
-       height="40"
+       height="99.64286"
        ry="12.121831"
        x="86.571426"
-       y="388.64789"
+       y="329.00504"
        id="rect3978"
        style="fill:#6ad580;fill-opacity:1;stroke:none" />
     <text
        x="88.928566"
-       y="418.61218"
+       y="387.89789"
        id="text2985"
        xml:space="preserve"
        style="font-size:32px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;filter:url(#filter4325);font-family:URW Bookman L;-inkscape-font-specification:URW Bookman L Bold"><tspan
          x="88.928566"
-         y="418.61218"
+         y="387.89789"
          id="tspan2987">FAVIR</tspan></text>
     <rect
        width="110"
-       height="40"
+       height="99.64283"
        ry="12.121831"
        x="86.164993"
-       y="388.37106"
+       y="328.72821"
        id="rect3978-6"
        style="fill:none;stroke:#000000;stroke-opacity:1" />
   </g>

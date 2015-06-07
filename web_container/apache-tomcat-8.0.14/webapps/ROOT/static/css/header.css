@@ -176,7 +176,7 @@ header #my-favors-container {
       no-repeat scroll 
       center / contain ;
     height: 50px;
-    width: 50px;
+    width: 140px;
     display: block;
   }
 
@@ -282,7 +282,7 @@ header #my-favors-container {
   header a#trademark span.image {
     width: 50px;
     height: 50px;
-    background: rgba(0, 0, 0, 0) url("../img/logo_icon.svg") no-repeat scroll center / contain ;
+    background: rgba(0, 0, 0, 0) url("../img/logo_icon_small.svg") no-repeat scroll center / contain ;
   }
   header a#trademark span.text {
     display: none;
@@ -328,17 +328,6 @@ header #my-favors-container {
     position: absolute;
     top: 44px;
     left: 0px;
-  }
-
-
-  header a {
-    margin-top:5px;
-    margin-bottom:5px;
-    padding-left:4px;
-    padding-right:4px;
-    margin-left: 3px;
-    margin-right: 3px;
-    display: inline-block;
   }
 
 
