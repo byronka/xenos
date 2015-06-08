@@ -61,10 +61,11 @@
 	<head>
 		<title><%=loc.get(50,"Login page")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="static/css/login.css" title="desktop">
+    <link rel="stylesheet" href="static/css/login.css" >
+    <link rel="stylesheet" href="static/css/default_background.css" >
 	</head>
   <body>
-    <div class="trademark cl-effect-1"><a href="index.jsp">Zenia</a></div>
+    <div class="trademark cl-effect-1"><a href="index.jsp">SAYAYE</a></div>
     <div class="signin">
       <form method="POST" action="login.jsp">
       <% if (has_login_error) { %>

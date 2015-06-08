@@ -52,10 +52,11 @@
   <head>
   <title><%=loc.get(202,"Check invite code")%></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="static/css/register.css" title="desktop">
+  <link rel="stylesheet" href="static/css/register.css" >
+  <link rel="stylesheet" href="static/css/default_background.css" >
   </head>
 <body>
-  <div class="trademark cl-effect-1"><a href="index.jsp">Zenia</a></div>
+  <div class="trademark cl-effect-1"><a href="index.jsp">SAYAYE</a></div>
   <div class="register">
     <form id="enter_name_form" action="check_invite_code.jsp" method="post">
 

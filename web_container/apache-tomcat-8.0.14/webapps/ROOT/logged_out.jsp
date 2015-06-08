@@ -9,10 +9,11 @@
 <head>
   <title><%=loc.get(65,"Logged out")%></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="static/css/logged_out.css" title="desktop">
+  <link rel="stylesheet" href="static/css/logged_out.css" >
+  <link rel="stylesheet" href="static/css/default_background.css" >
 </head>
 <body>
-  <div class="trademark">Xenos</div>
+  <div class="trademark">SAYAYE</div>
   <nav class="cl-effect-1">
     <p><%=loc.get(66,"You have successfully logged out")%></p>
     <p><a href="login.jsp"><%=loc.get(42,"Login")%></a></p>

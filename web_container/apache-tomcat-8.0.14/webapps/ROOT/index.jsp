@@ -16,12 +16,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%=loc.get(44,"Welcome to Zenia!")%></title>
+  <title>SAYAYE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="static/css/index.css" title="desktop">
+  <link rel="stylesheet" href="static/css/index.css" >
+  <link rel="stylesheet" href="static/css/default_background.css" >
 </head>
 <body>
-	<div class="trademark cl-effect-1"><a href="index.jsp">Zenia</a></div>
+	<div class="trademark cl-effect-1"><a href="index.jsp">SAYAYE</a></div>
   <div class="actions">
     <section>
     <nav class="cl-effect-1">
