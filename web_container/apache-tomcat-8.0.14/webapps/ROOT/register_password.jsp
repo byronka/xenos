@@ -89,7 +89,7 @@
   <link rel="stylesheet" href="static/css/register.css" title="desktop">
   </head>
 <body>
-  <div class="trademark cl-effect-1"><a href="index.jsp">Zenia</a></div>
+  <div class="trademark cl-effect-1"><a href="index.jsp">SAYAYE</a></div>
   <div class="register">
     <form id="enter_name_form" action="register_password.jsp" method="post">
       <div id="inputfields">

@@ -29,7 +29,7 @@
       
       <p>
       <%=loc.get(23,"Hi! Join me and my friends on a system that encourages trading of favors, at")%>
-      https://zenia.co/register.jsp?icode=<%=icode%>
+      https://sayaye.com/register.jsp?icode=<%=icode%>
       </p>
       
       
