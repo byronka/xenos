@@ -94,15 +94,12 @@
           <span class="image" />
         </a>
 
-        <%
-         Group_utils.Invite_info[] iis = Group_utils.get_invites_for_user(logged_in_user_id);
-        %>
           <a id="your_groups" class="button" href="user_groups.jsp">
             <span class="text"><%=loc.get(8,"Your groups")%></span>
             <span class="image" ></span>
-            <% if (iis.length > 0) { %>
+            <% if (group_invites.length > 0) { %>
               <span style="position: relative">
-                <span id="count-of-invites"><%=iis.length%></span>
+                <span id="count-of-invites"><%=group_invites.length%></span>
               </span>
             <% } %>
           </a>

@@ -37,6 +37,8 @@
       int mtr_count = my_taken_requestoffers.length;
       int mdr_count = my_draft_requestoffers.length;
       int mor_count = my_open_requestoffers.length;
+      
+      Group_utils.Invite_info[] group_invites = Group_utils.get_invites_for_user(logged_in_user_id);
     %>
 <header>
   <div class="header-table">
@@ -82,6 +84,21 @@
             <%=loc.get(97,"My profile")%>: 
             <%=Utils.safe_render(logged_in_user.username)%>
           </span>
+            <% if (group_invites.length > 0) { %>
+              <span style="position: relative">
+                <img 
+                  style="position: absolute;
+                      height: 18px;
+                      width: 18px;
+                      left: -10px;
+                      position: absolute;
+                      top: -10px;
+                    "
+                  alt="group invites pending" 
+                  title="group invites"
+                  src="static/img/warning_icon.svg">
+              </span>
+            <% } %>
           <span class="image" />
         </a>
 
