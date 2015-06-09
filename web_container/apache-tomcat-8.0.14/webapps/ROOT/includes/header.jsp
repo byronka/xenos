@@ -78,14 +78,18 @@
         
         <a 
           id="my_profile" 
-          class="header-button button" 
-          href="user.jsp?user_id=<%=logged_in_user_id%>">
+          class="header-button button " 
+          href="user.jsp?user_id=<%=logged_in_user_id%>"
+          <%if(group_invites.length > 0){%>
+            title="You have a group invite waiting" 
+          <%}%> 
+          >
           <span class="text">
             <%=loc.get(97,"My profile")%>: 
             <%=Utils.safe_render(logged_in_user.username)%>
           </span>
             <% if (group_invites.length > 0) { %>
-              <span style="position: relative">
+              <span style="position: relative" >
                 <img 
                   style="position: absolute;
                       height: 18px;
