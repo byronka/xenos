@@ -46,23 +46,29 @@
 
         <a 
           id="trademark" 
-          class="header-button" href="dashboard.jsp">
-          <span class="text">Favir</span>
-          <span class="image" />
+          class="header-button button" href="dashboard.jsp">
+          <span class="text_and_image_container">
+            <span class="text">SAYAYE</span>
+            <span class="image" />&nbsp;</span>
+          </span>
         </a>
 
         <a 
           id="search" 
           class="header-button button" href="advanced_search.jsp">
-          <span class="text"><%=loc.get(1,"Search")%></span>
-          <span class="image" />
+          <span class="text_and_image_container">
+            <span class="text"><%=loc.get(1,"Search")%></span>
+            <span class="image" />&nbsp;</span>
+          </span>
         </a>
 
         <a 
           id="request_favor" 
           class="header-button button" href="check_location_needed.jsp">
-          <span class="text"><%=loc.get(2,"Request Favor")%></span>
-          <span class="image" />
+          <span class="text_and_image_container">
+            <span class="text"><%=loc.get(2,"Request Favor")%></span>
+            <span class="image" />&nbsp;</span>
+          </span>
         </a>
 
 
@@ -71,8 +77,10 @@
             class="header-button button" 
             id="my-favors-anchor" 
               href="my_requestoffers.jsp">
-            <span class="text">My Favors</span>
-            <span class="image" />
+            <span class="text_and_image_container">
+              <span class="text">My Favors</span>
+              <span class="image" />&nbsp;</span>
+            </span>
           </a>
         </span>
         
@@ -103,15 +111,18 @@
                   src="static/img/warning_icon.svg">
               </span>
             <% } %>
-          <span class="image" />
+          <span class="image" />&nbsp;</span>
         </a>
 
         <a 
           id="logout" 
           class="header-button button" 
           href="logout.jsp" >
-          <span class="text"><%=loc.get(3, "Logout")%></span>
-          <span class="image" />
+
+          <span class="text_and_image_container">
+            <span class="text"><%=loc.get(3, "Logout")%></span>
+            <span class="image" />&nbsp;</span>
+          </span>
         </a>
 
     </div>
@@ -121,7 +132,10 @@
 <script id="favor_status_script" type="text/html">
       <div id="favor-statuses">
         <div id="hdr_offering_dtls" class="digest-line">
-          <span class="label">Offering:</span><span class="value"><%=o_count%></span>
+          <span class="text_and_image_container">
+            <span class="label">Offering:</span>
+            <span class="value"><%=o_count%></span>
+          </span>
         </div>
         <div class="hdr-detail-section">
           you are offering for:
@@ -138,7 +152,10 @@
           <% } %>
         </div>
         <div id="hdr_offers_dtls" class="digest-line">
-          <span class="label">Offers:</span><span class="value"><%=sr_count%></span>
+          <span class="text_and_image_container">
+            <span class="label">Offers:</span>
+            <span class="value"><%=sr_count%></span>
+          </span>
         </div>
         <div class="hdr-detail-section">
           Offers exist for:
@@ -155,7 +172,10 @@
           <% } %>
         </div>
         <div id="hdr_handling_dtls" class="digest-line">
-          <span class="label">Handling:</span><span class="value"><%=hr_count%></span>
+          <span class="text_and_image_container">
+            <span class="label">Handling:</span>
+            <span class="value"><%=hr_count%></span>
+          </span>
         </div>
         <div class="hdr-detail-section">
           You are working on these Favors:
@@ -172,7 +192,10 @@
           <% } %>
         </div>
         <div id="hdr_closed_dtls" class="digest-line">
-          <span class="label">Closed:</span><span class="value"><%=mcr_count%></span>
+          <span class="text_and_image_container">
+            <span class="label">Closed:</span>
+            <span class="value"><%=mcr_count%></span>
+          </span>
         </div>
         <div class="hdr-detail-section">
           Your most recent closed Favors:
@@ -189,7 +212,10 @@
           <% } %>
         </div>
         <div id="hdr_taken_dtls" class="digest-line">
-          <span class="label">Taken:</span><span class="value"><%=mtr_count%></span>
+          <span class="text_and_image_container">
+            <span class="label">Taken:</span>
+            <span class="value"><%=mtr_count%></span>
+          </span>
         </div>
         <div class="hdr-detail-section">
           Your Favors being handled:
@@ -206,7 +232,10 @@
           <% } %>
         </div>
         <div id="hdr_draft_dtls" class="digest-line">
-          <span class="label">Draft:</span><span class="value"><%=mdr_count%></span>
+          <span class="text_and_image_container">
+            <span class="label">Draft:</span>
+            <span class="value"><%=mdr_count%></span>
+          </span>
         </div>
         <div class="hdr-detail-section">
           These are your draft Favors:
@@ -223,7 +252,10 @@
           <% } %>
         </div>
         <div id="hdr_open_dtls" class="digest-line">
-          <span class="label">Open:</span><span class="value"><%=mor_count%></span>
+          <span class="text_and_image_container">
+            <span class="label">Open:</span>
+            <span class="value"><%=mor_count%></span>
+          </span>
         </div>
         <div class="hdr-detail-section">
           These are your open Favors:

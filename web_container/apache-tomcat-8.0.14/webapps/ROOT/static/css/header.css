@@ -28,14 +28,14 @@ header {
   width: 128px;
   height: 330px;
   border: solid 1px red;
-  background-color: grey;
+  background-color: #152C27;
   font-size: 18px;
   z-index: 2;
 }
 
 
 #favor-statuses>div.digest-line{
-  line-height: 45px;
+  height: 45px;
   border: 1px solid black;
 }
 
@@ -46,6 +46,7 @@ header {
 
 #favor-statuses span.label {
   display: inline-block;
+  color: white;
   width: 100px;
 }
 
@@ -53,34 +54,64 @@ header {
   display: inline-block;
   width: 20px;
   text-align: center;
+  color: white;
 }
 
 #favor-statuses #hdr_offering_dtls span.value {
-  background: url("../img/offering_icon.svg") no-repeat scroll 50% 50% / contain;
+  height:15px;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -95px -19px;
 }
 
 #favor-statuses #hdr_offers_dtls span.value {
-  background: url("../img/offers_icon.svg") no-repeat scroll 50% 50% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -115px -19px;
 }
 
 #favor-statuses #hdr_handling_dtls span.value {
-  background: url("../img/handling_icon.svg") no-repeat scroll 50% 50% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -135px -19px;
 }
 
 #favor-statuses #hdr_closed_dtls span.value {
-  background: url("../img/closed_icon.svg") no-repeat scroll 50% 50% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -154px -19px;
 }
 
 #favor-statuses #hdr_taken_dtls span.value {
-  background: url("../img/taken_icon.svg") no-repeat scroll 50% 50% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -173px -19px;
 }
 
 #favor-statuses #hdr_draft_dtls span.value {
-  background: url("../img/draft_icon.svg") no-repeat scroll 50% 50% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -192px -19px;
 }
 
 #favor-statuses #hdr_open_dtls span.value {
-  background: url("../img/open_icon.svg") no-repeat scroll 50% 50% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    no-repeat scroll 
+    -212px -19px;
 }
 
 #status-digest {
@@ -104,13 +135,11 @@ header {
 }
 
 .favor-status {
-  padding-top: 5px;
   font-size: 12px;
-  height: 24px;
+  height: 14px;
   text-align: center;
-  line-height: 2em;
-  color: black;
-  width: 24px;
+  color: white;
+  width: 16px;
   z-index:1;
   top: 15px;
   position: absolute;
@@ -118,39 +147,66 @@ header {
 
 .favor-status.offering {
   left: 0px;
-  background: url("../img/offering_icon.svg") no-repeat scroll 50% 50% / contain;
-  color: blue;
-  z-index: 1;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -95px -19px;
+  width: 20px;
 }
 
 .favor-status.offers {
   left: 25px;
-  background: url("../img/offers_icon.svg") no-repeat scroll 50% 40% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -115px -19px;
 }
 
 .favor-status.handling {
   left: 50px;
-  background: url("../img/handling_icon.svg") no-repeat scroll 50% 40% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -135px -19px;
 }
 
 .favor-status.closed {
   left: 75px;
-  background: url("../img/closed_icon.svg") no-repeat scroll 50% 40% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -154px -19px;
 }
 
 .favor-status.taken {
   left: 100px;
-  background: url("../img/taken_icon.svg") no-repeat scroll 50% 40% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -173px -19px;
 }
 
 .favor-status.draft {
   left: 125px;
-  background: url("../img/draft_icon.svg") no-repeat scroll 50% 40% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -192px -19px;
 }
 
 .favor-status.open {
   left: 150px;
-  background: url("../img/open_icon.svg") no-repeat scroll 50% 40% / contain;
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    no-repeat scroll 
+    -212px -19px;
 }
 
 header #my-favors-container {
@@ -161,68 +217,65 @@ header #my-favors-container {
 
 @media all and (min-width: 501px) {
 
+  span.text_and_image_container {
+    display: block;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 15px;
+  }
+
   header a span.text {
-    display: block;
-  }
+    display: inline-block;
+  }  
 
-  header a#trademark span.text {
-    display: none;
-  }
-
-  header a#trademark span.image {
+  header a#search span.image {
     background: 
       rgba(0, 0, 0, 0) 
-      url("../img/logo_icon.svg") 
-      no-repeat scroll 
-      center / contain ;
-    height: 50px;
-    width: 140px;
-    display: block;
+      url("../img/combined.png") 
+      repeat scroll 
+      0px 0px;
+    width: 20px;
+    display: inline-block;
   }
 
-  header a#search span.text {
+  header a#request_favor span.image{
     background: 
       rgba(0, 0, 0, 0) 
-      url("../img/search_icon.svg") 
-      no-repeat scroll 
-      55px center / contain ;
-    width: 80px;
+      url("../img/combined.png") 
+      repeat scroll 
+      -58px 0px;
+    width: 20px;
+    display: inline-block;
   }
 
-  header a#request_favor span.text{
+  header a#my-favors-anchor span.image{
     background: 
       rgba(0, 0, 0, 0) 
-      url("../img/callbell_icon.svg") 
-      no-repeat scroll 
-      105px center / contain ;
-    width: 125px;
+      url("../img/combined.png") 
+      repeat scroll 
+      -55px -170px;
+    width: 35px;
+    display: inline-block;
   }
 
-  header a#my-favors-anchor span.text {
+  header a#my-profile span.image{
     background: 
       rgba(0, 0, 0, 0) 
-      url("../img/requestoffer_icon.svg") 
-      no-repeat scroll 
-      75px center / contain ;
-    width: 110px;
+      url("../img/combined.png") 
+      repeat scroll 
+      -58px right;
+    width: 20px;
+    display: inline-block;
   }
 
-  header a#my-profile span.text {
+  header a#logout span.image{
     background: 
       rgba(0, 0, 0, 0) 
-      url("../img/one_person_icon.svg") 
-      no-repeat scroll 
-      75px center / contain ;
-    width: 110px;
-  }
-
-  header a#logout span.text {
-    background: 
-      rgba(0, 0, 0, 0) 
-      url("../img/logout_icon.svg") 
-      no-repeat scroll 
-      55px center / contain ;
-    width: 75px;
+      url("../img/combined.png") 
+      repeat scroll 
+      -38px -150px;
+    width: 20px;
+    display: inline-block;
   }
 
   #my-favors-container:hover #favor-statuses {
@@ -273,40 +326,29 @@ header #my-favors-container {
 @media all and (max-width: 500px) {
 
   header a span.image {
-    width: 30px;
+    width: 45px;
     height: 30px;
-    margin: 0px;
     display: block;
   }
 
-  header a#trademark span.image {
-    width: 50px;
-    height: 50px;
-    background: rgba(0, 0, 0, 0) url("../img/logo_icon_small.svg") no-repeat scroll center / contain ;
-  }
-  header a#trademark span.text {
-    display: none;
-  }
-
-
   header a#search span.image {
-    background: rgba(0, 0, 0, 0) url("../img/search_icon.svg") no-repeat scroll center / contain ;
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -207px -57px;
   }
 
   header a#request_favor span.image {
-    background: rgba(0, 0, 0, 0) url("../img/callbell_icon.svg") no-repeat scroll center / contain ;
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -252px -57px;
   }
 
   header a#my-favors-anchor span.image {
-    background: rgba(0, 0, 0, 0) url("../img/requestoffer_icon.svg") no-repeat scroll center / contain ;
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -323px -57px;
   }
 
   header a#my_profile span.image {
-    background: rgba(0, 0, 0, 0) url("../img/one_person_icon.svg") no-repeat scroll center / contain ;
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -377px -57px;
   }
 
   header a#logout span.image {
-    background: rgba(0, 0, 0, 0) url("../img/logout_icon.svg") no-repeat scroll center / contain ;
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -430px -57px;
   }
 
   #status-digest {
@@ -318,9 +360,9 @@ header #my-favors-container {
   }
 
   .header-button {
-    height: 25px;
     display: block;
     position: relative;
+    box-sizing: content-box;
   }
 
   .header-button span.text {
