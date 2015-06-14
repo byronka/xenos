@@ -87,6 +87,7 @@
   <title><%=loc.get(58,"Account Creation")%></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="static/css/register.css" title="desktop">
+  <link rel="stylesheet" href="static/css/default_background.css" >
   </head>
 <body>
   <div class="trademark cl-effect-1"><a href="index.jsp">SAYAYE</a></div>
