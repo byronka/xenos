@@ -786,8 +786,6 @@ CREATE PROCEDURE retract_requestoffer
   rid INT UNSIGNED -- the requestoffer id
 ) 
 BEGIN 
-  DECLARE my_points INT;
-  DECLARE ruid INT UNSIGNED;
 
   CALL validate_user_id(uid);
   CALL validate_requestoffer_id(rid);
@@ -796,22 +794,31 @@ BEGIN
   SET status = 109, datetime = UTC_TIMESTAMP() -- 109 is "DRAFT"
   WHERE requestoffer_id = rid AND status = 76; -- 76 is "OPEN"
 
-  -- get the points on this requestoffer.
-  SELECT points, requestoffering_user_id into my_points, ruid
-  FROM requestoffer 
-  WHERE requestoffer_id = rid;
-
-  -- give points back to the user
-  UPDATE user 
-  SET points = points + my_points 
-  WHERE user_id = ruid;
-
-
   -- audit that the requestoffer was reverted
-  call add_audit(206, uid, ruid, rid, NULL, NULL);
+  call add_audit(206, uid, uid, rid, NULL, NULL);
+
+  -- give point back to the user
+  UPDATE user 
+  SET points = points + 1
+  WHERE user_id = uid;
 
   -- audit that the point was returned to the user who owns the requestoffer
-  call add_audit(303, 1, ruid, rid, NULL, NULL);
+  call add_audit(303, 1, uid, rid, NULL, NULL);
+
+  -- audit that we are rejecting users who had offered to handle this
+  INSERT INTO audit (
+    datetime, audit_action_id, user1_id, user2_id, requestoffer_id)
+  SELECT UTC_TIMESTAMP(), 211, uid, rsr.user_id, rid
+  FROM requestoffer_service_request rsr
+  WHERE rsr.status = 106 AND rsr.requestoffer_id = rid; -- 106 is "new"
+
+  -- set associated service request statuses to "rejected"
+  -- if they aren't already rejected.
+  UPDATE requestoffer_service_request rsr 
+  SET rsr.status = 108, 
+  rsr.date_modified = UTC_TIMESTAMP() -- 108 is "REJECTED"
+  WHERE rsr.status = 106 AND rsr.requestoffer_id = rid; -- 106 is "new"
+
 
 END
 ---DELIMITER---
