@@ -113,10 +113,14 @@
           </span>
         </a>
 
-          <a id="generate_icode" class="button" href="generate_icode.jsp">
-            <span class="text"><%=loc.get(206,"Generate invitation code")%></span>
-            <span class="image" />
-          </a>
+        <!--
+
+        <a id="generate_icode" class="button" href="generate_icode.jsp">
+          <span class="text"><%=loc.get(206,"Generate invitation code")%></span>
+          <span class="image" />
+        </a>
+
+        -->
 
       <% } %>
 
