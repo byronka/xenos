@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="static/css/button.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
 		<meta http-equiv="content-type" value="text/html; charset=UTF8" />
+    <script src="static/js/modernizr.js"></script>
+    <script src="static/js/jquery.js"></script>
+    <link rel="stylesheet" href="static/jqueryui/jquery-ui.min.css" >
+    <script src="static/jqueryui/jquery-ui.min.js"></script>
 	</head>
 
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>

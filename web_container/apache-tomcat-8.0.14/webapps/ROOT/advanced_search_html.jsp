@@ -11,8 +11,21 @@
     </div>
 
     <div class="row">
-      <label for="distance_input"><%=loc.get(212,"Distance")%>: </label>
-      <input type="text" id="distance_input" name="distance" value="<%=distance == null ? "" : distance%>"/> 
+      <label for="distance_input">
+        <%=loc.get(212,"Maximum distance in miles")%>:
+      </label>
+      <select id="distance_input" name="distance">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="100">100</option>
+        <option value="1000">1000</option>
+        <option value="2000">2000</option>
+        <option value="5000">5000</option>
+      </select>
     </div>
     <% if (has_distance_error) { %>
       <span class="error">
@@ -28,8 +41,11 @@
 
     <div class="row">
       <label for="startdate_input"><%=loc.get(86,"Start date")%>: </label>
-      <input type="text" id="startdate_input" 
-        name="startdate"  value="<%=startdate%>" /> 
+
+      <input type="date" id="startdate_input" name="startdate"  /> 
+
+
+
     </div>
     <% if (has_st_da_error) { %>
       <span class="error">
@@ -39,8 +55,7 @@
 
     <div class="row">
       <label for="enddate_input"><%=loc.get(87,"End date")%>: </label>
-      <input type="text" id="enddate_input" 
-        name="enddate" value="<%=enddate%>" /> 
+      <input type="date" id="enddate_input" name="enddate" /> 
     </div>
     <% if (has_end_da_error) { %>
       <span class="error">
@@ -85,3 +100,11 @@
     </div>
     </form>
   </div>
+  <script>
+  if (!Modernizr.inputtypes.date) {
+      $('input[type=date]').datepicker({
+          // Consistent format with the HTML5 picker
+          dateFormat: 'yy-mm-dd'
+      });
+  }
+  </script>

@@ -8,25 +8,11 @@
         <% if (country_id != null && postal_code_id != null) { %>
         <% String loc_det = Requestoffer_utils.get_location_detail(country_id, postal_code_id);%>
           <div class="row">
-            <label for="location">* <%=loc.get(15,"Location details")%>:</label>
+            <label for="location"><%=loc.get(15,"Location details")%>:</label>
             <span id="location"><%=loc_det%></span>
           </div>
         <% } %>
 
-        <div class="row">
-          <label for="description">* <%=loc.get(10,"Description")%>:</label>
-          <textarea 
-            id="description"
-            maxlength="200" 
-            name="description" 
-            placeholder="<%=loc.get(10,"Description")%>" ><%=de%></textarea>
-          <%if(has_size_error){%>  
-          <span class="error"><%=loc.get(208,"Description text too large - please stay within 200 characters")%></span>
-          <%}%> 
-          <%if(has_desc_error){%>  
-          <span class="error"><%=loc.get(5, "Please enter a description")%></span>
-          <%}%> 
-        </div>
 
         <div class="row">
           <label for="categories">* <%=loc.get(13,"Categories")%>:</label>
@@ -46,6 +32,22 @@
             <span class="error">
               <%=loc.get(197,"You must choose a category for this favor")%>
             </span>
+          <%}%> 
+        </div>
+
+
+        <div class="row">
+          <label for="description">* <%=loc.get(10,"Description")%>:</label>
+          <textarea 
+            id="description"
+            maxlength="200" 
+            name="description" 
+            placeholder="<%=loc.get(10,"Description")%>" ><%=de%></textarea>
+          <%if(has_size_error){%>  
+          <span class="error"><%=loc.get(208,"Description text too large - please stay within 200 characters")%></span>
+          <%}%> 
+          <%if(has_desc_error){%>  
+          <span class="error"><%=loc.get(5, "Please enter a description")%></span>
           <%}%> 
         </div>
       </div>
