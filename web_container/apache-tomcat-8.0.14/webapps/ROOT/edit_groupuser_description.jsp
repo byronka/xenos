@@ -14,9 +14,9 @@
 <%
   request.setCharacterEncoding("UTF-8");
   if (request.getMethod().equals("POST")) {
-    String the_group_desc = Utils.get_string_no_null(request.getParameter("group_description"));
+    String the_user_desc = Utils.get_string_no_null(request.getParameter("user_description"));
     Integer the_group_id = Utils.parse_int(request.getParameter("group_id"));
-    if (!Group_utils.edit_group_description(the_group_id, the_group_desc)) {
+    if (!Group_utils.edit_user_group_description(the_group_id, logged_in_user_id, the_user_desc)) {
       response.sendRedirect("general_error.jsp");
       return;
     } else {
@@ -34,16 +34,16 @@
 
   <div class="container">
 
-    <h3><%=loc.get(90,"Your group's description")%></h3>
-        <form method="POST" action="edit_group_description.jsp">
+    <h3><%=loc.get(71,"Your description as seen by others in your group")%></h3>
+        <form method="POST" action="edit_groupuser_description.jsp">
           <input type="hidden" name="group_id" id="group_id" value="<%=the_group_id%>">
           <div class="table">
             <div class="row">
               <textarea 
-                id="group_description" 
-                name="group_description" 
+                id="user_description" 
+                name="user_description" 
                 maxlength="500"
-                ><%=Utils.safe_render(Group_utils.get_group_description(the_group_id))%></textarea>
+                ><%=Utils.safe_render(Group_utils.get_user_group_description(the_group_id, logged_in_user_id))%></textarea>
             </div>
           </div>
           <div class="table">

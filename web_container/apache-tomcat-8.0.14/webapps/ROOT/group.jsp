@@ -105,7 +105,14 @@
 
       <div class="row">
         <label><%=loc.get(10,"Description")%>:</label>
-        <span><%=the_group.description%></span>
+        <span><%=the_group.description%>
+        <% if (logged_in_user_id == the_group.owner_id) { %>
+          <a href="edit_group_description.jsp?group_id=<%=gid%>">
+            <img title="<%=loc.get(62,"Edit my group description")%>" src="static/img/edit.png" 
+              width="12px" height="12px" />
+          </a>
+        <% } %>
+       </span> 
       </div>
 
       <div class="row">
@@ -115,7 +122,7 @@
                 <%=the_group.owner_username%>
               </a>
               <% if (logged_in_user_id == the_group.owner_id) { %>
-                <a href="edit_group_description.jsp?group_id=<%=gid%>">
+                <a href="edit_groupuser_description.jsp?group_id=<%=gid%>">
                   <img title="<%=loc.get(62,"Edit my group description")%>" src="static/img/edit.png" 
                     width="12px" height="12px" />
                 </a>

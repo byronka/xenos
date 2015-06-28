@@ -326,9 +326,10 @@ VALUES
 (409,'user1 accepts user2''s invite to group (extra is group id)'),
 (410,'user1 rejects user2''s invite to group (extra is group id)'),
 (411,'user1 edits group name (extra is group id)'),
-(412,'user1 edits group description (extra is group id)'),
+(412,'user1 edits user group description (extra is group id)'),
 (413,'user1 retracts their group invitation to user2 (group is extra)'),
-(414,'user1 removed user2 from their grouop (group is extra)');
+(414,'user1 removed user2 from their grouop (group is extra)'),
+(415,'user1 edits their group description (extra is group id)');
 
 
 

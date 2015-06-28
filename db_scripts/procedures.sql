@@ -1624,63 +1624,6 @@ END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS edit_user_group;   
-
----DELIMITER---
-
--- this allows creating and changin the name and description 
--- of a user group.
-
-CREATE PROCEDURE edit_user_group
-(
-  the_group_id INT UNSIGNED,
-  the_group_name NVARCHAR(50),
-  the_group_description NVARCHAR(500),
-  the_user_id INT UNSIGNED -- the id of the user editing this group
-)
-BEGIN
-  DECLARE group_desc_changed BOOL; -- group description has been edited
-  DECLARE group_name_changed BOOL; -- group name has been edited
-  DECLARE old_group_desc NVARCHAR(500);
-  DECLARE old_group_name NVARCHAR(50);
-
-  -- validate our input values
-  call validate_user_id(the_user_id);
-
-  SELECT (COUNT(*) = 1), gd.text INTO group_desc_changed, old_group_desc
-  FROM user_group g
-  JOIN group_description gd ON gd.group_id = g.group_id
-  WHERE g.group_id = the_group_id AND gd.text = the_group_description;
-
-  SELECT (COUNT(*) = 1), name INTO group_name_changed, old_group_name
-  FROM user_group g
-  WHERE group_id = the_group_id AND name = the_group_name;
-
-  -- if the description changed, update it and audit
-  IF group_desc_changed THEN
-    UPDATE group_description
-    SET text = the_group_description
-    WHERE group_id = the_group_id;
-
-    CALL add_audit(412, the_user_id, NULL, 
-      NULL, the_group_id, CONCAT(SUBSTR(old_group_desc,1,50),'...'));
-  END IF;
-  
-  -- if the group name changed, update it and audit
-  IF group_name_changed THEN
-    UPDATE user_group
-    SET name = the_group_name
-    WHERE group_id = the_group_id;
-
-    CALL add_audit(411, the_user_id, NULL, NULL, 
-      the_group_id, old_group_name);
-  END IF;
-
-END
-
-
----DELIMITER---
-
 DROP PROCEDURE IF EXISTS send_group_invite_to_user;   
 
 ---DELIMITER---
@@ -1883,6 +1826,43 @@ BEGIN
 
   -- audit that the owner has retracted their invite to the user
   CALL add_audit(413, the_owner_id, the_user_id, NULL, the_group_id, NULL);
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS edit_group_description;   
+
+---DELIMITER---
+
+
+CREATE PROCEDURE edit_group_description
+(
+  the_group_id INT UNSIGNED,
+  the_text NVARCHAR(500)
+)
+BEGIN
+  DECLARE existing_count INT;
+  DECLARE group_owner INT UNSIGNED;
+
+  SELECT COUNT(*) INTO existing_count
+  FROM user_group_description
+  WHERE group_id = the_group_id;
+
+  -- update or insert
+  IF existing_count > 0 THEN
+    UPDATE group_description
+    SET text = the_text
+    WHERE group_id = the_group_id;
+  ELSE
+    INSERT INTO group_description (group_id, text)
+    VALUES (the_group_id, the_text);
+  END IF;
+
+  SELECT owner_id INTO group_owner
+  FROM user_group
+  WHERE group_id = the_group_id;
+
+  CALL add_audit(415, group_owner, NULL, NULL, the_group_id, NULL);
 END
 
 ---DELIMITER---
