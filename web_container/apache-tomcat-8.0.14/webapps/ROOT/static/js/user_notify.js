@@ -127,7 +127,8 @@ xenos_user_notify.mc = xenos_user_notify.message_checker();
 
 xenos_user_notify.run_me = function() {
   xenos_user_notify.mc.call_server();
-  setTimeout(xenos_user_notify.run_me, 30 * 1000);
+  //just run once per page load.
+  //setTimeout(xenos_user_notify.run_me, 30 * 1000);
 };
 
 xenos_user_notify.run_me();
