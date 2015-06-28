@@ -52,6 +52,15 @@
     height: 25px;
   }
 
+  div.header-table .button {
+    padding: 0.1em;
+  }
+
+
+  div.container .button {
+    padding: 0.5em;
+  }
+
   .button {
     box-sizing: content-box;
     -moz-box-sizing: content-box;
