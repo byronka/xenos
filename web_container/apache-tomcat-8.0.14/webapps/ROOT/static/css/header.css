@@ -212,7 +212,6 @@ header {
 header #my-favors-container {
   position: relative;
   display:block;
-  height: 30px;
 }
 
 @media all and (min-width: 501px) {
