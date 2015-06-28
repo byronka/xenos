@@ -32,11 +32,13 @@
     icode = request.getParameter("icode"); // get the invite code
     if (Utils.is_null_or_empty(icode)) {
       validation_error = true;
-      icode_error_msg = loc.get(205, "An invitation code is required for registration");
+      icode_error_msg = 
+        loc.get(205, "An invitation code is required for registration");
     }
 
     if (!validation_error) {
-      // if we are given an invite code, check that it's good, otherwise error message
+      // if we are given an invite code, check that it's good, 
+      // otherwise error message
       if (Security.is_valid_invite_code(icode)) {
         response.sendRedirect("register.jsp?icode=" + icode);
         return;
