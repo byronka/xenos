@@ -126,7 +126,7 @@ DO
       -- audit that we are giving some users their points back
       INSERT INTO audit (
         datetime, audit_action_id, user1_id, user2_id, requestoffer_id)
-      SELECT UTC_TIMESTAMP(), 303, 1, r.requestoffering_user_id, requestoffer_id -- 1 is system user
+      SELECT UTC_TIMESTAMP(), 303, 1, r.requestoffering_user_id, r.requestoffer_id -- 1 is system user
       FROM requestoffer r 
       JOIN requestoffers_to_change_status rtcs 
         ON rtcs.requestoffer_id = r.requestoffer_id;
