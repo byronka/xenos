@@ -862,51 +862,59 @@ BEGIN
       SET message_text = msg;
   END IF;
 
+  -- (this next part is disabled during the beta.  Turn it back
+  -- on in the final product.)
   -- check that the invite code is valid
-  SELECT user_id INTO inviter_id
-  FROM invite_code
-  WHERE value = my_invite_code;
+  -- SELECT user_id INTO inviter_id
+  -- FROM invite_code
+  -- WHERE value = my_invite_code;
 
+  -- (remove this next part in the final product.  Here, we'll say
+  -- that the system user is the inviter, during the beta only.)
+  SELECT 1 INTO inviter_id;
+
+  -- (this whole section, for checking invite code, is being
+  -- commented out during beta.)
   -- guard against the count of valid invite codes being zero
   -- we will use this error message back on the client side.
-  IF inviter_id IS NULL THEN
-      -- if the ip address is too long, truncate
-      IF LENGTH(ipaddr) > 20 THEN
-        SET my_ipaddr = CONCAT(SUBSTR(ipaddr,1,20),'...');
-      ELSE
-        SET my_ipaddr = ipaddr;
-      END IF;
+  -- IF inviter_id IS NULL THEN
+  --     -- if the ip address is too long, truncate
+  --     IF LENGTH(ipaddr) > 20 THEN
+  --       SET my_ipaddr = CONCAT(SUBSTR(ipaddr,1,20),'...');
+  --     ELSE
+  --       SET my_ipaddr = ipaddr;
+  --     END IF;
 
-      -- if the username is too long, truncate
-      IF LENGTH(uname) > 10 THEN
-        SET the_user_name = CONCAT(SUBSTR(uname,1,10),'...');
-      ELSE
-        SET the_user_name = uname;
-      END IF;
+  --     -- if the username is too long, truncate
+  --     IF LENGTH(uname) > 10 THEN
+  --       SET the_user_name = CONCAT(SUBSTR(uname,1,10),'...');
+  --     ELSE
+  --       SET the_user_name = uname;
+  --     END IF;
 
-      SET message = CONCAT('ip: ',my_ipaddr,' name: ',the_user_name,
-        ' invite code: ', SUBSTR(my_invite_code,1,10),'...');
+  --     SET message = CONCAT('ip: ',my_ipaddr,' name: ',the_user_name,
+  --       ' invite code: ', SUBSTR(my_invite_code,1,10),'...');
 
-      -- audit that they failed the invite-code check
-      CALL add_audit(110,NULL,NULL,NULL,NULL,message);
-      
-      -- return an error so we can indicate that on the client
-      SIGNAL SQLSTATE '45000' 
-      SET message_text = 'invite code is invalid';
-  END IF;
+  --     -- audit that they failed the invite-code check
+  --     CALL add_audit(110,NULL,NULL,NULL,NULL,message);
+  --     
+  --     -- return an error so we can indicate that on the client
+  --     SIGNAL SQLSTATE '45000' 
+  --     SET message_text = 'invite code is invalid';
+  -- END IF;
 
 
   -- add the user
-  INSERT INTO user (username, password, salt, date_created, last_ip_logged_in, inviter)
-  SELECT uname, pword, slt, UTC_TIMESTAMP(), ipaddr, user_id
-  FROM invite_code
-  WHERE value = my_invite_code;
+  INSERT INTO user (username, password, salt, 
+      date_created, last_ip_logged_in, inviter)
+  VALUES (uname, pword, slt, UTC_TIMESTAMP(), ipaddr, inviter_id);
 
   SET new_user_id = LAST_INSERT_ID();
 
+  -- (we don't have invite codes during beta.  This section commented out)
   -- delete that invite code
-  DELETE FROM invite_code
-  WHERE value = my_invite_code;
+  -- DELETE FROM invite_code
+  -- WHERE value = my_invite_code;
 
   -- Add an audit about registering a new user
   CALL add_audit(101,new_user_id,inviter_id,NULL,NULL,ipaddr);

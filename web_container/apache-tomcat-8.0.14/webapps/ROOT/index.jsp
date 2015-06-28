@@ -27,7 +27,13 @@
     <section>
     <nav class="cl-effect-1">
       <a href="login.jsp"><%=loc.get(42,"Login")%></a>
+
+      <!-- this next line is turned off for beta.  Turn it back
+           on for the final release.
       <a href="check_invite_code.jsp"><%=loc.get(43,"Register")%></a>
+     -->
+
+      <a href="register.jsp"><%=loc.get(43,"Register")%></a>
     </nav>
     </section>
   </div>

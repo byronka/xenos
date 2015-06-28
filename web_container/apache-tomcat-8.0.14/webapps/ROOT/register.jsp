@@ -29,13 +29,16 @@
   //we'll put error messages here if validation errors occur
   String username_error_msg = "";  //empty username
   String user_creation_error_msg = ""; //couldn't register
-  String icode_error_msg = ""; // for invalid invite codes, though this really shouldn't 
+  String icode_error_msg = ""; // for invalid invite codes, 
+                              // though this really shouldn't 
                               //happen since we precheck
 
   // when coming in from the page that checks validity of invite
   // code, we'll first get that from a query string.
   String qs = request.getQueryString();
-  String invite_code = Utils.parse_qs(qs).get("icode"); // get it from query string
+
+  // get it from query string
+  String invite_code = Utils.parse_qs(qs).get("icode"); 
 
   if (request.getMethod().equals("POST")) {
 
@@ -50,7 +53,7 @@
     }
 
     if (!validation_error) {
-      String ip_address = com.renomad.xenos.Utils.get_remote_address(request);
+      String ip_address = Utils.get_remote_address(request);
       User_utils.Put_user_result result = 
         User_utils.is_valid_username(username, invite_code);
       switch (result) {

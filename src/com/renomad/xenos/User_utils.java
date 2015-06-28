@@ -511,11 +511,13 @@ public final class User_utils {
     * fields, and if so, will create the user.  Note that at that
     * point, the database has constraints which might cause failure
     * still.  
-    * @param invite_code users generate a code to invite their buddies to the system.  With
-    *  this code, the user is allowed to register.
+    * @param invite_code users generate a code to invite 
+    * their buddies to the system.  With this code, the user 
+    *  is allowed to register. (disabled during beta)
     * @return true if successful
     */
-  public static Put_user_result put_user(String username, String password, String ip_address, String invite_code) {
+  public static Put_user_result 
+    put_user(String username, String password, String ip_address, String invite_code) {
 
       if ( Utils.is_null_or_empty(username) ||
            Utils.is_null_or_empty(password) ||
@@ -609,9 +611,11 @@ public final class User_utils {
       return Put_user_result.INVALID_ENTRY;
     }
 
-    if (!is_valid_invite_code(icode)) {
-      return Put_user_result.INVALID_INVITE_CODE;
-    }
+    // Note: this is turned off in the beta.  Turn it
+    // back on for full version.
+    // if (!is_valid_invite_code(icode)) {
+    //  return Put_user_result.INVALID_INVITE_CODE;
+    //}
 
     String sqlText = 
       "SELECT COUNT(*) AS existing_username_count "+
