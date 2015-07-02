@@ -1,0 +1,27 @@
+Register your username and password
+Choose a username
+password must be 8 characters minimum
+Set your location
+Create a request for a favor
+location or no location?
+publish the favor
+retract the favor
+Favors will stay open for a week, then revert to draft if no one handles it.
+categories of favors
+Search for a favor you can handle
+by distance
+by username
+date range
+Offer to handle a favor
+Communicate during offering period
+Handle a favor
+Communicate during handling of favor
+Complete the favor / Cancel a favor
+Rank each other
+create a group
+get invited to a group
+benefits of groups
+setting description for yourself in group
+setting description for yourself in "my profile"
+Review My Favors button - desktop and mobile.
+You will remain logged into the system for a week past your most recent activity
