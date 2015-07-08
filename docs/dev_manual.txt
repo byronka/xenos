@@ -22,6 +22,7 @@ Git commit standards
 Version number
 Database history
 Useful SQL scripts
+Automatic emails
 Testing
 Definitions
 Deploy checklist
@@ -530,6 +531,18 @@ CALL show_audit_log_info(); -- shows lots of useful audit info
 
 
 
+
+
+
+Automatic Emails
+================
+  There is a very simple way to send emails to our users.  We use the
+ssmtp utility, very common on Unix systems, to do it.  The command line
+is like this:
+
+cat testmail | ssmtp -v -C ssmtp.conf byronkatz@gmail.com
+
+The configuration file it references is in utils.
 
 
 
