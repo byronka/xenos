@@ -3,6 +3,9 @@ Choose a username
 password must be 8 characters minimum
 Set your location
 Create a request for a favor
+What's the point of a favor
+points
+reputation
 location or no location?
 publish the favor
 retract the favor
