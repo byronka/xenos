@@ -107,8 +107,7 @@ public final class Build_db_schema {
     // once we deploy, we increment the version number and "previous version"
     // scripts won't get run. 
     if (version == 0) { run_multiple_statements("db_scripts/v1_setup.sql"); }
-    //for the future...
-    //if (version == 1) { run_multiple_statements("db_scripts/v2_setup.sql"); }
+    if (version == 1) { run_multiple_statements("db_scripts/v2_setup.sql"); }
   }
 
 
@@ -214,6 +213,7 @@ public final class Build_db_schema {
   }
 
   public static void run_multiple_statements(String file) {
+    System.out.println("running scripts in " + file);
     Statement stmt = null;
     int counter = 0;
     try (Scanner s = new Scanner(new File(file), "UTF-8")) {

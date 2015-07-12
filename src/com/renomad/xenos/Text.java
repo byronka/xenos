@@ -1,6 +1,7 @@
 package com.renomad.xenos;
 
 import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import java.util.Arrays;
@@ -27,7 +28,7 @@ import com.renomad.xenos.Database_access;
  *
  */
 @WebListener
-public class Text implements javax.servlet.ServletContextListener {
+public class Text implements ServletContextListener {
 
 
   /**

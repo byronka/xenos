@@ -185,6 +185,69 @@ public final class Requestoffer_utils {
   }
 
 
+  public static class EmailInformation {
+    public final String email;
+    public final String message;
+    public final int user_id;
+    public EmailInformation(String email, String message, int user_id) {
+      this.email = email;
+      this.message = message;
+      this.user_id = user_id;
+    }
+  }
+
+
+  /**
+    */
+  public static EmailInformation[] get_messages_for_user_email() {
+    CallableStatement cs = null;
+    Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
+    try {
+      cs = conn.prepareCall("{call get_my_temporary_msgs_for_email()}");
+      resultSet = cs.executeQuery();
+
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return new EmailInformation[0];
+      }
+
+      //keep adding rows of data while there is more data
+      List<EmailInformation> ei = new ArrayList<EmailInformation>();
+      while(resultSet.next()) {
+        Integer user_id = resultSet.getInt("user_id");
+        Integer msg_id = resultSet.getInt("message_localization_id");
+        String text = resultSet.getNString("text");
+        String email = resultSet.getNString("email");
+
+        if (!Utils.is_null_or_empty(text)) { // a user message
+          ei.add(new EmailInformation(email, text, user_id));
+        } else if (msg_id != null && msg_id > 0) { // a system message
+          Localization loc = new Localization(user_id);
+          String localizedText = loc.get(msg_id,"");
+          ei.add(new EmailInformation(email, localizedText, user_id));
+        } else {    // an exceptional situation - shouldn't happen
+          System.out.println("ERROR_GETTING_TEMP_MSG");
+          System.out.println("there had to be no text and no msg_id");
+          System.out.println("text: " + text);
+          System.out.println("msg_id: " + msg_id);
+        }
+      }
+
+      //convert arraylist to array
+      EmailInformation[] emailArray = 
+        ei.toArray(new EmailInformation[ei.size()]);
+			return emailArray;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return new EmailInformation[0];
+    } finally {
+      Database_access.close_resultset(resultSet);
+      Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
+    }
+  }
+
+
   /**
     * returns unviewed messages, localized
     *  from the temporary_messages table
@@ -197,7 +260,7 @@ public final class Requestoffer_utils {
     ResultSet resultSet = null;
     try {
       cs = conn.prepareCall(String.format(
-        "{call get_my_temporary_msgs(%d)}" , user_id ));
+        "{call get_my_temporary_msgs_for_website(%d)}" , user_id ));
       resultSet = cs.executeQuery();
 
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
@@ -233,6 +296,7 @@ public final class Requestoffer_utils {
       Database_access.close_connection(conn);
     }
   }
+
 
   /**
     * returns a list of localization values for the categories

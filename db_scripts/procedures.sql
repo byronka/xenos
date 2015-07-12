@@ -1396,11 +1396,11 @@ END
 
 ---DELIMITER---
 
-DROP PROCEDURE IF EXISTS get_my_temporary_msgs;   
+DROP PROCEDURE IF EXISTS get_my_temporary_msgs_for_website;   
 
 ---DELIMITER---
 
-CREATE PROCEDURE get_my_temporary_msgs
+CREATE PROCEDURE get_my_temporary_msgs_for_website
 (
   uid INT UNSIGNED -- the user id
 ) 
@@ -1417,23 +1417,60 @@ BEGIN
   -- only if we actually have messages, do we keep going
   IF count_msgs > 0 THEN
 
-    -- select the messages
+    -- select the messages that haven't been seen
     SELECT tm.message_localization_id, tmt.text
     FROM temporary_message tm
     LEFT JOIN temporary_message_text tmt
       ON tm.message_id = tmt.message_id
-    WHERE tm.user_id = uid;
+    WHERE tm.user_id = uid 
+      AND tm.has_displayed_in_website = 0;
 
-    -- delete them
-    DELETE FROM temporary_message
-    WHERE user_id = uid;
-  ELSE
-    SELECT tm.message_localization_id, tmt.text
+    -- mark them as seen on website
+    UPDATE temporary_message
+    SET has_displayed_in_website = 1
+    WHERE user_id = uid 
+      AND has_displayed_in_website = 0;
+
+  END IF;
+
+END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS get_my_temporary_msgs_for_email;   
+
+---DELIMITER---
+
+-- this gets all the temporary messages for everyone, and marks
+-- them all as having been emailed out.  It is used by a program
+-- that packages up all the messages into bundles per user and emails
+-- them out.
+
+CREATE PROCEDURE get_my_temporary_msgs_for_email () 
+BEGIN 
+
+    -- select the messages that haven't been emailed to a user
+    SELECT u.email, tm.user_id, tm.message_localization_id, tmt.text
     FROM temporary_message tm
     LEFT JOIN temporary_message_text tmt
       ON tm.message_id = tmt.message_id
-    WHERE tm.user_id = uid;
-  END IF;
+    JOIN user u ON u.user_id = tm.user_id
+    WHERE 
+      tm.has_emailed = 0
+    AND 
+      u.email IS NOT NULL
+    AND
+      u.email <> '';
+
+    -- mark them as having been emailed
+    UPDATE temporary_message
+    SET has_emailed = 1
+    WHERE 
+      tm.has_emailed = 0
+    AND 
+      u.email IS NOT NULL
+    AND
+      u.email <> '';
 
 END
 
