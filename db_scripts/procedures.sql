@@ -1956,3 +1956,23 @@ BEGIN
 
   CALL add_audit(401, the_user_id, NULL, coid, poid, NULL);
 END
+
+---DELIMITER---
+
+DROP PROCEDURE IF EXISTS set_email;   
+
+---DELIMITER---
+
+CREATE PROCEDURE set_email
+(
+  uid INT UNSIGNED, -- the user whose email we'll change
+  new_email NVARCHAR(200) -- the new email
+) 
+BEGIN 
+
+  UPDATE user 
+  SET email = new_email
+  WHERE user_id = uid;
+
+  CALL add_audit(112,uid,uid,NULL,NULL,new_email);
+END

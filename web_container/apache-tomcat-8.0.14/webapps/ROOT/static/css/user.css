@@ -1,3 +1,9 @@
+span.text_and_image_container {
+  display: block;
+  margin-top: auto;
+  margin-bottom: auto;
+  height: 15px;
+}
 
 #count-of-invites {
   background: url("../img/group_invite_alert.png") 
@@ -18,27 +24,53 @@
 }
 
 #edit_desc_anchor {
-  background: url("../img/edit_icon.svg") no-repeat scroll 50% 50% / contain;
+  background:
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -20px 0;
   width: 18px;
   height: 18px;
   display: inline-block;
 }
 
-a#your_groups>span.text {
-  background: rgba(0, 0, 0, 0) url("../img/group_icon.svg") no-repeat scroll 80px center / contain ;
-  width: 90px;
-  display: block;
+a#your_groups span.image {
+  background:
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -55px -20px;
+  width: 20px;
+  display: inline-block;
 }
 
-a#generate_icode>span.text {
-  background: rgba(0, 0, 0, 0) url("../img/new_user_icon.svg") no-repeat scroll 160px center / contain ;
-  width: 170px;
-  display: block;
+a#generate_icode span.image {
+  background:
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -95px -19px;
+  width: 20px;
+  display: inline-block;
 }
 
-a#change_password>span.text {
-  background: rgba(0, 0, 0, 0) url("../img/password_icon.svg") no-repeat scroll 120px center / contain ;
-  width: 138px;
-  display: block;
+a#change_password span.image {
+  background:
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+    -38px 0px;
+  width: 20px;
+  display: inline-block;
+}
+
+a#set_email span.image {
+  background: 
+    rgba(0, 0, 0, 0) 
+    url("../img/combined.png") 
+    repeat scroll 
+     -3px -76px;
+  width: 20px;
+  display: inline-block;
 }
 

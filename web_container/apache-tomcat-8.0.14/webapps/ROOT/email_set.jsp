@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><%=loc.get(112, "Password changed")%></title>
+		<title>Email set</title>
     <link rel="stylesheet" href="static/css/header.css" >
     <link rel="stylesheet" href="static/css/footer.css" >
     <link rel="stylesheet" href="static/css/button.css" >
@@ -15,7 +15,7 @@
   <%@include file="includes/header.jsp" %>
   <div class="container">
     <div class="table">
-<h3><%=loc.get(112, "Password changed")%></h3>
+<h3>Email has been set</h3>
 <p><a href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
   </div>
   <%@include file="includes/footer.jsp" %>

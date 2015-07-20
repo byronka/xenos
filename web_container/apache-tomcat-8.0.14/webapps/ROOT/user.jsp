@@ -89,32 +89,55 @@
 
       <% if (uid == logged_in_user_id) { %>
 
-        <a id="change_password" class="button" href="change_password.jsp">
-          <span class="text"><%=loc.get(113,"Change password")%></span>
-          <span class="image" />
+
+        <a 
+          id="change_password" 
+          class="button" href="change_password.jsp">
+            <span class="text_and_image_container">
+              <span class="text"><%=loc.get(113,"Change password")%></span>
+              <span class="image" />&nbsp;</span>
+          </span>
         </a>
 
-          <a id="your_groups" class="button" href="user_groups.jsp">
-            <span class="text"><%=loc.get(8,"Your groups")%></span>
-            <span class="image" ></span>
-            <% if (group_invites.length > 0) { %>
-              <span style="position: relative">
-                <span id="count-of-invites"><%=group_invites.length%></span>
-              </span>
-            <% } %>
-          </a>
+        <a 
+          id="set_email" 
+          class="button" href="set_email.jsp">
+            <span class="text_and_image_container">
+              <span class="text"><%=loc.get(91,"Set email address")%></span>
+              <span class="image" />&nbsp;</span>
+          </span>
+        </a>
 
-        <a id="current_location" class="button" href="select_country.jsp?usecase=2">
-          <span><%=loc.get(7,"Current location")%>
-          <%
-          String user_postcode = 
-            Utils.is_null_or_empty(logged_in_user.postal_code) ? "none" : logged_in_user.postal_code; %>
-          <%=Utils.safe_render(user_postcode)%>
+        <a 
+          id="your_groups" 
+          class="button" href="user_groups.jsp">
+            <span class="text_and_image_container">
+              <span class="text"><%=loc.get(8,"Your groups")%></span>
+              <span class="image" />&nbsp;</span>
+              <% if (group_invites.length > 0) { %>
+                <span style="position: relative">
+                  <span id="count-of-invites"><%=group_invites.length%></span>
+                </span>
+              <% } %>
+          </span>
+        </a>
+
+        <a 
+          id="current_location" 
+          class="button" href="select_country.jsp?usecase=2">
+            <span class="text_and_image_container">
+              <span class="text"><%=loc.get(7,"Current location")%>
+                <%
+                String user_postcode = 
+                  Utils.is_null_or_empty(logged_in_user.postal_code) ? "none" : logged_in_user.postal_code; %>
+                <%=Utils.safe_render(user_postcode)%>
+              </span>
+              <span class="image" />&nbsp;</span>
           </span>
         </a>
 
         <!--
-
+        On ice until I decide there is enough interest to warrant being more restrictive.
         <a id="generate_icode" class="button" href="generate_icode.jsp">
           <span class="text"><%=loc.get(206,"Generate invitation code")%></span>
           <span class="image" />

@@ -77,7 +77,7 @@
             <button class="button" type="submit">
               <%=loc.get(113,"Change password")%>
             </button>
-            <a class="button" href="dashboard.jsp"><%=loc.get(130,"Cancel")%></a>
+            <a class="button" href="user.jsp?user_id=<%=logged_in_user_id%>"><%=loc.get(130,"Cancel")%></a>
           </div>
         </div>
       </form>

@@ -68,6 +68,7 @@
 
     <div class="row">
       <a class="button" href="create_group.jsp"><%=loc.get(45,"Create a group")%></a>
+      <a class="button" href="user.jsp?user_id=<%=logged_in_user_id%>"><%=loc.get(130,"Cancel")%></a>
     </div>
 
   </div>

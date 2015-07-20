@@ -62,6 +62,39 @@ public final class User_utils {
 
 
   /**
+    * the possible results from setting a new email.
+    */
+  public enum Set_email_result { OK, GENERAL_ERR, EXISTING_EMAIL}
+
+  /**
+    * sets an email for a user
+    * @return true if successful, false otherwise
+    */
+  public static Set_email_result set_email (
+      int user_id, String email) {
+    CallableStatement cs = null;
+    Connection conn = Database_access.get_a_connection();
+    try {
+      cs = conn.prepareCall("{call set_email(?,?)}");
+      cs.setInt(1,user_id);
+      cs.setNString(2,email);
+      cs.execute();
+      return Set_email_result.OK;
+    } catch (SQLException ex) {
+      String msg = ex.getMessage();
+      if (msg.contains("Duplicate entry")) {
+        return Set_email_result.EXISTING_EMAIL;
+      }
+      Database_access.handle_sql_exception(ex);
+      return Set_email_result.GENERAL_ERR;
+    } finally {
+      Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
+    }
+  }
+
+
+  /**
     * sets a description that will be publicly viewable
     * for the user.
     * @return true if successful, false otherwise
@@ -81,6 +114,44 @@ public final class User_utils {
       return false;
     } finally {
       Database_access.close_statement(cs);
+      Database_access.close_connection(conn);
+    }
+  }
+
+
+  /**
+    * gets the user's current email, or "(none)" if none.
+    */
+  public static String
+    get_current_email(int user_id) {
+    String sqlText = 
+      "SELECT email "+
+      "FROM user "+
+      "WHERE user_id = ?";
+    PreparedStatement pstmt = null;
+    Connection conn = Database_access.get_a_connection();
+    ResultSet resultSet = null;
+    try {
+      pstmt = Database_access.prepare_statement(
+          conn, sqlText);     
+      pstmt.setInt( 1, user_id);
+      resultSet = pstmt.executeQuery();
+      if (Database_access.resultset_is_null_or_empty(resultSet)) {
+        return "";
+      }
+
+      resultSet.next(); //move to the first set of results.
+      String email = resultSet.getNString("email");
+      if (email.equals("")) {
+        return "(none)";
+      }
+      return email;
+    } catch (SQLException ex) {
+      Database_access.handle_sql_exception(ex);
+      return "(none)";
+    } finally {
+      Database_access.close_resultset(resultSet);
+      Database_access.close_statement(pstmt);
       Database_access.close_connection(conn);
     }
   }

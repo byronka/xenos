@@ -16,3 +16,10 @@ ALTER TABLE temporary_message ADD COLUMN (
   has_emailed BOOL DEFAULT 0 -- if it's been emailed to user
 )
 
+---DELIMITER---
+
+INSERT INTO audit_actions (action_id,action)
+VALUES
+
+-- user registration, login, security - 100s
+(112,'User edited their email');

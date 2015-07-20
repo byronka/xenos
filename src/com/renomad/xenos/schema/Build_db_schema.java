@@ -220,9 +220,14 @@ public final class Build_db_schema {
       stmt = get_a_statement();
       s.useDelimiter("---DELIMITER---");
       while(s.hasNext()) {
-        String next_statement = s.next();
-        counter++;
-        stmt.execute(next_statement);
+        try {
+          String next_statement = s.next();
+          counter++;
+          stmt.execute(next_statement);
+        } catch (SQLException ex) {
+          System.err.println("error at section " + counter);
+          handle_sql_exception(ex);
+        }
       }
     } catch (FileNotFoundException ex) {
       System.err.println(ex);

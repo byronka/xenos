@@ -219,11 +219,15 @@ public final class Requestoffer_utils {
         String text = resultSet.getNString("text");
         String email = resultSet.getNString("email");
 
+        if (Utils.is_null_or_empty(email)) {
+          continue;
+        }
+
         if (!Utils.is_null_or_empty(text)) { // a user message
           ei.add(new EmailInformation(email, text, user_id));
         } else if (msg_id != null && msg_id > 0) { // a system message
           Localization loc = new Localization(user_id);
-          String localizedText = loc.get(msg_id,"");
+          String localizedText = "Favr system says: " + loc.get(msg_id,"");
           ei.add(new EmailInformation(email, localizedText, user_id));
         } else {    // an exceptional situation - shouldn't happen
           System.out.println("ERROR_GETTING_TEMP_MSG");
