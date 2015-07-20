@@ -1466,7 +1466,7 @@ BEGIN
     UPDATE temporary_message
     SET has_emailed = 1
     WHERE 
-      tm.has_emailed = 0
+      has_emailed = 0
     AND 
       u.email IS NOT NULL
     AND
