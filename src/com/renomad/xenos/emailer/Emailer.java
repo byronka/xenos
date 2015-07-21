@@ -42,7 +42,6 @@ public class Emailer implements ServletContextListener, Runnable {
 
   public void run() {
     while(true) {
-      System.out.println(getTimestamp() + " Checking for messages to email...");
       sendEmail();
       try{
         //wake up every second to see if we keep running
@@ -61,7 +60,6 @@ public class Emailer implements ServletContextListener, Runnable {
       Requestoffer_utils.get_messages_for_user_email();
 
     if (messagesPerUser.length == 0) {
-      System.out.println("Nothing to send");
       return;
     }
 
@@ -72,7 +70,8 @@ public class Emailer implements ServletContextListener, Runnable {
     for (Requestoffer_utils.EmailInformation ei : messagesPerUser) {
        String key = ei.email;
        if (map.get(key) == null) {
-          map.put(key, new ArrayList<Requestoffer_utils.EmailInformation>());
+          map.put(key, 
+              new ArrayList<Requestoffer_utils.EmailInformation>());
        }
        map.get(key).add(ei);
     }
@@ -91,13 +90,18 @@ public class Emailer implements ServletContextListener, Runnable {
       String emailAddress = entry.getKey();
 
       StringBuilder emailMessage = new StringBuilder();
-      emailMessage.append(              "From: favrcafe@favrcafe.com\n");
+      emailMessage.append("From: favrcafe@favrcafe.com\n");
       emailMessage.append(String.format("To: %s\n",emailAddress));
-      emailMessage.append(              "Subject: [Favrcafe new messages]\n\n");
+      emailMessage.append("Subject: [Favrcafe new messages]\n\n");
       emailMessage.append(emailBody.toString());
 
       //set up a stream to send the email message to
-      ProcessBuilder pb = new ProcessBuilder("ssmtp",emailAddress,"-C/home/byron/dev/xenos/utils/ssmtp.conf","&");
+      ProcessBuilder pb = 
+        new ProcessBuilder(
+            "ssmtp",
+            emailAddress,
+            "-C../../../../ssmtp.conf",
+            "&");
 
       //send the email
       try {

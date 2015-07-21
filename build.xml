@@ -220,6 +220,7 @@
 			<exclude name="com/renomad/xenos/schema/**" />
       <compilerarg value="-Xlint:unchecked" /> <!-- for more warnings -->
     </javac>
+    <copy file="utils/ssmtp.conf" todir="${tomcat.webapps.dir}ROOT/WEB-INF/classes"/>
   </target>
 
   <target name="compile-schema-code" description="code for building schema">
