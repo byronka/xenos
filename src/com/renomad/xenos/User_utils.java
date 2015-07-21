@@ -142,7 +142,7 @@ public final class User_utils {
 
       resultSet.next(); //move to the first set of results.
       String email = resultSet.getNString("email");
-      if (email.equals("")) {
+      if (Utils.is_null_or_empty(email)) {
         return "(none)";
       }
       return email;

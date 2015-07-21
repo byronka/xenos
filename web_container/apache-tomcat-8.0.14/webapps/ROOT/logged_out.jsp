@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="static/css/default_background.css" >
 </head>
 <body>
-  <div class="trademark">SAYAYE</div>
+  <div class="trademark">Favrcafe</div>
   <nav class="cl-effect-1">
     <p><%=loc.get(66,"You have successfully logged out")%></p>
     <p><a href="login.jsp"><%=loc.get(42,"Login")%></a></p>

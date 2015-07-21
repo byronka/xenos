@@ -88,7 +88,7 @@
   <link rel="stylesheet" href="static/css/default_background.css" >
   </head>
 <body>
-  <div class="trademark cl-effect-1"><a href="index.jsp">SAYAYE</a></div>
+  <div class="trademark cl-effect-1"><a href="index.jsp">Favrcafe</a></div>
   <div class="register">
     <form id="enter_name_form" action="register.jsp" method="post">
       <div id="inputfields">

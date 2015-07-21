@@ -18,7 +18,7 @@
     boolean confirm_empty = email_address_confirm.length() == 0;
     boolean same = email_address.equals(email_address_confirm);
 
-    if (email_empty || confirm_empty) {
+    if (email_empty ^ confirm_empty) {
       error_msg = "You have to enter your email in both fields";
     } else if (!same && !email_empty && !confirm_empty) {
       error_msg = "the email addresses do not match.  Try again.";

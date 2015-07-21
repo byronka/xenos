@@ -48,7 +48,7 @@
           id="trademark" 
           class="header-button button" href="dashboard.jsp">
           <span class="text_and_image_container">
-            <span class="text">SAYAYE</span>
+            <span class="text">Favrcafe</span>
             <span class="image" />&nbsp;</span>
           </span>
         </a>

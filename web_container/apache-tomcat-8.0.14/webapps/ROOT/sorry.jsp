@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="static/css/default_background.css" >
 	</head>
 <body>
-  <div class="trademark">SAYAYE</div>
+  <div class="trademark">Favrcafe</div>
   <nav class="cl-effect-1">
     <p><%=loc.get(68,"Your browser did not send us the proper credentials.")%></p>
     <p><a href="login.jsp"><%=loc.get(42,"Login")%></a></p>

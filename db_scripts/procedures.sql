@@ -1463,10 +1463,11 @@ BEGIN
       u.email <> '';
 
     -- mark them as having been emailed
-    UPDATE temporary_message
-    SET has_emailed = 1
+    UPDATE temporary_message tm
+    JOIN user u ON u.user_id = tm.user_id
+    SET tm.has_emailed = 1
     WHERE 
-      has_emailed = 0
+      tm.has_emailed = 0
     AND 
       u.email IS NOT NULL
     AND
