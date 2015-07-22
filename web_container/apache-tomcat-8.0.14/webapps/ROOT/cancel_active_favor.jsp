@@ -17,17 +17,17 @@
 <%
 
   String qs = request.getQueryString();
-  Requestoffer r = 
+  Requestoffer my_requestoffer = 
     Requestoffer_utils.parse_querystring_and_get_requestoffer(qs);
-  if (r == null || r.status != Const.Rs.TAKEN) {
+  if (my_requestoffer == null || my_requestoffer.status != Const.Rs.TAKEN) {
     response.sendRedirect("general_error.jsp");
     return;
   }
 
   //handle bad scenario - if this user is not either the handler or owner.
 
-  if (logged_in_user_id != r.requestoffering_user_id && 
-      logged_in_user_id != r.handling_user_id) {
+  if (logged_in_user_id != my_requestoffer.requestoffering_user_id && 
+      logged_in_user_id != my_requestoffer.handling_user_id) {
     response.sendRedirect("general_error.jsp");
     return;
   }
@@ -42,7 +42,7 @@
     <%=loc.get(129,"If you would like to cancel this active Favor, click the confirm button below.  This will give you the chance provide a grade for the other person, as well as giving them a chance to grade you.")%>
   </p>
   <p>
-    <a class="button" href="transaction_cancel.jsp?requestoffer=<%=r.requestoffer_id%>">
+    <a class="button" href="transaction_cancel.jsp?requestoffer=<%=my_requestoffer.requestoffer_id%>">
       <%=loc.get(95, "Confirm")%> 
     </a>
   </p>

@@ -100,8 +100,7 @@ public class Emailer implements ServletContextListener, Runnable {
         new ProcessBuilder(
             "ssmtp",
             emailAddress,
-            "-C"+System.getenv("XENOS_HOME")+"/utils/ssmtp.conf",
-            "&");
+            "-C"+System.getenv("XENOS_HOME")+"/utils/ssmtp.conf");
 
       //send the email
       try {
