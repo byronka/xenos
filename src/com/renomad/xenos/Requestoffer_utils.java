@@ -1740,7 +1740,9 @@ public final class Requestoffer_utils {
       "JOIN user to_user ON to_user.user_id = rm.to_user_id " + 
       "JOIN requestoffer ro "+
         "ON ro.requestoffer_id = rm.requestoffer_id " +
-      "WHERE from_user_id = %d OR to_user_id = %d " +
+      "JOIN requestoffer_state rs ON rs.requestoffer_id = ro.requestoffer_id " +
+      "WHERE (from_user_id = %d OR to_user_id = %d) " +
+        "AND rs.status <> " + Const.Rs.DRAFT + " " + 
       "ORDER BY timestamp DESC LIMIT 10", user_id, user_id);
     PreparedStatement pstmt = null;
     Connection conn = Database_access.get_a_connection();
