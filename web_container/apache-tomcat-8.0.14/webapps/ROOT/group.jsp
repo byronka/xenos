@@ -9,6 +9,24 @@
     <link rel="stylesheet" href="static/css/footer.css" >
     <link rel="stylesheet" href="static/css/button.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
+    <style>
+
+      .edit_desc span{
+        display: none;
+      }
+
+      .edit_desc {
+        background:
+          rgba(0, 0, 0, 0) 
+          url("static/img/combined.png") 
+          repeat scroll 
+          -20px 0;
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+      }
+      
+    </style>
     <title>Group</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
@@ -107,9 +125,10 @@
         <label><%=loc.get(10,"Description")%>:</label>
         <span><%=the_group.description%>
         <% if (logged_in_user_id == the_group.owner_id) { %>
-          <a href="edit_group_description.jsp?group_id=<%=gid%>">
-            <img title="<%=loc.get(62,"Edit my group description")%>" src="static/img/edit.png" 
-              width="12px" height="12px" />
+          <a title="<%=loc.get(62,"Edit my group description")%>" 
+            class="edit_desc" 
+            href="edit_group_description.jsp?group_id=<%=gid%>&amp;edit_desc=true" >
+            <span><%=loc.get(62,"Edit my group description")%></span>
           </a>
         <% } %>
        </span> 
@@ -122,9 +141,10 @@
                 <%=the_group.owner_username%>
               </a>
               <% if (logged_in_user_id == the_group.owner_id) { %>
-                <a href="edit_groupuser_description.jsp?group_id=<%=gid%>">
-                  <img title="<%=loc.get(62,"Edit my group description")%>" src="static/img/edit.png" 
-                    width="12px" height="12px" />
+                <a title="<%=loc.get(62,"Edit my group description")%>" 
+                  class="edit_desc" 
+                  href="edit_groupuser_description.jsp?group_id=<%=gid%>&amp;edit_desc=true" >
+                  <span><%=loc.get(62,"Edit my group description")%></span>
                 </a>
               <% } %>
               <div>

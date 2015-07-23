@@ -100,15 +100,15 @@
               <span style="position: relative" >
                 <img 
                   style="position: absolute;
-                      height: 18px;
-                      width: 18px;
+                      height: 25px;
+                      width: 25px;
                       left: -10px;
                       position: absolute;
                       top: -10px;
                     "
                   alt="group invites pending" 
                   title="group invites"
-                  src="static/img/warning_icon.svg">
+                  src="static/img/warning.png">
               </span>
             <% } %>
           <span class="image" />&nbsp;</span>
