@@ -1405,17 +1405,6 @@ CREATE PROCEDURE get_my_temporary_msgs_for_website
   uid INT UNSIGNED -- the user id
 ) 
 BEGIN 
-  DECLARE count_msgs INT;
-
-  CALL validate_user_id(uid);
-
-  -- check that we have some temporary messages for this user
-  SELECT COUNT(*) INTO count_msgs
-  FROM temporary_message
-  WHERE user_id = uid;
-
-  -- only if we actually have messages, do we keep going
-  IF count_msgs > 0 THEN
 
     -- select the messages that haven't been seen
     SELECT tm.message_localization_id, tmt.text
@@ -1430,8 +1419,6 @@ BEGIN
     SET has_displayed_in_website = 1
     WHERE user_id = uid 
       AND has_displayed_in_website = 0;
-
-  END IF;
 
 END
 
