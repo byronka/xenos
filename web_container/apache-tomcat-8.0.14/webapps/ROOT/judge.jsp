@@ -7,6 +7,39 @@
     <link rel="stylesheet" href="static/css/footer.css" >
     <link rel="stylesheet" href="static/css/button.css" >
     <link rel="stylesheet" href="static/css/small_dialog.css" >
+    <style>
+
+      label[for=happy] span  { display: none}
+
+      label[for=happy]  {
+        background:
+          rgba(0, 0, 0, 0) 
+          url("static/img/combined.png") 
+          repeat scroll 
+          -113px -47px;
+        width: 45px;
+        height: 45px;
+        display: block;
+      }
+
+      label[for=sad] span  { display: none}
+
+      label[for=sad]  {
+        background:
+          rgba(0, 0, 0, 0) 
+          url("static/img/combined.png") 
+          repeat scroll 
+          -160px -49px;
+        width: 45px;
+        height: 45px;
+        display: block;
+      }
+
+      .happysad {
+        display: inline-block;
+      }
+
+    </style>
 		<title><%=loc.get(186,"Rank user")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
@@ -46,14 +79,16 @@
       <input type="hidden" name="urdp_id" value="<%=urdp_id%>" />
 
       <div class="row">
-        <label for="happy" title="happy"><img  style="width: 45px; height: 45px;" src="static/img/happy.png"></label>
-        <input type="radio" name="is_satis" id="happy" value="true" />
+        <div class="happysad">
+          <label for="happy" title="happy"><span>Happy</span>
+          <input type="radio" name="is_satis" id="happy" value="true" />
+        </div>
+        <div class="happysad">
+          <label for="sad" title="sad"><span>Sad</span>
+          <input type="radio" name="is_satis" id="sad" value="false" />
+        </div>
       </div>
 
-      <div class="row">
-        <label for="sad" title="sad"><img style="width: 45px; height: 45px;" src="static/img/sad.png"></label>
-        <input type="radio" name="is_satis" id="sad" value="false" />
-      </div>
 
         <div class="row">
           <label for="is_satis_comment">Comment</label>

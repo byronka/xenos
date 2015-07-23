@@ -25,6 +25,21 @@
         height: 18px;
         display: inline-block;
       }
+
+      .remove_user span {
+        display: none;
+      }
+
+      .remove_user {
+        background:
+          rgba(0, 0, 0, 0) 
+          url("static/img/combined.png") 
+          repeat scroll 
+          0 -20px;
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+      }
       
     </style>
     <title>Group</title>
@@ -169,19 +184,17 @@
                         <%=Utils.safe_render(member.getValue())%>
                       </a>
                       <% if (member.getKey() == logged_in_user_id) { %>
-                        <a href="edit_group_description.jsp?group_id=<%=gid%>">
-                          <img 
-                            title="<%=loc.get(62,"Edit my group description")%>" 
-                            src="static/img/edit.png" 
-                            width="12px" height="12px" />
+                        <a title="<%=loc.get(62,"Edit my group description")%>" 
+                          class="edit_desc" 
+                          href="edit_groupuser_description.jsp?group_id=<%=gid%>&amp;edit_desc=true" >
+                          <span><%=loc.get(62,"Edit my group description")%></span>
                         </a>
                       <% } %>
                       <% if (logged_in_user_id == the_group.owner_id) { %>
-                        <a href="remove_from_group.jsp?group_id=<%=gid%>&user_id=<%=member.getKey()%>">
-                          <img 
-                            title="<%=loc.get(88,"Remove this user")%>" 
-                            src="static/img/delete.png" 
-                            width="12px" height="12px" />
+                        <a title="<%=loc.get(88,"Remove this user")%>" 
+                          class="remove_user" 
+                          href="remove_from_group.jsp?group_id=<%=gid%>&user_id=<%=member.getKey()%>" >
+                          <span><%=loc.get(88,"Remove this user")%></span>
                         </a>
                       <% } %>
                       </label>

@@ -217,9 +217,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6"
-     inkscape:cx="3.257787"
-     inkscape:cy="29.386068"
+     inkscape:zoom="3.959798"
+     inkscape:cx="144.00705"
+     inkscape:cy="16.771148"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -232,7 +232,7 @@
      objecttolerance="10000"
      guidetolerance="10000"
      showguides="true"
-     inkscape:snap-bbox="true"
+     inkscape:snap-bbox="false"
      inkscape:snap-nodes="false"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -954,7 +954,7 @@
          style="fill:#000000;fill-opacity:1;stroke:none" />
     </g>
     <g
-       transform="matrix(0.5063951,0,0,0.5063951,100,52.363991)"
+       transform="matrix(1.4468431,0,0,1.4468431,166.32374,65.296301)"
        id="sad_icon"
        inkscape:label="sad_icon">
       <title
@@ -986,7 +986,7 @@
          style="fill:#000000;fill-opacity:1;stroke:none" />
     </g>
     <g
-       transform="matrix(0.50652541,0,0,0.50652541,80.555369,-467.42228)"
+       transform="matrix(1.4037346,0,0,1.4037346,120.2764,-1374.7441)"
        id="happy_icon"
        inkscape:label="happy_icon">
       <title
