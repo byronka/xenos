@@ -1,4 +1,4 @@
-<%@include file="includes/init.jsp" %>
+<%@include file="includes/securepage.jsp" %>
 <%@ page import="com.renomad.xenos.Group_utils" %>
 <!DOCTYPE html>
 <html>

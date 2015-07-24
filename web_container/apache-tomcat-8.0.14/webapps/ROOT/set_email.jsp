@@ -1,4 +1,4 @@
-<%@include file="includes/init.jsp" %>
+<%@include file="includes/securepage.jsp" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="com.renomad.xenos.Security" %>
 <%

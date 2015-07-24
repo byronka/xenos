@@ -1,4 +1,4 @@
-<%@include file="includes/init.jsp" %>
+<%@include file="includes/securepage.jsp" %>
 <!DOCTYPE html>
 <html>                                 
   <head><title><%=loc.get(41, "Error deleting Requestoffer")%></title></head>
