@@ -297,6 +297,16 @@ header #my-favors-container {
     display: inline-block;
   }
 
+  header a#trademark span.image{
+    background: 
+      rgba(0, 0, 0, 0) 
+      url("../img/combined.png") 
+      repeat scroll 
+      -82px -130px;
+    width: 20px;
+    display: inline-block;
+  }
+
   #my-favors-container:hover #favor-statuses {
     display: block;
   }
@@ -371,11 +381,15 @@ header #my-favors-container {
   }
 
   header a#login span.image {
-    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -23px -169px;;
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -275px -5px;
   }
 
   header a#register span.image {
-    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -40px -169px;
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -237px -5px;
+  }
+
+  header a#trademark span.image {
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -320px -5px;
   }
 
   #status-digest {
