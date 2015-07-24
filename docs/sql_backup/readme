@@ -1,0 +1,6 @@
+the file backup_script.sh is in the root directory on db2.  There is a cron
+job:
+
+@daily ~/backup_script.sh
+
+
