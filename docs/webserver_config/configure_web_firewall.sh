@@ -26,6 +26,18 @@
 # Accept packets belonging to established and related connections
 #
  iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+
+# allow ICMP Type 8 (ping, ICMP traceroute)
+iptables -A INPUT -p icmp --icmp-type 8 -j ACCEPT
+# enable UDP traceroute rejections to get sent out
+iptables -A INPUT -p udp --dport 33434:33523 -j REJECT
+
+# Following will enable logging of many dropped packets
+#iptables -N LOGGING
+#iptables -A INPUT -j LOGGING
+#iptables -A LOGGING -m limit --limit 2/min -j LOG --log-prefix "IPTables-Dropped: " --log-level 4
+#iptables -A LOGGING -j DROP
 #
 # Save settings
 #
