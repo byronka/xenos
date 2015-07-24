@@ -18,6 +18,7 @@
       <div class="container">
         <h3><%=loc.get(127, "Offer canceled")%></h3>
         <p><%=loc.get(128,"Your transaction has been canceled.")%></p>
+        <p><%=loc.get(147,"You should rank that user now.")%><a class="button" href="user.jsp?user_id=<%=logged_in_user_id%>#ranking"><%=loc.get(133,"to grade user")%></a></p>
         <p><a class="button" href="dashboard.jsp"><%=loc.get(35, "Dashboard")%></a></p>
       </div>
 

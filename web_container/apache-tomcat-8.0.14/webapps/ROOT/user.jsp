@@ -275,12 +275,14 @@
         <% if (rd.status_id == 2 ) { %>
           <% if (rd.judging_user_id == logged_in_user_id) { %>
 
+          <div id="ranking">
             <div class="rank-detail">
               <a class="button" href="judge.jsp?urdp=<%=rd.urdp_id%>">
                 <%=loc.get(79, "Rank")%>
                 <%=Utils.safe_render(rd.judged_username)%>
               </a>
             </div>
+          </div>
 
           <% } %> 
         <% } %> 
