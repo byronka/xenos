@@ -21,6 +21,8 @@
   <nav class="cl-effect-1">
     <p><%=loc.get(68,"Your browser did not send us the proper credentials.")%></p>
     <p><a href="login.jsp"><%=loc.get(42,"Login")%></a></p>
+    <p><a href="register.jsp"><%=loc.get(43,"Register")%></a></p>
+    <p><a href="dashboard.jsp"><%=loc.get(35,"Dashboard")%></a></p>
   </nav>
 </body>
 </html>

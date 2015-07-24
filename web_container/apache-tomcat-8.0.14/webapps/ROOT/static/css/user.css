@@ -69,7 +69,7 @@ a#set_email span.image {
     rgba(0, 0, 0, 0) 
     url("../img/combined.png") 
     repeat scroll 
-     -3px -76px;
+     0 -76px;
   width: 20px;
   display: inline-block;
 }

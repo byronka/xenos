@@ -252,7 +252,7 @@ header #my-favors-container {
       rgba(0, 0, 0, 0) 
       url("../img/combined.png") 
       repeat scroll 
-      -55px -170px;
+      -60px -170px;
     width: 35px;
     display: inline-block;
   }
@@ -273,6 +273,26 @@ header #my-favors-container {
       url("../img/combined.png") 
       repeat scroll 
       -38px -150px;
+    width: 20px;
+    display: inline-block;
+  }
+
+  header a#login span.image{
+    background: 
+      rgba(0, 0, 0, 0) 
+      url("../img/combined.png") 
+      repeat scroll 
+      -23px -169px;
+    width: 20px;
+    display: inline-block;
+  }
+
+  header a#register span.image{
+    background: 
+      rgba(0, 0, 0, 0) 
+      url("../img/combined.png") 
+      repeat scroll 
+      -40px -169px;
     width: 20px;
     display: inline-block;
   }
@@ -348,6 +368,14 @@ header #my-favors-container {
 
   header a#logout span.image {
     background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -430px -57px;
+  }
+
+  header a#login span.image {
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -23px -169px;;
+  }
+
+  header a#register span.image {
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -40px -169px;
   }
 
   #status-digest {

@@ -1,4 +1,4 @@
-<%@include file="includes/securepage.jsp" %>
+<%@include file="includes/publicpage.jsp" %>
 <!DOCTYPE html>
 <html>                                 
 	<head>

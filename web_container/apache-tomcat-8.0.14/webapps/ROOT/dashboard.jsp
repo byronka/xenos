@@ -1,4 +1,4 @@
-<%@include file="includes/securepage.jsp" %>
+<%@include file="includes/publicpage.jsp" %>
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%@ page import="com.renomad.xenos.User_location" %>
 <%@ page import="com.renomad.xenos.Requestoffer" %>

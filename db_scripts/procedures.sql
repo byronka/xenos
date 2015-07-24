@@ -227,6 +227,7 @@ BEGIN
   SET first_row = page * 10;
   SET last_row = (page * 10) + 10;
 
+  -- this is to get a user's own draft requestoffers
   (
     SELECT SQL_CALC_FOUND_ROWS r.requestoffer_id, 
     r.datetime, 
@@ -320,6 +321,8 @@ BEGIN
 
   UNION ALL
 
+
+  -- get everything but a user's own draft requestoffers
   (
     SELECT r.requestoffer_id, 
     r.datetime, 
@@ -348,7 +351,7 @@ BEGIN
     LEFT JOIN postal_code_details pcd
       ON pcd.postal_code_id = r.postal_code_id 
         AND pcd.country_id = r.country_id
-    WHERE rs.status <> 109
+    WHERE rs.status <> 109 -- draft
 
     AND
 
