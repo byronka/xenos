@@ -13,7 +13,6 @@ Setting up Eclipse as a IDE for Xenos
 Localization
 Safe Rendering of Client-provided values
 Viewing the database values
-Running Tomcat in SSL
 Tomcat CentOS init script
 SQL standards
 Git branches
@@ -107,10 +106,10 @@ developed thus far:
 General conventions
 ==================
 
-We do not allow warnings to propagate in our system.  If something is
-throwing a warning, you correct it.  We believe in the theory of
-broken windows and don't let sloppiness creep into our system.  It's a
-constant fight against entropy.
+We do not ignore warnings.  If something is throwing a warning, you
+correct it.  We believe in the theory of broken windows and don't let
+sloppiness creep into our system.  It's a constant fight against
+entropy.
 
 Likewise, if you see error or warning messages in the logs, you
 correct that.  It's not ok to allow those to continue just because the
@@ -198,6 +197,8 @@ the output will be found at http://localhost:8080/lint/
 
 Setting up Eclipse as a IDE for Xenos
 =====================================
+[Note: up to date (7/25/2015) this application was entirely written at
+the command line with Vim as editor and Ant as build tool.]
 
 Base Project - 
 * Start Eclipse
@@ -332,19 +333,6 @@ often be found by reviewing the scripts in db_scripts/
 
 
 
-
-
-
-
-
-Running Tomcat in SSL
-=====================
-
-Tomcat is set to work on SSL, following the instructions at:
-
-http://tomcat.apache.org/tomcat-6.0-doc/ssl-howto.html#Configuration
-
-There is a copy of that file in this directory, at ssl-howto-tomcat.txt
 
 
 
@@ -687,16 +675,15 @@ ssh.renomad.com - backup for youtrack, code repo,
 youtrack.renomad.com - the youtrack server, located with ChicagoVPS
 prime.renomad.com - central Git code repo. automatically sends 
   backup to ssh.renomad.com. Email server. chicagoVPS
-www.zenia.co - server exposed to the world, 
+www.favrcafe.com - server exposed to the world, 
   running Tomcat and master database, with chicagoVPS
-db1.zenia.co - chicagoVPS, openvz, runs replication of database 
-  and is backed up by chicagoVPS and onto ssh.renomad.com
-db2.zenia.co - slave / alternate database server.
-note that db1 and db2 have firewalls configured so they can only
+appledb.favrcafe.com - digital ocean master db 
+bananadb.favrcafe.com - slave database server.
+note that appledb and bananadb have firewalls configured so they can only
   be accessed by www.zenia.co
 
 namesecure is the SOA for renomad.com
-godaddy is the SOA for favir.co
+godaddy is the SOA for favrcafe.com
 
 passwords for everything is in Secret Server, at ss.renomad.com
 

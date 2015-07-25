@@ -4,6 +4,16 @@ header {
   box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 }
 
+header a#help {
+  text-decoration: none;
+  position: relative;
+  margin-left: 12px;
+  margin-right: 9px;
+}
+
+header a#help span.text {
+  display: none;
+}
 
 .header-row {
   display: -webkit-box;
@@ -297,6 +307,19 @@ header #my-favors-container {
     display: inline-block;
   }
 
+  header a#help span.image{
+    position: absolute;
+    top: 18px;
+    left: -14px;
+    background: 
+      rgba(0, 0, 0, 0) 
+      url("../img/combined.png") 
+      repeat scroll 
+      -378px -108px;
+    width: 20px;
+    display: inline-block;
+  }
+
   header a#trademark span.image{
     background: 
       rgba(0, 0, 0, 0) 
@@ -387,6 +410,20 @@ header #my-favors-container {
   header a#register span.image {
     background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -237px -5px;
   }
+
+
+  header a#help span.image {
+    position: absolute;
+    top: 8px;
+    left: -14px;
+    background: 
+      rgba(0, 0, 0, 0) 
+      url("../img/combined.png") 
+      no-repeat scroll 
+      -377px -10px;
+    width: 18px;
+  }
+
 
   header a#trademark span.image {
     background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -320px -5px;

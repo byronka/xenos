@@ -167,7 +167,17 @@
           </span>
         </a>
 
+
         <% } %>
+
+        <a 
+          id="help" 
+          class="" href="help.jsp">
+          <span class="text_and_image_container">
+            <span class="text"><%=loc.get(149,"Help")%></span>
+            <span class="image" />&nbsp;</span>
+          </span>
+        </a>
 
     </div>
   </div>

@@ -10,7 +10,6 @@
 		<title><%=loc.get(190, "Ranking confirmed")%></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="content-type" value="text/html; charset=UTF8" />
-
 	</head>
 
   <body>
