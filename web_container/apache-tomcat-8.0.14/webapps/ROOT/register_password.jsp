@@ -185,6 +185,8 @@
     var check_password = function() {
       var validlength = document.getElementById('validlength');
       var invalidlength = document.getElementById('invalidlength');
+      var validconfirmed = document.getElementById('validconfirmed');
+      var invalidconfirmed = document.getElementById('invalidconfirmed');
 
       if (!password_meets_complexity()) {
         validlength.style.display = 'none';
