@@ -93,7 +93,6 @@
         <div class="row">
           <label for="is_satis_comment">Comment</label>
           <textarea 
-            style="width: 350px"
             id="is_satis_comment" 
             name="is_satis_comment" 
             placeholder="I really appreciate ..." ></textarea>

@@ -10,28 +10,30 @@
       <input type="text" id="desc_input" name="desc" value="<%=Utils.safe_render(desc)%>"/> 
     </div>
 
-    <div class="row">
-      <label for="distance_input">
-        <%=loc.get(212,"Maximum distance in miles")%>:
-      </label>
-      <select id="distance_input" name="distance">
-        <option selected value="0">none</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="100">100</option>
-        <option value="1000">1000</option>
-        <option value="2000">2000</option>
-        <option value="5000">5000</option>
-      </select>
-    </div>
-    <% if (has_distance_error) { %>
-      <span class="error">
-        <%=loc.get(213,"distance error - needs to be a number")%>
-      </span>
+    <% if (logged_in_user_id > 0) { %>
+      <div class="row">
+        <label for="distance_input">
+          <%=loc.get(212,"Maximum distance in miles")%>:
+        </label>
+        <select id="distance_input" name="distance">
+          <option selected value="0">none</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="100">100</option>
+          <option value="1000">1000</option>
+          <option value="2000">2000</option>
+          <option value="5000">5000</option>
+        </select>
+      </div>
+      <% if (has_distance_error) { %>
+        <span class="error">
+          <%=loc.get(213,"distance error - needs to be a number")%>
+        </span>
+      <% } %>
     <% } %>
 
     <div class="row">
