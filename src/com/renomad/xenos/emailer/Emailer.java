@@ -98,9 +98,9 @@ public class Emailer implements ServletContextListener, Runnable {
       //set up a stream to send the email message to
       ProcessBuilder pb = 
         new ProcessBuilder(
-            "ssmtp",
+						"/usr/local/sbin/ssmtp",
             emailAddress,
-            "-C"+System.getenv("XENOS_HOME")+"/utils/ssmtp.conf");
+            "-C/home/xenos/xenos/utils/ssmtp.conf");
 
       //send the email
       try {
