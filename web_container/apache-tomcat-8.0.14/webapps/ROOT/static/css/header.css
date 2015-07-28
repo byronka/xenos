@@ -378,7 +378,7 @@ header #my-favors-container {
 @media all and (max-width: 500px) {
 
   header a span.image {
-    width: 45px;
+    width: 39px;
     height: 30px;
     display: block;
   }

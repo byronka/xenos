@@ -127,7 +127,7 @@ public final class Security {
     Connection conn = Database_access.get_a_connection();
     try {
       cs = conn.prepareCall("{call check_login(?,?,?,?)}");
-      cs.setNString( 1, username);
+      cs.setNString( 1, username.trim()); //chop off whitespace front and back
       cs.setString( 2, hashed_pwd);
       cs.setString( 3, ip_address);
       cs.registerOutParameter(4, java.sql.Types.INTEGER);

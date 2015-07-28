@@ -1010,7 +1010,7 @@ BEGIN
 
   SELECT user_id, last_ip_logged_in into user_id_found, last_ip
   FROM user
-  WHERE BINARY username = their_username AND BINARY password = their_password;
+  WHERE username = their_username AND BINARY password = their_password;
 
   -- audit that their username / password didn't match anything in our db
   IF user_id_found IS null THEN
