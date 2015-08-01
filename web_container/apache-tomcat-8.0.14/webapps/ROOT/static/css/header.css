@@ -302,7 +302,7 @@ header #my-favors-container {
       rgba(0, 0, 0, 0) 
       url("../img/combined.png") 
       repeat scroll 
-      -40px -169px;
+      -41px -169px;
     width: 20px;
     display: inline-block;
   }
@@ -384,7 +384,7 @@ header #my-favors-container {
   }
 
   header a#search span.image {
-    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -207px -57px;
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -210px -57px;
   }
 
   header a#request_favor span.image {
@@ -404,11 +404,11 @@ header #my-favors-container {
   }
 
   header a#login span.image {
-    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -275px -5px;
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -278px -5px;
   }
 
   header a#register span.image {
-    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -237px -5px;
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -240px -5px;
   }
 
 
@@ -424,9 +424,8 @@ header #my-favors-container {
     width: 18px;
   }
 
-
   header a#trademark span.image {
-    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -320px -5px;
+    background: rgba(0, 0, 0, 0) url("../img/combined.png") no-repeat scroll -323px -5px;
   }
 
   #status-digest {
