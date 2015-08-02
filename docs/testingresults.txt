@@ -1,0 +1,37 @@
+when first enter message on offering to handle, where it shows
+number of seconds since this happened, starts with just showing a colon.
+At refresh, shows "6 seconds ago" or whatever.
+
+When sending a message to multiple potential handlers, after sending
+it's not possible to tell who you sent that message to.
+
+Confirm new password in change password.
+
+If two people offer to handle a favor, it lists the favor two times,
+on the dropdown menu off the header.
+
+Sad favr on ranking user not sad enough.
+
+Allow multiple people to set the same email.
+
+Make the text like "24 minutes ago" MUCH smaller.
+
+On user_groups page, make it "my profile" instead of "cancel"
+
+looking at groups for someone who is in multiple groups with me, it
+shows as a jumble - instead make it like how it shows on a
+requestoffer.
+
+when I create a username with chinese characters, on register_password
+it doesn't show characters correctly.
+
+The whole "cancellation" concept for requestoffers needs clearer
+verbage and on the actual page to confirm a cancel, need a cancel
+button to cancel the cancel.
+
+after cancelling or completion, take them straight to judge.jsp if
+they click the button.
+
+On profile, show smilies / frownies instead of +1 / -1
+
+why isn't there a list of favors I've handled on My Favors?
