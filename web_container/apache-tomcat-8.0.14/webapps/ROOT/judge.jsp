@@ -11,28 +11,48 @@
 
       label[for=happy] span  { display: none}
 
-      label[for=happy]  {
-        background:
-          rgba(0, 0, 0, 0) 
-          url("static/img/combined.png") 
-          repeat scroll 
-          -113px -47px;
-        width: 45px;
-        height: 45px;
-        display: block;
+
+      label[for="happy"] {
+          background: 
+            rgba(0, 0, 0, 0) 
+            url("static/img/combined.png") 
+            repeat scroll 
+            -115px -52px;
+          display: block;
+          height: 40px;
+          position: relative;
+          width: 40px;
+      }
+
+      input#happy {
+          visibility: collapse;
+          /* the following just in case I want it to appear */
+          right: -27px;
+          position: absolute;
+          top: 10px;
       }
 
       label[for=sad] span  { display: none}
 
-      label[for=sad]  {
-        background:
-          rgba(0, 0, 0, 0) 
-          url("static/img/combined.png") 
-          repeat scroll 
-          -160px -49px;
-        width: 45px;
-        height: 45px;
-        display: block;
+      label[for="sad"] {
+          background: 
+            rgba(0, 0, 0, 0) 
+            url("static/img/combined.png") 
+            repeat scroll 
+            -160px -49px;
+          display: block;
+          height: 45px;
+          margin-left: 40px;
+          position: relative;
+          width: 45px;
+      }
+
+      input#sad {
+          visibility: collapse;
+          /* the following just in case I want it to appear */
+          right: -25px;
+          position: absolute;
+          top: 15px;
       }
 
       .happysad {
@@ -78,27 +98,48 @@
     <form method="POST" action="judged.jsp" >
       <input type="hidden" name="urdp_id" value="<%=urdp_id%>" />
 
-      <div class="row">
+      <h3>Choose:</h3>
+      <div class="row" id="happysadrow">
         <div class="happysad">
-          <label for="happy" title="happy"><span>Happy</span>
-          <input type="radio" name="is_satis" id="happy" value="true" />
+          <label id="happylabel" for="happy" title="happy"><span>Happy</span>
+          <input type="radio" name="is_satis" id="happy" />
         </div>
         <div class="happysad">
-          <label for="sad" title="sad"><span>Sad</span>
-          <input type="radio" name="is_satis" id="sad" value="false" />
+          <label id="sadlabel" for="sad" title="sad"><span>Sad</span>
+          <input type="radio" name="is_satis" id="sad"  />
         </div>
       </div>
 
 
-        <div class="row">
-          <label for="is_satis_comment">Comment</label>
-          <textarea 
-            id="is_satis_comment" 
-            name="is_satis_comment" 
-            placeholder="I really appreciate ..." ></textarea>
-        </div>
+      <div id="commentrow" class="row" style="visibility: collapse">
+        <label for="is_satis_comment">Comment</label>
+        <textarea 
+          id="is_satis_comment" 
+          name="is_satis_comment" 
+          placeholder="I really appreciate ..." ></textarea>
+      </div>
 
-        <button class="button" type="submit">submit</button>
+      <button id="submitbutton" style="visibility: collapse" class="button" type="submit">submit</button>
+
+      <script>
+        var firstchanged = false;
+        var containingRow = document.getElementById('happysadrow');
+        containingRow.addEventListener('change',function(event){
+          document.getElementById('happylabel').style.backgroundColor="initial";
+          document.getElementById('sadlabel').style.backgroundColor="initial";
+
+          if (!firstchanged) {
+            document.getElementById('commentrow')
+              .style.visibility = "initial";
+            document.getElementById('submitbutton')
+              .style.visibility = "initial";
+          }
+          event.target.parentNode.style.backgroundColor="yellow";
+        });
+
+        
+      </script>
+
     </form>
     </div>
   </div>
