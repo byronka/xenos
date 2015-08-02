@@ -95,18 +95,18 @@
     </p>
 
     <div class="table">
-    <form method="POST" action="judged.jsp" >
+    <form method="POST" action="confirm_judging.jsp" >
       <input type="hidden" name="urdp_id" value="<%=urdp_id%>" />
 
       <h3>Choose:</h3>
       <div class="row" id="happysadrow">
         <div class="happysad">
           <label id="happylabel" for="happy" title="happy"><span>Happy</span>
-          <input type="radio" name="is_satis" id="happy" />
+          <input type="radio" name="is_satis" id="happy" value="true"/>
         </div>
         <div class="happysad">
           <label id="sadlabel" for="sad" title="sad"><span>Sad</span>
-          <input type="radio" name="is_satis" id="sad"  />
+          <input type="radio" name="is_satis" id="sad"  value="false"/>
         </div>
       </div>
 
