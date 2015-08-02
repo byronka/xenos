@@ -1,9 +1,9 @@
-436- There needs to be a confirmation page after judging
+DONE 436- There needs to be a confirmation page after judging DONE
 
-437 - The section on the judging page for choosing "happy" or "sad" needs to
+DONE 437 - The section on the judging page for choosing "happy" or "sad" needs to
 be more pronounced.  Susanne was doing the ranking and didn't realize
 she left it on "sad".  Perhaps in addition to make it more visually
 pronounced, set the a third radio option for "neither" so if the user
 moves forward without selecting happy or sad, they are stopped.  Or,
 it might be possible to have neither radio button selected when they
-hit the page, effecting the same situation as a third, neutral option.
+hit the page, effecting the same situation as a third, neutral option. DONE
