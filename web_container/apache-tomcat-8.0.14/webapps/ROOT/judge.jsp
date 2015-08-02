@@ -66,6 +66,7 @@
 
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%
+	request.setCharacterEncoding("UTF-8");
 
   String qs = request.getQueryString();
   java.util.Map<String, String> qs_dict = Utils.parse_qs(qs);

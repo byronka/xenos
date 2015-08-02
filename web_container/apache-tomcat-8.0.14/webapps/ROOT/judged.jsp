@@ -2,6 +2,7 @@
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
 <%
 
+	request.setCharacterEncoding("UTF-8");
   boolean is_satisfied = 
     Boolean.parseBoolean(request.getParameter("is_satis"));
   int urdp_id = Utils.parse_int(request.getParameter("urdp_id"));

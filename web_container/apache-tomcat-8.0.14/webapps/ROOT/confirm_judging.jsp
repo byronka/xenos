@@ -11,6 +11,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
   <%
+    request.setCharacterEncoding("UTF-8");
     boolean is_satisfied = 
       Boolean.parseBoolean(request.getParameter("is_satis"));
     int urdp_id = Utils.parse_int(request.getParameter("urdp_id"));
