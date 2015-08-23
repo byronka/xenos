@@ -267,9 +267,9 @@
 
           <% if(rd.meritorious != null) {%>
             <% if (rd.meritorious) { %>
-           +1 from
+              <span class="happy">+1</span> <%=loc.get(161,"from")%>
             <% } else { %>
-           -1 from
+              <span class="sad">-1</span> <%=loc.get(161,"from")%> 
             <% } %>
           <% } %>
 
