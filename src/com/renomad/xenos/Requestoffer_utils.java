@@ -672,6 +672,20 @@ public final class Requestoffer_utils {
 
 
   /**
+    * gets uniques of service requests for the same request offer
+    */
+  public static Service_request[]
+    combine_service_requests_by_requestoffer(Service_request[] srs) {
+    Map<Integer, Service_request> service_requests = new HashMap<Integer, Service_request>();
+    for (Service_request sr : srs) {
+      if (service_requests.get(sr.requestoffer_id) == null) {
+        service_requests.put(sr.requestoffer_id, sr);
+      }
+    }
+    return service_requests.values().toArray(new Service_request[0]);
+  }
+
+  /**
     * Gets the list of users that have offered to service this request
     * 
     * @param the_rid the requestoffer in question
@@ -1105,7 +1119,7 @@ public final class Requestoffer_utils {
       "JOIN requestoffer_state rs ON "+
         "rs.requestoffer_id = r.requestoffer_id " +
       "WHERE "+
-        "r.requestoffering_user_id = ? "+
+        "(r.requestoffering_user_id = ? OR r.handling_user_id = ?) "+
         " AND rs.status = ?";
 
     PreparedStatement pstmt = null;
@@ -1115,7 +1129,8 @@ public final class Requestoffer_utils {
       pstmt = Database_access.prepare_statement(
           conn, sqlText);     
       pstmt.setInt( 1, user_id);
-      pstmt.setInt( 2, status);
+      pstmt.setInt( 2, user_id);
+      pstmt.setInt( 3, status);
       resultSet = pstmt.executeQuery();
       if (Database_access.resultset_is_null_or_empty(resultSet)) {
         return new Requestoffer[0];

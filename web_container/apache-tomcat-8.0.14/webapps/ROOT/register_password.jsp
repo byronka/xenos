@@ -37,7 +37,10 @@
   // code, we'll first get that from a query string.
   String qs = request.getQueryString();
   String invite_code = Utils.parse_qs(qs).get("icode"); // get it from query string
-  username = Utils.parse_qs(qs).get("user"); // get it from query string
+  username = Utils.parse_qs(qs).get("user");
+  if (!Utils.is_null_or_empty(username)) {
+    username = java.net.URLDecoder.decode(username, "UTF-8"); // get it from query string
+  }
 
   if (request.getMethod().equals("POST")) {
 

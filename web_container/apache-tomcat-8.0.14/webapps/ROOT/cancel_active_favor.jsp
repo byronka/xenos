@@ -41,10 +41,15 @@
   <p>
     <%=loc.get(129,"If you would like to cancel this active Favor, click the confirm button below.  This will give you the chance provide a grade for the other person, as well as giving them a chance to grade you.")%>
   </p>
-  <p>
-    <a class="button" href="transaction_cancel.jsp?requestoffer=<%=my_requestoffer.requestoffer_id%>">
-      <%=loc.get(95, "Confirm")%> 
-    </a>
-  </p>
+  <div class="table">
+    <div class="row">
+      <a class="button" href="transaction_cancel.jsp?requestoffer=<%=my_requestoffer.requestoffer_id%>">
+        <%=loc.get(95, "Confirm")%> 
+      </a>
+      <a class="button" href="requestoffer.jsp?requestoffer=<%=my_requestoffer.requestoffer_id%>">
+        <%=loc.get(130, "Cancel")%> 
+      </a>
+    </div>
+  </div>
   <%@include file="includes/footer.jsp" %>
 </body>

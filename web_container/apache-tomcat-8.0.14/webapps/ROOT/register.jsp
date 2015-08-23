@@ -58,8 +58,9 @@
         User_utils.is_valid_username(username, invite_code);
       switch (result) {
         case OK:
+        String utf_username = java.net.URLEncoder.encode(username, "UTF-8");
           response.sendRedirect(
-            "register_password.jsp?user=" + username + "&icode=" + invite_code);  // if everything is cool, only this runs.
+            "register_password.jsp?user=" + utf_username + "&icode=" + invite_code);  // if everything is cool, only this runs.
           return;
         case EXISTING_USERNAME:
           user_creation_error_msg = loc.get(57,"That user already exists");

@@ -567,14 +567,20 @@ CREATE PROCEDURE put_message
 ) 
 BEGIN 
   DECLARE full_msg NVARCHAR(200);
+  DECLARE from_username NVARCHAR(200);
+  DECLARE to_username NVARCHAR(200);
 
   CALL is_non_empty_string('put_message','my_message',my_message);
   CALL validate_requestoffer_id(rid);
   CALL validate_user_id(fr_uid);
   CALL validate_user_id(to_uid);
 
-  SELECT CONCAT(username,' says: ', my_message) INTO full_msg
+  SELECT username INTO from_username
   FROM user WHERE user_id = fr_uid;
+  SELECT username INTO to_username
+  FROM user WHERE user_id = to_uid;
+
+  SELECT CONCAT(from_username,' says to ',to_username,': ', my_message) INTO full_msg;
 
   INSERT into requestoffer_message (
 		message, requestoffer_id, from_user_id, to_user_id, timestamp)

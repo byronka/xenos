@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="static/css/button.css" >
     <title><%=loc.get(22,"Requestoffer Details")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .time_delta {
+        font-size: x-small;
+      }
+    </style>
 	</head>
 
 <%@ page import="com.renomad.xenos.Requestoffer_utils" %>
@@ -210,20 +215,21 @@
       </div>
     <% } %>
 
-
         <% Requestoffer_utils.MessageWithDate[] messages = 
           Requestoffer_utils.get_messages(the_requestoffer.requestoffer_id, logged_in_user_id);
         %>
 
         <% for (int i = 0; i < messages.length; i++) { %>
-          <% if (i == 0) { %>
-            <%=Utils.show_delta_to_now(Utils.parse_date(messages[i].date),loc)%>:
-          <% } else { %>
-            <%=Utils.show_date_delta_later(
-              Utils.parse_date(messages[i].date),
-              Utils.parse_date(messages[i-1].date),
-              loc)%>
-          <% } %>
+          <span class="time_delta">
+            <% if (i == 0) { %>
+              <%=Utils.show_delta_to_now(Utils.parse_date(messages[i].date),loc)%>:
+            <% } else { %>
+              <%=Utils.show_date_delta_later(
+                Utils.parse_date(messages[i].date),
+                Utils.parse_date(messages[i-1].date),
+                loc)%>
+            <% } %>
+          </span>
           <p><%=Utils.safe_render(messages[i].message)%></p>
         <% } %>
 
@@ -298,7 +304,7 @@
           <% if ( the_requestoffer.status == Const.Rs.TAKEN && 
             (is_requestoffering_user || is_handling_user)) { %> 
             <a class="button" href="cancel_active_favor.jsp?requestoffer=<%=the_requestoffer.requestoffer_id%>" >
-              <%=loc.get(130,"Cancel")%>
+              <%=loc.get(151,"Cancel active favor")%>
             </a>
           <% } %>
 

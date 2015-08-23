@@ -13,6 +13,27 @@
     <link rel="stylesheet" href="static/css/small_dialog.css" >
     <title><%=loc.get(97,"My Profile")%></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .happy {
+        background: rgba(0, 0, 0, 0) url("static/img/combined.png") repeat scroll -118px 0;
+        display: inline-block;
+        height: 18px;
+        margin-left: 26px;
+        position: relative;
+        width: 19px;
+        color: transparent;
+      }
+
+      .sad {
+        background: rgba(0, 0, 0, 0) url("static/img/combined.png") repeat scroll -138px 0;
+        display: inline-block;
+        height: 18px;
+        margin-left: 26px;
+        position: relative;
+        width: 19px;
+        color: transparent;
+      }
+    </style>
 
 	</head>
 <%
@@ -177,7 +198,7 @@
           <div class="row">
             <label>Shared groups:</label>
             <% for (Group_utils.Group_id_and_name gian : shared_groups) { %>
-              <a href="group.jsp?group_id=<%=gian.id%>"><%=gian.name%></a>
+              <a class="group-name" href="group.jsp?group_id=<%=gian.id%>"><%=gian.name%></a>
             <% } %>
           </div>
         <% } %>
@@ -222,9 +243,9 @@
 
           <% if(rd.meritorious != null) {%>
             <% if (rd.meritorious) { %>
-            +1 <%=loc.get(17,"to")%>
+              <span class="happy">+1</span> <%=loc.get(17,"to")%>
             <% } else { %>
-              -1 <%=loc.get(17,"to")%> 
+              <span class="sad">-1</span> <%=loc.get(17,"to")%> 
             <% } %>
           <% } %>
 

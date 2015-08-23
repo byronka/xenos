@@ -28,7 +28,10 @@
           .get_requestoffers_I_offered_to_service(logged_in_user_id);
 
         hdr_service_requests = 
-          Requestoffer_utils.get_service_requests(logged_in_user_id);
+          Requestoffer_utils
+            .combine_service_requests_by_requestoffer(
+              Requestoffer_utils
+              .get_service_requests(logged_in_user_id));
 
         hdr_handling_requestoffers = 
           Requestoffer_utils.get_requestoffers_I_am_handling(logged_in_user_id);

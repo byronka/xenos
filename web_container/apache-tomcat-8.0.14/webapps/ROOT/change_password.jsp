@@ -5,17 +5,20 @@
 
   String old_pass = "";
   String new_pass = "";
+  String confirm_pass = "";
   String error_msg = "";
 
   if (request.getMethod().equals("POST")) {
 
     old_pass = request.getParameter("old_password");
     new_pass = request.getParameter("new_password");
+    confirm_pass = request.getParameter("confirm_new_password");
 
     int uid = 0;
 
     boolean old_empty = old_pass.length() == 0;
     boolean new_empty = new_pass.length() == 0;
+    boolean confirm_empty = confirm_pass.length() == 0;
     boolean new_short = new_pass.length() < 8;
 
     if (old_empty && new_empty) {
@@ -26,6 +29,8 @@
       error_msg = loc.get(116, "You forgot to give us your new password.  Try again.");
     } else if (!old_empty && new_short) {
       error_msg = loc.get(117, "Your new password is too short.  Try again.");
+    } else if (!old_empty && !new_short && confirm_empty) {
+      error_msg = loc.get(150, "You did not confirm your new password.  Try again.");
     }
     
     boolean success = false;
@@ -70,6 +75,10 @@
           <div class="row">
             <label for="new_password"><%=loc.get(175,"New password")%>: </label>
             <input id="new_password" type="password" name="new_password" />
+          </div>
+          <div class="row">
+            <label for="confirm_new_password"><%=loc.get(89,"Confirm password")%>: </label>
+            <input id="confirm_new_password" type="password" name="confirm_new_password" />
           </div>
         </div>
         <div class="table">
