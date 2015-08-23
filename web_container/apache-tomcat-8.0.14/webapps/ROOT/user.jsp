@@ -170,6 +170,36 @@
 
       <div class="table">
 
+      <%
+      if (logged_in_user_id != uid) {
+      %>
+        <%
+          Requestoffer[] user_open_requestoffers = 
+            Requestoffer_utils
+            .get_requestoffers_for_user_by_status(uid,Const.Rs.OPEN);
+        %>
+        <% if (user_open_requestoffers.length != 0) {%>
+          <div class="row">
+            <div><em><%=loc.get(173, "Their open Favors")%>:</em></div>
+            <% for (Requestoffer r : user_open_requestoffers) { %>
+            <div class="requestoffer mine">
+              <% // requestoffer view starts HERE %>
+              <a class="requestoffer" href="requestoffer.jsp?requestoffer=<%=r.requestoffer_id%>">
+                  <span class="desc container <%if(r.status == Const.Rs.TAKEN ){%><%="taken"%><%}%>">
+                        <%=Utils.safe_render(r.description)%>
+                        <span class="datetime">
+                          <span><%=loc.get(25, "Date")%>: <%=r.datetime%></span>
+                        </span>
+                     </span> 
+                     <span class="category c-<%=r.category%>" >&nbsp;</span>
+              </a>
+              <% // requestoffer view ENDS HERE %>
+            </div>
+          <% } %>
+          </div>
+        <% } %>
+      <% } %>
+
 
 
       <%if (the_user.urdp_count >= 30) {%>
