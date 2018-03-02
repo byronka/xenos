@@ -77,8 +77,8 @@ public final class Build_db_schema {
 			result_set_next(resultSet);
 			String dbv = resultSet.getString("version");
 
-			// THE VERSION SHOULD BE 10.0.17-MariaDB
-			String expected_version = "10.0.17-MariaDB";
+			// THE VERSION SHOULD BE 10.0.27-MariaDB
+			String expected_version = "10.0.27-MariaDB";
 			if (!dbv.contains(expected_version)) {           
 				throw new SQLException(
 						"FATAL ERROR - HEY DEV! Pay attention to me now. \n"+
